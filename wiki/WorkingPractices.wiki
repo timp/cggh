@@ -1,0 +1,19 @@
+#summary Working Practices
+
+= The Branch-When-Needed system =
+
+From: http://svn.collab.net/repos/svn/trunk/doc/user/svn-best-practices.html
+
+(This is the system used by the Subversion project.)
+
+Users commit their day-to-day work on /trunk.
+
+Rule #1: /trunk must compile and pass regression tests at all times. [...]
+
+Rule #2: a single commit (changeset) must not be so large so as to discourage peer-review.
+
+Rule #3: if rules #1 and #2 come into conflict (i.e. [when] it's impossible to make a series of small commits without disrupting the trunk), then the user should create a branch and commit a series of smaller changesets there. This allows peer-review without disrupting the stability of /trunk.
+
+Pros: /trunk is guaranteed to be stable at all times. The hassle of branching/merging is somewhat rare.
+
+Cons: Adds a bit of burden to users' daily work: they must compile and test before every commit.
