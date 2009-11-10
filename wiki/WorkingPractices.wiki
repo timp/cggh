@@ -1,8 +1,8 @@
 #summary Working Practices
 
-= The Branch-When-Needed system =
+= The Branch-When-Needed System =
 
-From: http://svn.collab.net/repos/svn/trunk/doc/user/svn-best-practices.html
+From: http://svn.collab.net/repos/svn/trunk/doc/user/svn-best-practices.html [accessed 10 Nov 09]
 
 (This is the system used by the Subversion project.)
 
@@ -17,3 +17,27 @@ Rule #3: if rules #1 and #2 come into conflict (i.e. when it's impossible to mak
 Pros: /trunk is guaranteed to be stable at all times. The hassle of branching/merging is somewhat rare.
 
 Cons: Adds a bit of burden to users' daily work: they must compile and test before every commit.
+
+
+= Repository Layout for Multiple Projects =
+
+From: http://svnbook.red-bean.com/en/1.0/ch05s04.html [accessed 10 Nov 09]
+
+Because Subversion uses regular directory copies for branching and tagging, the Subversion community recommends that you choose a repository location for each project root—the “top-most” directory which contains data related to that project—and then create three subdirectories beneath that root: trunk, meaning the directory under which the main project development occurs; branches, which is a directory in which to create various named branches of the main development line; tags, which is a directory of branches that are created, and perhaps destroyed, but never changed.
+
+For example, your repository might look like:
+
+/
+   calc/
+      trunk/
+      tags/
+      branches/
+   calendar/
+      trunk/
+      tags/
+      branches/
+   spreadsheet/
+      trunk/
+      tags/
+      branches/
+   …
