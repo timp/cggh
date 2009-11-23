@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE web-app
+        PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN"
+        "http://java.sun.com/dtd/web-app_2_3.dtd">
+
+<web-app>
+
+    <context-param>    <!-- max size of the upload request, e.g.  3145728, 104857600 -->
+        <param-name>maxSize</param-name>
+        <param-value>1073741824</param-value>
+    </context-param>
+
+    <!-- useful in development mode to see the upload progress bar in fast networks -->
+    <context-param>
+        <param-name>slowUploads</param-name>
+        <param-value>false</param-value>
+    </context-param>
+    <context-param>
+        <param-name>tmpPath</param-name>
+        <param-value>/home/FileUploadFacility/tmp/</param-value>
+    </context-param>
+    <context-param>
+        <param-name>targetPath</param-name>
+        <param-value>/home/FileUploadFacility/uploads/</param-value>
+    </context-param>
+
+        
+    <servlet>
+        <servlet-name>uploadServlet</servlet-name>
+        <!-- put here your customized servlet extending UploadAction -->
+        <servlet-class>gwtupload.server.UploadServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>FileUploadFacilityServlet</servlet-name>
+        <display-name>FileUploadFacilityServlet</display-name>
+        <description>Servlet for the File Upload Facility</description>
+        <servlet-class>fileuploadfacility.server.FileUploadFacilityServlet</servlet-class>
+        <load-on-startup>0</load-on-startup>
+    </servlet>
+    <servlet>
+        <servlet-name>fileuploadfacility.FileUploadFacility FileUploadFacilityService</servlet-name>
+        <servlet-class>fileuploadfacility.server.FileUploadFacilityServiceImpl</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>FileUploadFacilityServlet</servlet-name>
+        <url-pattern>*.gupld</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>fileuploadfacility.FileUploadFacility FileUploadFacilityService</servlet-name>
+        <url-pattern>
+            /fileuploadfacility.FileUploadFacility/fileuploadfacility.FileUploadFacility/FileUploadFacilityService
+        </url-pattern>
+    </servlet-mapping>
+
+
+  <security-constraint>
+    <web-resource-collection>
+      <web-resource-name>
+        Protected Site
+      </web-resource-name>
+      <url-pattern> /* </url-pattern>
+      <http-method> DELETE </http-method>
+      <http-method> GET </http-method>
+      <http-method> POST </http-method>
+      <http-method> PUT </http-method>
+    </web-resource-collection>
+    <auth-constraint>
+      <role-name> uploader </role-name>
+    </auth-constraint>
+  </security-constraint>
+
+  <!-- BASIC authentication -->
+  <login-config>
+    <auth-method> BASIC </auth-method>
+    <realm-name> File Upload Facility </realm-name>
+  </login-config>
+
+  <!-- Define security roles -->
+  <security-role>
+    <description> Uploader </description>
+    <role-name> uploader </role-name>
+  </security-role>
+
+</web-app>
