@@ -298,10 +298,9 @@ public class FileUploadFacility implements EntryPoint {
         webpageWithoutDecoration.add(callbackResponse);
 
 
-        Image phamacologyIcon = new Image("images/pharmacology_module_50pxsq.gif");
-
         HorizontalPanel titlePanel = new HorizontalPanel();
-        titlePanel.add(phamacologyIcon);
+        //Image phamacologyIcon = new Image("images/pharmacology_module_50pxsq.gif");
+        //titlePanel.add(phamacologyIcon);
         titlePanel.add(new HTML(constants.pageTitle()));
 
         DecoratedStackPanel decoratedStackPanel = new DecoratedStackPanel();

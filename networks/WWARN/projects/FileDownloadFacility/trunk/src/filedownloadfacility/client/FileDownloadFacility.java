@@ -156,10 +156,11 @@ public class FileDownloadFacility implements EntryPoint {
         // Assemble the page
         page.add(requiredInputPanel);
 
-        Image phamacologyIcon = new Image("images/pharmacology_module_50pxsq.gif");
+
 
         HorizontalPanel titlePanel = new HorizontalPanel();
-        titlePanel.add(phamacologyIcon);
+        //Image phamacologyIcon = new Image("images/pharmacology_module_50pxsq.gif");
+        //titlePanel.add(phamacologyIcon);
         titlePanel.add(new HTML(constants.pageTitle()));
 
         DecoratedStackPanel decoratedStackPanel = new DecoratedStackPanel();
