@@ -1,0 +1,4 @@
+<upload xmlns=""
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<media xsi:type="xs:anyURI" filename="" mediatype="" size=""/>
+</upload>

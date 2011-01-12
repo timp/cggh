@@ -1,0 +1,95 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+	<title>MalariaGEN Calculated Data Merger</title>
+	<link rel="stylesheet" media="screen" href="css/common-base.css" type="text/css" charset="UTF-8"/>
+	<!--[if IE 6]>
+	<link rel="stylesheet" media="screen" href="css/common-override.css" type="text/css" charset="UTF-8"/>
+	<![endif]-->
+	<script type="text/javascript">
+
+		function getSourceFiles () {
+
+			//TODO: Get the list of files from a URL and populate the sourceFiles list.
+			
+		}
+	
+		function uploadSourceFile () {
+
+			// TODO: Make this add an entry to the sourceFiles list.
+			
+		}
+	
+		function mergeFiles () {
+			
+			var sourceFilesForm = document.getElementById("sourceFilesForm");
+			var numberOfSelectedSourceFiles = 0;
+
+			for (var sourceFilesListIndex = 0; sourceFilesListIndex < sourceFilesForm.sourceFilesList.length; sourceFilesListIndex++) {
+				if (sourceFilesForm.sourceFilesList[sourceFilesListIndex].selected) {
+					numberOfSelectedSourceFiles++;
+				}
+			}
+			
+			if (numberOfSelectedSourceFiles == 2) {
+
+				// TODO: Now go to mergeFilesPreview.html
+
+			} else {
+
+				alert("Exactly two files must be selected to perform a merge.");
+			}
+
+		}
+		
+		function deleteSourceFiles () {
+			
+			if (confirm("Are you sure you want to delete the selected source files?\nThis action cannot be undone.")){
+
+				//TODO: Remove the selected entries from the list.
+				
+			}
+			
+		}
+
+	</script>
+</head>
+<body onload="getSourceFiles()">
+	
+	<h1>MalariaGEN Calculated Data Merger</h1>
+	
+	<p><a href="home.html">Home</a> &gt; Source files
+	</p>
+		
+	<h2>Source files</h2>
+
+	
+	<p>To merge files, first upload the files you want to merge, then select them from the list and press the Merge button. 
+	</p>
+	
+	<p>Currently, only two files can be merged at one time, although a merged file can then be merged subsequently with another file, and so on.
+	</p>
+	
+	<form action="" id="sourceFilesForm">
+	
+		<p>
+			<label for="sourceFilesList">Source files:</label><br/>
+			<!-- TODO: Get a list of files using the API. -->
+			<select size="10" id="sourceFilesList" multiple="multiple">
+				<option>2010-10-10 - file 1.txt</option>
+				<option>2010-10-09 - file 2.dat</option>
+			</select>
+			<input type="button" value="Merge" onclick="mergeFiles()"/><input type="button" value="Delete" onclick="deleteSourceFiles()"/>
+		</p>
+		<p>
+			<label for="newSourceFile">Upload a new source file:</label><br/>
+			<input type="file" id="newSourceFile"/><input type="button" value="Upload" onclick="uploadSourceFile()"/>
+		</p>
+	
+	</form>
+	
+
+</body>
+</html>

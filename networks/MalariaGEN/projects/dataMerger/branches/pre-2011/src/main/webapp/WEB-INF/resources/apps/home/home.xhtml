@@ -1,0 +1,77 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+		xmlns:xi="http://www.w3.org/2001/XInclude"
+		xmlns:xforms="http://www.w3.org/2002/xforms" >
+    <head>
+        <title>Merger - Home</title>
+        
+        <xforms:model id="modelHomeHome">
+        
+        </xforms:model>
+        
+        
+        <xi:include href="../common/includes/currentUserModel.xml"/>
+        
+    </head>
+    <body>
+    
+    	<h1>MalariaGEN Calculated Data Merger</h1>
+
+   		<xi:include href="../common/includes/currentUserView.xml"/>
+    	
+		<p>To produce a merged and flattened data file from two original source data files:</p>
+		
+		<ol>
+			<li><a href="/uploader/">Upload</a> your original source files, i.e. the files containing the data that you want to merge.</li>
+			<li>Select two uploaded files that you want to merge.</li>
+			<li>Configure the settings for the merging process.</li>
+			<li>Press the Merge button to produce a new merged file.</li>
+			<li>If necessary, inspect the newly created merged file and reconfigure the merge settings.</li>
+			<li>Resolve all of the conflicts in the merged file.</li>
+			<li>Press the Flatten button.</li>
+			<li><a href="/flattener/files">Download</a> the merged and flattened data file.</li>
+		</ol>
+    	
+    	
+    	<p>There are three parts to this web application:</p>
+    	
+       	<ol>
+           	<li><a href="/uploader/">The Uploader</a> - Upload and manage your source files</li>
+           	<li><a href="/merger/">The Merger</a> - Merge your source files and manage the merged files</li>
+           	<li><a href="/flattener/">The Flattener</a> - Flatten merged files by resolving their conflicts, then create and manage the flattened products</li>
+		</ol>
+       
+       <h2>Glossary</h2>
+           
+       <dl>
+				
+			<dt>conflict (or data conflict)</dt>
+				<dd>An inconsistent value given in two different uploaded files.</dd>
+				     
+			<dt>data file</dt>
+				<dd>A file containing data. The current version of the Merger application only supports text files with backslash-escaped double-quoted comma-delimited values with line-feed end-of-line characters.</dd>	     
+				     
+       		<dt>flatten</dt>
+				<dd>The process of reducing two separate data files into one file by resolving all conflicts.</dd>
+				
+			<dt>flattened file</dt>
+				<dd>A file that has been produce by merging two different...</dd>
+
+			<dt>merge</dt>
+				<dd>The process of combining two different data files.</dd>
+
+			<dt>merged file</dt>
+				<dd>A combined representation of the data from two different source files.</dd>
+
+			<dt>Merger repository</dt>
+				<dd>A secure file repository containing all of the uploaded data files, along with the merged and flattened data files.</dd>       
+
+			<dt>Merger application</dt>
+				<dd>This web-based tool for producing flattened data files from uploaded data files.</dd>       
+       
+			<dt>uploaded file</dt>
+				<dd>A file that has been uploaded to the Merger repository containing the original data.</dd>
+
+       </dl> 
+           
+    </body>
+</html>

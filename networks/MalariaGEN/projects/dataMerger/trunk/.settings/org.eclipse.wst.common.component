@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project-modules id="moduleCoreId" project-version="1.5.0">
+  <wb-module deploy-name="dataMerger">
+    <property name="context-root" value="dataMerger"/>
+    <wb-resource deploy-path="/" source-path="src/main/webapp"/>
+    <wb-resource deploy-path="/" source-path="target/webapp"/>
+    <property name="java-output-path" value="/target/classes"/>
+  </wb-module>
+</project-modules>

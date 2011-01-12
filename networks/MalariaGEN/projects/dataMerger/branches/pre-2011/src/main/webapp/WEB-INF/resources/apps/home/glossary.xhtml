@@ -1,0 +1,68 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+		xmlns:xi="http://www.w3.org/2001/XInclude"
+		xmlns:xforms="http://www.w3.org/2002/xforms" >
+    <head>
+        <title>Data Merger - Home - Glossary</title>
+        
+        <xforms:model id="modelHomeHome">
+        
+        </xforms:model>
+        
+        
+        <xi:include href="../common/includes/currentUserModel.xml"/>
+        
+        <!-- TODO: Get the external file working. -->
+        <style type="text/css">
+			.currentUserView .labelledOutput {
+				display: block;
+			}
+		</style>
+        
+    </head>
+    <body>
+    
+    	<h1>Data Merger - Home - Glossary</h1>
+
+		<p><a href="/home/">Home</a> &gt; Glossary
+		</p>
+
+   		<xi:include href="../common/includes/currentUserView.xml"/>
+
+       <h2>Glossary</h2>
+           
+       <dl>
+				
+			<dt>conflict (or data conflict)</dt>
+				<dd>An inconsistent value given in two different uploaded files.</dd>
+				     
+			<dt>data file</dt>
+				<dd>A file containing data. The current version of the Merger application only supports the type of plain text files currently exported from Topheno, which contain comma-delimited backslash-escaped non-quoted values with line-feed end-of-line characters. Hypothetically, any representation of a data table could be uploaded and imported (v2?).</dd>	     
+				     
+       		<dt>flatten</dt>
+				<dd>The process of reducing two separate data files into one file by resolving all their conflicts. This is the final process in the merge, ultimately producing a merged file.</dd>
+				
+			<dt>join</dt>
+				<dd>The process of combining two different data files. The resulting joined representation contains all the data from both original files.</dd>
+
+			<dt>joined representation</dt>
+				<dd>A combined representation of the data from two different source files. Hypothetically, this could be downloaded or imported as a CSV with pipe-delimited values representing conflicts (v2?).</dd>
+
+			<dt>merged file</dt>
+				<dd>A file that has been produce by joining two different data files and resolving all their conflicts. The current version of the Merger application only exports the type of plain text files currently exported from Topheno, which contain comma-delimited backslash-escaped non-quoted values with line-feed end-of-line characters. Hypothetically, any representation of a data table could be exported (v2?).</dd>
+
+			<dt>Merger repository</dt>
+				<dd>A secure file repository containing all of the uploaded data files, along with the merged and flattened data files.</dd>       
+
+			<dt>Merger application</dt>
+				<dd>This web-based tool for producing flattened data files from uploaded data files.</dd>  
+				
+			<dt>provenance report</dt>
+				<dd>The list of steps taken to create the flattened file from the uploaded files, which can be downloaded as a human-readable text file for every flattened file. Hypothetically, this could be a machine-readable file to allow portable information between applications and users (v2?).</dd>      
+       
+			<dt>uploaded file</dt>
+				<dd>A file that has been uploaded to the Merger repository containing the original data.</dd>
+
+       </dl> 
+           
+    </body>
+</html>

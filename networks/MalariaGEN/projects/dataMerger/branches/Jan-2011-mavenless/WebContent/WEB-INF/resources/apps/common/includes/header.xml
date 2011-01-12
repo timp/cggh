@@ -1,0 +1,6 @@
+<div class="header" 
+	xmlns:xi="http://www.w3.org/2001/XInclude">
+	<xi:include href="title.xml"/>
+	<xi:include href="user.xml"/>
+	<xi:include href="apps-menu.xml"/>
+</div>

@@ -1,0 +1,29 @@
+<xforms:model
+    xmlns:xforms="http://www.w3.org/2002/xforms"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:xxforms="http://orbeon.org/oxf/xml/xforms"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    id="modelCurrentUser">
+    
+    <xforms:instance id="instanceCurrentUser">
+        <user xmlns="">
+            <remote-user/>
+            <roles/>
+        </user>
+    </xforms:instance>
+    
+    <xforms:action 
+        ev:event="xforms-model-construct-done">
+        <xforms:setvalue ref="instance('instanceCurrentUser')/remote-user" value="xxforms:get-remote-user()"/>
+    </xforms:action>
+    
+    <xforms:action 
+        ev:event="xforms-model-construct-done">
+        <xforms:insert 
+            nodeset="instance('instanceCurrentUser')/roles" 
+            at="1" 
+            position="before" 
+            origin="xxforms:get-request-attribute('user-roles-xml')"/>
+    </xforms:action>
+    
+</xforms:model>

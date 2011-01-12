@@ -1,0 +1,159 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:xforms="http://www.w3.org/2002/xforms"
+      xmlns:xxforms="http://orbeon.org/oxf/xml/xforms"
+      xmlns:ev="http://www.w3.org/2001/xml-events"
+      xmlns:xs="http://www.w3.org/2001/XMLSchema"
+      xmlns:fr="http://orbeon.org/oxf/xml/form-runner"
+      xmlns:xi="http://www.w3.org/2001/XInclude"
+      xmlns:atom="http://www.w3.org/2005/Atom"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xmlns:xhtml="http://www.w3.org/1999/xhtml">
+    <head>
+        <title>dataMerger - Uploads</title>
+        <xforms:model id="mod-uploads">
+
+        	<!-- View uploads -->
+            <xforms:instance id="ins-uploads">
+                <atom:feed/>
+            </xforms:instance>
+			<xforms:submission
+				id="get-uploads"
+				resource="/service/content/uploads"
+				method="get"
+				replace="instance"
+				instance="ins-uploads">
+
+                <xforms:message ev:event="xforms-submit-error" level="modal">An error occurred (<xforms:output value="event('error-type')"/>) while retrieving the uploads.</xforms:message>
+			</xforms:submission>
+			<xforms:send ev:event="xforms-model-construct-done" submission="get-uploads"/>
+			
+			<!-- Post upload -->
+        	<xforms:instance id="ins-upload">
+        		<upload xmlns="">
+					<media xsi:type="xs:anyURI" filename="" mediatype="" size=""/>
+				</upload>
+        	</xforms:instance>
+        	<xforms:instance id="ins-new-upload">
+        		<upload xmlns="">
+					<media xsi:type="xs:anyURI" filename="" mediatype="" size=""/>
+				</upload>
+        	</xforms:instance>
+			<xforms:submission
+        		id="post-upload"
+        		method="form-data-post"
+        		resource="/service/content/uploads"
+        		ref="instance('ins-upload')"
+        		replace="none">
+        		<xforms:action ev:event="xforms-submit-done">
+	        		<!-- Clear out upload -->
+	        		<xforms:insert nodeset="instance('ins-upload')" origin="instance('ins-new-upload')"/>
+	        		<!-- Refresh Uploads -->
+	        		<xforms:send submission="get-uploads"/>
+        		</xforms:action>
+        		<xforms:message ev:event="xforms-submit-error" level="modal">An error occurred (<xforms:output value="event('error-type')"/>) while uploading.</xforms:message>
+        	</xforms:submission>
+			
+			<!-- Select upload -->
+			<xforms:instance id="ins-selected-uploads">
+			    <selected-uploads xmlns=""/>
+			</xforms:instance>
+			
+			<!-- TODO: Attempt automated merge -->
+			<xforms:instance id="ins-new-merge" src="/apps/common/templates/new-merge.xml"/>
+			<xforms:submission
+        		id="do-merge"
+        		method="post"
+        		resource="/service/content/merges"
+        		ref="instance('ins-new-merge')"
+        		replace="instance"
+        		instance="ins-merge">
+        		<xforms:action ev:event="xforms-submit-done">
+	        		<xforms:message level="modal">Created merge.</xforms:message>
+        		</xforms:action>
+        		<xforms:message ev:event="xforms-submit-error" level="modal">An error occurred (<xforms:output value="event('error-type')"/>) while creating the merge.</xforms:message>
+        	</xforms:submission>
+			
+        </xforms:model>
+    </head>
+    <body>
+    <div class="page">
+    	<xi:include href="../common/includes/header.xml"/>
+    	<h2 class="page-title">Uploads</h2>
+
+	
+		<xforms:group ref="instance('ins-uploads')[not(exists(atom:entry))]">
+    		<p>You have no uploaded files.</p>
+    	</xforms:group>
+    	
+    	<xforms:group ref="instance('ins-uploads')[exists(atom:entry)]">
+    		<div class="uploads-container">
+		    	<fr:datatable>
+		    		<thead>
+		    			<tr>
+		    				<th><!-- Column for selection checkboxes --></th>
+		    				<th fr:sortable="true" fr:resizeable="false">ID</th>
+		    				<th fr:sortable="true" fr:resizeable="true">Filename</th>
+		    				<th fr:sortable="true" fr:resizeable="true">Uploaded</th>
+		    				<th><!-- Column for download links --></th>
+		    			</tr>
+		    		</thead>
+		    		<tbody>
+		    			<xforms:repeat id="rep-uploads" nodeset="xxforms:sort(instance('ins-uploads')/atom:entry, atom:published, 'text', 'ascending')">
+		    			
+		    				<xxforms:variable name="upload" select="."/>
+		    				<tr>
+		    					<td>
+		    					
+						            <xforms:select appearance="full" ref="instance('ins-selected-uploads')">
+						                <xforms:item>
+						                    <xforms:label/>
+						                    <xforms:value value="$upload/atom:link[@rel='self']/@href"/>
+						                </xforms:item>
+						            </xforms:select>		    					
+		    					
+		    					</td>
+		    					<td>
+		    						<!-- TODO: Generate and store the new id for uploads  -->
+		    						<!-- <xforms:output value="upload:id"/> -->
+		    					</td>
+		    					<td>
+		    						<a href="{atom:content/@src}"><xforms:output value="atom:title"/></a>
+		    					</td>
+		    					<td>
+		    						<xforms:output ref="atom:published" xxforms:format="format-dateTime(., '[D01] [MNn,*-3] [Y0001]')"/>
+		    					</td>
+		    					<td><a href="{atom:content/@src}">Download</a></td>
+		    				</tr>
+		    			</xforms:repeat>
+		    		</tbody>
+		    	</fr:datatable>
+	    	</div>
+			<xforms:trigger>
+				<xforms:label>Merge</xforms:label>
+				<xforms:send ev:event="DOMActivate" submission="do-merge"/>
+			</xforms:trigger>
+	    </xforms:group>
+	    
+
+		<hr class="divider-space"/>
+	    
+
+	    <h3 class="field-title">New upload:</h3>
+		<xforms:upload ref="instance('ins-upload')/media">
+			<xforms:filename ref="@filename"/>
+			<xforms:mediatype ref="@mediatype"/>
+			<xxforms:size ref="@size"/>
+		</xforms:upload>	    
+
+		<xforms:trigger>
+			<xforms:label>Upload</xforms:label>
+			<xforms:send ev:event="DOMActivate" submission="post-upload"/>
+		</xforms:trigger>
+
+
+	    
+	    
+	</div>
+	<fr:xforms-inspector xmlns:fr="http://orbeon.org/oxf/xml/form-runner"/>
+    </body>
+</html>
