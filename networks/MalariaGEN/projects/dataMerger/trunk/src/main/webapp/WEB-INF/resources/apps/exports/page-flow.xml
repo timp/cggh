@@ -1,0 +1,7 @@
+<config xmlns="http://www.orbeon.com/oxf/controller">
+
+    <page path-info="*" view="exports.xhtml"/>
+
+    <epilogue url="oxf:/config/epilogue.xpl"/>
+
+</config>

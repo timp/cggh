@@ -13,11 +13,18 @@ body {
 
 }
 
-a {
+/* elements in classes */
+.logout a, .uploads-container a {
 	text-decoration: none;	
 }
-a:hover {
+.logout a:hover, .uploads-container a:hover {
 	text-decoration: underline;	
+}
+
+/* ids */
+.yui-panel {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 10pt;
 }
 
 /* classes */

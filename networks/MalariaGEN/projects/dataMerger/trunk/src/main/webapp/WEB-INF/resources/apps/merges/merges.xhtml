@@ -1,0 +1,101 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:xforms="http://www.w3.org/2002/xforms"
+      xmlns:xxforms="http://orbeon.org/oxf/xml/xforms"
+      xmlns:ev="http://www.w3.org/2001/xml-events"
+      xmlns:fr="http://orbeon.org/oxf/xml/form-runner"
+      xmlns:xi="http://www.w3.org/2001/XInclude"
+      xmlns:atom="http://www.w3.org/2005/Atom">
+    <head>
+        <title>dataMerger - Merges</title>
+        <xforms:model id="mod-merges">
+
+        	<!-- View merges -->
+            <xforms:instance id="ins-merges">
+                <atom:feed/>
+            </xforms:instance>
+			<xforms:submission
+				id="get-merges"
+				resource="/service/content/merges"
+				method="get"
+				replace="instance"
+				instance="ins-merges">
+
+                <xforms:message ev:event="xforms-submit-error" level="modal">An error occurred (<xforms:output value="event('error-type')"/>) while retrieving the merges.</xforms:message>
+			</xforms:submission>
+			<xforms:send ev:event="xforms-model-construct-done" submission="get-merges"/>
+			
+        </xforms:model>
+    </head>
+    <body>
+    <div class="page">
+    	<xi:include href="../common/includes/header.xml"/>
+    	<h2 class="page-title">Merges</h2>
+
+	
+		<xforms:group ref="instance('ins-merges')[not(exists(atom:entry))]">
+    		<p>You have no merges.</p>
+    	</xforms:group>
+    	
+    	<xforms:group ref="instance('ins-merges')[exists(atom:entry)]">
+
+		    	<fr:datatable>
+		    		<thead>
+		    			<tr>
+		    				<th fr:sortable="true" fr:resizeable="false">ID</th>
+		    				<th fr:sortable="true" fr:resizeable="true">File 1</th>
+		    				<th fr:sortable="true" fr:resizeable="true">File 2</th>
+		    				<th fr:sortable="true" fr:resizeable="true">Created</th>
+		    				<th fr:sortable="true" fr:resizeable="true">Updated</th>
+		    				<th><!-- Column for edit join links --></th>
+		    				<th><!-- Column for edit resolutions links / duplicate key counts --></th>
+		    				<th><!-- Column for export buttons / conflict counts --></th>
+		    			</tr>
+		    		</thead>
+		    		<tbody>
+		    			<xforms:repeat id="rep-merges" nodeset="xxforms:sort(instance('ins-uploads')/atom:entry, atom:published, 'text', 'ascending')">
+		    			
+		    				<tr>
+		    					<td>
+									[ID]
+		    					</td>
+		    					<td>
+		    						[&lt;Filename 1 (ID)&gt;]
+		    					</td>
+		    					<td>
+		    						[&lt;Filename 2 (ID)&gt;]
+		    					</td>
+		    					<td>
+		    						<xforms:output ref="atom:published" xxforms:format="format-dateTime(., '[D01] [MNn,*-3] [Y0001]')"/>
+		    					</td>
+		    					<td>
+		    						<xforms:output ref="atom:updated" xxforms:format="format-dateTime(., '[D01] [MNn,*-3] [Y0001]')"/>
+		    					</td>
+		    					<td>
+		    						[&lt;Edit Join&gt;]
+		    					</td>
+		    					<td>
+		    						[&lt;Edit Resolutions&gt; or # duplicate keys]
+		    					</td>
+		    					<td>
+									<xforms:trigger>
+										<xforms:label>Export</xforms:label>
+										<xforms:send ev:event="DOMActivate" submission="do-export"/>
+									</xforms:trigger>
+									
+									or
+									
+									[# conflicts]
+		    					</td>	
+		    				</tr>
+		    			</xforms:repeat>
+		    		</tbody>
+		    	</fr:datatable>
+
+	    </xforms:group>
+	    
+
+	    
+	    
+	</div>
+    </body>
+</html>

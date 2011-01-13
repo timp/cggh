@@ -12,6 +12,13 @@
         <title>dataMerger - Uploads</title>
         <xforms:model id="mod-uploads">
 
+        	<!-- Application state -->
+        	<xforms:instance id="ins-control">
+        		<control xmlns="">
+        			<ins-selected-upload-hrefs-is-valid>false</ins-selected-upload-hrefs-is-valid>
+        		</control>
+        	</xforms:instance>
+
         	<!-- View uploads -->
             <xforms:instance id="ins-uploads">
                 <atom:feed/>
@@ -33,11 +40,12 @@
 					<media xsi:type="xs:anyURI" filename="" mediatype="" size=""/>
 				</upload>
         	</xforms:instance>
-        	<xforms:instance id="ins-new-upload">
-        		<upload xmlns="">
+			<xforms:instance id="ins-new-upload">
+				<upload xmlns="" 
+					xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 					<media xsi:type="xs:anyURI" filename="" mediatype="" size=""/>
 				</upload>
-        	</xforms:instance>
+			</xforms:instance>
 			<xforms:submission
         		id="post-upload"
         		method="form-data-post"
@@ -54,12 +62,38 @@
         	</xforms:submission>
 			
 			<!-- Select upload -->
-			<xforms:instance id="ins-selected-uploads">
-			    <selected-uploads xmlns=""/>
+			<xforms:instance id="ins-selected-upload-hrefs">
+			    <selected-upload-hrefs xmlns=""/>
 			</xforms:instance>
+			<!-- TODO: Require 2 uploads to be selected. -->
+			<xforms:bind nodeset="instance('ins-selected-upload-hrefs')" required="true()"/>
+			<xforms:action ev:event="xxforms-invalid" ev:observer="ins-selected-upload-hrefs">
+				<xforms:setvalue ev:event="xforms-value-changed" ref="instance('ins-control')/ins-selected-upload-hrefs-is-valid">false</xforms:setvalue>
+			</xforms:action>
+			<xforms:action ev:event="xxforms-valid" ev:observer="ins-selected-upload-hrefs">
+				<xforms:setvalue ev:event="xforms-value-changed" ref="instance('ins-control')/ins-selected-upload-hrefs-is-valid">true</xforms:setvalue>
+			</xforms:action>
 			
 			<!-- TODO: Attempt automated merge -->
-			<xforms:instance id="ins-new-merge" src="/apps/common/templates/new-merge.xml"/>
+			<xforms:instance id="ins-new-merge">
+				<atom:entry xmlns:atom="http://www.w3.org/2005/Atom">
+					<atom:title type="text" />
+					<!-- [TODO: rel purl path] -->
+					<atom:link xmlns:atom="http://www.w3.org/2005/Atom"
+					rel="upload" 
+					type="application/atom+xml;type=entry" href="x"/>
+					<atom:link xmlns:atom="http://www.w3.org/2005/Atom"
+					rel="upload" 
+					type="application/atom+xml;type=entry" href="y"/>
+				</atom:entry>
+			</xforms:instance>
+			<xforms:instance id="ins-merge">
+			    <atom:entry/>
+			</xforms:instance>
+			<!-- TODO: Purl path for upload rel -->
+			<xforms:instance id="ins-new-upload-link">
+				<atom:link rel="upload" type="application/atom+xml;type=entry" href="http://localhost:8081/dataMerger/service/content/merges/2d9e3e73-16f5-465f-904e-389d53013e77"/>
+			</xforms:instance>
 			<xforms:submission
         		id="do-merge"
         		method="post"
@@ -68,9 +102,32 @@
         		replace="instance"
         		instance="ins-merge">
         		<xforms:action ev:event="xforms-submit-done">
-	        		<xforms:message level="modal">Created merge.</xforms:message>
+	        		<xforms:message level="modal">Created the merge.</xforms:message>
+				
+					<!-- Insert two new links into the merge doc -->
+					<xforms:insert nodeset="instance('ins-merge')" origin="instance('ins-new-upload-link')"/>
+					<xforms:insert nodeset="instance('ins-merge')" origin="instance('ins-new-upload-link')"/>
+				
+					<!-- Copy the selected upload hrefs into the merge entry links. -->
+					<!-- TODO: Purl path for upload rel -->
+					<xforms:setvalue ref="instance('ins-merge')/atom:link[@rel='upload'][1]/@href" value="tokenize(instance('ins-selected-upload-hrefs'),'\s')[1]" />
+					<xforms:setvalue ref="instance('ins-merge')/atom:link[@rel='upload'][2]/@href" value="tokenize(instance('ins-selected-upload-hrefs'),'\s')[2]" />
+					        		
+	        		<xforms:send submission="put-merge"/>
         		</xforms:action>
         		<xforms:message ev:event="xforms-submit-error" level="modal">An error occurred (<xforms:output value="event('error-type')"/>) while creating the merge.</xforms:message>
+        	</xforms:submission>
+			<xforms:submission
+        		id="put-merge"
+        		method="post"
+        		resource="{instance('ins-merge')/atom:link[@rel='edit']/@href}"
+        		ref="instance('ins-merge')"
+        		replace="instance"
+        		instance="ins-merge">
+        		<xforms:action ev:event="xforms-submit-done">
+	        		<xforms:message level="modal">Updated the merge.</xforms:message>
+        		</xforms:action>
+        		<xforms:message ev:event="xforms-submit-error" level="modal">An error occurred (<xforms:output value="event('error-type')"/>) while updating the merge.</xforms:message>
         	</xforms:submission>
 			
         </xforms:model>
@@ -104,7 +161,7 @@
 		    				<tr>
 		    					<td>
 		    					
-						            <xforms:select appearance="full" ref="instance('ins-selected-uploads')">
+						            <xforms:select appearance="full" ref="instance('ins-selected-upload-hrefs')">
 						                <xforms:item>
 						                    <xforms:label/>
 						                    <xforms:value value="$upload/atom:link[@rel='self']/@href"/>
@@ -128,9 +185,21 @@
 		    		</tbody>
 		    	</fr:datatable>
 	    	</div>
+	    	
 			<xforms:trigger>
 				<xforms:label>Merge</xforms:label>
-				<xforms:send ev:event="DOMActivate" submission="do-merge"/>
+				<xforms:action ev:event="DOMActivate" if="instance('ins-control')/ins-selected-upload-hrefs-is-valid = 'true'">
+				
+					<!-- Start a new merge.  -->
+					<xforms:insert nodeset="instance('ins-merge')" origin="instance('ins-new-merge')"/>
+
+					<xforms:send submission="do-merge"/>
+					
+				</xforms:action>
+				<xforms:action ev:event="DOMActivate" if="not(instance('ins-control')/ins-selected-upload-hrefs-is-valid = 'true')">
+					<xforms:message>Please select two files to merge.</xforms:message>
+				</xforms:action>
+				
 			</xforms:trigger>
 	    </xforms:group>
 	    

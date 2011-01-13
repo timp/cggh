@@ -68,6 +68,34 @@ declare variable $config-collections:collection-spec :=
                 atombeat:recursive="true">
                 <atom:title type="text">Merges</atom:title>
             </atom:feed>
-        </collection>          
+        </collection>
+
+        <collection path-info="/tables">
+            <atom:feed
+                atombeat:enable-versioning="false"
+                atombeat:exclude-entry-content="false"
+                atombeat:recursive="true">
+                <atom:title type="text">Tables</atom:title>
+            </atom:feed>
+        </collection> 
+
+        <collection path-info="/joins">
+            <atom:feed
+                atombeat:enable-versioning="false"
+                atombeat:exclude-entry-content="false"
+                atombeat:recursive="true">
+                <atom:title type="text">Joins</atom:title>
+            </atom:feed>
+        </collection>
+
+        <collection path-info="/exports">
+            <atom:feed
+                atombeat:enable-versioning="false"
+                atombeat:exclude-entry-content="false"
+                atombeat:recursive="true">
+                <atom:title type="text">Exports</atom:title>
+            </atom:feed>
+        </collection>
+
     </spec>
 ;
