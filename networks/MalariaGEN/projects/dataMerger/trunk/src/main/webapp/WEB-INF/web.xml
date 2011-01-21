@@ -7,7 +7,7 @@
 
   <servlet>
     <servlet-name>Coffee</servlet-name>
-    <servlet-class>com.example.web.CoffeeSelect</servlet-class>
+    <servlet-class>com.example.web.MVCControllerServlet</servlet-class>
   </servlet>
   <servlet-mapping>
     <servlet-name>Coffee</servlet-name>
@@ -18,13 +18,13 @@
   <servlet>
   	<description>
   	</description>
-  	<display-name>Uploads</display-name>
+  	<display-name>UploadsController</display-name>
   	<servlet-name>UploadsController</servlet-name>
-  	<servlet-class>org.cggh.tools.dataMerger.uploads</servlet-class>
+  	<servlet-class>org.cggh.tools.dataMerger.data.uploads.controller.UploadsController</servlet-class>
   </servlet>
   <servlet-mapping>
     <servlet-name>UploadsController</servlet-name>
-    <url-pattern>/data/uploads.obj</url-pattern>
+    <url-pattern>/data/uploads</url-pattern>
   </servlet-mapping>
   
 	

@@ -2,7 +2,7 @@
     pageEncoding="ISO-8859-1"%>
 <%@ page import="java.util.*" %>
 <jsp:useBean id="uploads" class="org.cggh.tools.dataMerger.data.uploads.controller.UploadsController" scope="page"/>
-<jsp:setProperty name="uploads" property="middleName" value="Jim" />    
+<%--<jsp:setProperty name="uploads" property="middleName" value="Jim" /> --%>    
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
@@ -16,23 +16,25 @@
 
 		<!-- using it as a bean -->
 
-		<p>middleName: <jsp:getProperty name="uploads" property="middleName"/></p>
+		<h2>Uploads table (v1)</h2> 
 		
+		<jsp:getProperty name="uploads" property="uploadsAsXHTMLTable"/>
 		
+		<h2>Uploads table (v2)</h2>
 <%
 
-  //If we were using it as a servlet...
+  //Alternatively
 
-  List middleNames = (List) request.getAttribute("middleNames");
+  List<String> uploadsAsArrayList = (List<String>) uploads.getUploadsAsArrayList();
 
-  if (middleNames != null) {
-	  Iterator it = middleNames.iterator();
+  if (uploadsAsArrayList != null) {
+	  Iterator<String> it = uploadsAsArrayList.iterator();
 	  while(it.hasNext()) {
-	    out.print("<br>middleName: " + it.next());
+	    out.print("<br>uploads: " + it.next());
 	  }
   } else {
 	  
-	  out.print("<br>middleNames is null");
+	  out.print("<br>uploadsAsArrayList is null");
 	  
   }
 %>		
