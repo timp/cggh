@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app id="WebApp_ID" version="2.4" xmlns="http://java.sun.com/xml/ns/j2ee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd">
+	<display-name>dataMerger8</display-name>
+	
+
+  <!-- Servlets -->
+
+  <servlet>
+    <servlet-name>Coffee</servlet-name>
+    <servlet-class>com.example.web.CoffeeSelect</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>Coffee</servlet-name>
+    <url-pattern>/SelectCoffee.do</url-pattern>
+  </servlet-mapping>
+  
+  
+  <servlet>
+  	<description>
+  	</description>
+  	<display-name>Uploads</display-name>
+  	<servlet-name>UploadsController</servlet-name>
+  	<servlet-class>org.cggh.tools.dataMerger.uploads</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>UploadsController</servlet-name>
+    <url-pattern>/data/uploads.obj</url-pattern>
+  </servlet-mapping>
+  
+	
+	<!-- Welcome files -->	
+	
+	<welcome-file-list>
+		<welcome-file>index.html</welcome-file>
+		<welcome-file>index.jsp</welcome-file>
+	</welcome-file-list>
+
+	
+  <!--  Security -->
+
+ <security-constraint>
+   <web-resource-collection>
+     <web-resource-name>
+       Protected Site
+     </web-resource-name>
+
+     <url-pattern>/*</url-pattern>
+
+     <http-method>DELETE</http-method>
+     <http-method>GET</http-method>
+     <http-method>POST</http-method>
+     <http-method>PUT</http-method>
+
+   </web-resource-collection>
+   <auth-constraint>
+     <role-name>non-specific</role-name>
+   </auth-constraint>
+   
+
+
+   
+   
+ </security-constraint>
+
+ <security-constraint>
+   <web-resource-collection>
+     <web-resource-name>
+       Home &amp; Shared
+     </web-resource-name>
+
+     <url-pattern>/pages/home/*</url-pattern>
+     <url-pattern>/pages/shared/*</url-pattern>
+
+               <http-method>GET</http-method>
+
+   </web-resource-collection>
+   <auth-constraint>
+     <role-name>user</role-name>
+   </auth-constraint>
+ </security-constraint>
+
+ <security-constraint>
+   <web-resource-collection>
+     <web-resource-name>
+       Uploads
+     </web-resource-name>
+
+     <url-pattern>/pages/uploads/*</url-pattern>
+               <http-method>GET</http-method>
+
+   </web-resource-collection>
+   <auth-constraint>
+     <role-name>uploader</role-name>
+   </auth-constraint>
+   
+  <!-- TODO: Ensure SSL
+  <user-data-constraint>
+    <transport-guarantee>CONFIDENTIAL</transport-guarantee>
+  </user-data-constraint>
+   -->   
+   
+ </security-constraint>
+
+ <security-constraint>
+   <web-resource-collection>
+     <web-resource-name>
+       Exports
+     </web-resource-name>
+
+     <url-pattern>/pages/exports/*</url-pattern>
+               <http-method>GET</http-method>
+
+   </web-resource-collection>
+   <auth-constraint>
+     <role-name>exporter</role-name>
+   </auth-constraint>
+ </security-constraint>
+
+ <!-- BASIC authentication -->
+ <login-config>
+   <auth-method>BASIC</auth-method>
+   <realm-name>Basic Authentication</realm-name>
+ </login-config>
+
+ <!-- Define security roles -->
+ <security-role>
+   <description>Non-specific role</description>
+   <role-name>non-specific</role-name>
+ </security-role>
+ <security-role>
+   <description>User role</description>
+   <role-name>user</role-name>
+ </security-role>
+  <security-role>
+   <description>Uploader role</description>
+   <role-name>uploader</role-name>
+ </security-role>
+  <security-role>
+   <description>Merger role</description>
+   <role-name>merger</role-name>
+ </security-role>
+  <security-role>
+   <description>Exporter role</description>
+   <role-name>exporter</role-name>
+ </security-role>
+
+
+	<!-- application init params -->
+	<context-param>
+		<param-name>dbPath</param-name>
+		<param-value>jdbc:mysql://localhost:3306</param-value>
+	</context-param>
+	<context-param>
+		<param-name>dbUsername</param-name>
+		<param-value>root</param-value>
+	</context-param>
+	<context-param>
+		<param-name>dbPassword</param-name>
+		<param-value>root</param-value>
+	</context-param>
+
+</web-app>
+
