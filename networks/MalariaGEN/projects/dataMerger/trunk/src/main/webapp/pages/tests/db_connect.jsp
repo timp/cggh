@@ -28,7 +28,7 @@ if (request.getMethod().equals("POST")) {
 			
 	} 
 	catch (Exception e) {
-		System.out.println("Failed to connect to database server.");
+		System.out.println("Failed to connect to database server. Using path " + application.getInitParameter("dbPath") + ", user " + application.getInitParameter("dbUsername"));
 		out.println("<p>" + e + "</p>");
 		e.printStackTrace();
 	}
