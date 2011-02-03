@@ -26,6 +26,19 @@
     <servlet-name>UploadsController</servlet-name>
     <url-pattern>/data/uploads</url-pattern>
   </servlet-mapping>
+
+
+  <servlet>
+  	<description>
+  	</description>
+  	<display-name>DataController</display-name>
+  	<servlet-name>DataController</servlet-name>
+  	<servlet-class>org.cggh.tools.dataMerger.data.controller.DataController</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>DataController</servlet-name>
+    <url-pattern>/data</url-pattern>
+  </servlet-mapping>
   
 	
 	<!-- Welcome files -->	
@@ -55,11 +68,7 @@
    <auth-constraint>
      <role-name>non-specific</role-name>
    </auth-constraint>
-   
 
-
-   
-   
  </security-constraint>
 
  <security-constraint>
@@ -86,6 +95,7 @@
      </web-resource-name>
 
      <url-pattern>/pages/uploads/*</url-pattern>
+     <url-pattern>/data/uploads/*</url-pattern>
                <http-method>GET</http-method>
 
    </web-resource-collection>
@@ -148,7 +158,7 @@
 	<!-- application init params -->
 	<context-param>
 		<param-name>dbPath</param-name>
-		<param-value>jdbc:mysql://localhost:3306</param-value>
+		<param-value>jdbc:mysql://localhost:3306/dataMerger</param-value>
 	</context-param>
 	<context-param>
 		<param-name>dbUsername</param-name>

@@ -1,27 +1,48 @@
 package org.cggh.tools.dataMerger.data.uploads.model;
 
-import java.util.*;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
 
 public class UploadsModel {
 
-	public String getUploadsAsXHTMLTable () {
-		
-		
-		
-		return "<table><tr><th>name</th><th>id</th></tr><tr><td>file1</td><td>1</td></tr><tr><td>file2</td><td>2</td></tr></table>";
-		
+	
+	public UploadsModel() {
 	}
+
+
 	
-	
-   public List<String> getUploadsAsArrayList() {
+   public ResultSet getUploadsAsResultSet() {
 
-     List<String> uploads = new ArrayList<String>();
+	   ResultSet uploadsASResultSet = null;
+	   
+		try {
+			
+			Class.forName("com.mysql.jdbc.Driver").newInstance();
+			
+			//TODO: Centralize db connections in config file.
+			
+			Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/dataMerger", "root", "root");
+			 
+			if (!connection.isClosed()) {
+		
+				
+			
+				connection.close();
+				
+			} else {
+				
+				System.out.println("connection.isClosed");
+			}
+				
+		} 
+		catch (Exception e) {
+			System.out.println("Failed to connect to the database.");
+			e.printStackTrace();
+		}
 
 
-     uploads.add("upload1");
-     uploads.add("upload2");
-     uploads.add("upload3");
 
-     return(uploads);
+     return(uploadsASResultSet);
    }
 }

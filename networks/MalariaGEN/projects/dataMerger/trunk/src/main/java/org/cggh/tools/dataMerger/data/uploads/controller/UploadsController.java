@@ -4,12 +4,13 @@ import org.cggh.tools.dataMerger.data.uploads.model.*;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.List;
+import java.sql.ResultSet;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
 
 /**
  * Servlet implementation class uploads
@@ -17,8 +18,8 @@ import javax.servlet.http.HttpServletResponse;
 public class UploadsController extends HttpServlet implements java.io.Serializable {
 	private static final long serialVersionUID = 1L;
 
-	private List<String> uploadsAsArrayList;
-	private String uploadsAsXHTMLTable;
+	private ResultSet uploadsAsResultSet;
+	private String uploadsAsDecoratedHTMLTable;
 	
     /**
      * @see HttpServlet#HttpServlet()
@@ -30,34 +31,33 @@ public class UploadsController extends HttpServlet implements java.io.Serializab
         
 	    UploadsModel uploadsModel = new UploadsModel();
 
-	    setUploadsAsXHTMLTable(uploadsModel.getUploadsAsXHTMLTable());	     
 	    
-	    setUploadsAsArrayList(uploadsModel.getUploadsAsArrayList());	       
+	    // For bean response
+	    setUploadsAsResultSet(uploadsModel.getUploadsAsResultSet());
+	    
+	    // For servlet response
+	    
+	    //TODO: Send the UploadsAsResultSet to a representation function and then set the private string.
+
         
         
     }
 
-
-    public List<String> getUploadsAsArrayList() {
-        return this.uploadsAsArrayList;
-    }   
-    
-    public String getUploadsAsXHTMLTable() {
-        return this.uploadsAsXHTMLTable;
-    }
-    
- 
- 
-
-    
-
-    public void setUploadsAsArrayList(final List<String> uploadsAsArrayList) {
-        this.uploadsAsArrayList = uploadsAsArrayList;
+    public void setUploadsAsResultSet (final ResultSet uploadsAsResultSet) {
+        this.uploadsAsResultSet = uploadsAsResultSet;
     }  
+    public ResultSet getUploadsAsResultSet() {
+        return this.uploadsAsResultSet;
+    }     
     
-    public void setUploadsAsXHTMLTable(final String uploadsAsXHTMLTable) {
-        this.uploadsAsXHTMLTable = uploadsAsXHTMLTable;
+
+    public void setUploadsAsDecoratedHTMLTable (final String uploadsAsDecoratedHTMLTable) {
+        this.uploadsAsDecoratedHTMLTable = uploadsAsDecoratedHTMLTable;
+    }  
+    public String getUploadsAsDecoratedHTMLTable() {
+        return this.uploadsAsDecoratedHTMLTable;
     }    
+  
     
 
     
@@ -66,25 +66,11 @@ public class UploadsController extends HttpServlet implements java.io.Serializab
     
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-		
-	
-		
-	    // The results will be passed back (as an attribute) to the JSP view
-	    // The attribute will be a name/value pair, the value in this case will be a List object 
-	    //request.setAttribute("middleNames", middleNames);
-	    //RequestDispatcher view = request.getRequestDispatcher(request.getRequestURL().toString());
-	    //view.forward(request, response);
-	    
 
+		String uploadsAsDecoratedHTMLTable = getUploadsAsDecoratedHTMLTable();
+		
 	    PrintWriter out = response.getWriter();
-	    out.println("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0 " +
-	                "Transitional//EN\">\n" +
-	                "<html>\n" +
-	                "<head><title>Uploads</title></head>\n" +
-	                "<body>\n" +
-	                "<h1>Uploads as XHTML</h1>\n" +
-	                getUploadsAsXHTMLTable() +
-	                "</body></html>");	    
+	    out.println(uploadsAsDecoratedHTMLTable);	    
 	    
 	}
 

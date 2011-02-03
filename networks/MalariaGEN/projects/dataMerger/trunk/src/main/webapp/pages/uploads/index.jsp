@@ -1,8 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
 <%@ page import="java.util.*" %>
-<jsp:useBean id="uploads" class="org.cggh.tools.dataMerger.data.uploads.controller.UploadsController" scope="page"/>
-<%--<jsp:setProperty name="uploads" property="middleName" value="Jim" /> --%>    
+<%@ page import="java.sql.ResultSet" %>
+<jsp:useBean id="uploadsController" class="org.cggh.tools.dataMerger.data.uploads.controller.UploadsController" scope="page"/>  
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
@@ -14,27 +14,17 @@
 		<%@ include file="../shared/jsp/header.jsp" %>
 		<h1>Uploads</h1>
 
-		<!-- using it as a bean -->
-
-		<h2>Uploads table (v1)</h2> 
-		
-		<jsp:getProperty name="uploads" property="uploadsAsXHTMLTable"/>
-		
-		<h2>Uploads table (v2)</h2>
 <%
 
-  //Alternatively
+  ResultSet uploadsAsResultSet = uploadsController.getUploadsAsResultSet();
 
-  List<String> uploadsAsArrayList = (List<String>) uploads.getUploadsAsArrayList();
-
-  if (uploadsAsArrayList != null) {
-	  Iterator<String> it = uploadsAsArrayList.iterator();
-	  while(it.hasNext()) {
-	    out.print("<br>uploads: " + it.next());
-	  }
+  if (uploadsAsResultSet != null) {
+	  
+	    out.print("TODO: Send the uploadsAsResultSet to representation functions to get a decorated HTML table plus sort+page javascript, then print here.");
+	  
   } else {
 	  
-	  out.print("<br>uploadsAsArrayList is null");
+	  out.print("<p>Error: uploadsAsResultSet is null</p>");
 	  
   }
 %>		

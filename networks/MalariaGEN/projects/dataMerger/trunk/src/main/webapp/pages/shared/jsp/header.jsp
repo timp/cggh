@@ -11,6 +11,7 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
 	<li><a href="<%= basePath %>pages/merges/">Merges</a></li>
 	<li><a href="<%= basePath %>pages/exports/">Exports</a></li>
 	
-	
+	<!--
 	<li><a href="<%= basePath %>pages/admin/">Admin</a></li>
+	-->
 </ul>
