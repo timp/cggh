@@ -2,7 +2,7 @@
     pageEncoding="ISO-8859-1"%>
 <%@ page import="java.util.*" %>
 <%@ page import="java.sql.ResultSet" %>
-<jsp:useBean id="uploadsController" class="org.cggh.tools.dataMerger.data.uploads.controller.UploadsController" scope="page"/>  
+<jsp:useBean id="uploadsModel" class="org.cggh.tools.dataMerger.data.uploads.UploadsModel" scope="page"/>  
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
@@ -16,7 +16,7 @@
 
 <%
 
-  ResultSet uploadsAsResultSet = uploadsController.getUploadsAsResultSet();
+  ResultSet uploadsAsResultSet = uploadsModel.getUploadsAsResultSet();
 
   if (uploadsAsResultSet != null) {
 	  

@@ -1,6 +1,6 @@
-package org.cggh.tools.dataMerger.data.uploads.controller;
+package org.cggh.tools.dataMerger.data.uploads;
 
-import org.cggh.tools.dataMerger.data.uploads.model.*;
+import org.cggh.tools.dataMerger.data.uploads.UploadsModel;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -15,7 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 /**
  * Servlet implementation class uploads
  */
-public class UploadsController extends HttpServlet implements java.io.Serializable {
+public class UploadsController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
 	private ResultSet uploadsAsResultSet;
@@ -29,27 +29,14 @@ public class UploadsController extends HttpServlet implements java.io.Serializab
 
         
         
-	    UploadsModel uploadsModel = new UploadsModel();
+	    //UploadsModel uploadsModel = new UploadsModel();
 
-	    
-	    // For bean response
-	    setUploadsAsResultSet(uploadsModel.getUploadsAsResultSet());
-	    
-	    // For servlet response
-	    
 	    //TODO: Send the UploadsAsResultSet to a representation function and then set the private string.
 
         
         
     }
 
-    public void setUploadsAsResultSet (final ResultSet uploadsAsResultSet) {
-        this.uploadsAsResultSet = uploadsAsResultSet;
-    }  
-    public ResultSet getUploadsAsResultSet() {
-        return this.uploadsAsResultSet;
-    }     
-    
 
     public void setUploadsAsDecoratedHTMLTable (final String uploadsAsDecoratedHTMLTable) {
         this.uploadsAsDecoratedHTMLTable = uploadsAsDecoratedHTMLTable;

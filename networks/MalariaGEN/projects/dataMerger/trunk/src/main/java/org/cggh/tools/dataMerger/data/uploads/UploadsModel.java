@@ -1,20 +1,27 @@
-package org.cggh.tools.dataMerger.data.uploads.model;
+package org.cggh.tools.dataMerger.data.uploads;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 
-public class UploadsModel {
+public class UploadsModel implements java.io.Serializable {
 
 	
 	public UploadsModel() {
+		
+		//TODO: Get all the uploads?
+		
 	}
 
-
+	public UploadsModel(String user) {
+		
+		//TODO: Get the uploads for a user (need username and roles(rolenames) )
+		
+	}
 	
    public ResultSet getUploadsAsResultSet() {
 
-	   ResultSet uploadsASResultSet = null;
+	   ResultSet uploadsAsResultSet = null;
 	   
 		try {
 			
@@ -43,6 +50,6 @@ public class UploadsModel {
 
 
 
-     return(uploadsASResultSet);
+     return(uploadsAsResultSet);
    }
 }
