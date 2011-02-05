@@ -11,8 +11,8 @@
 </head>
 <body>
 	<p><a href="../admin/">Admin menu</a></p>
-	<h1>Install database v0.0.1</h1>
-	<button class="installButton">Install</button>
+	<h1>Uninstall database v0.0.1</h1>
+	<button class="uninstallButton">Uninstall</button>
 	<button onclick="location.reload(true);">Refresh</button>
 	<div class="response">
 	</div>
@@ -21,13 +21,13 @@
 	<div class="error">
 	</div>
 	<script type="text/javascript">
-	$('.installButton').click(
+	$('.uninstallButton').click(
 		function () {
 
 			
 			$.ajax({
 				  type: "POST",
-				  url: "/dataMerger/scripts/install-db-v0.0.1",
+				  url: "/dataMerger/scripts/uninstall-db-v0.0.1",
 				  //data: { tags: "cat", tagmode: "any", format: "json" },
 				   
 				  dataType: "json",

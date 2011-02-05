@@ -150,7 +150,7 @@
 	<!-- application init params -->
 	<context-param>
 		<param-name>dbPath</param-name>
-		<param-value>jdbc:mysql://localhost:3306/dataMerger</param-value>
+		<param-value>jdbc:mysql://localhost:3306/</param-value>
 	</context-param>
 	<context-param>
 		<param-name>dbUsername</param-name>

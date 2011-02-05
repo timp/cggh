@@ -4,6 +4,10 @@ import org.cggh.tools.dataMerger.scripts.ScriptsModel;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.sql.Statement;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -53,14 +57,116 @@ public class ScriptsController extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
 		PrintWriter out = response.getWriter();		
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
 		
 		if (request.getPathInfo().equals("/install-db-v0.0.1")) {
 			
-	         response.setContentType("application/json");
-	         response.setCharacterEncoding("UTF-8");
-	         out.println("hi");
+			try {
+				
+				Class.forName("com.mysql.jdbc.Driver").newInstance(); 
+				Connection connection = DriverManager.getConnection(getServletContext().getInitParameter("dbPath"), getServletContext().getInitParameter("dbUsername"), getServletContext().getInitParameter("dbPassword"));
+				 
+				if (!connection.isClosed()) {
+			
+					out.println("<p>Connected to database server.</p>");
+				
+					  try {
+				        Statement statement = connection.createStatement();
+				        statement.executeUpdate("CREATE DATABASE datamerger CHARACTER SET UTF8 COLLATE utf8_bin;");
+				      }
+				      catch (SQLException sqlException){
+				    	  out.println("<p>" + sqlException + "</p>");
+				    	  sqlException.printStackTrace();
+				      }
+				
+				      try{
+				          Statement statement = connection.createStatement();
+				          statement.executeUpdate("CREATE TABLE datamerger.user (id TINYINT(255) UNSIGNED NOT NULL AUTO_INCREMENT, username VARCHAR(255) NOT NULL, PRIMARY KEY (id), CONSTRAINT unique_username_constraint UNIQUE (username)) ENGINE=InnoDB;");
+
+				        }
+				        catch(SQLException sqlException){
+				        	out.println("<p>" + sqlException + "</p>");
+					    	sqlException.printStackTrace();
+				        }	
+				        
+					      try{
+					          Statement statement = connection.createStatement();
+					          statement.executeUpdate("CREATE TABLE datamerger.upload (" + 
+					        		  "id TINYINT(255) UNSIGNED NOT NULL AUTO_INCREMENT, " +
+					        		  "path VARCHAR(255) NOT NULL, " + 
+					        		  "created_by_user_id TINYINT(255) UNSIGNED NOT NULL, " + 
+					        		  "created_on_datetime DATETIME NOT NULL, " +
+					        		  "PRIMARY KEY (id), " +
+					        		  "CONSTRAINT unique_path_constraint UNIQUE (path), " +
+					        		  "INDEX created_by_user_id_index (created_by_user_id), " + 
+					        		  "FOREIGN KEY (created_by_user_id) REFERENCES user(id) " + 
+					        		  "ON DELETE CASCADE " + 
+					        		  "ON UPDATE CASCADE " + 
+					        		  ") ENGINE=InnoDB;");
+
+					        }
+					        catch(SQLException sqlException){
+					        	out.println("<p>" + sqlException + "</p>");
+						    	sqlException.printStackTrace();
+					        } 
+				        
+				        
+				        
+			
+					connection.close();
+					out.println("Done.");
+					
+				} else {
+		        	out.println("<p>connection.isClosed</p>");
+				}
+					
+			} 
+			catch (Exception exception) {
+				System.out.println("Failed to connect to database server. Using path " + getServletContext().getInitParameter("dbPath") + ", user " + getServletContext().getInitParameter("dbUsername"));
+				out.println("<p>" + exception + "</p>");
+				exception.printStackTrace();
+			}
 
 	         out.close();			
+
+		}
+		else if (request.getPathInfo().equals("/uninstall-db-v0.0.1")) {
+
+			try {
+				
+				Class.forName("com.mysql.jdbc.Driver").newInstance(); 
+				Connection connection = DriverManager.getConnection(getServletContext().getInitParameter("dbPath"), getServletContext().getInitParameter("dbUsername"), getServletContext().getInitParameter("dbPassword"));
+				 
+				if (!connection.isClosed()) {
+					
+					  try {
+				        Statement statement = connection.createStatement();
+				        statement.executeUpdate("DROP DATABASE dataMerger;");
+				      }
+				      catch (SQLException sqlException){
+				    	  out.println("<p>" + sqlException + "</p>");
+				    	  sqlException.printStackTrace();
+				      }	
+				      
+				      
+				      connection.close();
+				      out.println("Done.");
+					
+				} else {
+		        	out.println("<p>connection.isClosed</p>");
+				}
+			
+			
+			} 
+			catch (Exception exception) {
+				System.out.println("Failed to connect to database server. Using path " + getServletContext().getInitParameter("dbPath") + ", user " + getServletContext().getInitParameter("dbUsername"));
+				out.println("<p>" + exception + "</p>");
+				exception.printStackTrace();
+			}
+
+	         out.close();			
+			
 			
 		} else {
 			
