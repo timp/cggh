@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
 
@@ -60,29 +61,49 @@ public class ScriptsController extends HttpServlet {
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
 		
+        //TODO: Factor these out into separate classes.
+        
 		if (request.getPathInfo().equals("/install-db-v0.0.1")) {
 			
 			try {
 				
 				Class.forName("com.mysql.jdbc.Driver").newInstance(); 
-				Connection connection = DriverManager.getConnection(getServletContext().getInitParameter("dbPath"), getServletContext().getInitParameter("dbUsername"), getServletContext().getInitParameter("dbPassword"));
+				Connection connection = DriverManager.getConnection(getServletContext().getInitParameter("dbBasePath"), getServletContext().getInitParameter("dbUsername"), getServletContext().getInitParameter("dbPassword"));
 				 
 				if (!connection.isClosed()) {
 			
 					out.println("<p>Connected to database server.</p>");
 				
+						//NB: Can't pass tablenames directly into a prepared statement, have to use the string.
+
 					  try {
+						  
 				        Statement statement = connection.createStatement();
-				        statement.executeUpdate("CREATE DATABASE datamerger CHARACTER SET UTF8 COLLATE utf8_bin;");
+				        statement.executeUpdate("CREATE DATABASE `" + getServletContext().getInitParameter("dbName") +  "` CHARACTER SET UTF8 COLLATE utf8_bin;");
+				        statement.close();
+				       
 				      }
 				      catch (SQLException sqlException){
 				    	  out.println("<p>" + sqlException + "</p>");
 				    	  sqlException.printStackTrace();
 				      }
+				      
+					  try {
+						  
+					        Statement statement = connection.createStatement();
+					        statement.executeUpdate("USE `" + getServletContext().getInitParameter("dbName") +  "`;");
+					        statement.close();
+					       
+					      }
+					      catch (SQLException sqlException){
+					    	  out.println("<p>" + sqlException + "</p>");
+					    	  sqlException.printStackTrace();
+					      }				      
 				
 				      try{
 				          Statement statement = connection.createStatement();
-				          statement.executeUpdate("CREATE TABLE datamerger.user (id TINYINT(255) UNSIGNED NOT NULL AUTO_INCREMENT, username VARCHAR(255) NOT NULL, PRIMARY KEY (id), CONSTRAINT unique_username_constraint UNIQUE (username)) ENGINE=InnoDB;");
+				          statement.executeUpdate("CREATE TABLE user (id TINYINT(255) UNSIGNED NOT NULL AUTO_INCREMENT, username VARCHAR(255) NOT NULL, PRIMARY KEY (id), CONSTRAINT unique_username_constraint UNIQUE (username)) ENGINE=InnoDB;");
+				          statement.close();
 
 				        }
 				        catch(SQLException sqlException){
@@ -92,7 +113,7 @@ public class ScriptsController extends HttpServlet {
 				        
 					      try{
 					          Statement statement = connection.createStatement();
-					          statement.executeUpdate("CREATE TABLE datamerger.upload (" + 
+					          statement.executeUpdate("CREATE TABLE upload (" + 
 					        		  "id TINYINT(255) UNSIGNED NOT NULL AUTO_INCREMENT, " +
 					        		  "path VARCHAR(255) NOT NULL, " + 
 					        		  "created_by_user_id TINYINT(255) UNSIGNED NOT NULL, " + 
@@ -104,6 +125,7 @@ public class ScriptsController extends HttpServlet {
 					        		  "ON DELETE CASCADE " + 
 					        		  "ON UPDATE CASCADE " + 
 					        		  ") ENGINE=InnoDB;");
+					          statement.close();
 
 					        }
 					        catch(SQLException sqlException){
@@ -111,7 +133,20 @@ public class ScriptsController extends HttpServlet {
 						    	sqlException.printStackTrace();
 					        } 
 				        
-				        
+
+					        // Insert the current user into the user table
+					        
+						      try{
+						          PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO user (username) VALUES (?);");
+						          preparedStatement.setString(1, request.getRemoteUser());
+						          preparedStatement.executeUpdate();
+						          preparedStatement.close();
+
+						        }
+						        catch(SQLException sqlException){
+						        	out.println("<p>" + sqlException + "</p>");
+							    	sqlException.printStackTrace();
+						        } 					        
 				        
 			
 					connection.close();
@@ -123,7 +158,7 @@ public class ScriptsController extends HttpServlet {
 					
 			} 
 			catch (Exception exception) {
-				System.out.println("Failed to connect to database server. Using path " + getServletContext().getInitParameter("dbPath") + ", user " + getServletContext().getInitParameter("dbUsername"));
+				System.out.println("Failed to connect to database server.");
 				out.println("<p>" + exception + "</p>");
 				exception.printStackTrace();
 			}
@@ -136,13 +171,14 @@ public class ScriptsController extends HttpServlet {
 			try {
 				
 				Class.forName("com.mysql.jdbc.Driver").newInstance(); 
-				Connection connection = DriverManager.getConnection(getServletContext().getInitParameter("dbPath"), getServletContext().getInitParameter("dbUsername"), getServletContext().getInitParameter("dbPassword"));
+				Connection connection = DriverManager.getConnection(getServletContext().getInitParameter("dbBasePath"), getServletContext().getInitParameter("dbUsername"), getServletContext().getInitParameter("dbPassword"));
 				 
 				if (!connection.isClosed()) {
 					
 					  try {
 				        Statement statement = connection.createStatement();
-				        statement.executeUpdate("DROP DATABASE dataMerger;");
+				        
+				        statement.executeUpdate("DROP DATABASE `" + getServletContext().getInitParameter("dbName") +  "`;");
 				      }
 				      catch (SQLException sqlException){
 				    	  out.println("<p>" + sqlException + "</p>");
@@ -160,7 +196,7 @@ public class ScriptsController extends HttpServlet {
 			
 			} 
 			catch (Exception exception) {
-				System.out.println("Failed to connect to database server. Using path " + getServletContext().getInitParameter("dbPath") + ", user " + getServletContext().getInitParameter("dbUsername"));
+				System.out.println("Failed to connect to database server.");
 				out.println("<p>" + exception + "</p>");
 				exception.printStackTrace();
 			}

@@ -11,6 +11,8 @@
 	<ul>
 		<li><a href="install-db-v0.0.1.jsp">Install database v0.0.1</a>
 		</li>
+		<li><a href="uninstall-db-v0.0.1.jsp">Uninstall database v0.0.1</a>
+		</li>
 	</ul>
 </body>
 </html>

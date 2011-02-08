@@ -5,7 +5,7 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>Install database v0.0.1</title>
+<title>Uninstall database v0.0.1</title>
 <!-- <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.5/jquery.min.js"></script> -->
 	<script type="text/javascript" src="../shared/js/jquery.min.js"></script>
 </head>

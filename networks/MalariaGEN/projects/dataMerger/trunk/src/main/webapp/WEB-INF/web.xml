@@ -149,8 +149,12 @@
 
 	<!-- application init params -->
 	<context-param>
-		<param-name>dbPath</param-name>
+		<param-name>dbBasePath</param-name>
 		<param-value>jdbc:mysql://localhost:3306/</param-value>
+	</context-param>	
+	<context-param>
+		<param-name>dbName</param-name>
+		<param-value>datamerger</param-value>
 	</context-param>
 	<context-param>
 		<param-name>dbUsername</param-name>
@@ -160,6 +164,7 @@
 		<param-name>dbPassword</param-name>
 		<param-value>root</param-value>
 	</context-param>
+	
 
 </web-app>
 
