@@ -1,14 +1,17 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1" pageEncoding="ISO-8859-1"%>
 <jsp:useBean id="usersModel" class="org.cggh.tools.dataMerger.data.users.UsersModel" scope="session"/>
 <%
-//TODO: Move this to a controller.
+
 usersModel.setHttpServletRequest(request);
 
-/*
- if (!usersModel.getCurrentUserUsername().isEmpty() && !usersModel.isCurrentUserRegistered()) {
-	 usersModel.createUser(usersModel.getCurrentUserUsername());
- }
-*/
+if (!usersModel.isUsernameCreated(request.getRemoteUser())) {
+	
+	usersModel.createUser(request.getRemoteUser());
+
+}
+
+usersModel.getCurrentUser().setUsername(request.getRemoteUser());
+
 %>
 <%
 String contextPath = request.getContextPath();
@@ -26,7 +29,7 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
 	<li><a href="<%= basePath %>pages/admin/">Admin</a></li>
 	-->
 </ul>
-<%-- 
-<span>Username: <%=usersModel.getCurrentUserUsername() %></span>
-<span>Registered: <%=usersModel.isCurrentUserRegistered() %></span>
---%>
+
+<div>RemoteUser: <%=request.getRemoteUser() %></div>
+<div>isUsernameCreated: <%=usersModel.isUsernameCreated(request.getRemoteUser()).toString() %></div>
+<div>Username: <%=usersModel.getCurrentUser().getUsername() %></div>

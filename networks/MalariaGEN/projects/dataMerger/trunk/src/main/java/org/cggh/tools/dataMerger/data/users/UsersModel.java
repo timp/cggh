@@ -1,9 +1,9 @@
 package org.cggh.tools.dataMerger.data.users;
 
-import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import javax.servlet.ServletContext;
@@ -42,6 +42,70 @@ public class UsersModel implements java.io.Serializable {
 		return this.currentUser;
 	}	
 	
+	public Boolean isUsernameCreated (final String username) {
+		
+		ServletContext servletContext = getHttpServletRequest().getSession().getServletContext();
+		
+		Boolean usernameCreated = null;
+		
+		try {
+			
+			Class.forName("com.mysql.jdbc.Driver").newInstance(); 
+			Connection connection = DriverManager.getConnection(servletContext.getInitParameter("dbBasePath") + servletContext.getInitParameter("dbName"), servletContext.getInitParameter("dbUsername"), servletContext.getInitParameter("dbPassword"));
+			 
+			if (!connection.isClosed()) {		
+		
+		      try{
+		          PreparedStatement preparedStatement = connection.prepareStatement("SELECT username FROM user WHERE username = ?;");
+		          preparedStatement.setString(1, username);
+		          preparedStatement.executeQuery();
+		          
+		          ResultSet resultSet = preparedStatement.getResultSet();
+		          
+		          if (resultSet.next()) {
+		        	  
+		        	  if (resultSet.getString("username").equals(username)) {
+		        		  
+		        		  usernameCreated = true;
+		        		  
+		        	  } else {
+		        		  
+		        		  // Sanity check. Username found by query is not the same username.
+		        		  System.out.println("Unexpected: username parameter != username from query ");
+		        		  
+		        	  }
+		        	  
+		        	  
+		      	  } else {
+		      		  
+		      		  // Username not found by query
+		      		  usernameCreated = false;
+		      	  }
+		          
+		          resultSet.close();
+		          
+		          preparedStatement.close();
+	
+		        }
+		        catch(SQLException sqlException){
+		        	System.out.println(sqlException);
+			    	sqlException.printStackTrace();
+		        } 
+
+		        connection.close();	        
+
+			} else {
+				System.out.println("Unexpected: connection.isClosed");
+			}
+				
+		} 
+		catch (Exception exception) {
+			exception.printStackTrace();
+		}
+		
+		return usernameCreated;
+		
+	}
 	
 	
 	
@@ -71,13 +135,11 @@ public class UsersModel implements java.io.Serializable {
 		        connection.close();	        
 
 			} else {
-				System.out.println("connection.isClosed");
+				System.out.println("Unexpected: connection.isClosed");
 			}
 				
 		} 
 		catch (Exception exception) {
-			System.out.println("Failed to connect to database server.");
-			System.out.println(exception);
 			exception.printStackTrace();
 		}
 			

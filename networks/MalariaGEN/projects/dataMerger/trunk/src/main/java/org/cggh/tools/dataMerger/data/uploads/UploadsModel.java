@@ -8,9 +8,14 @@ import java.sql.SQLException;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
+import javax.sql.rowset.CachedRowSet;
 
 public class UploadsModel implements java.io.Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 4112178863119955390L;
 	private HttpServletRequest httpServletRequest;
 	
 	public UploadsModel() {
@@ -34,11 +39,13 @@ public class UploadsModel implements java.io.Serializable {
     }    
     	
 	
-   public ResultSet getUploadsAsResultSet() {
+   public CachedRowSet getUploadsAsCachedRowSet() {
 
-	   ServletContext servletContext = getHttpServletRequest().getSession().getServletContext();
+	   ServletContext servletContext = this.getHttpServletRequest().getSession().getServletContext();
 	   
-	   ResultSet uploadsAsResultSet = null;
+	   String CACHED_ROW_SET_IMPL_CLASS = "com.sun.rowset.CachedRowSetImpl";
+	   
+	   CachedRowSet uploadsAsCachedRowSet = null;
 	   
 		try {
 			
@@ -53,7 +60,7 @@ public class UploadsModel implements java.io.Serializable {
 				
 			      try{
 			          PreparedStatement preparedStatement = connection.prepareStatement("SELECT id FROM user WHERE username = ?;");
-			          preparedStatement.setString(1, getHttpServletRequest().getRemoteUser());
+			          preparedStatement.setString(1, this.getHttpServletRequest().getRemoteUser());
 			          preparedStatement.executeQuery();
 			          ResultSet resultSet = preparedStatement.getResultSet();
 
@@ -77,7 +84,9 @@ public class UploadsModel implements java.io.Serializable {
 			          PreparedStatement preparedStatement = connection.prepareStatement("SELECT id, path, created_by_user_id, created_on_datetime FROM upload WHERE created_by_user_id = ?;");
 			          preparedStatement.setInt(1, user_id);
 			          preparedStatement.executeQuery();
-			          uploadsAsResultSet = preparedStatement.getResultSet();
+			          Class<?> cachedRowSetImplClass = Class.forName(CACHED_ROW_SET_IMPL_CLASS);
+			          uploadsAsCachedRowSet = (CachedRowSet) cachedRowSetImplClass.newInstance();
+			          uploadsAsCachedRowSet.populate(preparedStatement.getResultSet());
 			          preparedStatement.close();
 
 			        }
@@ -101,6 +110,6 @@ public class UploadsModel implements java.io.Serializable {
 
 
 
-     return(uploadsAsResultSet);
+     return(uploadsAsCachedRowSet);
    }
 }

@@ -1,7 +1,5 @@
 package org.cggh.tools.dataMerger.scripts;
 
-import org.cggh.tools.dataMerger.scripts.ScriptsModel;
-
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Connection;
@@ -38,15 +36,6 @@ public class ScriptsController extends HttpServlet {
         
     }
 
-    public void createDatabase () {
-
-    }     
-    
-    
-    
-    
-    //In case this needs to be a servlet
-    
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
 	    
@@ -61,9 +50,19 @@ public class ScriptsController extends HttpServlet {
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
 		
-        //TODO: Factor these out into separate classes.
+        //TODO: Factor these out into separate classes. Use interfaces?
         
 		if (request.getPathInfo().equals("/install-db-v0.0.1")) {
+			
+			//InstallDb_0_0_1 installDb_0_0_1 = new InstallDb_0_0_1();
+			//installDb_0_0_1.run();
+			
+			//ScriptController scriptController = new ScriptController("install-db-v0.0.1");
+			//scriptController.run();
+			
+			//dataMerger.scripts.getScript("install-db-v0.0.1").run();
+			
+			//dataMerger.scripts.runScript("install-db-v0.0.1");
 			
 			try {
 				

@@ -14,13 +14,6 @@ public class UserModel implements java.io.Serializable {
 	public UserModel() {
 
 	}
-	
-	public UserModel(String username) {
-		
-		//TODO: This needs to be set by a controller.
-		this.setRegistered(false);
-		
-	}	
 
 	public void setUsername (final String username) {
 		

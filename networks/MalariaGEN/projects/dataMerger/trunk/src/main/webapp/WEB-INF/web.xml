@@ -17,6 +17,8 @@
     <url-pattern>/scripts/*</url-pattern>
   </servlet-mapping>
   
+  <!-- TODO: Refactor to use DataController, which will then delegate to UploadsController based on URL. -->
+  <!-- TODO: Make service discovery links at /data/ -->
   <servlet>
   	<description>
   	</description>
@@ -29,7 +31,17 @@
     <url-pattern>/data/uploads/*</url-pattern>
   </servlet-mapping>
 
-
+  <servlet>
+  	<description>
+  	</description>
+  	<display-name>FilesController</display-name>
+  	<servlet-name>FilesController</servlet-name>
+  	<servlet-class>org.cggh.tools.dataMerger.files.FilesController</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>FilesController</servlet-name>
+    <url-pattern>/files/*</url-pattern>
+  </servlet-mapping>
 
   
 	
@@ -88,7 +100,32 @@
 
      <url-pattern>/pages/uploads/*</url-pattern>
      <url-pattern>/data/uploads/*</url-pattern>
+     <url-pattern>/files/upload/*</url-pattern>
                <http-method>GET</http-method>
+               <http-method>POST</http-method>
+
+   </web-resource-collection>
+   <auth-constraint>
+     <role-name>uploader</role-name>
+   </auth-constraint>
+   
+  <!-- TODO: Ensure SSL
+  <user-data-constraint>
+    <transport-guarantee>CONFIDENTIAL</transport-guarantee>
+  </user-data-constraint>
+   -->   
+ </security-constraint>
+ 
+  <security-constraint>
+   <web-resource-collection>
+     <web-resource-name>
+       Files
+     </web-resource-name>
+
+     <url-pattern>/files/*</url-pattern>
+     			<http-method>GET</http-method>
+               <http-method>POST</http-method>
+               
 
    </web-resource-collection>
    <auth-constraint>
