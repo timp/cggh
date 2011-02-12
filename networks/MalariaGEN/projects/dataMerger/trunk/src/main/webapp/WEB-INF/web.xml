@@ -81,6 +81,8 @@
        Home &amp; Shared
      </web-resource-name>
 
+	 <url-pattern>/index.jsp</url-pattern>
+	 <url-pattern>/pages/index.jsp</url-pattern>
      <url-pattern>/pages/home/*</url-pattern>
      <url-pattern>/pages/shared/*</url-pattern>
 
@@ -185,6 +187,7 @@
 
 
 	<!-- application init params -->
+	<!-- TODO: change from db to database -->
 	<context-param>
 		<param-name>dbBasePath</param-name>
 		<param-value>jdbc:mysql://localhost:3306/</param-value>
@@ -202,6 +205,10 @@
 		<param-value>root</param-value>
 	</context-param>
 	
+	<context-param>
+		<param-name>fileRepositoryBasePath</param-name>
+		<param-value>C:\Lee\Work\dataMerger\files\</param-value>
+	</context-param>
 
 </web-app>
 

@@ -4,20 +4,14 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>dataMerger</title>
+<title>dataMerger - Pages</title>
 </head>
 <body>
+	<h1>Pages</h1>
 	<!-- TODO: Adaptive based on permissions (or anonymous) -->
+	<!-- TODO: Redirect to welcome page? -->
 	<ul>
-		<li><a href="pages">Pages</a>
-		</li>
-		<li><a href="data">Data</a>
-		</li>
-		<li><a href="files">Files</a>
-		</li>
-		<li><a href="functions">Functions</a>
-		</li>
-		<li><a href="scripts">Scripts</a>
+		<li><a href="home">Home</a>
 		</li>
 	</ul>
 </body>

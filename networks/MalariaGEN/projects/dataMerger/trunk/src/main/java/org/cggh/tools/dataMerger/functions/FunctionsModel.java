@@ -22,6 +22,9 @@ public class FunctionsModel implements java.io.Serializable {
 	
 	public void setCachedRowSet (final CachedRowSet cachedRowSet) {
 		
+		//TODO:
+		System.out.println("setCachedRowSet size " + cachedRowSet.size());
+		
 		this.cachedRowSet = cachedRowSet;
 	}
 	public CachedRowSet getCachedRowSet () {
@@ -43,44 +46,48 @@ public class FunctionsModel implements java.io.Serializable {
 		
 		String xhtmlTable = null;
 		
+		//TODO:
+		System.out.println("transformCachedRowSetIntoXHTMLTable cachedRowSet size " + cachedRowSet.size());
 
 			try {
 				if (cachedRowSet.next()) {
 
 					xhtmlTable = "";
 					
-					xhtmlTable.concat("<table>");
+					xhtmlTable = xhtmlTable.concat("<table>");
 					
 					ResultSetMetaData resultSetMetaData = cachedRowSet.getMetaData(); 
 					 int columnCount = resultSetMetaData.getColumnCount();
 					 
-					 xhtmlTable.concat("<thead>");
-					 xhtmlTable.concat("<tr>");
+					 xhtmlTable = xhtmlTable.concat("<thead>");
+					 xhtmlTable = xhtmlTable.concat("<tr>");
 					 for (int i = 1; i <= columnCount; i++) {
-						 xhtmlTable.concat("<th>" + resultSetMetaData.getColumnLabel(i) + "</th>");
+						 xhtmlTable = xhtmlTable.concat("<th>" + resultSetMetaData.getColumnLabel(i) + "</th>");
 					   }
-					 xhtmlTable.concat("</tr>");
-					 xhtmlTable.concat("</thead>");
+					 xhtmlTable = xhtmlTable.concat("</tr>");
+					 xhtmlTable = xhtmlTable.concat("</thead>");
 					 
 
 
 					while (cachedRowSet.next()) {
 						 
-						 xhtmlTable.concat("<tr>");
+						xhtmlTable = xhtmlTable.concat("<tr>");
 
 						 for (int i = 1; i <= columnCount; i++) {
-						  xhtmlTable.concat("<td>" + cachedRowSet.getString(i) + "</td>");
+							 xhtmlTable = xhtmlTable.concat("<td>" + cachedRowSet.getString(i) + "</td>");
 						 }
 						 
 						 
-					  xhtmlTable.concat("</tr>");
+						 xhtmlTable = xhtmlTable.concat("</tr>");
 					  }
 
-					 xhtmlTable.concat("</tbody>");
+					xhtmlTable = xhtmlTable.concat("</tbody>");
 					 
-					 xhtmlTable.concat("</table>");
+					xhtmlTable = xhtmlTable.concat("</table>");
 					
-					
+					//TODO:
+					 //System.out.println("xhtmlTable: " + xhtmlTable);
+					 
 				} else {
 					
 					xhtmlTable = "There are no records.";

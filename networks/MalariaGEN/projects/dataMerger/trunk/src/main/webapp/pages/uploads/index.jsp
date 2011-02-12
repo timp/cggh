@@ -81,10 +81,10 @@ uploadsModel.setHttpServletRequest(request);
 	            
 	            // events         
 	            // you can return false to abort submit
-	            onSubmit: function(id, fileName){ alert("onSubmit"); },
-	            onProgress: function(id, fileName, loaded, total){ alert("onProgress. Loaded: " + loaded); },
-	            onComplete: function(id, fileName, responseJSON){ alert("onComplete. Response: " + responseJSON.error); },
-	            onCancel: function(id, fileName){ alert("onCancel"); },
+	            onSubmit: function(id, fileName){},
+	            onProgress: function(id, fileName, loaded, total){},
+	            onComplete: function(id, fileName, responseJSON){},
+	            onCancel: function(id, fileName){},
 	            
 	            messages: {
 	                // error messages, see qq.FileUploaderBasic for content            

@@ -114,11 +114,13 @@ public class ScriptsController extends HttpServlet {
 					          Statement statement = connection.createStatement();
 					          statement.executeUpdate("CREATE TABLE upload (" + 
 					        		  "id TINYINT(255) UNSIGNED NOT NULL AUTO_INCREMENT, " +
-					        		  "path VARCHAR(255) NOT NULL, " + 
+					        		  "original_filename VARCHAR(255) NOT NULL, " + 
+					        		  "repository_path VARCHAR(255) NULL, " + 
+					        		  "successful BOOLEAN NULL, " + 
 					        		  "created_by_user_id TINYINT(255) UNSIGNED NOT NULL, " + 
 					        		  "created_on_datetime DATETIME NOT NULL, " +
 					        		  "PRIMARY KEY (id), " +
-					        		  "CONSTRAINT unique_path_constraint UNIQUE (path), " +
+					        		  "CONSTRAINT unique_path_constraint UNIQUE (repository_path), " +
 					        		  "INDEX created_by_user_id_index (created_by_user_id), " + 
 					        		  "FOREIGN KEY (created_by_user_id) REFERENCES user(id) " + 
 					        		  "ON DELETE CASCADE " + 
@@ -161,8 +163,7 @@ public class ScriptsController extends HttpServlet {
 				out.println("<p>" + exception + "</p>");
 				exception.printStackTrace();
 			}
-
-	         out.close();			
+		
 
 		}
 		else if (request.getPathInfo().equals("/uninstall-db-v0.0.1")) {
@@ -200,8 +201,6 @@ public class ScriptsController extends HttpServlet {
 				exception.printStackTrace();
 			}
 
-	         out.close();			
-			
 			
 		} else {
 			
@@ -240,12 +239,10 @@ public class ScriptsController extends HttpServlet {
 	         response.setCharacterEncoding("UTF-8");
 	         out.println(json);
 
-	         out.close();			
-			
 		}
 
 
-		
+		out.close();
 		
 	}
 

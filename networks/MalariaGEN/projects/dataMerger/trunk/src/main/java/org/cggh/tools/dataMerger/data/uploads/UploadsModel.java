@@ -81,7 +81,7 @@ public class UploadsModel implements java.io.Serializable {
 			        } 				
 				
 			      try{
-			          PreparedStatement preparedStatement = connection.prepareStatement("SELECT id, path, created_by_user_id, created_on_datetime FROM upload WHERE created_by_user_id = ?;");
+			          PreparedStatement preparedStatement = connection.prepareStatement("SELECT id, original_filename, created_by_user_id, created_on_datetime FROM upload WHERE created_by_user_id = ? AND successful = 1;");
 			          preparedStatement.setInt(1, user_id);
 			          preparedStatement.executeQuery();
 			          Class<?> cachedRowSetImplClass = Class.forName(CACHED_ROW_SET_IMPL_CLASS);
@@ -104,7 +104,7 @@ public class UploadsModel implements java.io.Serializable {
 				
 		} 
 		catch (Exception e) {
-			System.out.println("Exception from getUploadsAsResultSet.");
+			System.out.println("Exception from getUploadsAsCachedRowSet.");
 			e.printStackTrace();
 		}
 

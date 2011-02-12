@@ -4,9 +4,12 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>Insert title here</title>
+<title>Welcome</title>
 </head>
 <body>
-
+	<div class="page">
+		<%@ include file="../shared/jsp/header.jsp" %>
+		<h1>Welcome</h1>
+	</div>
 </body>
 </html>
