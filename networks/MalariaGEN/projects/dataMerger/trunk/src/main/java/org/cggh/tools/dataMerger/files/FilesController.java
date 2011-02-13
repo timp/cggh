@@ -89,7 +89,7 @@ public class FilesController extends HttpServlet {
 				// Get the user_id
 				
 				
-			      try{
+			      try {
 			          PreparedStatement preparedStatement = connection.prepareStatement("SELECT id FROM user WHERE username = ?;");
 			          preparedStatement.setString(1, request.getRemoteUser());
 			          preparedStatement.executeQuery();
@@ -111,7 +111,7 @@ public class FilesController extends HttpServlet {
 				    	sqlException.printStackTrace();
 			        } 					
 				
-		      try{
+		      try {
 		          PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO upload (original_filename, created_by_user_id, created_on_datetime) VALUES (?, ?, NOW());");
 		          preparedStatement.setString(1, filename);
 		          preparedStatement.setInt(2, user_id);

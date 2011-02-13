@@ -14,6 +14,7 @@ public class FunctionsModel implements java.io.Serializable {
 	private static final long serialVersionUID = 7087898366227739676L;
 	private CachedRowSet cachedRowSet = null;
 	private String xhtmlTable = null;
+	private String decoratedXHTMLTable = null;
 	
 	public FunctionsModel() {
 		
@@ -21,9 +22,6 @@ public class FunctionsModel implements java.io.Serializable {
 
 	
 	public void setCachedRowSet (final CachedRowSet cachedRowSet) {
-		
-		//TODO:
-		System.out.println("setCachedRowSet size " + cachedRowSet.size());
 		
 		this.cachedRowSet = cachedRowSet;
 	}
@@ -38,16 +36,21 @@ public class FunctionsModel implements java.io.Serializable {
 	public String getXHTMLTable () {
 		
 		return this.xhtmlTable;
-	}		
+	}	
+	public void setDecoratedXHTMLTable (final String decoratedXHTMLTable) {
+		
+		this.decoratedXHTMLTable = decoratedXHTMLTable;
+	}
+	public String getDecoratedXHTMLTable () {
+		
+		return this.decoratedXHTMLTable;
+	}	
 	
 	public void transformCachedRowSetIntoXHTMLTable () {
 		
 		CachedRowSet cachedRowSet = this.getCachedRowSet();
 		
 		String xhtmlTable = null;
-		
-		//TODO:
-		System.out.println("transformCachedRowSetIntoXHTMLTable cachedRowSet size " + cachedRowSet.size());
 
 			try {
 				if (cachedRowSet.next()) {
@@ -84,15 +87,11 @@ public class FunctionsModel implements java.io.Serializable {
 					xhtmlTable = xhtmlTable.concat("</tbody>");
 					 
 					xhtmlTable = xhtmlTable.concat("</table>");
-					
-					//TODO:
-					 //System.out.println("xhtmlTable: " + xhtmlTable);
-					 
+	
 				} else {
 					
 					xhtmlTable = "There are no records.";
 					
-					//System.out.println("There are no records");
 				}
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
@@ -103,5 +102,69 @@ public class FunctionsModel implements java.io.Serializable {
 		this.setXHTMLTable(xhtmlTable);
 	
 	}
+
+	public void transformUploadsCachedRowSetIntoDecoratedXHTMLTable () {
+		
+		CachedRowSet cachedRowSet = this.getCachedRowSet();
+		
+		String decoratedXHTMLTable = null;
+
+			try {
+				if (cachedRowSet.next()) {
+
+					decoratedXHTMLTable = "";
+					
+					decoratedXHTMLTable = decoratedXHTMLTable.concat("<table>");
+
+					 decoratedXHTMLTable = decoratedXHTMLTable.concat("<thead>");
+					 decoratedXHTMLTable = decoratedXHTMLTable.concat("<tr>");
+					 
+					 decoratedXHTMLTable = decoratedXHTMLTable.concat("<th><!-- Column for checkboxes --></th>");
+					 decoratedXHTMLTable = decoratedXHTMLTable.concat("<th>ID <a href=\"javascript:TODOsort();\">sort up/down</a></th>");
+					 decoratedXHTMLTable = decoratedXHTMLTable.concat("<th>Filename <a href=\"javascript:TODOsort();\">sort up/down</a></th>");
+					 decoratedXHTMLTable = decoratedXHTMLTable.concat("<th>Uploaded <a href=\"javascript:TODOsort();\">sort up/down</a></th>");
+					 decoratedXHTMLTable = decoratedXHTMLTable.concat("<th><!-- Column for download links --></th>");
+					 
+					 decoratedXHTMLTable = decoratedXHTMLTable.concat("</tr>");
+					 decoratedXHTMLTable = decoratedXHTMLTable.concat("</thead>");
+					 
+
+
+					while (cachedRowSet.next()) {
+						 
+						decoratedXHTMLTable = decoratedXHTMLTable.concat("<tr>");
+
+						 decoratedXHTMLTable = decoratedXHTMLTable.concat("<td><input type=\"checkbox\" TODOname=\"\" /></td>");
+						 decoratedXHTMLTable = decoratedXHTMLTable.concat("<td>" + cachedRowSet.getString("id") + "</td>");
+						 decoratedXHTMLTable = decoratedXHTMLTable.concat("<td><a href=\"files/TODO-Download-URL\">" + cachedRowSet.getString("original_filename") + "</a></td>");
+						 //TODO: format datetime 02 Jan 2011
+						 decoratedXHTMLTable = decoratedXHTMLTable.concat("<td>" + cachedRowSet.getString("created_on_datetime") + "</td>");
+						 decoratedXHTMLTable = decoratedXHTMLTable.concat("<td><a href=\"files/TODO-Download-URL\">Download</a></td>");
+						 
+						 decoratedXHTMLTable = decoratedXHTMLTable.concat("</tr>");
+					  }
+
+					decoratedXHTMLTable = decoratedXHTMLTable.concat("</tbody>");
+					 
+					decoratedXHTMLTable = decoratedXHTMLTable.concat("</table>");
+					
+					decoratedXHTMLTable = decoratedXHTMLTable.concat("<div>TODO: paging</div>");
+					
+					decoratedXHTMLTable = decoratedXHTMLTable.concat("<script>/* Scripts for sorting and paging */</script>");
+	
+				} else {
+					
+					decoratedXHTMLTable = "There are no records.";
+					
+				}
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
+		
+		this.setDecoratedXHTMLTable(decoratedXHTMLTable);
+	
+	}	
 	
 }

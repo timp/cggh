@@ -17,34 +17,95 @@ uploadsModel.setHttpServletRequest(request);
 	<script type="text/javascript" src="../shared/js/jquery.min.js"></script>
 	<script type="text/javascript" src="../shared/js/fileuploader.js"></script>
 	
+	<script type="text/javascript">
+	
+		window.onload = init;
+		
+		function init () {
+			
+			var uploader = new qq.FileUploader({
+
+				// pass the dom node (ex. $(selector)[0] for jQuery users)
+		        element: document.getElementById('file-uploader'),
+		        
+		            // url of the server-side upload script, should be on the same domain
+		            action: '/dataMerger/files/',
+		            // additional data to send, name-value pairs
+		            params: {},
+		            
+		            // validation    
+		            // ex. ['jpg', 'jpeg', 'png', 'gif'] or []
+		            allowedExtensions: [],        
+		            // each file size limit in bytes
+		            // this option isn't supported in all browsers
+		            sizeLimit: 0, // max size   
+		            minSizeLimit: 0, // min size
+		            
+		            // set to true to output server response to console
+		            debug: true,
+		            
+		            // events         
+		            // you can return false to abort submit
+		            onSubmit: function(id, fileName){},
+		            onProgress: function(id, fileName, loaded, total){},
+		            onComplete: function(id, fileName, responseJSON){ getUploads(); },
+		            onCancel: function(id, fileName){},
+		            
+		            messages: {
+		                // error messages, see qq.FileUploaderBasic for content            
+		            },
+		            showMessage: function(message){ alert(message); }    
+		        
+		        
+		    }); 			
+			
+		}
+	
+		function getUploads () {
+			
+			$.ajax({
+					cache: false,
+					data: '',
+					dataType: 'html',
+					error: function (jqXHR, textStatus, errorThrown) { alert(errorThrown); },
+					statusCode: {404: function() { alert('page not found'); }},
+					success: function (data, textStatus, jqXHR) { alert('yay ' + textStatus); },
+					type: 'GET',
+					url: '/dataMerger/data/uploads'
+				});
+			
+		}
+	
+	</script>
+	
 </head>
 <body>
 	<div class="page">
 		<%@ include file="../shared/jsp/header.jsp" %>
-		<h1>Uploads</h1>
+		<h2>Uploads</h2>
 
+		<div id="uploads"></div>
 <%
-
-//RowSetDynaClass rsdc = new RowSetDynaClass(rs);
 
   CachedRowSet uploadsAsCachedRowSet = uploadsModel.getUploadsAsCachedRowSet();
 
   if (uploadsAsCachedRowSet != null) {
 
 	    functionsModel.setCachedRowSet(uploadsAsCachedRowSet);
-	    functionsModel.transformCachedRowSetIntoXHTMLTable();
-	    out.print(functionsModel.getXHTMLTable());
-	    
-	    
-	    //dataMerger.scripts.run("install-db-v0.0.1");
-	    //dataMerger.scripts.getScript(x).run();
+	    functionsModel.transformUploadsCachedRowSetIntoDecoratedXHTMLTable();
+	    out.print(functionsModel.getDecoratedXHTMLTable());
 	    
   } else {
 	  
-	  out.print("<p>Error: uploadsAsCachedRowSet is null</p>");
+	  out.print("<p>Error: getDecoratedXHTMLTable is null</p>");
 	  
   }
 %>		
+		</div>
+
+		<button>Merge [TODO]</button>
+
+		<h3>New upload:</h3>
 
 		<div id="file-uploader">
 		       
@@ -57,42 +118,6 @@ uploadsModel.setHttpServletRequest(request);
     	</div>
 
 	</div>	
-	<script type="text/javascript">
-		var uploader = new qq.FileUploader({
 
-			// pass the dom node (ex. $(selector)[0] for jQuery users)
-	        element: document.getElementById('file-uploader'),
-	        
-	            // url of the server-side upload script, should be on the same domain
-	            action: '/dataMerger/files/',
-	            // additional data to send, name-value pairs
-	            params: {},
-	            
-	            // validation    
-	            // ex. ['jpg', 'jpeg', 'png', 'gif'] or []
-	            allowedExtensions: [],        
-	            // each file size limit in bytes
-	            // this option isn't supported in all browsers
-	            sizeLimit: 0, // max size   
-	            minSizeLimit: 0, // min size
-	            
-	            // set to true to output server response to console
-	            debug: true,
-	            
-	            // events         
-	            // you can return false to abort submit
-	            onSubmit: function(id, fileName){},
-	            onProgress: function(id, fileName, loaded, total){},
-	            onComplete: function(id, fileName, responseJSON){},
-	            onCancel: function(id, fileName){},
-	            
-	            messages: {
-	                // error messages, see qq.FileUploaderBasic for content            
-	            },
-	            showMessage: function(message){ alert(message); }    
-	        
-	        
-	    }); 
-	</script>
 </body>
 </html>

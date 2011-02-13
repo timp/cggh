@@ -17,6 +17,9 @@ usersModel.getCurrentUser().setUsername(request.getRemoteUser());
 String contextPath = request.getContextPath();
 String basePath = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + contextPath + "/";
 %>
+<h1>MalariaGEN dataMerger</h1>
+<div><%=usersModel.getCurrentUser().getUsername() %></div>
+<div><a href="TODO:logout">logout</a></div>
 <ul>
 	<!-- TODO: Adaptive interface (based on ability to GET) -->
 	
@@ -30,6 +33,5 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
 	-->
 </ul>
 
-<div>RemoteUser: <%=request.getRemoteUser() %></div>
-<div>isUsernameCreated: <%=usersModel.isUsernameCreated(request.getRemoteUser()).toString() %></div>
-<div>Username: <%=usersModel.getCurrentUser().getUsername() %></div>
+
+
