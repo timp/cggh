@@ -66,6 +66,7 @@ public class UploadsModel implements java.io.Serializable {
 
 			          // There may be no user in the user table.
 			          if (resultSet.next()) {
+			        	  resultSet.first();
 			        	  user_id = resultSet.getInt("id");
 			          } else {
 			        	  System.out.println("Did not find user in user table. This user is not registered. Db query gives !resultSet.next()");
@@ -81,7 +82,7 @@ public class UploadsModel implements java.io.Serializable {
 			        } 				
 				
 			      try{
-			          PreparedStatement preparedStatement = connection.prepareStatement("SELECT id, original_filename, created_by_user_id, created_on_datetime FROM upload WHERE created_by_user_id = ? AND successful = 1;");
+			          PreparedStatement preparedStatement = connection.prepareStatement("SELECT id, original_filename, created_by_user_id, created_datetime FROM upload WHERE created_by_user_id = ? AND successful = 1;");
 			          preparedStatement.setInt(1, user_id);
 			          preparedStatement.executeQuery();
 			          Class<?> cachedRowSetImplClass = Class.forName(CACHED_ROW_SET_IMPL_CLASS);

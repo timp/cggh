@@ -64,6 +64,8 @@ public class UsersModel implements java.io.Serializable {
 		          
 		          if (resultSet.next()) {
 		        	  
+		        	  resultSet.first();
+		        	  
 		        	  if (resultSet.getString("username").equals(username)) {
 		        		  
 		        		  usernameCreated = true;

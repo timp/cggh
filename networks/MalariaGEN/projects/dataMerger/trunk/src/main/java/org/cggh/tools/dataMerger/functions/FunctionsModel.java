@@ -55,6 +55,7 @@ public class FunctionsModel implements java.io.Serializable {
 			try {
 				if (cachedRowSet.next()) {
 
+					
 					xhtmlTable = "";
 					
 					xhtmlTable = xhtmlTable.concat("<table>");
@@ -69,8 +70,9 @@ public class FunctionsModel implements java.io.Serializable {
 					   }
 					 xhtmlTable = xhtmlTable.concat("</tr>");
 					 xhtmlTable = xhtmlTable.concat("</thead>");
-					 
-
+					
+					//because the check using next() skips the first row.
+					cachedRowSet.beforeFirst();
 
 					while (cachedRowSet.next()) {
 						 
@@ -128,18 +130,19 @@ public class FunctionsModel implements java.io.Serializable {
 					 decoratedXHTMLTable = decoratedXHTMLTable.concat("</tr>");
 					 decoratedXHTMLTable = decoratedXHTMLTable.concat("</thead>");
 					 
-
+					//because next() skips the first row.
+					cachedRowSet.beforeFirst();
 
 					while (cachedRowSet.next()) {
 						 
 						decoratedXHTMLTable = decoratedXHTMLTable.concat("<tr>");
 
-						 decoratedXHTMLTable = decoratedXHTMLTable.concat("<td><input type=\"checkbox\" TODOname=\"\" /></td>");
+						 decoratedXHTMLTable = decoratedXHTMLTable.concat("<td><input type=\"checkbox\" name=\"upload\" value=\"" + cachedRowSet.getString("id") + "\" /></td>");
 						 decoratedXHTMLTable = decoratedXHTMLTable.concat("<td>" + cachedRowSet.getString("id") + "</td>");
-						 decoratedXHTMLTable = decoratedXHTMLTable.concat("<td><a href=\"files/TODO-Download-URL\">" + cachedRowSet.getString("original_filename") + "</a></td>");
+						 decoratedXHTMLTable = decoratedXHTMLTable.concat("<td><a href=\"/dataMerger/files/uploads?id=" + cachedRowSet.getString("id") + "\">" + cachedRowSet.getString("original_filename") + "</a></td>");
 						 //TODO: format datetime 02 Jan 2011
-						 decoratedXHTMLTable = decoratedXHTMLTable.concat("<td>" + cachedRowSet.getString("created_on_datetime") + "</td>");
-						 decoratedXHTMLTable = decoratedXHTMLTable.concat("<td><a href=\"files/TODO-Download-URL\">Download</a></td>");
+						 decoratedXHTMLTable = decoratedXHTMLTable.concat("<td>" + cachedRowSet.getString("created_datetime") + "</td>");
+						 decoratedXHTMLTable = decoratedXHTMLTable.concat("<td><a href=\"/dataMerger/files/uploads?id=" + cachedRowSet.getString("id") + "\">Download</a></td>");
 						 
 						 decoratedXHTMLTable = decoratedXHTMLTable.concat("</tr>");
 					  }

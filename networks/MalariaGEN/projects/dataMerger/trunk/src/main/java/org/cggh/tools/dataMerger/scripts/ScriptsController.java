@@ -115,12 +115,12 @@ public class ScriptsController extends HttpServlet {
 					          statement.executeUpdate("CREATE TABLE upload (" + 
 					        		  "id TINYINT(255) UNSIGNED NOT NULL AUTO_INCREMENT, " +
 					        		  "original_filename VARCHAR(255) NOT NULL, " + 
-					        		  "repository_path VARCHAR(255) NULL, " + 
+					        		  "repository_filepath VARCHAR(255) NULL, " + 
 					        		  "successful BOOLEAN NULL, " + 
 					        		  "created_by_user_id TINYINT(255) UNSIGNED NOT NULL, " + 
-					        		  "created_on_datetime DATETIME NOT NULL, " +
+					        		  "created_datetime DATETIME NOT NULL, " +
 					        		  "PRIMARY KEY (id), " +
-					        		  "CONSTRAINT unique_path_constraint UNIQUE (repository_path), " +
+					        		  "CONSTRAINT unique_path_constraint UNIQUE (repository_filepath), " +
 					        		  "INDEX created_by_user_id_index (created_by_user_id), " + 
 					        		  "FOREIGN KEY (created_by_user_id) REFERENCES user(id) " + 
 					        		  "ON DELETE CASCADE " + 

@@ -29,7 +29,7 @@ uploadsModel.setHttpServletRequest(request);
 		        element: document.getElementById('file-uploader'),
 		        
 		            // url of the server-side upload script, should be on the same domain
-		            action: '/dataMerger/files/',
+		            action: '/dataMerger/files/uploads',
 		            // additional data to send, name-value pairs
 		            params: {},
 		            
@@ -59,6 +59,12 @@ uploadsModel.setHttpServletRequest(request);
 		        
 		    }); 			
 			
+			
+			
+			$('.merge-button').click(function() {
+				  alert("yello");
+				});
+			
 		}
 	
 		function getUploads () {
@@ -69,7 +75,7 @@ uploadsModel.setHttpServletRequest(request);
 					dataType: 'html',
 					error: function (jqXHR, textStatus, errorThrown) { alert(errorThrown); },
 					statusCode: {404: function() { alert('page not found'); }},
-					success: function (data, textStatus, jqXHR) { alert('yay ' + textStatus); },
+					success: function (data, textStatus, jqXHR) { $('.uploads').html(data);; },
 					type: 'GET',
 					url: '/dataMerger/data/uploads'
 				});
@@ -84,7 +90,7 @@ uploadsModel.setHttpServletRequest(request);
 		<%@ include file="../shared/jsp/header.jsp" %>
 		<h2>Uploads</h2>
 
-		<div id="uploads"></div>
+		<div class="uploads">
 <%
 
   CachedRowSet uploadsAsCachedRowSet = uploadsModel.getUploadsAsCachedRowSet();
@@ -97,13 +103,13 @@ uploadsModel.setHttpServletRequest(request);
 	    
   } else {
 	  
-	  out.print("<p>Error: getDecoratedXHTMLTable is null</p>");
+	  out.print("<p>Error: uploadsAsCachedRowSet is null</p>");
 	  
   }
 %>		
 		</div>
 
-		<button>Merge [TODO]</button>
+		<button class="merge-button">Merge</button>
 
 		<h3>New upload:</h3>
 

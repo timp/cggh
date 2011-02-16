@@ -205,9 +205,10 @@
 		<param-value>root</param-value>
 	</context-param>
 	
+	<!-- TODO: Auto-generate this folder. It must otherwise already exist (be created manually). -->
 	<context-param>
-		<param-name>fileRepositoryBasePath</param-name>
-		<param-value>C:\Lee\Work\dataMerger\files\</param-value>
+		<param-name>uploadsFileRepositoryBasePath</param-name>
+		<param-value>C:\Lee\Work\dataMerger\files\uploads\</param-value>
 	</context-param>
 
 </web-app>
