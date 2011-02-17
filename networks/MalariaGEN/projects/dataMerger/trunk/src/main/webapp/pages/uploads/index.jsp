@@ -15,13 +15,17 @@ uploadsModel.setHttpServletRequest(request);
 	<link rel="stylesheet" type="text/css" href="../shared/css/fileuploader.css" />
 	
 	<script type="text/javascript" src="../shared/js/jquery.min.js"></script>
+	<script type="text/javascript" src="../shared/js/uploads.scripts.js"></script>
 	<script type="text/javascript" src="../shared/js/fileuploader.js"></script>
+	<script type="text/javascript" src="../shared/js/jquery.json.min.js"></script>
 	
 	<script type="text/javascript">
 	
 		window.onload = init;
 		
 		function init () {
+			
+			initUploadsScripts();
 			
 			var uploader = new qq.FileUploader({
 
@@ -58,29 +62,14 @@ uploadsModel.setHttpServletRequest(request);
 		        
 		        
 		    }); 			
+
+		
 			
 			
-			
-			$('.merge-button').click(function() {
-				  alert("yello");
-				});
 			
 		}
 	
-		function getUploads () {
-			
-			$.ajax({
-					cache: false,
-					data: '',
-					dataType: 'html',
-					error: function (jqXHR, textStatus, errorThrown) { alert(errorThrown); },
-					statusCode: {404: function() { alert('page not found'); }},
-					success: function (data, textStatus, jqXHR) { $('.uploads').html(data);; },
-					type: 'GET',
-					url: '/dataMerger/data/uploads'
-				});
-			
-		}
+
 	
 	</script>
 	
@@ -90,6 +79,13 @@ uploadsModel.setHttpServletRequest(request);
 		<%@ include file="../shared/jsp/header.jsp" %>
 		<h2>Uploads</h2>
 
+
+	<div class="status">
+	</div>	
+	<div class="error">
+	</div>
+
+		<form class="uploads-form">
 		<div class="uploads">
 <%
 
@@ -109,7 +105,8 @@ uploadsModel.setHttpServletRequest(request);
 %>		
 		</div>
 
-		<button class="merge-button">Merge</button>
+		</form>
+		
 
 		<h3>New upload:</h3>
 

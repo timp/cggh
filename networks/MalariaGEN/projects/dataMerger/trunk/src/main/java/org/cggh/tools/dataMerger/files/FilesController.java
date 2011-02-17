@@ -232,6 +232,8 @@ public class FilesController extends HttpServlet {
 					    	sqlException.printStackTrace();
 				        } 					
 					
+				        
+				        //TODO: Shouldn't this be in the UploadsModel? Or this should be a generic file table.
 			      try {
 			          PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO upload (original_filename, created_by_user_id, created_datetime) VALUES (?, ?, NOW());");
 			          preparedStatement.setString(1, URLDecoder.decode(filename, "UTF-8"));
@@ -323,7 +325,6 @@ public class FilesController extends HttpServlet {
 						        } 				        
 					        
 					connection.close();
-					System.out.println("Done.");
 					
 				} else {
 					System.out.println("connection.isClosed");

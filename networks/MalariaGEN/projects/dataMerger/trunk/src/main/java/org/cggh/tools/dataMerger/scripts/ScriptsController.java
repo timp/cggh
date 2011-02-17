@@ -1,10 +1,10 @@
 package org.cggh.tools.dataMerger.scripts;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
 
@@ -134,20 +134,37 @@ public class ScriptsController extends HttpServlet {
 						    	sqlException.printStackTrace();
 					        } 
 				        
-
-					        // Insert the current user into the user table
-					        
 						      try{
-						          PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO user (username) VALUES (?);");
-						          preparedStatement.setString(1, request.getRemoteUser());
-						          preparedStatement.executeUpdate();
-						          preparedStatement.close();
+						          Statement statement = connection.createStatement();
+						          statement.executeUpdate("CREATE TABLE merge (" + 
+						        		  "id TINYINT(255) UNSIGNED NOT NULL AUTO_INCREMENT, " +
+						        		  "upload_id_1 TINYINT(255) UNSIGNED NOT NULL, " + 
+						        		  "upload_id_2 TINYINT(255) UNSIGNED NOT NULL, " + 
+						        		  "created_by_user_id TINYINT(255) UNSIGNED NOT NULL, " + 
+						        		  "created_datetime DATETIME NOT NULL, " +
+						        		  "updated_datetime DATETIME NOT NULL, " +
+						        		  "PRIMARY KEY (id), " +
+						        		  "INDEX created_by_user_id_index (created_by_user_id), " + 
+						        		  "FOREIGN KEY (created_by_user_id) REFERENCES user(id) " + 
+						        		  "ON DELETE CASCADE " + 
+						        		  "ON UPDATE CASCADE, " +
+						        		  "INDEX upload_id_1_index (upload_id_1), " + 
+						        		  "FOREIGN KEY (upload_id_1) REFERENCES upload(id) " + 
+						        		  "ON DELETE CASCADE " + 
+						        		  "ON UPDATE CASCADE, " +
+						        		  "INDEX upload_id_2_index (upload_id_2), " + 
+						        		  "FOREIGN KEY (upload_id_2) REFERENCES upload(id) " + 
+						        		  "ON DELETE CASCADE " + 
+						        		  "ON UPDATE CASCADE " + 
+						        		  ") ENGINE=InnoDB;");
+						          statement.close();
 
 						        }
 						        catch(SQLException sqlException){
 						        	out.println("<p>" + sqlException + "</p>");
 							    	sqlException.printStackTrace();
-						        } 					        
+						        } 
+			        
 				        
 			
 					connection.close();
@@ -184,6 +201,26 @@ public class ScriptsController extends HttpServlet {
 				    	  out.println("<p>" + sqlException + "</p>");
 				    	  sqlException.printStackTrace();
 				      }	
+				      
+			
+				      //TODO: Maybe factor this out into a separate script?
+				      
+				      File directory = new File(getServletContext().getInitParameter("uploadsFileRepositoryBasePath"));
+
+					   // Get all files in directory
+	
+					   File[] files = directory.listFiles();
+					   for (File file : files)
+					   {
+					      // Delete each file
+	
+					      if (!file.delete())
+					      {
+					          // Failed to delete file
+	
+					          System.out.println("Failed to delete " + file);
+					      }
+					   }
 				      
 				      
 				      connection.close();

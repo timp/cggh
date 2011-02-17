@@ -23,7 +23,7 @@ public class UsersModel implements java.io.Serializable {
 		//Note: Can't do this on construction because request object gets set after construction (when the bean is initialized).
 		//this.currentUser = new UserModel(httpServletRequest.getRemoteUser());
 		
-		this.currentUser = new UserModel();
+		this.setCurrentUser(new UserModel());
 	}
 
     public void setHttpServletRequest (final HttpServletRequest  httpServletRequest ) {

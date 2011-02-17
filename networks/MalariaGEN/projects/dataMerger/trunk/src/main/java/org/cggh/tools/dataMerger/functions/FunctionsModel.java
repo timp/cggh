@@ -137,7 +137,7 @@ public class FunctionsModel implements java.io.Serializable {
 						 
 						decoratedXHTMLTable = decoratedXHTMLTable.concat("<tr>");
 
-						 decoratedXHTMLTable = decoratedXHTMLTable.concat("<td><input type=\"checkbox\" name=\"upload\" value=\"" + cachedRowSet.getString("id") + "\" /></td>");
+						 decoratedXHTMLTable = decoratedXHTMLTable.concat("<td><input type=\"checkbox\" name=\"upload_id\" value=\"" + cachedRowSet.getString("id") + "\" /></td>");
 						 decoratedXHTMLTable = decoratedXHTMLTable.concat("<td>" + cachedRowSet.getString("id") + "</td>");
 						 decoratedXHTMLTable = decoratedXHTMLTable.concat("<td><a href=\"/dataMerger/files/uploads?id=" + cachedRowSet.getString("id") + "\">" + cachedRowSet.getString("original_filename") + "</a></td>");
 						 //TODO: format datetime 02 Jan 2011
@@ -153,11 +153,11 @@ public class FunctionsModel implements java.io.Serializable {
 					
 					decoratedXHTMLTable = decoratedXHTMLTable.concat("<div>TODO: paging</div>");
 					
-					decoratedXHTMLTable = decoratedXHTMLTable.concat("<script>/* Scripts for sorting and paging */</script>");
+					decoratedXHTMLTable = decoratedXHTMLTable.concat("<button class=\"merge-button\">Merge</button>");
 	
 				} else {
 					
-					decoratedXHTMLTable = "There are no records.";
+					decoratedXHTMLTable = "You have no uploads.";
 					
 				}
 			} catch (SQLException e) {

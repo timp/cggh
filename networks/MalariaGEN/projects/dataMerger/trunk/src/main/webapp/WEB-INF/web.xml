@@ -16,19 +16,18 @@
     <servlet-name>ScriptsController</servlet-name>
     <url-pattern>/scripts/*</url-pattern>
   </servlet-mapping>
-  
-  <!-- TODO: Refactor to use DataController, which will then delegate to UploadsController based on URL. -->
-  <!-- TODO: Make service discovery links at /data/ -->
+
+
   <servlet>
   	<description>
   	</description>
-  	<display-name>UploadsController</display-name>
-  	<servlet-name>UploadsController</servlet-name>
-  	<servlet-class>org.cggh.tools.dataMerger.data.uploads.UploadsController</servlet-class>
+  	<display-name>DataController</display-name>
+  	<servlet-name>DataController</servlet-name>
+  	<servlet-class>org.cggh.tools.dataMerger.data.DataController</servlet-class>
   </servlet>
   <servlet-mapping>
-    <servlet-name>UploadsController</servlet-name>
-    <url-pattern>/data/uploads/*</url-pattern>
+    <servlet-name>DataController</servlet-name>
+    <url-pattern>/data/*</url-pattern>
   </servlet-mapping>
 
   <servlet>
@@ -116,6 +115,24 @@
     <transport-guarantee>CONFIDENTIAL</transport-guarantee>
   </user-data-constraint>
    -->   
+ </security-constraint>
+
+ <security-constraint>
+   <web-resource-collection>
+     <web-resource-name>
+       Merges
+     </web-resource-name>
+
+     <url-pattern>/pages/merges/*</url-pattern>
+     <url-pattern>/data/merges/*</url-pattern>
+               <http-method>GET</http-method>
+               <http-method>POST</http-method>
+
+   </web-resource-collection>
+   <auth-constraint>
+     <role-name>merger</role-name>
+   </auth-constraint>
+
  </security-constraint>
  
   <security-constraint>
