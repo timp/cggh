@@ -71,7 +71,8 @@ public class ScriptsController extends HttpServlet {
 				 
 				if (!connection.isClosed()) {
 			
-					out.println("<p>Connected to database server.</p>");
+					//TODO
+					log("Connected to database server.");
 				
 						//NB: Can't pass tablenames directly into a prepared statement, have to use the string.
 
@@ -110,62 +111,101 @@ public class ScriptsController extends HttpServlet {
 					    	sqlException.printStackTrace();
 				        }	
 				        
-					      try{
-					          Statement statement = connection.createStatement();
-					          statement.executeUpdate("CREATE TABLE upload (" + 
-					        		  "id TINYINT(255) UNSIGNED NOT NULL AUTO_INCREMENT, " +
-					        		  "original_filename VARCHAR(255) NOT NULL, " + 
-					        		  "repository_filepath VARCHAR(255) NULL, " + 
-					        		  "successful BOOLEAN NULL, " + 
-					        		  "created_by_user_id TINYINT(255) UNSIGNED NOT NULL, " + 
-					        		  "created_datetime DATETIME NOT NULL, " +
-					        		  "PRIMARY KEY (id), " +
-					        		  "CONSTRAINT unique_path_constraint UNIQUE (repository_filepath), " +
-					        		  "INDEX created_by_user_id_index (created_by_user_id), " + 
-					        		  "FOREIGN KEY (created_by_user_id) REFERENCES user(id) " + 
-					        		  "ON DELETE CASCADE " + 
-					        		  "ON UPDATE CASCADE " + 
-					        		  ") ENGINE=InnoDB;");
-					          statement.close();
+				      try{
+				          Statement statement = connection.createStatement();
+				          statement.executeUpdate("CREATE TABLE upload (" + 
+				        		  "id TINYINT(255) UNSIGNED NOT NULL AUTO_INCREMENT, " +
+				        		  "original_filename VARCHAR(255) NOT NULL, " + 
+				        		  "repository_filepath VARCHAR(255) NULL, " + 
+				        		  "successful BOOLEAN NULL, " + 
+				        		  "created_by_user_id TINYINT(255) UNSIGNED NOT NULL, " + 
+				        		  "created_datetime DATETIME NOT NULL, " +
+				        		  "PRIMARY KEY (id), " +
+				        		  "CONSTRAINT unique_path_constraint UNIQUE (repository_filepath), " +
+				        		  "INDEX created_by_user_id_index (created_by_user_id), " + 
+				        		  "FOREIGN KEY (created_by_user_id) REFERENCES user(id) " + 
+				        		  "ON DELETE CASCADE " + 
+				        		  "ON UPDATE CASCADE " + 
+				        		  ") ENGINE=InnoDB;");
+				          statement.close();
+	
+				        }
+				        catch(SQLException sqlException){
+				        	out.println("<p>" + sqlException + "</p>");
+					    	sqlException.printStackTrace();
+				        } 
+					        
+				      try{
+				          Statement statement = connection.createStatement();
+				          statement.executeUpdate("CREATE TABLE merge (" + 
+				        		  "id TINYINT(255) UNSIGNED NOT NULL AUTO_INCREMENT, " +
+				        		  "upload_1_id TINYINT(255) UNSIGNED NOT NULL, " + 
+				        		  "upload_2_id TINYINT(255) UNSIGNED NOT NULL, " + 
+				        		  "created_by_user_id TINYINT(255) UNSIGNED NOT NULL, " + 
+				        		  "created_datetime DATETIME NOT NULL, " +
+				        		  "updated_datetime DATETIME NOT NULL, " +
+				        		  "datatable_1_duplicate_keys_count, TINYINT(255) UNSIGNED NOT NULL, " + 
+				        		  "datatable_2_duplicate_keys_count, TINYINT(255) UNSIGNED NOT NULL, " + 
+				        		  "total_duplicate_keys_count TINYINT(255) UNSIGNED NOT NULL, " + 
+				        		  "PRIMARY KEY (id), " +
+				        		  "INDEX created_by_user_id_index (created_by_user_id), " + 
+				        		  "FOREIGN KEY (created_by_user_id) REFERENCES user(id) " + 
+				        		  "ON DELETE CASCADE " + 
+				        		  "ON UPDATE CASCADE, " +
+				        		  "INDEX upload_1_id_index (upload_1_id), " + 
+				        		  "FOREIGN KEY (upload_1_id) REFERENCES upload(id) " + 
+				        		  "ON DELETE CASCADE " + 
+				        		  "ON UPDATE CASCADE, " +
+				        		  "INDEX upload_2_id_index (upload_2_id), " + 
+				        		  "FOREIGN KEY (upload_2_id) REFERENCES upload(id) " + 
+				        		  "ON DELETE CASCADE " + 
+				        		  "ON UPDATE CASCADE " + 
+				        		  ") ENGINE=InnoDB;");
+				          statement.close();
+		
+				        }
+				        catch(SQLException sqlException){
+				        	out.println("<p>" + sqlException + "</p>");
+					    	sqlException.printStackTrace();
+				        } 
+			    
 
-					        }
-					        catch(SQLException sqlException){
-					        	out.println("<p>" + sqlException + "</p>");
-						    	sqlException.printStackTrace();
-					        } 
-				        
-						      try{
-						          Statement statement = connection.createStatement();
-						          statement.executeUpdate("CREATE TABLE merge (" + 
-						        		  "id TINYINT(255) UNSIGNED NOT NULL AUTO_INCREMENT, " +
-						        		  "upload_id_1 TINYINT(255) UNSIGNED NOT NULL, " + 
-						        		  "upload_id_2 TINYINT(255) UNSIGNED NOT NULL, " + 
-						        		  "created_by_user_id TINYINT(255) UNSIGNED NOT NULL, " + 
-						        		  "created_datetime DATETIME NOT NULL, " +
-						        		  "updated_datetime DATETIME NOT NULL, " +
-						        		  "PRIMARY KEY (id), " +
-						        		  "INDEX created_by_user_id_index (created_by_user_id), " + 
-						        		  "FOREIGN KEY (created_by_user_id) REFERENCES user(id) " + 
-						        		  "ON DELETE CASCADE " + 
-						        		  "ON UPDATE CASCADE, " +
-						        		  "INDEX upload_id_1_index (upload_id_1), " + 
-						        		  "FOREIGN KEY (upload_id_1) REFERENCES upload(id) " + 
-						        		  "ON DELETE CASCADE " + 
-						        		  "ON UPDATE CASCADE, " +
-						        		  "INDEX upload_id_2_index (upload_id_2), " + 
-						        		  "FOREIGN KEY (upload_id_2) REFERENCES upload(id) " + 
-						        		  "ON DELETE CASCADE " + 
-						        		  "ON UPDATE CASCADE " + 
-						        		  ") ENGINE=InnoDB;");
-						          statement.close();
-
-						        }
-						        catch(SQLException sqlException){
-						        	out.println("<p>" + sqlException + "</p>");
-							    	sqlException.printStackTrace();
-						        } 
+				      try{
+				          Statement statement = connection.createStatement();
+				          statement.executeUpdate("CREATE TABLE datatable (" + 
+				        		  "id TINYINT(255) UNSIGNED NOT NULL AUTO_INCREMENT, " +
+				        		  "datatable_name VARCHAR(255) NOT NULL, " +
+				        		  "upload_id TINYINT(255) UNSIGNED NOT NULL, " + 
+				        		  "created_datetime DATETIME NOT NULL, " +
+				        		  "PRIMARY KEY (id), " +
+				        		  "INDEX upload_id_index (upload_id), " + 
+				        		  "FOREIGN KEY (upload_id) REFERENCES upload(id) " + 
+				        		  "ON DELETE CASCADE " + 
+				        		  "ON UPDATE CASCADE " +
+				        		  ") ENGINE=InnoDB;");
+				          statement.close();
+	
+				        }
+				        catch(SQLException sqlException){
+				        	out.println("<p>" + sqlException + "</p>");
+					    	sqlException.printStackTrace();
+				        } 				        
 			        
-				        
+				      try{
+				          Statement statement = connection.createStatement();
+				          statement.executeUpdate("CREATE TABLE datatablejoin (" + 
+				        		  "id TINYINT(255) UNSIGNED NOT NULL AUTO_INCREMENT, " +
+				        		  "PRIMARY KEY (id), " +
+				        		  ") ENGINE=InnoDB;");
+				          statement.close();
+	
+				        }
+				        catch(SQLException sqlException){
+				        	out.println("<p>" + sqlException + "</p>");
+					    	sqlException.printStackTrace();
+				        } 
+							        
+						        
 			
 					connection.close();
 					out.println("Done.");

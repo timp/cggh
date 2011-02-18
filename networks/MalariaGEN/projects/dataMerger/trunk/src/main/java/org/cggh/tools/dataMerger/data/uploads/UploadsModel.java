@@ -19,16 +19,9 @@ public class UploadsModel implements java.io.Serializable {
 	private HttpServletRequest httpServletRequest;
 	
 	public UploadsModel() {
-		
-		//TODO: Get all the uploads?
-		
+
 	}
 
-	public UploadsModel(String user) {
-		
-		//TODO: Get the uploads for a user (need username and roles(rolenames) )
-		
-	}
 
 
     public void setHttpServletRequest (final HttpServletRequest  httpServletRequest ) {

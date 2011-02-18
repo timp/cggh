@@ -17,6 +17,9 @@ public class MergesModel implements java.io.Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = 1917678012559065867L;
+	
+	
+	//TODO: Update this to use User and Data Models.
 	private HttpServletRequest httpServletRequest;
 	private MergeModel currentMerge;
 	
@@ -44,11 +47,16 @@ public class MergesModel implements java.io.Serializable {
 	}	    
     
 
-    public Integer createMerge (Integer upload_id_1, Integer upload_id_2) {
+    public Integer createMerge (Integer upload1Id, Integer upload2Id) {
+    	
+    	this.currentMerge.setUpload1Id(upload1Id);
+    	this.currentMerge.setUpload2Id(upload2Id);
     	
 	   ServletContext servletContext = this.getHttpServletRequest().getSession().getServletContext();
 	   
 		try {
+			
+			//TODO: Upgrade this to use Data Model.
 			
 			Class.forName("com.mysql.jdbc.Driver").newInstance();
 			
@@ -56,6 +64,7 @@ public class MergesModel implements java.io.Serializable {
 			 
 			if (!connection.isClosed()) {
 		
+				//TODO: Upgrade this to use User Model.
 				// Get the user_id
 				Integer user_id = null;
 				
@@ -82,43 +91,134 @@ public class MergesModel implements java.io.Serializable {
 				    	sqlException.printStackTrace();
 			        } 				
 				
-				      try {
-				          PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO merge (upload_id_1, upload_id_2, created_by_user_id, created_datetime, updated_datetime) VALUES (?, ?, ?, NOW(), NOW());");
-				          preparedStatement.setInt(1, upload_id_1);
-				          preparedStatement.setInt(2, upload_id_2);
-				          preparedStatement.setInt(3, user_id);				          
-				          preparedStatement.executeUpdate();
+			      try {
+			          PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO merge (upload_1_id, upload_2_id, created_by_user_id, created_datetime, updated_datetime) VALUES (?, ?, ?, NOW(), NOW());");
+			          preparedStatement.setInt(1, this.currentMerge.getUpload1Id());
+			          preparedStatement.setInt(2, this.currentMerge.getUpload2Id());
+			          //TODO: update to use UserModel.
+			          preparedStatement.setInt(3, user_id);				          
+			          preparedStatement.executeUpdate();
+			          preparedStatement.close();
+	
+			        }
+			        catch(SQLException sqlException){
+				    	sqlException.printStackTrace();
+			        } 			        
+
+			      try{
+			    	  //TODO: Is this cross-db compatible? ref: @@IDENTITY
+			          PreparedStatement preparedStatement = connection.prepareStatement("SELECT LAST_INSERT_ID();");
+			          preparedStatement.executeQuery();
+			          
+			          ResultSet resultSet = preparedStatement.getResultSet();
+			          if (resultSet.next()) {
+			        	  
+			        	  resultSet.first();
+			        	  this.currentMerge.setId(resultSet.getInt(1));
+			        	  
+			          } else {
+			        	  
+			        	  
+			        	  System.out.println("Unexpected: !resultSet.next()");
+			          }
+			          
+			          preparedStatement.close();
+
+			        }
+			        catch(SQLException sqlException){
+				    	sqlException.printStackTrace();
+			        }					        
+				        
+			        //TODO: see if the datatables have already been loaded in.
+			        
+					// Get the datatable_for_upload_1_id
+					Integer datatable_id_for_upload_1_id = null;
+					
+				      try{
+				          PreparedStatement preparedStatement = connection.prepareStatement("SELECT id FROM datatable WHERE upload_id = ?;");
+				          preparedStatement.setInt(1, this.currentMerge.getUpload1Id());
+				          preparedStatement.executeQuery();
+				          ResultSet resultSet = preparedStatement.getResultSet();
+
+				          // There may be no user in the user table.
+				          if (resultSet.next()) {
+				        	  resultSet.first();
+				        	  datatable_id_for_upload_1_id = resultSet.getInt("id");
+				          } else {
+				        	  System.out.println("Did not find upload in datatable table. This upload is not imported. Db query gives !resultSet.next()");
+				          }
+
+				          resultSet.close();
 				          preparedStatement.close();
-		
+				          
 				        }
 				        catch(SQLException sqlException){
+				        	System.out.println("<p>" + sqlException + "</p>");
 					    	sqlException.printStackTrace();
-				        } 			        
+				        } 					        
 
+						// Get the datatable_for_upload_2_id
+						Integer datatable_id_for_upload_2_id = null;
+						
 					      try{
-					    	  //TODO: Is this cross-db compatible? ref: @@IDENTITY
-					          PreparedStatement preparedStatement = connection.prepareStatement("SELECT LAST_INSERT_ID();");
+					          PreparedStatement preparedStatement = connection.prepareStatement("SELECT id FROM datatable WHERE upload_id = ?;");
+					          preparedStatement.setInt(1, this.currentMerge.getUpload2Id());
 					          preparedStatement.executeQuery();
-					          
 					          ResultSet resultSet = preparedStatement.getResultSet();
+
+					          // There may be no user in the user table.
 					          if (resultSet.next()) {
-					        	  
 					        	  resultSet.first();
-					        	  this.currentMerge.setId(resultSet.getInt(1));
-					        	  
+					        	  datatable_id_for_upload_2_id = resultSet.getInt("id");
 					          } else {
-					        	  
-					        	  
-					        	  System.out.println("Unexpected: !resultSet.next()");
+					        	  System.out.println("Did not find upload in datatable table. This upload is not imported. Db query gives !resultSet.next()");
 					          }
-					          
+
+					          resultSet.close();
 					          preparedStatement.close();
-		
+					          
+					        }
+					        catch(SQLException sqlException){
+					        	System.out.println("<p>" + sqlException + "</p>");
+						    	sqlException.printStackTrace();
+					        } 					        
+					        
+				        //TODO: load the data into tables
+					       //TODO: Merge these identical twin branches.
+					    if (datatable_id_for_upload_1_id != null) {
+					    	
+					    		//TODO: Create the datatable record.
+					    	
+					    		//TODO: Load the datatable 
+						      try {
+						          PreparedStatement preparedStatement = connection.prepareStatement("LOAD DATA INFILE ? INTO TABLE `datatable_" + this.currentMerge.getDatatable1Model().getId().toString() + "`;");
+						          preparedStatement.setString(1, this.currentMerge.getUpload1Model().getRepositoryFilepath());
+						          preparedStatement.executeUpdate();
+						          preparedStatement.close();
+				
+						        }
+						        catch(SQLException sqlException){
+							    	sqlException.printStackTrace();
+						        } 
+					    }
+					    if (datatable_id_for_upload_2_id != null) {
+					    	
+				    		//TODO: Create the datatable record.
+				    	
+				    		//TODO: Load the datatable 
+					      try {
+					          PreparedStatement preparedStatement = connection.prepareStatement("LOAD DATA INFILE ? INTO TABLE `datatable_" + this.currentMerge.getDatatable2Model().getId().toString() + "`;");
+					          preparedStatement.setString(1, this.currentMerge.getUpload2Model().getRepositoryFilepath());
+					          preparedStatement.executeUpdate();
+					          preparedStatement.close();
+			
 					        }
 					        catch(SQLException sqlException){
 						    	sqlException.printStackTrace();
-					        }					        
-				        
+					        } 
+				    }
+						
+						        
 			
 				connection.close();
 				
@@ -180,7 +280,7 @@ public class MergesModel implements java.io.Serializable {
 			        } 				
 				
 			      try{
-			          PreparedStatement preparedStatement = connection.prepareStatement("SELECT merge.id, upload_1.original_filename, upload_2.original_filename, created_datetime, updated_datetime FROM upload INNER JOIN upload AS upload_1 ON upload_1.id = merge.upload_id_1 INNER JOIN upload AS upload_2 ON upload_2.id = merge.upload_id_2 WHERE created_by_user_id = ?;");
+			          PreparedStatement preparedStatement = connection.prepareStatement("SELECT merge.id, upload_1.original_filename, upload_2.original_filename, created_datetime, updated_datetime FROM upload INNER JOIN upload AS upload_1 ON upload_1.id = merge.upload_1_id INNER JOIN upload AS upload_2 ON upload_2.id = merge.upload_2_id WHERE created_by_user_id = ?;");
 			          preparedStatement.setInt(1, user_id);
 			          preparedStatement.executeQuery();
 			          Class<?> cachedRowSetImplClass = Class.forName(CACHED_ROW_SET_IMPL_CLASS);

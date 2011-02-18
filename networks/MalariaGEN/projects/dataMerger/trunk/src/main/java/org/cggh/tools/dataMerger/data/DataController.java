@@ -148,8 +148,11 @@ public class DataController extends HttpServlet {
 	         
 	         //TODO: This needs to depend on the request, e.g. if the post was not ajax.
  
+	         //TODO
+	        log("merge_id: " + merge_id.toString());
+	         
 	        PrintWriter out = response.getWriter();
-			out.println("\"{'id': '" + merge_id + "'}\"");		
+			out.println("{\"id\": \"" + merge_id.toString() + "\"}");		
 			  
 		  } else {
 			  

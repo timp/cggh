@@ -15,9 +15,10 @@ uploadsModel.setHttpServletRequest(request);
 	<link rel="stylesheet" type="text/css" href="../shared/css/fileuploader.css" />
 	
 	<script type="text/javascript" src="../shared/js/jquery.min.js"></script>
-	<script type="text/javascript" src="../shared/js/uploads.scripts.js"></script>
 	<script type="text/javascript" src="../shared/js/fileuploader.js"></script>
 	<script type="text/javascript" src="../shared/js/jquery.json.min.js"></script>
+	<script type="text/javascript" src="../shared/js/uploads.js"></script>
+	<script type="text/javascript" src="../shared/js/merges.js"></script>
 	
 	<script type="text/javascript">
 	

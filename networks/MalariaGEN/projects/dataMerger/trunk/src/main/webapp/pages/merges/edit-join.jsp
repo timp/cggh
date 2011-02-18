@@ -1,11 +1,12 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
-<jsp:useBean id="mergesModel" class="org.cggh.tools.dataMerger.data.merges.MergesModel" scope="page"/>
+<jsp:useBean id="mergeModel" class="org.cggh.tools.dataMerger.data.merges.MergeModel" scope="page"/>
+<jsp:useBean id="functionsModel" class="org.cggh.tools.dataMerger.functions.FunctionsModel" scope="page"/>
 <%
 
-mergesModel.setHttpServletRequest(request);
-
-mergesModel.getCurrentMerge().setId(Integer.parseInt(request.getParameter("id")));
+mergeModel.getDataModel().setDataModelByServletContext(request.getSession().getServletContext());
+mergeModel.getUserModel().setUserModelByUsername(request.getRemoteUser());
+mergeModel.setMergeModelById(Integer.parseInt(request.getParameter("merge_id")));
 
 %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
@@ -21,11 +22,11 @@ mergesModel.getCurrentMerge().setId(Integer.parseInt(request.getParameter("id"))
 		
 		<dl>
 		
-			<dt>Merge ID:</dt><dd><%=mergesModel.getCurrentMerge().getId() %></dd>
+			<dt>Merge ID:</dt><dd><%=mergeModel.getId() %></dd>
 			
-			<dt>Merge created:</dt><dd><%=mergesModel.getCurrentMerge().getCreatedDatetime() %></dd>
+			<dt>Merge created:</dt><dd><%=mergeModel.getCreatedDatetime() %></dd>
 			
-			<dt>Merge updated:</dt><dd><%=mergesModel.getCurrentMerge().getUpdatedDatetime() %></dd>
+			<dt>Merge updated:</dt><dd><%=mergeModel.getUpdatedDatetime() %></dd>
 			
 		</dl>
 		
@@ -34,8 +35,10 @@ mergesModel.getCurrentMerge().setId(Integer.parseInt(request.getParameter("id"))
 			<p>[error: A key is required]
 			</p>
 			
+			<% if (mergeModel.getTotalDuplicateKeysCount() > 0) { %>
 			<p>[error: There are duplicate keys]
 			</p>
+			<% } %>
 		
 		</div>
 		
@@ -46,6 +49,14 @@ mergesModel.getCurrentMerge().setId(Integer.parseInt(request.getParameter("id"))
 			
 			<a href="">Cancel &amp; Return to Merges</a>
 		</div>
+		
+		
+		<form class="join-form">
+		<div class="join">
+
+		</div>
+
+		</form>
 		
 	</div>
 </body>

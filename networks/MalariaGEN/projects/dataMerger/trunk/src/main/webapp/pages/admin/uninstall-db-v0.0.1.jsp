@@ -27,14 +27,15 @@
 			$.ajax({
 				  type: "POST",
 				  url: "/dataMerger/scripts/uninstall-db-v0.0.1",
-				  //data: { tags: "cat", tagmode: "any", format: "json" },
+				  //data: { "tags":"cat", "tagmode":"any"},
 				   
-				  dataType: "json",
+				  dataType: "text",
 				  success: function(data, textStatus, jqXHR) {
-						$('.response').html("Response: " + data.baz[1]);
+						$('.response').html("Response: " + data);
 						$('.status').html("textStatus: " + textStatus);
 					},
 					error:function (jqXHR, textStatus, errorThrown){
+							$('.response').html("Response: " + data);
 		                    $('.error').html("errorThrown: " + errorThrown);
 		                    $('.status').html("textStatus: " + textStatus);
 		                } 
