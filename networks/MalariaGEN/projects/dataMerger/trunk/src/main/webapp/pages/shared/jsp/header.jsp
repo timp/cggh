@@ -1,20 +1,18 @@
-<%@ page language="java" contentType="text/html; charset=ISO-8859-1" pageEncoding="ISO-8859-1"%>
-<%--TODO: The data and user models are being loaded twice, i.e. in the index page and in the header. --%>
 <jsp:useBean id="headerDataModel" class="org.cggh.tools.dataMerger.data.DataModel" scope="session"/>
 <jsp:useBean id="headerUserModel" class="org.cggh.tools.dataMerger.data.users.UserModel" scope="session"/>
-<jsp:useBean id="usersModel" class="org.cggh.tools.dataMerger.data.users.UsersModel" scope="session"/>
+<jsp:useBean id="headerUsersModel" class="org.cggh.tools.dataMerger.data.users.UsersModel" scope="session"/>
 <%
 
 headerDataModel.setDataModelByServletContext(request.getSession().getServletContext());
 headerUserModel.setDataModel(headerDataModel);
 headerUserModel.setUserModelByUsername(request.getRemoteUser());
 
-usersModel.setDataModel(headerDataModel);
-usersModel.setUserModel(headerUserModel);
+headerUsersModel.setDataModel(headerDataModel);
+headerUsersModel.setUserModel(headerUserModel);
 
-if (!usersModel.isUsernameCreated(usersModel.getUserModel().getUsername())) {
+if (!headerUsersModel.isUsernameCreated(headerUsersModel.getUserModel().getUsername())) {
 	
-	usersModel.createUserByUsername(usersModel.getUserModel().getUsername());
+	headerUsersModel.createUserByUsername(headerUsersModel.getUserModel().getUsername());
 
 }
 
@@ -24,7 +22,7 @@ String contextPath = request.getContextPath();
 String basePath = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + contextPath + "/";
 %>
 <h1>MalariaGEN dataMerger</h1>
-<div><%=usersModel.getUserModel().getUsername() %></div>
+<div><%=headerUsersModel.getUserModel().getUsername() %></div>
 <div><a href="TODO:logout">logout</a></div>
 <ul>
 	<!-- TODO: Adaptive interface (based on real ability to GET the page) rather than role-based. -->

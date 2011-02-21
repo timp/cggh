@@ -19,7 +19,6 @@ public class DataModel implements java.io.Serializable {
 	private String username = null;
 	private String password = null;
 	private int lastInsertId;
-	private Connection connection;
 
 
 	public DataModel() {
@@ -70,8 +69,10 @@ public class DataModel implements java.io.Serializable {
 		return this.password;
 	}	
 	
-	public void createConnection() {
+	public Connection getNewConnection() {
 		
+		Connection connection = null;
+
 		try {
 			Class.forName("com.mysql.jdbc.Driver").newInstance();
 		} catch (InstantiationException e) {
@@ -87,7 +88,7 @@ public class DataModel implements java.io.Serializable {
 		
 		try {
 
-			this.setConnection(DriverManager.getConnection(this.getURL(), this.getUsername(), this.getPassword()));
+			connection = DriverManager.getConnection(this.getURL(), this.getUsername(), this.getPassword());
 			
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
@@ -95,12 +96,11 @@ public class DataModel implements java.io.Serializable {
 		}
 
 		
+		return connection;
 	}
 
 	public void setLastInsertIdByConnection(Connection connection) {
 
-		this.setConnection(connection);
-		
         try{
 	    	  //TODO: Is this cross-db compatible? ref: @@IDENTITY
 	          PreparedStatement preparedStatement = connection.prepareStatement("SELECT LAST_INSERT_ID();");
@@ -134,24 +134,6 @@ public class DataModel implements java.io.Serializable {
 	public void setLastInsertId(int lastInsertId) {
 		this.lastInsertId = lastInsertId;
 	}
-
-	public void setConnection(Connection connection) {
-
-		//TODO: sanity check.
-		if (this.getConnection() != null) {
-			try {
-				this.getConnection().close();
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
-		
-		this.connection = connection;
-	}
-	public Connection getConnection() {
-		return this.connection;
-	}	
 	
 	
 }

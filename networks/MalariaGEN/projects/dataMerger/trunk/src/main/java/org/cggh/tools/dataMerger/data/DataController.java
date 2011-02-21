@@ -109,7 +109,7 @@ public class DataController extends HttpServlet {
 
 				this.uploadsModel.setDataModel(this.getDataModel());
 				this.uploadsModel.setUserModel(this.getUserModel());
-			  
+
 			  
 			  CachedRowSet uploadsAsCachedRowSet = this.uploadsModel.getUploadsAsCachedRowSet();
 		

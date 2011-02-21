@@ -124,8 +124,7 @@ public class MergeModel implements java.io.Serializable {
 
 			try {
 				
-				this.getDataModel().createConnection();
-				Connection connection = this.getDataModel().getConnection();
+				Connection connection = this.getDataModel().getNewConnection();
 				 
 				if (!connection.isClosed()) {
 			
@@ -133,7 +132,7 @@ public class MergeModel implements java.io.Serializable {
 					
 				      try{
 				          PreparedStatement preparedStatement = connection.prepareStatement(
-				        		  	"SELECT id, upload_1_id, upload_2_id, created_by_user_id, created_datetime, updated_datetime, datatable_1_duplicate_keys_count, datatable_2_duplicate_keys_count, total_duplicate_keys_count FROM merge " +
+				        		  	"SELECT id, upload_1_id, upload_2_id, created_by_user_id, created_datetime, updated_datetime, total_duplicate_keys_count FROM merge " + 
 				        		  	"WHERE id = ? AND created_by_user_id = ?;"
 				        		  	);
 				          preparedStatement.setInt(1, this.getId());
@@ -150,8 +149,8 @@ public class MergeModel implements java.io.Serializable {
 				        	  this.setCreatedByUserId(resultSet.getInt("created_by_user_id"));
 				        	  this.setCreatedDatetime(resultSet.getTimestamp("created_datetime"));
 				        	  this.setUpdatedDatetime(resultSet.getTimestamp("updated_datetime"));
-				        	  this.getDatatable1Model().setDuplicateKeysCount(resultSet.getInt("datatable_1_duplicate_keys_count"));
-				        	  this.getDatatable2Model().setDuplicateKeysCount(resultSet.getInt("datatable_1_duplicate_keys_count"));
+				        	  //this.getDatatable1Model().setDuplicateKeysCount(resultSet.getInt("datatable_1_duplicate_keys_count"));
+				        	  //this.getDatatable2Model().setDuplicateKeysCount(resultSet.getInt("datatable_1_duplicate_keys_count"));
 				        	  this.setTotalDuplicateKeysCount(resultSet.getInt("total_duplicate_keys_count"));
 				        	  
 				          } else {

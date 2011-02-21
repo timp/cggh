@@ -48,14 +48,13 @@ public class UploadsModel implements java.io.Serializable {
 	   
 		try {
 
-			this.getDataModel().createConnection();
-			Connection connection = this.getDataModel().getConnection();
+			Connection connection = this.getDataModel().getNewConnection();
 			
 			if (!connection.isClosed()) {
 
 			      try{
 			          PreparedStatement preparedStatement = connection.prepareStatement("SELECT id, original_filename, created_by_user_id, created_datetime FROM upload WHERE created_by_user_id = ? AND successful = 1;");
-			          preparedStatement.setInt(1, this.userModel.getId());
+			          preparedStatement.setInt(1, this.getUserModel().getId());
 			          preparedStatement.executeQuery();
 			          Class<?> cachedRowSetImplClass = Class.forName(CACHED_ROW_SET_IMPL_CLASS);
 			          uploadsAsCachedRowSet = (CachedRowSet) cachedRowSetImplClass.newInstance();

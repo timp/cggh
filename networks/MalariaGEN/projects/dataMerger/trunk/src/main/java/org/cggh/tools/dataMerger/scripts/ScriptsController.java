@@ -276,7 +276,6 @@ public class ScriptsController extends HttpServlet {
 			
 			} 
 			catch (Exception exception) {
-				System.out.println("Failed to connect to database server.");
 				out.println("<p>" + exception + "</p>");
 				exception.printStackTrace();
 			}

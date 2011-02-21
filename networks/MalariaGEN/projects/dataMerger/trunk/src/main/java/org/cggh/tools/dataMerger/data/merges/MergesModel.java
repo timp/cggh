@@ -71,8 +71,7 @@ public class MergesModel implements java.io.Serializable {
     	
 		try {
 			
-			this.getDataModel().createConnection();
-			Connection connection = this.getDataModel().getConnection();
+			Connection connection = this.getDataModel().getNewConnection();
 			
 			if (!connection.isClosed()) {
 		
@@ -108,13 +107,28 @@ public class MergesModel implements java.io.Serializable {
 				    	  //This populates the model with the latest db data.
 					      this.getMergeModel().getUpload1Model().getUploadModelById( this.getMergeModel().getUpload1Model().getId(), connection);
 					      
-					      //TODO: checks again to see if the datatable has been created.
+					      //TODO: check again to see if the datatable has been created?
 				    	  
 				      }
 				      
 				      //TODO: same for upload2
+				      this.getMergeModel().getUpload2Model().getUploadModelById( this.getMergeModel().getUpload2Model().getId(), connection);
 				      
+				      if (!this.getMergeModel().getUpload2Model().isDatatableCreated()) {
+				    	  
+				    	  this.getDatatablesModel().createDatatableByUploadModel(this.getMergeModel().getUpload2Model(), connection);
+				    	  
+				    	  //This populates the model with the latest db data.
+					      this.getMergeModel().getUpload2Model().getUploadModelById( this.getMergeModel().getUpload2Model().getId(), connection);
+					      
+					      //TODO: check again to see if the datatable has been created?
+				    	  
+				      }
 			          
+				      
+				      
+				      
+				      
 			          
 	
 			        }
@@ -165,8 +179,7 @@ public class MergesModel implements java.io.Serializable {
 				
 				Class.forName("com.mysql.jdbc.Driver").newInstance();
 				
-				this.getDataModel().createConnection();
-				Connection connection = this.getDataModel().getConnection();
+				Connection connection = this.getDataModel().getNewConnection();
 				 
 				if (!connection.isClosed()) {
 			

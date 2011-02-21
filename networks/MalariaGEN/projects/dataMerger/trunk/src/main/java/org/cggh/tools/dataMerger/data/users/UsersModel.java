@@ -54,8 +54,7 @@ public class UsersModel implements java.io.Serializable {
 		
 		try {
 			
-			this.getDataModel().createConnection();
-			Connection connection = this.getDataModel().getConnection();
+			Connection connection = this.getDataModel().getNewConnection();
 			
 			if (!connection.isClosed()) {		
 		
@@ -119,8 +118,7 @@ public class UsersModel implements java.io.Serializable {
 
 		try {
 			
-			this.getDataModel().createConnection();
-			Connection connection = this.getDataModel().getConnection();
+			Connection connection = this.getDataModel().getNewConnection();
 			
 			if (!connection.isClosed()) {		
 		

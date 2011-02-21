@@ -79,12 +79,18 @@ public class DatatableModel implements java.io.Serializable {
 
 		this.setName(name);
 		
+		//Init to prevent previous persistence
+	  	  this.setId(null);
+		  this.getUploadModel().setId(null);
+		  this.setCreatedDatetime(null);
+		
+		
 	      try {
 	          PreparedStatement preparedStatement = connection.prepareStatement(
 	        		  "SELECT id, " + 
 	        		  "name, " +
 	        		  "upload_Id, " +  
-	        		  "created_datetime, " + 
+	        		  "created_datetime " + 
 	        		  "FROM datatable WHERE name = ?;");
 	          preparedStatement.setString(1, this.getName());				          
 	          preparedStatement.executeQuery();
