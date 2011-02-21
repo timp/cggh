@@ -20,7 +20,9 @@ public class DatatableModel implements java.io.Serializable {
 	private UploadModel uploadModel;
 	private Integer duplicateKeysCount;
 	private Timestamp createdDatetime;
+	private String[] columnNamesAsStringArray;
 
+	//TODO: Data
 	
 	
 	public DatatableModel() {
@@ -79,11 +81,12 @@ public class DatatableModel implements java.io.Serializable {
 
 		this.setName(name);
 		
-		//Init to prevent previous persistence
+		  //Init to prevent previous persistence
 	  	  this.setId(null);
 		  this.getUploadModel().setId(null);
 		  this.setCreatedDatetime(null);
 		
+		  //TODO: Data
 		
 	      try {
 	          PreparedStatement preparedStatement = connection.prepareStatement(
@@ -108,6 +111,8 @@ public class DatatableModel implements java.io.Serializable {
 	        	  this.getUploadModel().setId(resultSet.getInt("upload_Id"));
 	        	  this.setCreatedDatetime(resultSet.getTimestamp("created_datetime"));
 	        	  
+	        	  //TODO: Data
+	        	  
 	          } else {
 	        	  //TODO: proper logging and error handling
 	        	  System.out.println("Did not find datatable. Db query gives !resultSet.next()");
@@ -129,6 +134,13 @@ public class DatatableModel implements java.io.Serializable {
 
 	public void setUploadModel(UploadModel uploadModel) {
 		this.uploadModel = uploadModel;
+	}
+
+
+
+	public String[] getColumnNamesAsStringArray() {
+
+		return this.columnNamesAsStringArray;
 	}
 
 

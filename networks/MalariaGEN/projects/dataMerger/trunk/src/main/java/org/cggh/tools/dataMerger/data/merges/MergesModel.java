@@ -125,6 +125,18 @@ public class MergesModel implements java.io.Serializable {
 				    	  
 				      }
 			          
+				      // The datatables have been created.
+				      //TODO: create an auto-join
+				      
+				      //Load the 2 datatables
+				      this.getMergeModel().getDatatable1Model().getDatatableModelByName(this.getMergeModel().getDatatable1Model().getName(), connection);
+				      this.getMergeModel().getDatatable2Model().getDatatableModelByName(this.getMergeModel().getDatatable2Model().getName(), connection);
+				      
+				      // Get the column names for each of the datatables.
+				      
+				      String[] datatable1ColumnNames = this.getMergeModel().getDatatable1Model().getColumnNamesAsStringArray();
+				      String[] datatable2ColumnNames = this.getMergeModel().getDatatable2Model().getColumnNamesAsStringArray();
+				      
 				      
 				      
 				      

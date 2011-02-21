@@ -84,7 +84,6 @@ public class DatatablesModel implements java.io.Serializable {
 			
 			if (!connection.isClosed()) {
 					
-				
 				//createDatatableByDatatableModel(datatableModel, connection);
 		
 			} else {
@@ -185,6 +184,22 @@ public class DatatablesModel implements java.io.Serializable {
 		    		          preparedStatement2.setString(1, this.getDatatableModel().getUploadModel().getRepositoryFilepath());
 		    		          preparedStatement2.executeUpdate();
 		    		          preparedStatement2.close();
+		    		          
+		    		          
+		    		          // Update the datatable_created flag to save a query or two.
+			    		      try {
+
+			    		          PreparedStatement preparedStatement3 = connection.prepareStatement("UPDATE upload SET datatable_created = 1 WHERE id = ?;");
+			    		          preparedStatement3.setInt(1, this.getDatatableModel().getUploadModel().getId());
+			    		          preparedStatement3.executeUpdate();
+			    		          preparedStatement3.close();
+			    		          
+			    		
+			    		        }
+			    		        catch(SQLException sqlException){
+			    			    	sqlException.printStackTrace();
+			    		        } 
+		    		          
 		    		
 		    		        }
 		    		        catch(SQLException sqlException){
@@ -197,11 +212,6 @@ public class DatatablesModel implements java.io.Serializable {
 	    			    	sqlException.printStackTrace();
 	    		        } 
 	    	         
-	        	      
-	        	      
-
-	    	         
-	        	      
 	        	      
 	        	      
 	        	    } else {

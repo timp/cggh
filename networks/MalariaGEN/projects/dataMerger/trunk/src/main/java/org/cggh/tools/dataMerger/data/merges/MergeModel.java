@@ -155,7 +155,7 @@ public class MergeModel implements java.io.Serializable {
 				        	  
 				          } else {
 				        	  //TODO: proper logging and error handling
-				        	  System.out.println("Did not find user in user table. This user is not registered. Db query gives !resultSet.next()");
+				        	  System.out.println("Db query gives !resultSet.next()");
 				          }
 				          
 				          preparedStatement.close();
@@ -167,6 +167,7 @@ public class MergeModel implements java.io.Serializable {
 				        } 	
 				        
 					    //TODO: Get the rest of the merge data (column joins, etc.).
+				        
 				        
 				
 					connection.close();

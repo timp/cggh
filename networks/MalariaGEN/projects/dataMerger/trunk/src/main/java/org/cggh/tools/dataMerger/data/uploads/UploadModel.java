@@ -103,8 +103,12 @@ public class UploadModel implements java.io.Serializable {
 
 		this.datatableCreated = datatableCreated;
 	}
+	public boolean isDatatableCreated() {
+		return this.datatableCreated;
+	}
 
-
+	
+	//TODO: Create getters for these.
 
 	public void setCreatedDatetime(Timestamp createdDatetime) {
 
@@ -141,8 +145,6 @@ public class UploadModel implements java.io.Serializable {
 
 
 
-	public boolean isDatatableCreated() {
-		return this.datatableCreated;
-	}
+
 
 }
