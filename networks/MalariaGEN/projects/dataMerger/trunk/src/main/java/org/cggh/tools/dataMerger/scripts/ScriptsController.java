@@ -54,6 +54,9 @@ public class ScriptsController extends HttpServlet {
         
 		if (request.getPathInfo().equals("/install-db-v0.0.1")) {
 			
+			//TODO: If install fails (note, cannot use transactions for table creations, etc.) then run the uninstall for the same version.
+			
+			
 			//InstallDb_0_0_1 installDb_0_0_1 = new InstallDb_0_0_1();
 			//installDb_0_0_1.run();
 			
@@ -120,6 +123,7 @@ public class ScriptsController extends HttpServlet {
 				        		  "successful BOOLEAN NULL, " + 
 				        		  "created_by_user_id TINYINT(255) UNSIGNED NOT NULL, " + 
 				        		  "created_datetime DATETIME NOT NULL, " +
+				        		  "datatable_created BOOLEAN NULL, " +
 				        		  "PRIMARY KEY (id), " +
 				        		  "CONSTRAINT unique_path_constraint UNIQUE (repository_filepath), " +
 				        		  "INDEX created_by_user_id_index (created_by_user_id), " + 
@@ -144,9 +148,7 @@ public class ScriptsController extends HttpServlet {
 				        		  "created_by_user_id TINYINT(255) UNSIGNED NOT NULL, " + 
 				        		  "created_datetime DATETIME NOT NULL, " +
 				        		  "updated_datetime DATETIME NOT NULL, " +
-				        		  "datatable_1_duplicate_keys_count, TINYINT(255) UNSIGNED NOT NULL, " + 
-				        		  "datatable_2_duplicate_keys_count, TINYINT(255) UNSIGNED NOT NULL, " + 
-				        		  "total_duplicate_keys_count TINYINT(255) UNSIGNED NOT NULL, " + 
+				        		  "total_duplicate_keys_count TINYINT(255) UNSIGNED NULL, " + 
 				        		  "PRIMARY KEY (id), " +
 				        		  "INDEX created_by_user_id_index (created_by_user_id), " + 
 				        		  "FOREIGN KEY (created_by_user_id) REFERENCES user(id) " + 
@@ -174,9 +176,10 @@ public class ScriptsController extends HttpServlet {
 				          Statement statement = connection.createStatement();
 				          statement.executeUpdate("CREATE TABLE datatable (" + 
 				        		  "id TINYINT(255) UNSIGNED NOT NULL AUTO_INCREMENT, " +
-				        		  "datatable_name VARCHAR(255) NOT NULL, " +
+				        		  "name VARCHAR(255) NOT NULL, " +
 				        		  "upload_id TINYINT(255) UNSIGNED NOT NULL, " + 
 				        		  "created_datetime DATETIME NOT NULL, " +
+				        		  "duplicate_keys_count TINYINT(255) UNSIGNED NULL, " + 
 				        		  "PRIMARY KEY (id), " +
 				        		  "INDEX upload_id_index (upload_id), " + 
 				        		  "FOREIGN KEY (upload_id) REFERENCES upload(id) " + 
@@ -193,9 +196,9 @@ public class ScriptsController extends HttpServlet {
 			        
 				      try{
 				          Statement statement = connection.createStatement();
-				          statement.executeUpdate("CREATE TABLE datatablejoin (" + 
+				          statement.executeUpdate("CREATE TABLE `join` (" + 
 				        		  "id TINYINT(255) UNSIGNED NOT NULL AUTO_INCREMENT, " +
-				        		  "PRIMARY KEY (id), " +
+				        		  "PRIMARY KEY (id) " +
 				        		  ") ENGINE=InnoDB;");
 				          statement.close();
 	

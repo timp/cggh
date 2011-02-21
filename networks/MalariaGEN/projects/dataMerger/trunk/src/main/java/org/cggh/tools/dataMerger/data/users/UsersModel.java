@@ -1,13 +1,13 @@
 package org.cggh.tools.dataMerger.data.users;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
+
+import org.cggh.tools.dataMerger.data.DataModel;
 
 public class UsersModel implements java.io.Serializable {
 
@@ -16,16 +16,22 @@ public class UsersModel implements java.io.Serializable {
 	 */
 	private static final long serialVersionUID = 269809433850318241L;
 	private HttpServletRequest httpServletRequest;
-	private UserModel currentUser;
+	private DataModel dataModel;	
+	private UserModel userModel;
 	
 	public UsersModel() {
 		
-		//Note: Can't do this on construction because request object gets set after construction (when the bean is initialized).
-		//this.currentUser = new UserModel(httpServletRequest.getRemoteUser());
-		
-		this.setCurrentUser(new UserModel());
+		this.setDataModel(new DataModel());		
+		this.setUserModel(new UserModel());
 	}
 
+    public void setDataModel (final DataModel dataModel) {
+        this.dataModel  = dataModel;
+    }
+    public DataModel getDataModel () {
+        return this.dataModel;
+    } 	
+	
     public void setHttpServletRequest (final HttpServletRequest  httpServletRequest ) {
         this.httpServletRequest  = httpServletRequest;
     }
@@ -33,26 +39,24 @@ public class UsersModel implements java.io.Serializable {
         return this.httpServletRequest;
     }  	
 	
-	public void setCurrentUser (final UserModel user) {
+	public void setUserModel (final UserModel userModel) {
 		
-		this.currentUser = user;
+		this.userModel = userModel;
 	}
-	public UserModel getCurrentUser () {
+	public UserModel getUserModel () {
 		
-		return this.currentUser;
+		return this.userModel;
 	}	
 	
 	public Boolean isUsernameCreated (final String username) {
-		
-		ServletContext servletContext = getHttpServletRequest().getSession().getServletContext();
-		
+
 		Boolean usernameCreated = null;
 		
 		try {
 			
-			Class.forName("com.mysql.jdbc.Driver").newInstance(); 
-			Connection connection = DriverManager.getConnection(servletContext.getInitParameter("dbBasePath") + servletContext.getInitParameter("dbName"), servletContext.getInitParameter("dbUsername"), servletContext.getInitParameter("dbPassword"));
-			 
+			this.getDataModel().createConnection();
+			Connection connection = this.getDataModel().getConnection();
+			
 			if (!connection.isClosed()) {		
 		
 		      try{
@@ -111,15 +115,13 @@ public class UsersModel implements java.io.Serializable {
 	
 	
 	
-	public void createUser (String username) {
+	public void createUserByUsername (String username) {
 
-		ServletContext servletContext = getHttpServletRequest().getSession().getServletContext();
-		
 		try {
 			
-			Class.forName("com.mysql.jdbc.Driver").newInstance(); 
-			Connection connection = DriverManager.getConnection(servletContext.getInitParameter("dbBasePath") + servletContext.getInitParameter("dbName"), servletContext.getInitParameter("dbUsername"), servletContext.getInitParameter("dbPassword"));
-			 
+			this.getDataModel().createConnection();
+			Connection connection = this.getDataModel().getConnection();
+			
 			if (!connection.isClosed()) {		
 		
 		      try{

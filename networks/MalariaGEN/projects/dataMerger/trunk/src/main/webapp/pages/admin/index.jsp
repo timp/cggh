@@ -7,12 +7,16 @@
 <title>Admin</title>
 </head>
 <body>
-	<h1>Admin</h1>
-	<ul>
-		<li><a href="install-db-v0.0.1.jsp">Install database v0.0.1</a>
-		</li>
-		<li><a href="uninstall-db-v0.0.1.jsp">Uninstall database v0.0.1</a>
-		</li>
-	</ul>
+	<div class="page">
+		<!-- TODO: Can't use header if there is no database! Currently tries to use user info, etc. -->
+		<%--@ include file="../shared/jsp/header.jsp" --%>
+		<h2>Admin</h2>
+		<ul>
+			<li><a href="install-db-v0.0.1.jsp">Install database v0.0.1</a>
+			</li>
+			<li><a href="uninstall-db-v0.0.1.jsp">Uninstall database v0.0.1</a>
+			</li>
+		</ul>
+	</div>
 </body>
 </html>

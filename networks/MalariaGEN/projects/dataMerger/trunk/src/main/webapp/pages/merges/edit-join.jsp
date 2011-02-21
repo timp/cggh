@@ -1,11 +1,18 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
+<jsp:useBean id="dataModel" class="org.cggh.tools.dataMerger.data.DataModel" scope="session"/>
+<jsp:useBean id="userModel" class="org.cggh.tools.dataMerger.data.users.UserModel" scope="session"/>
 <jsp:useBean id="mergeModel" class="org.cggh.tools.dataMerger.data.merges.MergeModel" scope="page"/>
 <jsp:useBean id="functionsModel" class="org.cggh.tools.dataMerger.functions.FunctionsModel" scope="page"/>
 <%
 
-mergeModel.getDataModel().setDataModelByServletContext(request.getSession().getServletContext());
-mergeModel.getUserModel().setUserModelByUsername(request.getRemoteUser());
+dataModel.setDataModelByServletContext(request.getSession().getServletContext());
+userModel.setDataModel(dataModel);
+userModel.setUserModelByUsername(request.getRemoteUser());
+
+mergeModel.setDataModel(dataModel);
+mergeModel.setUserModel(userModel);
+
 mergeModel.setMergeModelById(Integer.parseInt(request.getParameter("merge_id")));
 
 %>
@@ -35,7 +42,7 @@ mergeModel.setMergeModelById(Integer.parseInt(request.getParameter("merge_id")))
 			<p>[error: A key is required]
 			</p>
 			
-			<% if (mergeModel.getTotalDuplicateKeysCount() > 0) { %>
+			<% if (null != mergeModel.getTotalDuplicateKeysCount() && mergeModel.getTotalDuplicateKeysCount() > 0) { %>
 			<p>[error: There are duplicate keys]
 			</p>
 			<% } %>

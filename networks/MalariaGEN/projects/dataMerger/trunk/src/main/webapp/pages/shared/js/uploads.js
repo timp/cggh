@@ -41,12 +41,14 @@ function initSerializeObjectFunction () {
 function initMergeButton () {
 	
 	$('.merge-button').click(function(event) {
+		
+		event.preventDefault();
+		
 		var data = $.toJSON($('.uploads-form').serializeObject());
 		
 		//NOTE: This function has been moved to merges.js
 	    postMerge(data);
 	    
-		event.preventDefault();
 	});	
 }
 

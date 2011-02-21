@@ -25,23 +25,34 @@ public class MergeModel implements java.io.Serializable {
 	private Timestamp updatedDatetime = null;
 	
 	//TODO: Update these to use UploadModel. Ref using mergeModel.getUpload1Model().getId();
-	private Integer upload1Id = null;
-	private Integer upload2Id = null;
+	private UploadModel upload1Model;
+	private UploadModel upload2Model;
+	private DatatableModel datatable1Model;
+	private DatatableModel datatable2Model;
+
 	private Integer createdByUserId = null;
 	private Integer totalDuplicateKeysCount = null;
 	
-	//TODO: Update these to use DatatableModel. Ref using mergeModel.getDatatable1Model().getDuplicateKeysCount();	
-	private Integer datatable2DuplicateKeysCount = null;
-	private Integer datatable1DuplicateKeysCount = null;	
 	
 	public MergeModel() {
 		
 		this.setDataModel(new DataModel());
 		this.setUserModel(new UserModel());		
+		
+		this.setUpload1Model(new UploadModel());
+		this.setUpload2Model(new UploadModel());
+		this.setDatatable1Model(new DatatableModel());
+		this.setDatatable2Model(new DatatableModel());	
+		
 	}
 	
 
-    public void setDataModel (final DataModel dataModel) {
+
+
+
+
+
+	public void setDataModel (final DataModel dataModel) {
         this.dataModel  = dataModel;
     }
     public DataModel getDataModel () {
@@ -71,9 +82,6 @@ public class MergeModel implements java.io.Serializable {
 		return this.createdDatetime;
 	}	
 	
-	
-	
-	
 	public void setUpdatedDatetime (final Timestamp datetime) {
 		this.updatedDatetime = datetime;
 	}
@@ -81,47 +89,34 @@ public class MergeModel implements java.io.Serializable {
 		return this.updatedDatetime;
 	}
 
-	public void setUpload1Id(Integer upload1Id) {
-		this.upload1Id = upload1Id;
+	
+	
+	
+	
+	
+    public void setDatatable1Model(DatatableModel datatableModel) {
+    	this.datatable1Model = datatableModel;
 	}
-	public Integer getUpload1Id() {
-		return this.upload1Id;
+
+	public void setDatatable2Model(DatatableModel datatableModel) {
+		this.datatable2Model = datatableModel;
+	}
+
+
+	public void setUpload1Model(UploadModel uploadModel) {
+		this.upload1Model = uploadModel;
+	}
+
+	public void setUpload2Model(UploadModel uploadModel) {
+		this.upload2Model = uploadModel;
 	}	
+	
+	
 
-	public void setUpload2Id(Integer upload2Id) {
-		this.upload2Id = upload2Id;
-	}
-	public Integer getUpload2Id() {
-		return this.upload2Id;
-	}
-
-	public void setCreatedByUserId(Integer createdByUserId) {
-		this.createdByUserId = createdByUserId;
-	}
-	public Integer getCreatedByUserId() {
-		return this.createdByUserId;
-	}
-
-	public void setTotalDuplicateKeysCount(Integer totalDuplicateKeysCount) {
-		this.totalDuplicateKeysCount = totalDuplicateKeysCount;
-	}
-	public Integer getTotalDuplicateKeysCount() {
-		return this.totalDuplicateKeysCount;
-	}
-
-	public void setDatatable2DuplicateKeysCount(Integer datatable2DuplicateKeysCount) {
-		this.datatable2DuplicateKeysCount = datatable2DuplicateKeysCount;
-	}
-	public Integer getDatatable2DuplicateKeysCount() {
-		return this.datatable2DuplicateKeysCount;
-	}
-
-	public void setDatatable1DuplicateKeysCount(Integer datatable1DuplicateKeysCount) {
-		this.datatable1DuplicateKeysCount = datatable1DuplicateKeysCount;
-	}	
-	public Integer setDatatable1DuplicateKeysCount() {
-		return this.datatable1DuplicateKeysCount;
-	}	
+	
+	
+	
+	
 	
 	   public void setMergeModelById (final Integer id) {
 		    
@@ -129,6 +124,7 @@ public class MergeModel implements java.io.Serializable {
 
 			try {
 				
+				this.getDataModel().createConnection();
 				Connection connection = this.getDataModel().getConnection();
 				 
 				if (!connection.isClosed()) {
@@ -149,13 +145,13 @@ public class MergeModel implements java.io.Serializable {
 				          if (resultSet.next()) {
 				        	  
 				        	  resultSet.first();
-				        	  this.setUpload1Id(resultSet.getInt("upload_1_id"));
-				        	  this.setUpload2Id(resultSet.getInt("upload_2_id"));
+				        	  this.getUpload1Model().setId(resultSet.getInt("upload_1_id"));
+				        	  this.getUpload2Model().setId(resultSet.getInt("upload_2_id"));
 				        	  this.setCreatedByUserId(resultSet.getInt("created_by_user_id"));
 				        	  this.setCreatedDatetime(resultSet.getTimestamp("created_datetime"));
 				        	  this.setUpdatedDatetime(resultSet.getTimestamp("updated_datetime"));
-				        	  this.setDatatable1DuplicateKeysCount(resultSet.getInt("datatable_1_duplicate_keys_count"));
-				        	  this.setDatatable2DuplicateKeysCount(resultSet.getInt("datatable_1_duplicate_keys_count"));
+				        	  this.getDatatable1Model().setDuplicateKeysCount(resultSet.getInt("datatable_1_duplicate_keys_count"));
+				        	  this.getDatatable2Model().setDuplicateKeysCount(resultSet.getInt("datatable_1_duplicate_keys_count"));
 				        	  this.setTotalDuplicateKeysCount(resultSet.getInt("total_duplicate_keys_count"));
 				        	  
 				          } else {
@@ -191,28 +187,46 @@ public class MergeModel implements java.io.Serializable {
 	    }
 
 
+	   
+	public Integer getTotalDuplicateKeysCount() {
+		return this.totalDuplicateKeysCount;
+	}
+		
+	public void setTotalDuplicateKeysCount(Integer totalDuplicateKeysCount) {
+		this.totalDuplicateKeysCount = totalDuplicateKeysCount;
+	}
+
+
+
+
+
+
+	public Integer getCreatedByUserId() {
+		return this.createdByUserId;
+	}
+	public void setCreatedByUserId(Integer createdByUserId) {
+		this.createdByUserId = createdByUserId;
+	}
+
+
 	public DatatableModel getDatatable1Model() {
-		// TODO Auto-generated method stub
-		return null;
+		return this.datatable1Model;
 	}
-
-
-	public UploadModel getUpload1Model() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
 
 	public DatatableModel getDatatable2Model() {
-		// TODO Auto-generated method stub
-		return null;
+		return this.datatable2Model;
+	}
+
+	public UploadModel getUpload1Model() {
+		return this.upload1Model;
 	}
 
 
 	public UploadModel getUpload2Model() {
-		// TODO Auto-generated method stub
-		return null;
+		return this.upload2Model;
 	}
+
+
 	
 	
 	

@@ -12,6 +12,7 @@ import javax.sql.rowset.CachedRowSet;
 
 import org.cggh.tools.dataMerger.data.merges.MergesModel;
 import org.cggh.tools.dataMerger.data.uploads.UploadsModel;
+import org.cggh.tools.dataMerger.data.users.UserModel;
 import org.cggh.tools.dataMerger.functions.FunctionsModel;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -32,6 +33,9 @@ public class DataController extends HttpServlet {
 	 * 
 	 */
 	private static final long serialVersionUID = 2142411300172699330L;
+	private DataModel dataModel = null;
+	private UserModel userModel;
+	
 	private UploadsModel uploadsModel = null;
 	private FunctionsModel functionsModel = null;	
 	private MergesModel mergesModel = null;
@@ -44,11 +48,32 @@ public class DataController extends HttpServlet {
         
         //TODO: Set up a DataModel to store the connection details for each resource. Perhaps access by dataModel.getResource("uploads").getConnectionString()... dataModel.getResourcesAsList().
         
+        this.setDataModel(new DataModel());
+    	this.setUserModel(new UserModel());
+    	
         this.setUploadsModel(new UploadsModel());
         this.setFunctionsModel(new FunctionsModel());
         this.setMergesModel(new MergesModel());
+        
+        
+
+        
     }
 
+    public void setDataModel (final DataModel dataModel) {
+        this.dataModel  = dataModel;
+    }
+    public DataModel getDataModel () {
+        return this.dataModel;
+    }     
+
+    public void setUserModel (final UserModel userModel) {
+        this.userModel  = userModel;
+    }
+    public UserModel getUserModel () {
+        return this.userModel;
+    }     
+    
     public void setUploadsModel (final UploadsModel uploadsModel) {
         this.uploadsModel = uploadsModel;
     }  
@@ -75,30 +100,37 @@ public class DataController extends HttpServlet {
     
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-			  if (request.getPathInfo().equals("/uploads")) {
-				  
-					this.uploadsModel.setHttpServletRequest(request);
-					
-					  CachedRowSet uploadsAsCachedRowSet = this.uploadsModel.getUploadsAsCachedRowSet();
+		this.dataModel.setDataModelByServletContext(request.getSession().getServletContext());
+		this.userModel.setDataModel(this.getDataModel());
+		this.userModel.setUserModelByUsername(request.getRemoteUser());
+		
 
-					  PrintWriter out = response.getWriter();
-					  
-					  if (uploadsAsCachedRowSet != null) {
+		  if (request.getPathInfo().equals("/uploads")) {
 
-						    this.functionsModel.setCachedRowSet(uploadsAsCachedRowSet);
-						    this.functionsModel.transformUploadsCachedRowSetIntoDecoratedXHTMLTable();
-						    out.print(functionsModel.getDecoratedXHTMLTable());
-						    
-					  } else {
-						  
-						  out.print("<p>Error: uploadsAsCachedRowSet is null</p>");
-						  
-					  } 
-				  
+				this.uploadsModel.setDataModel(this.getDataModel());
+				this.uploadsModel.setUserModel(this.getUserModel());
+			  
+			  
+			  CachedRowSet uploadsAsCachedRowSet = this.uploadsModel.getUploadsAsCachedRowSet();
+		
+			  PrintWriter out = response.getWriter();
+			  
+			  if (uploadsAsCachedRowSet != null) {
+		
+				    this.functionsModel.setCachedRowSet(uploadsAsCachedRowSet);
+				    this.functionsModel.transformUploadsCachedRowSetIntoDecoratedXHTMLTable();
+				    out.print(functionsModel.getDecoratedXHTMLTable());
+				    
 			  } else {
 				  
-				  System.out.println("Unhandled pathInfo.");
-			  }
+				  out.print("<p>Error: uploadsAsCachedRowSet is null</p>");
+					  
+				  } 
+			  
+		  } else {
+			  
+			  System.out.println("Unhandled pathInfo.");
+		  }
 	}
 
 	/**
@@ -106,10 +138,17 @@ public class DataController extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
+		this.dataModel.setDataModelByServletContext(request.getSession().getServletContext());
+		this.userModel.setDataModel(this.getDataModel());
+		this.userModel.setUserModelByUsername(request.getRemoteUser());
+				
+		
 		 if (request.getPathInfo().equals("/merges")) {
 			  
-			  this.mergesModel.setHttpServletRequest(request);
+		        this.mergesModel.setDataModel(this.getDataModel());
+		        this.mergesModel.setUserModel(this.getUserModel());			  
 			  
+			 
 			  Integer merge_id = null;
 			  
 				  StringBuffer jb = new StringBuffer();
@@ -134,7 +173,8 @@ public class DataController extends HttpServlet {
 
 					try {
 
-						merge_id = this.mergesModel.createMerge(uploadIds.getInt(0), uploadIds.getInt(1));
+
+						merge_id = this.mergesModel.createMergeByUploadIds(uploadIds.getInt(0), uploadIds.getInt(1));
 						
 						
 					} catch (JSONException e) {

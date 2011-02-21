@@ -24,12 +24,15 @@ public class UserModel implements java.io.Serializable {
 		this.setDataModel(new DataModel());
 	}
 
+	
+	
 	public void setUserModelByUsername (final String username) {
 		
 		this.setUsername(username);
 		
 		try {
 			
+			this.getDataModel().createConnection();
 			Connection connection = this.getDataModel().getConnection();
 			 
 			if (!connection.isClosed()) {
