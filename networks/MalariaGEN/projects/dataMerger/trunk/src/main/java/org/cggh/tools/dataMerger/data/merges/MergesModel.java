@@ -9,6 +9,7 @@ import javax.sql.rowset.CachedRowSet;
 
 import org.cggh.tools.dataMerger.data.DataModel;
 import org.cggh.tools.dataMerger.data.datatables.DatatablesModel;
+import org.cggh.tools.dataMerger.data.joins.JoinsModel;
 import org.cggh.tools.dataMerger.data.users.UserModel;
 
 
@@ -25,6 +26,7 @@ public class MergesModel implements java.io.Serializable {
 	
 	private MergeModel mergeModel;
 	private DatatablesModel datatablesModel;
+	private JoinsModel joinsModel;
 	
 	
 	public MergesModel() {
@@ -35,6 +37,7 @@ public class MergesModel implements java.io.Serializable {
 
 		this.setMergeModel(new MergeModel());
 		this.setDatatablesModel(new DatatablesModel());		
+		this.setJoinsModel(new JoinsModel());
 		
 		
 	}
@@ -62,6 +65,17 @@ public class MergesModel implements java.io.Serializable {
 		
 		return this.mergeModel;
 	}	    
+	
+	public void setJoinsModel (final JoinsModel joinsModel) {
+		
+		this.joinsModel = joinsModel;
+	}
+	public JoinsModel getJoinsModel () {
+		
+		return this.joinsModel;
+	}		
+	
+	
     
 	//With new connection.
     public Integer createMergeByUploadIds (Integer upload1Id, Integer upload2Id) {
@@ -84,61 +98,87 @@ public class MergesModel implements java.io.Serializable {
 			          preparedStatement.setInt(3, this.getUserModel().getId());				          
 			          preparedStatement.executeUpdate();
 			          preparedStatement.close();
-			          
-			          //TODO:
-				      System.out.println("Inserted merge.");
-			          
+
 				      this.getDataModel().setLastInsertIdByConnection(connection);
 			          this.mergeModel.setId(this.getDataModel().getLastInsertId());
-			          
-			          //TODO:
-				      System.out.println("Got merge id = " + this.mergeModel.getId());
-				      
 
-				      //TODO: see if the datatables have already been loaded in.
-				      
+				      // See if the datatables have already been loaded in.
+
 				      //This populates the model with the latest db data.
 				      this.getMergeModel().getUpload1Model().getUploadModelById( this.getMergeModel().getUpload1Model().getId(), connection);
+				      
 				      
 				      if (!this.getMergeModel().getUpload1Model().isDatatableCreated()) {
 				    	  
 				    	  this.getDatatablesModel().createDatatableByUploadModel(this.getMergeModel().getUpload1Model(), connection);
-				    	  
+			
 				    	  //This populates the model with the latest db data.
 					      this.getMergeModel().getUpload1Model().getUploadModelById( this.getMergeModel().getUpload1Model().getId(), connection);
-					      
-					      //TODO: check again to see if the datatable has been created?
-				    	  
+		
 				      }
+ 
 				      
-				      //TODO: same for upload2
+				      // Same for upload2
 				      this.getMergeModel().getUpload2Model().getUploadModelById( this.getMergeModel().getUpload2Model().getId(), connection);
-				      
+
 				      if (!this.getMergeModel().getUpload2Model().isDatatableCreated()) {
-				    	  
+
 				    	  this.getDatatablesModel().createDatatableByUploadModel(this.getMergeModel().getUpload2Model(), connection);
-				    	  
+
 				    	  //This populates the model with the latest db data.
 					      this.getMergeModel().getUpload2Model().getUploadModelById( this.getMergeModel().getUpload2Model().getId(), connection);
-					      
-					      //TODO: check again to see if the datatable has been created?
-				    	  
+
 				      }
 			          
 				      // The datatables have been created.
-				      //TODO: create an auto-join
-				      
-				      //Load the 2 datatables
-				      this.getMergeModel().getDatatable1Model().getDatatableModelByName(this.getMergeModel().getDatatable1Model().getName(), connection);
-				      this.getMergeModel().getDatatable2Model().getDatatableModelByName(this.getMergeModel().getDatatable2Model().getName(), connection);
-				      
+				      // Create an auto-join
+
+				      // Load the 2 datatables
+				      this.getMergeModel().getDatatable1Model().getDatatableModelByUploadId(this.getMergeModel().getUpload1Model().getId(), connection);
+				      this.getMergeModel().getDatatable2Model().getDatatableModelByUploadId(this.getMergeModel().getUpload2Model().getId(), connection);
+
 				      // Get the column names for each of the datatables.
 				      
 				      String[] datatable1ColumnNames = this.getMergeModel().getDatatable1Model().getColumnNamesAsStringArray();
 				      String[] datatable2ColumnNames = this.getMergeModel().getDatatable2Model().getColumnNamesAsStringArray();
 				      
-				      
-				      
+				      // Cycle through the column names of one table to see if they match the other table.
+				      if (datatable1ColumnNames != null) {
+					      for (int i = 0; i < datatable1ColumnNames.length; i++) {
+					    	  
+					    	  for (int j = 0; j < datatable2ColumnNames.length; j++) {
+					    		  
+					    		  // Case insensitive.
+					    		  if (datatable1ColumnNames[i].toLowerCase().equals(datatable2ColumnNames[j].toLowerCase())) {
+					    			  
+					    			  // We have a match.
+					    			  
+					    			  //TODO: version 2? automatic key determination.
+					    			  //Boolean isKey = (this.getMergeModel().getDatatable1Model().getDataAsCachedRowSet().get > && );
+					    			  
+					    			  Integer columnNumber = this.getJoinsModel().getNextColumnNumberByMergeId(this.getMergeModel().getId(), connection);
+					    			  Boolean key = false;
+					    			  String datatable1ColumnName = datatable1ColumnNames[i];
+					    			  String datatable2ColumnName =datatable2ColumnNames[j];
+					    			  String columnName = datatable1ColumnNames[i];
+					    			  
+					    			  this.getJoinsModel().createJoin(this.getMergeModel().getId(), columnNumber, key, datatable1ColumnName, datatable2ColumnName, columnName, connection);
+					    			  
+					    			  //TODO
+					    			  //System.out.println(datatable1ColumnNames[i] + " matches " + datatable2ColumnNames[j]);
+					    			  
+					    		  }
+					    		  
+					    	  }
+					    	  
+					    	  
+					      }
+					      
+				      } else {
+				    	  
+				    	  //TODO:
+				    	  System.out.println("datatable1ColumnNames is null");
+				      }
 				      
 				      
 			          

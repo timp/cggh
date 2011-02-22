@@ -103,7 +103,8 @@ public class DatatablesModel implements java.io.Serializable {
 	public void createDatatableByUploadModel(UploadModel uploadModel,
 			Connection connection) {
 
-		this.setUploadModel(uploadModel);
+		// Creates should not change their own models (but can change the models they are given).
+		// So don't do this: this.setUploadModel(uploadModel);
 		
 		// Determine a name for the new table.
 		// Get the max(id) for the datatable table.
@@ -113,9 +114,11 @@ public class DatatablesModel implements java.io.Serializable {
 		
 		
 		// Get the datatable by name.
-		this.getDatatableModel().getDatatableModelByName("datatable_" + nextUniqueInteger, connection);
+		DatatableModel datatableModel = new DatatableModel();
 		
-		while (this.getDatatableModel().getId() != null) {
+		datatableModel.getDatatableModelByName("datatable_" + nextUniqueInteger, connection);
+		
+		while (datatableModel.getId() != null) {
 			
 			nextUniqueInteger++;
 			
@@ -124,25 +127,25 @@ public class DatatablesModel implements java.io.Serializable {
 				break;
 			}
 			
-			this.getDatatableModel().getDatatableModelByName("datatable_" + nextUniqueInteger, connection);
+			datatableModel.getDatatableModelByName("datatable_" + nextUniqueInteger, connection);
 		}
 		
-		this.getDatatableModel().setName("datatable_" + nextUniqueInteger);
-		this.getDatatableModel().setUploadModel(uploadModel);
+		datatableModel.setName("datatable_" + nextUniqueInteger);
+		datatableModel.setUploadModel(uploadModel);
 		
 		
 		// Create the datatable record.
 	     try {
 	         PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO datatable (name, upload_id, created_datetime) VALUES (?, ?, NOW());");
-	         preparedStatement.setString(1, this.datatableModel.getName());
-	         preparedStatement.setInt(2, this.datatableModel.getUploadModel().getId());	          
+	         preparedStatement.setString(1, datatableModel.getName());
+	         preparedStatement.setInt(2, datatableModel.getUploadModel().getId());	          
 	         preparedStatement.executeUpdate();
 	         preparedStatement.close();
 	         
 	         //Get the column names
          		try {
 
-         			FileInputStream fileInputStream = new FileInputStream(this.getDatatableModel().getUploadModel().getRepositoryFilepath());
+         			FileInputStream fileInputStream = new FileInputStream(datatableModel.getUploadModel().getRepositoryFilepath());
 
 	        	    DataInputStream dataInputStream = new DataInputStream(fileInputStream);
 	        	    BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(dataInputStream));
@@ -171,7 +174,7 @@ public class DatatablesModel implements java.io.Serializable {
 	        	    // Create the table
 	    		      try {
 				          Statement statement = connection.createStatement();
-				          statement.executeUpdate("CREATE TABLE `" + this.getDatatableModel().getName() + "` (" + 
+				          statement.executeUpdate("CREATE TABLE `" + datatableModel.getName() + "` (" + 
 				        		  strColumnList + 
 				        		  ") ENGINE=InnoDB;");
 				          statement.close();
@@ -180,8 +183,8 @@ public class DatatablesModel implements java.io.Serializable {
 		    		      try {
 		    		    	  //TODO: OPTIONALLY ENCLOSED BY '"' ESCAPED BY '\'
 		    		    	  //ENCLOSED BY '\"' ESCAPED BY '\\\\'
-		    		          PreparedStatement preparedStatement2 = connection.prepareStatement("LOAD DATA INFILE ? IGNORE INTO TABLE `" + this.getDatatableModel().getName() + "` FIELDS TERMINATED BY ',' LINES TERMINATED BY '\n' IGNORE 1 LINES ;");
-		    		          preparedStatement2.setString(1, this.getDatatableModel().getUploadModel().getRepositoryFilepath());
+		    		          PreparedStatement preparedStatement2 = connection.prepareStatement("LOAD DATA INFILE ? IGNORE INTO TABLE `" + datatableModel.getName() + "` FIELDS TERMINATED BY ',' LINES TERMINATED BY '\n' IGNORE 1 LINES ;");
+		    		          preparedStatement2.setString(1, datatableModel.getUploadModel().getRepositoryFilepath());
 		    		          preparedStatement2.executeUpdate();
 		    		          preparedStatement2.close();
 		    		          
@@ -190,7 +193,7 @@ public class DatatablesModel implements java.io.Serializable {
 			    		      try {
 
 			    		          PreparedStatement preparedStatement3 = connection.prepareStatement("UPDATE upload SET datatable_created = 1 WHERE id = ?;");
-			    		          preparedStatement3.setInt(1, this.getDatatableModel().getUploadModel().getId());
+			    		          preparedStatement3.setInt(1, datatableModel.getUploadModel().getId());
 			    		          preparedStatement3.executeUpdate();
 			    		          preparedStatement3.close();
 			    		          

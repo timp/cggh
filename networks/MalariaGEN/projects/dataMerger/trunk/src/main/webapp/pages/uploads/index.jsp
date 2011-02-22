@@ -130,6 +130,13 @@ uploadsModel.setUserModel(userModel);
         	         
     	</div>
 
+
+		<p>TODO: Fix "Error: uploadsAsCachedRowSet is null" on first load.
+		</p>
+		
+		<p>TODO: Fix non-response on merge button press.
+		</p>
+
 	</div>	
 
 </body>
