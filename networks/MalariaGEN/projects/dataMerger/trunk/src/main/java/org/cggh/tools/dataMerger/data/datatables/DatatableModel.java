@@ -5,6 +5,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.sql.rowset.CachedRowSet;
 
@@ -22,10 +24,9 @@ public class DatatableModel implements java.io.Serializable {
 	private UploadModel uploadModel;
 	private Integer duplicateKeysCount;
 	private Timestamp createdDatetime;
-	private String[] columnNamesAsStringArray;
-
-	//TODO: Data
 	private CachedRowSet dataAsCachedRowSet;
+	//private String[] columnNamesAsStringArray;
+	private List<String> columnNamesAsStringList;
 	
 	
 	public DatatableModel() {
@@ -80,7 +81,7 @@ public class DatatableModel implements java.io.Serializable {
 		return this.createdDatetime;
 	}
 
-	public void getDatatableModelByName(String name, Connection connection) {
+	public void setDatatableModelByName(String name, Connection connection) {
 
 		this.setName(name);
 		
@@ -113,7 +114,7 @@ public class DatatableModel implements java.io.Serializable {
 
 	        	  this.setId(resultSet.getInt("id"));
 	        	  
-	        	  this.getDatatableModelById(this.getId(), connection);
+	        	  this.setDatatableModelById(this.getId(), connection);
 
 	          } else {
 	        	  //TODO: proper logging and error handling
@@ -151,20 +152,32 @@ public class DatatableModel implements java.io.Serializable {
 
 
 
-	public void setColumnNamesAsStringArray(String[] columnNamesAsStringArray) {
-
-		this.columnNamesAsStringArray = columnNamesAsStringArray;
+//	public void setColumnNamesAsStringArray(String[] columnNamesAsStringArray) {
+//
+//		this.columnNamesAsStringArray = columnNamesAsStringArray;
+//		
+//	}
+//	public String[] getColumnNamesAsStringArray() {
+//
+//		return this.columnNamesAsStringArray;
+//	}
+	
+	public void setColumnNamesAsStringList(List<String> columnNamesAsStringList) {
+		
+		this.columnNamesAsStringList = columnNamesAsStringList;
 		
 	}
-	public String[] getColumnNamesAsStringArray() {
 
-		return this.columnNamesAsStringArray;
+	public List<String> getColumnNamesAsStringList() {
+
+		return this.columnNamesAsStringList;
 	}
 
 
 
-	public void getDatatableModelByUploadId(Integer uploadId, Connection connection) {
-		
+
+	public void setDatatableModelByUploadId(Integer uploadId, Connection connection) {
+
 		this.getUploadModel().setId(uploadId);
 		
 	      try {
@@ -187,7 +200,7 @@ public class DatatableModel implements java.io.Serializable {
 	        	  this.setId(resultSet.getInt("id"));
 	   		 
 	        	  // All roads lead to Rome.
-	        	  this.getDatatableModelById(this.getId(), connection);	        	  
+	        	  this.setDatatableModelById(this.getId(), connection);	        	  
 	        	  
 	          } else {
 	        	  //TODO: proper logging and error handling
@@ -210,8 +223,8 @@ public class DatatableModel implements java.io.Serializable {
 
 
 
-	public void getDatatableModelById(Integer id, Connection connection) {
-		
+	public void setDatatableModelById(Integer id, Connection connection) {
+
 		  this.setId(id);
 		  
 		  //clear old data
@@ -257,13 +270,20 @@ public class DatatableModel implements java.io.Serializable {
 			          
 			          this.setDataAsCachedRowSet(dataAsCachedRowSet);
 			          
-			          String[] columnNamesAsStringArray = new String[this.getDataAsCachedRowSet().getMetaData().getColumnCount()];
+			          //String[] columnNamesAsStringArray = new String[this.getDataAsCachedRowSet().getMetaData().getColumnCount()];
+			          
+			          List<String> columnNamesAsStringList = new ArrayList<String>();
+			          
 			          for (int i = 0; i < this.getDataAsCachedRowSet().getMetaData().getColumnCount(); i++) {
 			        	  
-			        	  columnNamesAsStringArray[i] = this.getDataAsCachedRowSet().getMetaData().getColumnName(i + 1);
+			        	  //columnNamesAsStringArray[i] = this.getDataAsCachedRowSet().getMetaData().getColumnName(i + 1);
+			        	  
+			        	  columnNamesAsStringList.add(this.getDataAsCachedRowSet().getMetaData().getColumnName(i + 1));
 			          }
 			          
-			          this.setColumnNamesAsStringArray(columnNamesAsStringArray);
+			          //this.setColumnNamesAsStringArray(columnNamesAsStringArray);
+			          
+			          this.setColumnNamesAsStringList(columnNamesAsStringList);
 			          
 			          preparedStatement2.close();
 
@@ -299,6 +319,8 @@ public class DatatableModel implements java.io.Serializable {
 	        } 
 		
 	}
+
+
 
 
 

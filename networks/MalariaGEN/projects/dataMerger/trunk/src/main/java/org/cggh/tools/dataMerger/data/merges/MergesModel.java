@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 
 import javax.sql.rowset.CachedRowSet;
 
@@ -105,7 +106,7 @@ public class MergesModel implements java.io.Serializable {
 				      // See if the datatables have already been loaded in.
 
 				      //This populates the model with the latest db data.
-				      this.getMergeModel().getUpload1Model().getUploadModelById( this.getMergeModel().getUpload1Model().getId(), connection);
+				      this.getMergeModel().getUpload1Model().setUploadModelById( this.getMergeModel().getUpload1Model().getId(), connection);
 				      
 				      
 				      if (!this.getMergeModel().getUpload1Model().isDatatableCreated()) {
@@ -113,20 +114,20 @@ public class MergesModel implements java.io.Serializable {
 				    	  this.getDatatablesModel().createDatatableByUploadModel(this.getMergeModel().getUpload1Model(), connection);
 			
 				    	  //This populates the model with the latest db data.
-					      this.getMergeModel().getUpload1Model().getUploadModelById( this.getMergeModel().getUpload1Model().getId(), connection);
+					      this.getMergeModel().getUpload1Model().setUploadModelById( this.getMergeModel().getUpload1Model().getId(), connection);
 		
 				      }
  
 				      
 				      // Same for upload2
-				      this.getMergeModel().getUpload2Model().getUploadModelById( this.getMergeModel().getUpload2Model().getId(), connection);
+				      this.getMergeModel().getUpload2Model().setUploadModelById( this.getMergeModel().getUpload2Model().getId(), connection);
 
 				      if (!this.getMergeModel().getUpload2Model().isDatatableCreated()) {
 
 				    	  this.getDatatablesModel().createDatatableByUploadModel(this.getMergeModel().getUpload2Model(), connection);
 
 				    	  //This populates the model with the latest db data.
-					      this.getMergeModel().getUpload2Model().getUploadModelById( this.getMergeModel().getUpload2Model().getId(), connection);
+					      this.getMergeModel().getUpload2Model().setUploadModelById( this.getMergeModel().getUpload2Model().getId(), connection);
 
 				      }
 			          
@@ -134,54 +135,167 @@ public class MergesModel implements java.io.Serializable {
 				      // Create an auto-join
 
 				      // Load the 2 datatables
-				      this.getMergeModel().getDatatable1Model().getDatatableModelByUploadId(this.getMergeModel().getUpload1Model().getId(), connection);
-				      this.getMergeModel().getDatatable2Model().getDatatableModelByUploadId(this.getMergeModel().getUpload2Model().getId(), connection);
+				      this.getMergeModel().getDatatable1Model().setDatatableModelByUploadId(this.getMergeModel().getUpload1Model().getId(), connection);
+				      this.getMergeModel().getDatatable2Model().setDatatableModelByUploadId(this.getMergeModel().getUpload2Model().getId(), connection);
 
 				      // Get the column names for each of the datatables.
 				      
-				      String[] datatable1ColumnNames = this.getMergeModel().getDatatable1Model().getColumnNamesAsStringArray();
-				      String[] datatable2ColumnNames = this.getMergeModel().getDatatable2Model().getColumnNamesAsStringArray();
+				      //String[] datatable1ColumnNamesAsStringArray = this.getMergeModel().getDatatable1Model().getColumnNamesAsStringArray();
+				      //String[] datatable2ColumnNamesAsStringArray = this.getMergeModel().getDatatable2Model().getColumnNamesAsStringArray();
+				      
+				      List<String> datatable1ColumnNamesAsStringList = this.getMergeModel().getDatatable1Model().getColumnNamesAsStringList();
+				      List<String> datatable2ColumnNamesAsStringList = this.getMergeModel().getDatatable2Model().getColumnNamesAsStringList();
 				      
 				      // Cycle through the column names of one table to see if they match the other table.
-				      if (datatable1ColumnNames != null) {
-					      for (int i = 0; i < datatable1ColumnNames.length; i++) {
+				      if (datatable1ColumnNamesAsStringList != null) {
+				    	  
+				    	  int i = 0;
+				    	  
+					      while (i < datatable1ColumnNamesAsStringList.size()) {
 					    	  
-					    	  for (int j = 0; j < datatable2ColumnNames.length; j++) {
+					    	  Boolean matchFound = false;
+					    	  
+					    	  int j = 0;
+					    	  
+					    	  if (datatable2ColumnNamesAsStringList != null) {
+					    	  
+						    	  while (j < datatable2ColumnNamesAsStringList.size()) {
+						    		  
+						    		  // Case insensitive.
+						    		  if (datatable1ColumnNamesAsStringList.get(i).toLowerCase().equals(datatable2ColumnNamesAsStringList.get(j).toLowerCase())) {
+						    			  
+						    			  // We have a match.
+						    			  matchFound = true;
+						    			  
+						    			  //TODO: version 2? automatic key determination.
+						    			  //Boolean isKey = (this.getMergeModel().getDatatable1Model().getDataAsCachedRowSet().get > && );
+						    			  
+						    			  Integer columnNumber = this.getJoinsModel().getNextColumnNumberByMergeId(this.getMergeModel().getId(), connection);
+						    			  Boolean key = false;
+						    			  String datatable1ColumnName = datatable1ColumnNamesAsStringList.get(i);
+						    			  String datatable2ColumnName = datatable2ColumnNamesAsStringList.get(j);
+						    			  String columnName = datatable1ColumnNamesAsStringList.get(i);
+						    			  
+						    			  this.getJoinsModel().createJoin(this.getMergeModel().getId(), columnNumber, key, datatable1ColumnName, datatable2ColumnName, columnName, connection);
+						    			  
+						    			  //Remove items to make this more efficient.
+						    			  
+						    			  datatable2ColumnNamesAsStringList.remove(j);
+						    			  j--;
+						    			  
+						    			  //TODO: What if there are more than one column with the same name?
+						    			  // This algorithm joins only the first occurrence of matching columns.
+						    			  break;
+						    			  
+						    			  //TODO
+						    			  //System.out.println(datatable1ColumnNames[i] + " matches " + datatable2ColumnNames[j]);
+
+						    		  }
+						    		  
+						    		  j++;
+						    		  
+						    	  }
+						    	  
+					    	  } else {
 					    		  
-					    		  // Case insensitive.
-					    		  if (datatable1ColumnNames[i].toLowerCase().equals(datatable2ColumnNames[j].toLowerCase())) {
-					    			  
-					    			  // We have a match.
-					    			  
-					    			  //TODO: version 2? automatic key determination.
-					    			  //Boolean isKey = (this.getMergeModel().getDatatable1Model().getDataAsCachedRowSet().get > && );
-					    			  
-					    			  Integer columnNumber = this.getJoinsModel().getNextColumnNumberByMergeId(this.getMergeModel().getId(), connection);
-					    			  Boolean key = false;
-					    			  String datatable1ColumnName = datatable1ColumnNames[i];
-					    			  String datatable2ColumnName =datatable2ColumnNames[j];
-					    			  String columnName = datatable1ColumnNames[i];
-					    			  
-					    			  this.getJoinsModel().createJoin(this.getMergeModel().getId(), columnNumber, key, datatable1ColumnName, datatable2ColumnName, columnName, connection);
-					    			  
-					    			  //TODO
-					    			  //System.out.println(datatable1ColumnNames[i] + " matches " + datatable2ColumnNames[j]);
-					    			  
-					    		  }
+					    		  //TODO:
+						    	  System.out.println("datatable1ColumnNamesAsStringList is null");
+					    	  }
+					    	  
+					    	  if (!matchFound) {
 					    		  
+				    			  Integer columnNumber = this.getJoinsModel().getNextColumnNumberByMergeId(this.getMergeModel().getId(), connection);
+				    			  Boolean key = false;
+				    			  String datatable1ColumnName = datatable1ColumnNamesAsStringList.get(i);
+				    			  String datatable2ColumnName = null;
+				    			  String columnName = datatable1ColumnNamesAsStringList.get(i);
+				    			  
+				    			  this.getJoinsModel().createJoin(this.getMergeModel().getId(), columnNumber, key, datatable1ColumnName, datatable2ColumnName, columnName, connection);
+				    			   
+				    			  //Remove this item from the list to make this more efficient.
+				    			  datatable1ColumnNamesAsStringList.remove(i);
+				    			  i--;
+				    			  
+					    	  } else {
+					    		  
+					    		  //Remove this item from the list to make this more efficient.
+					    		  datatable1ColumnNamesAsStringList.remove(i);
+					    		  i--;
 					    	  }
 					    	  
 					    	  
+					    	  i++;
 					      }
 					      
 				      } else {
 				    	  
 				    	  //TODO:
-				    	  System.out.println("datatable1ColumnNames is null");
+				    	  System.out.println("datatable1ColumnNamesAsStringList is null");
 				      }
+				      
+				     //TODO: The columns in datatable_2 that don't match datatable_1
+				      //TODO: Make this more efficient.
+				      
+				      if (datatable2ColumnNamesAsStringList != null) {
+				    	  
+				    	  int i = 0;
+				    	  
+					      while (i < datatable2ColumnNamesAsStringList.size()) {
+					    	  
+					    	  Boolean matchFound = false;
+					    	  
+					    	  if (datatable1ColumnNamesAsStringList != null) {
+						    	  for (int j = 0; j < datatable1ColumnNamesAsStringList.size(); j++) {
+						    		  
+						    		  // Case insensitive.
+						    		  if (datatable2ColumnNamesAsStringList.get(i).toLowerCase().equals(datatable1ColumnNamesAsStringList.get(j).toLowerCase())) {
+						    			  
+						    			  // We have a match.
+						    			  matchFound = true;
+	
+						    		  }
+						    		  
+						    	  }
+						    	  
+					    	  } else {
+					    		//TODO:
+						    	  System.out.println("datatable1ColumnNamesAsStringList is null");
+					    	  }
+					    	  
+					    	  if (!matchFound) {
+					    		  
+				    			  Integer columnNumber = this.getJoinsModel().getNextColumnNumberByMergeId(this.getMergeModel().getId(), connection);
+				    			  Boolean key = false;
+				    			  String datatable1ColumnName = null;
+				    			  String datatable2ColumnName = datatable2ColumnNamesAsStringList.get(i);
+				    			  String columnName = datatable2ColumnNamesAsStringList.get(i);
+				    			  
+				    			  this.getJoinsModel().createJoin(this.getMergeModel().getId(), columnNumber, key, datatable1ColumnName, datatable2ColumnName, columnName, connection);
+				    			   
+				    			  //Remove this item from the list to make this more efficient.
+				    			  datatable2ColumnNamesAsStringList.remove(i);
+				    			  i--;
+				    			  
+					    	  }
+					    	  
+					    	  
+					    	  i++;
+					      }
+					      
+				      } else {
+				    	  
+				    	  //TODO:
+				    	  System.out.println("datatable2ColumnNamesAsStringList is null");
+				      }
+				      
+				      //TODO: Create auto-resolution
+				      //Need at least one key
+				      
 				      
 				      
 			          
+				      //End of merge algorithm
+				      
 	
 			        }
 			        catch(SQLException sqlException){

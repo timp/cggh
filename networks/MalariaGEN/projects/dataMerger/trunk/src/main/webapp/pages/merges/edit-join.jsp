@@ -1,14 +1,9 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
-<jsp:useBean id="dataModel" class="org.cggh.tools.dataMerger.data.DataModel" scope="session"/>
-<jsp:useBean id="userModel" class="org.cggh.tools.dataMerger.data.users.UserModel" scope="session"/>
+<%@ include file="../shared/jsp/prepage.jsp" %>
 <jsp:useBean id="mergeModel" class="org.cggh.tools.dataMerger.data.merges.MergeModel" scope="page"/>
 <jsp:useBean id="functionsModel" class="org.cggh.tools.dataMerger.functions.FunctionsModel" scope="page"/>
 <%
-
-dataModel.setDataModelByServletContext(request.getSession().getServletContext());
-userModel.setDataModel(dataModel);
-userModel.setUserModelByUsername(request.getRemoteUser());
 
 mergeModel.setDataModel(dataModel);
 mergeModel.setUserModel(userModel);
@@ -38,9 +33,11 @@ mergeModel.setMergeModelById(Integer.parseInt(request.getParameter("merge_id")))
 		</dl>
 		
 		<div>
-		
+			
+			<% if (mergeModel.getJoinsModel().getKeysCount() == null || mergeModel.getJoinsModel().getKeysCount() == 0) { %>
 			<p>[error: A key is required]
 			</p>
+			<% } %>
 			
 			<% if (null != mergeModel.getTotalDuplicateKeysCount() && mergeModel.getTotalDuplicateKeysCount() > 0) { %>
 			<p>[error: There are duplicate keys]

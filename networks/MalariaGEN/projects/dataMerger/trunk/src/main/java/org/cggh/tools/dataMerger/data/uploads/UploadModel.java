@@ -49,7 +49,7 @@ public class UploadModel implements java.io.Serializable {
 
 
 
-	public void getUploadModelById(Integer id, Connection connection) {
+	public void setUploadModelById(Integer id, Connection connection) {
 		
 		this.setId(id);
 

@@ -69,35 +69,7 @@ public class DatatablesModel implements java.io.Serializable {
     public UploadModel getUploadModel () {
         return this.uploadModel;
     }     
-    
-	
-    //TODO: Just an example connection wrapper.
-    // With a new connection.
-	public void createDatatableByDatatableModel(DatatableModel datatableModel) {
-		
-		// Required in both with and without versions of this method, since either may be called independently.
-		this.setDatatableModel(datatableModel);
 
-		try {
-			
-			Connection connection = this.getDataModel().getNewConnection();
-			
-			if (!connection.isClosed()) {
-					
-				//createDatatableByDatatableModel(datatableModel, connection);
-		
-			} else {
-				
-				System.out.println("connection.isClosed");
-			}
-				
-		} 
-		catch (Exception e) {
-			System.out.println("Exception from createDatatableByDatatableModel.");
-			e.printStackTrace();
-		}
-    	
-	}
 
 	// With a supplied connection.
 	public void createDatatableByUploadModel(UploadModel uploadModel,
@@ -108,7 +80,7 @@ public class DatatablesModel implements java.io.Serializable {
 		
 		// Determine a name for the new table.
 		// Get the max(id) for the datatable table.
-		this.getMaxIdByConnection(connection);
+		this.setMaxIdByConnection(connection);
 		
 		Integer nextUniqueInteger = this.getMaxId() + 1;
 		
@@ -116,7 +88,7 @@ public class DatatablesModel implements java.io.Serializable {
 		// Get the datatable by name.
 		DatatableModel datatableModel = new DatatableModel();
 		
-		datatableModel.getDatatableModelByName("datatable_" + nextUniqueInteger, connection);
+		datatableModel.setDatatableModelByName("datatable_" + nextUniqueInteger, connection);
 		
 		while (datatableModel.getId() != null) {
 			
@@ -127,7 +99,7 @@ public class DatatablesModel implements java.io.Serializable {
 				break;
 			}
 			
-			datatableModel.getDatatableModelByName("datatable_" + nextUniqueInteger, connection);
+			datatableModel.setDatatableModelByName("datatable_" + nextUniqueInteger, connection);
 		}
 		
 		datatableModel.setName("datatable_" + nextUniqueInteger);
@@ -254,8 +226,10 @@ public class DatatablesModel implements java.io.Serializable {
 	}
 
 
-	private void getMaxIdByConnection(Connection connection) {
+	private void setMaxIdByConnection(Connection connection) {
 
+		// If the set has a By in it, it should set the whole model.
+		
 	      try {
 	          PreparedStatement preparedStatement = connection.prepareStatement("SELECT MAX(id) AS maxId FROM datatable;");  
 	          preparedStatement.executeQuery();

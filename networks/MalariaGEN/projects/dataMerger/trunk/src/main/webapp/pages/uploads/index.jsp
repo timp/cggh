@@ -1,21 +1,16 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
+<%@ include file="../shared/jsp/prepage.jsp" %>
 <%@ page import="java.util.*" %>
 <%@ page import="javax.sql.rowset.CachedRowSet" %>
-<jsp:useBean id="dataModel" class="org.cggh.tools.dataMerger.data.DataModel" scope="session"/>
-<jsp:useBean id="userModel" class="org.cggh.tools.dataMerger.data.users.UserModel" scope="session"/>
 <jsp:useBean id="uploadsModel" class="org.cggh.tools.dataMerger.data.uploads.UploadsModel" scope="page"/>
 <jsp:useBean id="functionsModel" class="org.cggh.tools.dataMerger.functions.FunctionsModel" scope="page"/>
 <%
 
-dataModel.setDataModelByServletContext(request.getSession().getServletContext());
-userModel.setDataModel(dataModel);
-userModel.setUserModelByUsername(request.getRemoteUser());
-
 uploadsModel.setDataModel(dataModel);
 uploadsModel.setUserModel(userModel);
 
-%> 
+%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
@@ -130,10 +125,6 @@ uploadsModel.setUserModel(userModel);
         	         
     	</div>
 
-
-		<p>TODO: Fix "Error: uploadsAsCachedRowSet is null" on first load.
-		</p>
-		
 		<p>TODO: Fix non-response on merge button press.
 		</p>
 

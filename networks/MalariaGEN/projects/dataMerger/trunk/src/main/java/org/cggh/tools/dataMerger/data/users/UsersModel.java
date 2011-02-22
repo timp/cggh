@@ -116,6 +116,12 @@ public class UsersModel implements java.io.Serializable {
 	
 	public void createUserByUsername (String username) {
 
+		// Creates must not affect exterior models.
+		
+		UserModel userModel = new UserModel();
+		
+		userModel.setUsername(username);
+		
 		try {
 			
 			Connection connection = this.getDataModel().getNewConnection();
@@ -124,7 +130,7 @@ public class UsersModel implements java.io.Serializable {
 		
 		      try{
 		          PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO user (username) VALUES (?);");
-		          preparedStatement.setString(1, username);
+		          preparedStatement.setString(1, userModel.getUsername());
 		          preparedStatement.executeUpdate();
 		          preparedStatement.close();
 	

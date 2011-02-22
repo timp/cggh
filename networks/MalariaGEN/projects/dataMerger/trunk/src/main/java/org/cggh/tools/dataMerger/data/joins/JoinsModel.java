@@ -5,6 +5,10 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import javax.sql.rowset.CachedRowSet;
+
+import org.cggh.tools.dataMerger.data.merges.MergeModel;
+
 
 public class JoinsModel implements java.io.Serializable {
 
@@ -14,30 +18,72 @@ public class JoinsModel implements java.io.Serializable {
 	private static final long serialVersionUID = -2278497615197327793L;
 
 	private JoinModel joinModel;
+	private MergeModel mergeModel;
 
 	private Integer nextColumnNumber;
+
+	private CachedRowSet joinsAsCachedRowSet;
+
+	private Integer keysCount;
 
 	public JoinsModel() {
 
 		this.setJoinModel(new JoinModel());
+		this.setMergeModel(new MergeModel());
 	}
 
 
-    public void setJoinModel (final JoinModel joinModel) {
+    public void setMergeModel(final MergeModel mergeModel) {
+		
+    	this.mergeModel = mergeModel;
+	}
+
+
+    public MergeModel getMergeModel() {
+		return this.mergeModel;
+	}  
+    
+    
+
+	public void setJoinModel (final JoinModel joinModel) {
         this.joinModel  = joinModel;
     }
     public JoinModel getJoinModel () {
         return this.joinModel;
     }
 
+    
+    
+	public void setJoinsAsCachedRowSet(CachedRowSet joinsAsCachedRowSet) {
+		this.joinsAsCachedRowSet = joinsAsCachedRowSet;	
+	}   
+    public CachedRowSet getJoinsAsCachedRowSet () {
+        return this.joinsAsCachedRowSet;
+    }
+
+    
+
+	public void setKeysCount(Integer keysCount) {
+
+		this.keysCount = keysCount;
+		
+	}    
+    public Integer getKeysCount () {
+        return this.keysCount;
+    }   
+    
 	public Integer getNextColumnNumberByMergeId(Integer mergeId,
 			Connection connection) {
 		
-		this.getJoinModel().getMergeModel().setId(mergeId);
+		//Get-Bys must only set and return the item between get and By (and its children).
+		//So none of this stuff here: this.getJoinModel().getMergeModel().setId(mergeId);
+		
+		MergeModel mergeModel = new MergeModel();
+		mergeModel.setId(mergeId);
 		
 	      try{
 	          PreparedStatement preparedStatement = connection.prepareStatement("SELECT MAX(column_number) AS maxColumnNumber FROM `join` WHERE merge_id = ?;");
-	          preparedStatement.setInt(1, this.getJoinModel().getMergeModel().getId());
+	          preparedStatement.setInt(1, mergeModel.getId());
 	          preparedStatement.executeQuery();
 	          ResultSet resultSet = preparedStatement.getResultSet();
 	          
@@ -77,12 +123,12 @@ public class JoinsModel implements java.io.Serializable {
 	}
 
 
-	private void setNextColumnNumber(int nextColumnNumber) {
+	public void setNextColumnNumber(Integer nextColumnNumber) {
 		this.nextColumnNumber = nextColumnNumber;
 	}
 
 
-	private Integer getNextColumnNumber() {
+	public Integer getNextColumnNumber() {
 		return this.nextColumnNumber;
 	}
 
@@ -91,23 +137,28 @@ public class JoinsModel implements java.io.Serializable {
 			String datatable1ColumnName, String datatable2ColumnName,
 			String columnName, Connection connection) {
 		
-		this.getJoinModel().getMergeModel().setId(mergeId);
-		this.getJoinModel().setColumnNumber(columnNumber);
-		this.getJoinModel().setKey(key);
-		this.getJoinModel().setDatatable1ColumnName(datatable1ColumnName);
-		this.getJoinModel().setDatatable2ColumnName(datatable2ColumnName);
-		this.getJoinModel().setColumnName(columnName);
+		// Creates must not affect exterior models.
+		// So don't use this.joinModel or this.setJoinModel().
+		
+		JoinModel joinModel = new JoinModel();
+		
+		joinModel.getMergeModel().setId(mergeId);
+		joinModel.setColumnNumber(columnNumber);
+		joinModel.setKey(key);
+		joinModel.setDatatable1ColumnName(datatable1ColumnName);
+		joinModel.setDatatable2ColumnName(datatable2ColumnName);
+		joinModel.setColumnName(columnName);
 		
 		
 	      try {
 
 	          PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO `join` (merge_id, column_number, `key`, datatable_1_column_name, datatable_2_column_name, column_name) VALUES (?, ?, ?, ?, ?, ?);");
-	          preparedStatement.setInt(1, this.getJoinModel().getMergeModel().getId());
-	          preparedStatement.setInt(2, this.getJoinModel().getColumnNumber());
-	          preparedStatement.setBoolean(3, this.getJoinModel().getKey());
-	          preparedStatement.setString(4, this.getJoinModel().getDatatable1ColumnName());
-	          preparedStatement.setString(5, this.getJoinModel().getDatatable2ColumnName());
-	          preparedStatement.setString(6, this.getJoinModel().getColumnName());
+	          preparedStatement.setInt(1, joinModel.getMergeModel().getId());
+	          preparedStatement.setInt(2, joinModel.getColumnNumber());
+	          preparedStatement.setBoolean(3, joinModel.getKey());
+	          preparedStatement.setString(4, joinModel.getDatatable1ColumnName());
+	          preparedStatement.setString(5, joinModel.getDatatable2ColumnName());
+	          preparedStatement.setString(6, joinModel.getColumnName());
 	          preparedStatement.executeUpdate();
 	          preparedStatement.close();
 	          
@@ -116,7 +167,94 @@ public class JoinsModel implements java.io.Serializable {
 	        catch(SQLException sqlException){
 		    	sqlException.printStackTrace();
 	        } 	
-	}  
-    
+	}
+
+
+	public void setJoinsModelByMergeId(Integer mergeId, Connection connection) {
+
+		// Set-bys must only set the set*By item and all its children.
+		// Note that mergeModel is a child of JoinModel, not JoinsModel.
+		MergeModel mergeModel = new MergeModel();
+		
+		mergeModel.setId(mergeId);
+		
+		//TODO: Nullify the set*By item properties
+		this.setNextColumnNumber(null);
+		this.setJoinModel(new JoinModel());
+		this.setMergeModel(new MergeModel());
+		this.setJoinsAsCachedRowSet(null);
+		this.setKeysCount(null);
+		   
+		
+	      try{
+	          PreparedStatement preparedStatement = connection.prepareStatement("SELECT id, merge_id, column_number, key, datatable_1_column_name, datatable_2_column_name, contant_1, constant_2, column_name FROM `join` WHERE merge_id = ?;");
+	          preparedStatement.setInt(1, mergeModel.getId());
+	          preparedStatement.executeQuery();
+	          ResultSet resultSet = preparedStatement.getResultSet();
+	          
+	          String CACHED_ROW_SET_IMPL_CLASS = "com.sun.rowset.CachedRowSetImpl"; 
+	          Class<?> cachedRowSetImplClass = Class.forName(CACHED_ROW_SET_IMPL_CLASS);
+	          CachedRowSet joinsAsCachedRowSet = (CachedRowSet) cachedRowSetImplClass.newInstance();
+	          joinsAsCachedRowSet.populate(preparedStatement.getResultSet());
+	          
+	          resultSet.close();
+	          preparedStatement.close();
+
+	          this.setJoinsAsCachedRowSet(joinsAsCachedRowSet);
+	          
+	          
+	          //TODO:
+	          
+		      try{
+		          PreparedStatement preparedStatement2 = connection.prepareStatement(
+		        		  	"SELECT COUNT(`key`) FROM `join` " + 
+		        		  	"WHERE merge_id = ? AND `key` = ?;"
+		        		  	);
+		          preparedStatement2.setInt(1, mergeModel.getId());
+		          preparedStatement2.setBoolean(2, true);
+		          preparedStatement2.executeQuery();
+		          ResultSet resultSet2 = preparedStatement2.getResultSet();
+		          
+		          // There may be no such record
+		          if (resultSet2.next()) {
+		        	  
+		        	  resultSet2.last();
+		        	  this.setKeysCount(resultSet2.getRow());
+		        	  
+		          } else {
+		        	  this.setKeysCount(0);
+		          }
+		          
+		          preparedStatement2.close();
+
+		        }
+		        catch(SQLException sqlException){
+		        	System.out.println("<p>" + sqlException + "</p>");
+			    	sqlException.printStackTrace();
+		        } 
+	          
+	        }
+	        catch(SQLException sqlException){
+		    	sqlException.printStackTrace();
+	        } catch (ClassNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (InstantiationException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IllegalAccessException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} 
+		
+	}
+
+
+
+
+
+
+
+
  
 }

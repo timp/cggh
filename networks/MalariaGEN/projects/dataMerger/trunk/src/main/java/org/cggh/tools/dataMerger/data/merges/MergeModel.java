@@ -8,6 +8,7 @@ import java.sql.Timestamp;
 
 import org.cggh.tools.dataMerger.data.DataModel;
 import org.cggh.tools.dataMerger.data.datatables.DatatableModel;
+import org.cggh.tools.dataMerger.data.joins.JoinsModel;
 import org.cggh.tools.dataMerger.data.uploads.UploadModel;
 import org.cggh.tools.dataMerger.data.users.UserModel;
 
@@ -19,6 +20,7 @@ public class MergeModel implements java.io.Serializable {
 	private static final long serialVersionUID = -5306097444255740574L;
 	private DataModel dataModel;
 	private UserModel userModel;
+	private JoinsModel joinsModel;
 	
 	private Integer id = null;
 	private Timestamp createdDatetime = null;
@@ -38,6 +40,7 @@ public class MergeModel implements java.io.Serializable {
 		
 		this.setDataModel(new DataModel());
 		this.setUserModel(new UserModel());		
+		this.setJoinsModel(new JoinsModel());	
 		
 		this.setUpload1Model(new UploadModel());
 		this.setUpload2Model(new UploadModel());
@@ -66,6 +69,12 @@ public class MergeModel implements java.io.Serializable {
         return this.userModel;
     }     
     
+    public void setJoinsModel (final JoinsModel joinsModel) {
+        this.joinsModel  = joinsModel;
+    }
+    public JoinsModel getJoinsModel () {
+        return this.joinsModel;
+    } 
     
 	public void setId (final Integer id) {
 		this.id = id;
@@ -111,6 +120,44 @@ public class MergeModel implements java.io.Serializable {
 		this.upload2Model = uploadModel;
 	}	
 	
+	   
+	public Integer getTotalDuplicateKeysCount() {
+		return this.totalDuplicateKeysCount;
+	}
+		
+	public void setTotalDuplicateKeysCount(Integer totalDuplicateKeysCount) {
+		this.totalDuplicateKeysCount = totalDuplicateKeysCount;
+	}
+
+
+
+
+
+
+	public Integer getCreatedByUserId() {
+		return this.createdByUserId;
+	}
+	public void setCreatedByUserId(Integer createdByUserId) {
+		this.createdByUserId = createdByUserId;
+	}
+
+
+	public DatatableModel getDatatable1Model() {
+		return this.datatable1Model;
+	}
+
+	public DatatableModel getDatatable2Model() {
+		return this.datatable2Model;
+	}
+
+	public UploadModel getUpload1Model() {
+		return this.upload1Model;
+	}
+
+
+	public UploadModel getUpload2Model() {
+		return this.upload2Model;
+	}
 	
 
 	
@@ -167,6 +214,7 @@ public class MergeModel implements java.io.Serializable {
 				        } 	
 				        
 					    //TODO: Get the rest of the merge data (column joins, etc.).
+				        this.getJoinsModel().setJoinsModelByMergeId(this.getId(), connection);
 				        
 				        
 				
@@ -187,44 +235,6 @@ public class MergeModel implements java.io.Serializable {
 	    }
 
 
-	   
-	public Integer getTotalDuplicateKeysCount() {
-		return this.totalDuplicateKeysCount;
-	}
-		
-	public void setTotalDuplicateKeysCount(Integer totalDuplicateKeysCount) {
-		this.totalDuplicateKeysCount = totalDuplicateKeysCount;
-	}
-
-
-
-
-
-
-	public Integer getCreatedByUserId() {
-		return this.createdByUserId;
-	}
-	public void setCreatedByUserId(Integer createdByUserId) {
-		this.createdByUserId = createdByUserId;
-	}
-
-
-	public DatatableModel getDatatable1Model() {
-		return this.datatable1Model;
-	}
-
-	public DatatableModel getDatatable2Model() {
-		return this.datatable2Model;
-	}
-
-	public UploadModel getUpload1Model() {
-		return this.upload1Model;
-	}
-
-
-	public UploadModel getUpload2Model() {
-		return this.upload2Model;
-	}
 
 
 	
