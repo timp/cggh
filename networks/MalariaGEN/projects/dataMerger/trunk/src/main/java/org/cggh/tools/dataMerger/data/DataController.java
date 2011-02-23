@@ -117,9 +117,9 @@ public class DataController extends HttpServlet {
 			  
 			  if (uploadsAsCachedRowSet != null) {
 		
-				    this.functionsModel.setCachedRowSet(uploadsAsCachedRowSet);
-				    this.functionsModel.transformUploadsCachedRowSetIntoDecoratedXHTMLTable();
-				    out.print(functionsModel.getDecoratedXHTMLTable());
+				    this.functionsModel.getUploadsFunctionsModel().setCachedRowSet(uploadsAsCachedRowSet);
+				    this.functionsModel.getUploadsFunctionsModel().setDecoratedXHTMLTableByCachedRowSet();
+				    out.print(functionsModel.getUploadsFunctionsModel().getDecoratedXHTMLTable());
 				    
 			  } else {
 				  
@@ -138,18 +138,15 @@ public class DataController extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-		this.dataModel.setDataModelByServletContext(request.getSession().getServletContext());
-		this.userModel.setDataModel(this.getDataModel());
-		this.userModel.setUserModelByUsername(request.getRemoteUser());
+		this.getDataModel().setDataModelByServletContext(request.getSession().getServletContext());
+		this.getUserModel().setDataModel(this.getDataModel());
+		this.getUserModel().setUserModelByUsername(request.getRemoteUser());
 				
 		
 		 if (request.getPathInfo().equals("/merges")) {
 			  
-		        this.mergesModel.setDataModel(this.getDataModel());
-		        this.mergesModel.setUserModel(this.getUserModel());			  
-			  
-			 
-			  Integer merge_id = null;
+		        this.getMergesModel().setDataModel(this.getDataModel());
+		        this.getMergesModel().setUserModel(this.getUserModel());			  
 			  
 				  StringBuffer jb = new StringBuffer();
 				  String line = null;
@@ -174,7 +171,12 @@ public class DataController extends HttpServlet {
 					try {
 
 
-						merge_id = this.mergesModel.createMergeByUploadIds(uploadIds.getInt(0), uploadIds.getInt(1));
+						this.getMergesModel().getMergeModel().getUpload1Model().setId(uploadIds.getInt(0));
+						this.getMergesModel().getMergeModel().getUpload2Model().setId(uploadIds.getInt(1));
+						
+						
+						this.getMergesModel().setMergeModelByCreatingMerge();
+						
 						
 						
 					} catch (JSONException e) {
@@ -189,10 +191,10 @@ public class DataController extends HttpServlet {
 	         //TODO: This needs to depend on the request, e.g. if the post was not ajax.
  
 	         //TODO
-	        log("merge_id: " + merge_id.toString());
+	        log("merge_id: " + this.getMergesModel().getMergeModel().getId().toString());
 	         
 	        PrintWriter out = response.getWriter();
-			out.println("{\"id\": \"" + merge_id.toString() + "\"}");		
+			out.println("{\"id\": \"" + this.getMergesModel().getMergeModel().getId().toString() + "\"}");		
 			  
 		  } else {
 			  

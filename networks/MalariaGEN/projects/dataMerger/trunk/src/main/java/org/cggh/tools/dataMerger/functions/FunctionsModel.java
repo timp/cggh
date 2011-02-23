@@ -1,6 +1,9 @@
 package org.cggh.tools.dataMerger.functions;
 
 import javax.sql.rowset.CachedRowSet;
+
+import org.cggh.tools.dataMerger.functions.uploads.UploadsFunctionsModel;
+
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 
@@ -15,12 +18,23 @@ public class FunctionsModel implements java.io.Serializable {
 	private CachedRowSet cachedRowSet = null;
 	private String xhtmlTable = null;
 	private String decoratedXHTMLTable = null;
+	private UploadsFunctionsModel uploadsFunctionsModel;
 	
 	public FunctionsModel() {
 		
+		this.setUploadsFunctionsModel(new UploadsFunctionsModel());
 	}
 
 	
+	public void setUploadsFunctionsModel(final UploadsFunctionsModel uploadsFunctionsModel) {
+		this.uploadsFunctionsModel = uploadsFunctionsModel;
+	}
+	public UploadsFunctionsModel getUploadsFunctionsModel() {
+
+		return this.uploadsFunctionsModel;
+	}	
+
+
 	public void setCachedRowSet (final CachedRowSet cachedRowSet) {
 		
 		this.cachedRowSet = cachedRowSet;
@@ -45,6 +59,9 @@ public class FunctionsModel implements java.io.Serializable {
 		
 		return this.decoratedXHTMLTable;
 	}	
+
+	
+
 	
 	public void transformCachedRowSetIntoXHTMLTable () {
 		
@@ -105,69 +122,7 @@ public class FunctionsModel implements java.io.Serializable {
 	
 	}
 
-	public void transformUploadsCachedRowSetIntoDecoratedXHTMLTable () {
-		
-		CachedRowSet cachedRowSet = this.getCachedRowSet();
-		
-		String decoratedXHTMLTable = null;
 
-			try {
-				if (cachedRowSet.next()) {
 
-					decoratedXHTMLTable = "";
-					
-					decoratedXHTMLTable = decoratedXHTMLTable.concat("<table>");
-
-					 decoratedXHTMLTable = decoratedXHTMLTable.concat("<thead>");
-					 decoratedXHTMLTable = decoratedXHTMLTable.concat("<tr>");
-					 
-					 decoratedXHTMLTable = decoratedXHTMLTable.concat("<th><!-- Column for checkboxes --></th>");
-					 decoratedXHTMLTable = decoratedXHTMLTable.concat("<th>ID <a href=\"javascript:TODOsort();\">sort up/down</a></th>");
-					 decoratedXHTMLTable = decoratedXHTMLTable.concat("<th>Filename <a href=\"javascript:TODOsort();\">sort up/down</a></th>");
-					 decoratedXHTMLTable = decoratedXHTMLTable.concat("<th>Uploaded <a href=\"javascript:TODOsort();\">sort up/down</a></th>");
-					 decoratedXHTMLTable = decoratedXHTMLTable.concat("<th><!-- Column for download links --></th>");
-					 
-					 decoratedXHTMLTable = decoratedXHTMLTable.concat("</tr>");
-					 decoratedXHTMLTable = decoratedXHTMLTable.concat("</thead>");
-					 
-					//because next() skips the first row.
-					cachedRowSet.beforeFirst();
-
-					while (cachedRowSet.next()) {
-						 
-						decoratedXHTMLTable = decoratedXHTMLTable.concat("<tr>");
-
-						 decoratedXHTMLTable = decoratedXHTMLTable.concat("<td><input type=\"checkbox\" name=\"upload_id\" value=\"" + cachedRowSet.getString("id") + "\" /></td>");
-						 decoratedXHTMLTable = decoratedXHTMLTable.concat("<td>" + cachedRowSet.getString("id") + "</td>");
-						 decoratedXHTMLTable = decoratedXHTMLTable.concat("<td><a href=\"/dataMerger/files/uploads?id=" + cachedRowSet.getString("id") + "\">" + cachedRowSet.getString("original_filename") + "</a></td>");
-						 //TODO: format datetime 02 Jan 2011
-						 decoratedXHTMLTable = decoratedXHTMLTable.concat("<td>" + cachedRowSet.getString("created_datetime") + "</td>");
-						 decoratedXHTMLTable = decoratedXHTMLTable.concat("<td><a href=\"/dataMerger/files/uploads?id=" + cachedRowSet.getString("id") + "\">Download</a></td>");
-						 
-						 decoratedXHTMLTable = decoratedXHTMLTable.concat("</tr>");
-					  }
-
-					decoratedXHTMLTable = decoratedXHTMLTable.concat("</tbody>");
-					 
-					decoratedXHTMLTable = decoratedXHTMLTable.concat("</table>");
-					
-					decoratedXHTMLTable = decoratedXHTMLTable.concat("<div>TODO: paging</div>");
-					
-					decoratedXHTMLTable = decoratedXHTMLTable.concat("<button class=\"merge-button\">Merge</button>");
-	
-				} else {
-					
-					decoratedXHTMLTable = "You have no uploads.";
-					
-				}
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-
-		
-		this.setDecoratedXHTMLTable(decoratedXHTMLTable);
-	
-	}	
 	
 }

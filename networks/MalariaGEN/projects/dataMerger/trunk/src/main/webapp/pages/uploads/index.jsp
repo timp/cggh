@@ -4,7 +4,7 @@
 <%@ page import="java.util.*" %>
 <%@ page import="javax.sql.rowset.CachedRowSet" %>
 <jsp:useBean id="uploadsModel" class="org.cggh.tools.dataMerger.data.uploads.UploadsModel" scope="page"/>
-<jsp:useBean id="functionsModel" class="org.cggh.tools.dataMerger.functions.FunctionsModel" scope="page"/>
+<jsp:useBean id="uploadsFunctionsModel" class="org.cggh.tools.dataMerger.functions.uploads.UploadsFunctionsModel" scope="page"/>
 <%
 
 uploadsModel.setDataModel(dataModel);
@@ -98,9 +98,9 @@ uploadsModel.setUserModel(userModel);
 
   if (uploadsAsCachedRowSet != null) {
 
-	    functionsModel.setCachedRowSet(uploadsAsCachedRowSet);
-	    functionsModel.transformUploadsCachedRowSetIntoDecoratedXHTMLTable();
-	    out.print(functionsModel.getDecoratedXHTMLTable());
+	    uploadsFunctionsModel.setCachedRowSet(uploadsAsCachedRowSet);
+	    uploadsFunctionsModel.setDecoratedXHTMLTableByCachedRowSet();
+	    out.print(uploadsFunctionsModel.getDecoratedXHTMLTable());
 	    
   } else {
 	  

@@ -27,6 +27,7 @@ public class DatatableModel implements java.io.Serializable {
 	private CachedRowSet dataAsCachedRowSet;
 	//private String[] columnNamesAsStringArray;
 	private List<String> columnNamesAsStringList;
+	private Integer duplicateValuesCount;
 	
 	
 	public DatatableModel() {
@@ -84,10 +85,7 @@ public class DatatableModel implements java.io.Serializable {
 	public void setDatatableModelByName(String name, Connection connection) {
 
 		this.setName(name);
-		
-		//TODO:
-		System.out.println("Looking for datatable with name: " + this.getName());
-		
+	
 		  //Init to prevent previous persistence
 	  	  this.setId(null);
 		  this.getUploadModel().setId(null);
@@ -118,7 +116,7 @@ public class DatatableModel implements java.io.Serializable {
 
 	          } else {
 	        	  //TODO: proper logging and error handling
-	        	  System.out.println("Did not find datatable. Db query gives !resultSet.next()");
+	        	  System.out.println("Did not find datatable with this name. Db query gives !resultSet.next()");
 	          }
 
 	          resultSet.close();
@@ -204,7 +202,7 @@ public class DatatableModel implements java.io.Serializable {
 	        	  
 	          } else {
 	        	  //TODO: proper logging and error handling
-	        	  System.out.println("Did not find datatable. Db query gives !resultSet.next()");
+	        	  System.out.println("Did not find datatable with this upload_id. Db query gives !resultSet.next()");
 	          }
 
 	          resultSet.close();
@@ -306,7 +304,7 @@ public class DatatableModel implements java.io.Serializable {
 	        	  
 	          } else {
 	        	  //TODO: proper logging and error handling
-	        	  System.out.println("Did not find datatable. Db query gives !resultSet.next()");
+	        	  System.out.println("Did not find datatable with this id. Db query gives !resultSet.next()");
 	          }
 
 	          resultSet.close();
@@ -318,6 +316,58 @@ public class DatatableModel implements java.io.Serializable {
 		    	sqlException.printStackTrace();
 	        } 
 		
+	}
+
+
+
+	//TODO: Perhaps one value per columnName
+	public Integer getDuplicateValuesCountByColumnName(String columnName, Connection connection) {
+
+		//nullify
+		this.setDuplicateValuesCount(null);
+		
+	      try {
+	          PreparedStatement preparedStatement = connection.prepareStatement("SELECT SUM(duplicateValuesCount) As totalDuplicateValuesCount FROM (SELECT COUNT(`" + columnName + "`) AS duplicateValuesCount FROM `" + this.getName() + "` GROUP BY `" + columnName + "` HAVING duplicateValuesCount > 1) AS duplicateValuesCounts;");				          
+	          preparedStatement.executeQuery();
+
+	          ResultSet resultSet = preparedStatement.getResultSet();
+
+	          // There may be no such datatable.
+	          if (resultSet.next()) {
+	        	  
+	        	  resultSet.first();
+	        	  
+	        	  this.setDuplicateValuesCount(resultSet.getInt("totalDuplicateValuesCount"));	
+		
+	        	  
+	          } else {
+	        	  //TODO: proper logging and error handling
+	        	  System.out.println("Did not get totalDuplicateValuesCount for this columnName. Db query gives !resultSet.next()");
+	          }
+
+	          resultSet.close();
+	          preparedStatement.close();
+	          
+
+	        }
+	        catch(SQLException sqlException){
+		    	sqlException.printStackTrace();
+	        } 		
+		
+		return this.getDuplicateValuesCount();
+	}
+
+
+
+	public Integer getDuplicateValuesCount() {
+		return this.duplicateValuesCount;
+	}
+
+
+
+	public void setDuplicateValuesCount(final Integer duplicateValuesCount) {
+		
+		this.duplicateValuesCount = duplicateValuesCount;
 	}
 
 

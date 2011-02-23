@@ -125,8 +125,6 @@ public class DatatablesModel implements java.io.Serializable {
 
 	        	    if ((strLine = bufferedReader.readLine()) != null)   {
 
-	        	      System.out.println (strLine);
-	        	      
 	        	      String[] columnNames = strLine.split(",");
 	        	      
 	        	      String strColumnList = "";
@@ -140,8 +138,7 @@ public class DatatablesModel implements java.io.Serializable {
 	        	    	  }
 	        	    	  
 	        	      }
-	        	      //TODO:
-	        	      System.out.println("strColumnList = " + strColumnList);
+
 	        	      
 	        	    // Create the table
 	    		      try {

@@ -16,43 +16,19 @@ public class JoinsModel implements java.io.Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = -2278497615197327793L;
-
-	private JoinModel joinModel;
-	private MergeModel mergeModel;
-
 	private Integer nextColumnNumber;
-
 	private CachedRowSet joinsAsCachedRowSet;
-
 	private Integer keysCount;
+	private CachedRowSet crossDatatableJoinsAsCachedRowSet;
 
+	//Must not have a joinModel, because joinModel has a mergeModel, which has a joinsModel, causes StackOverflowError
+	//private JoinModel joinModel;
+	
+	
 	public JoinsModel() {
 
-		this.setJoinModel(new JoinModel());
-		this.setMergeModel(new MergeModel());
 	}
 
-
-    public void setMergeModel(final MergeModel mergeModel) {
-		
-    	this.mergeModel = mergeModel;
-	}
-
-
-    public MergeModel getMergeModel() {
-		return this.mergeModel;
-	}  
-    
-    
-
-	public void setJoinModel (final JoinModel joinModel) {
-        this.joinModel  = joinModel;
-    }
-    public JoinModel getJoinModel () {
-        return this.joinModel;
-    }
-
-    
     
 	public void setJoinsAsCachedRowSet(CachedRowSet joinsAsCachedRowSet) {
 		this.joinsAsCachedRowSet = joinsAsCachedRowSet;	
@@ -180,14 +156,12 @@ public class JoinsModel implements java.io.Serializable {
 		
 		//TODO: Nullify the set*By item properties
 		this.setNextColumnNumber(null);
-		this.setJoinModel(new JoinModel());
-		this.setMergeModel(new MergeModel());
 		this.setJoinsAsCachedRowSet(null);
 		this.setKeysCount(null);
 		   
 		
 	      try{
-	          PreparedStatement preparedStatement = connection.prepareStatement("SELECT id, merge_id, column_number, key, datatable_1_column_name, datatable_2_column_name, contant_1, constant_2, column_name FROM `join` WHERE merge_id = ?;");
+	          PreparedStatement preparedStatement = connection.prepareStatement("SELECT id, merge_id, column_number, `key`, datatable_1_column_name, datatable_2_column_name, constant_1, constant_2, column_name FROM `join` WHERE merge_id = ?;");
 	          preparedStatement.setInt(1, mergeModel.getId());
 	          preparedStatement.executeQuery();
 	          ResultSet resultSet = preparedStatement.getResultSet();
@@ -202,12 +176,11 @@ public class JoinsModel implements java.io.Serializable {
 
 	          this.setJoinsAsCachedRowSet(joinsAsCachedRowSet);
 	          
-	          
-	          //TODO:
+
 	          
 		      try{
 		          PreparedStatement preparedStatement2 = connection.prepareStatement(
-		        		  	"SELECT COUNT(`key`) FROM `join` " + 
+		        		  	"SELECT COUNT(`key`) AS keysCount FROM `join` " + 
 		        		  	"WHERE merge_id = ? AND `key` = ?;"
 		        		  	);
 		          preparedStatement2.setInt(1, mergeModel.getId());
@@ -218,14 +191,56 @@ public class JoinsModel implements java.io.Serializable {
 		          // There may be no such record
 		          if (resultSet2.next()) {
 		        	  
-		        	  resultSet2.last();
-		        	  this.setKeysCount(resultSet2.getRow());
+		        	  resultSet2.first();
+		        	  
+		        	  Integer keysCount = resultSet2.getInt("keysCount");
+		        	  
+		        	  if (keysCount != null) {
+		        		  
+		        		  this.setKeysCount(resultSet2.getInt("keysCount"));
+		        	  
+		        	  } else {
+		        		  
+		        		  //TODO: Or should this stay as null?
+		        		  this.setKeysCount(0);
+		        	  }
 		        	  
 		          } else {
 		        	  this.setKeysCount(0);
 		          }
 		          
+		          resultSet2.close();
 		          preparedStatement2.close();
+		          
+		          
+			      try{
+			          PreparedStatement preparedStatement3 = connection.prepareStatement(
+			        		  "SELECT id, merge_id, column_number, `key`, datatable_1_column_name, " + 
+			        		  "datatable_2_column_name, constant_1, constant_2, column_name FROM `join` WHERE merge_id = ? " +
+			        		  "AND (datatable_1_column_name IS NOT NULL AND datatable_2_column_name IS NOT NULL);");
+			          preparedStatement3.setInt(1, mergeModel.getId());
+			          preparedStatement3.executeQuery();
+			          ResultSet resultSet3 = preparedStatement3.getResultSet();
+			          
+			          CachedRowSet crossDatatableJoinsAsCachedRowSet = (CachedRowSet) cachedRowSetImplClass.newInstance();
+			          crossDatatableJoinsAsCachedRowSet.populate(preparedStatement3.getResultSet());
+			          
+			          resultSet3.close();
+			          preparedStatement3.close();
+
+			          this.setCrossDatatableJoinsAsCachedRowSet(crossDatatableJoinsAsCachedRowSet);
+		          
+			        }
+			        catch(SQLException sqlException){
+				    	sqlException.printStackTrace();
+			        } catch (InstantiationException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (IllegalAccessException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} 
+		          
 
 		        }
 		        catch(SQLException sqlException){
@@ -248,6 +263,58 @@ public class JoinsModel implements java.io.Serializable {
 			} 
 		
 	}
+
+
+	public void setCrossDatatableJoinsAsCachedRowSet(
+			final CachedRowSet crossDatatableJoinsAsCachedRowSet) {
+		this.crossDatatableJoinsAsCachedRowSet = crossDatatableJoinsAsCachedRowSet;
+	}
+
+
+
+	public void setJoinsModelByMergeModel(MergeModel mergeModel, Connection connection) {
+
+		// Set-bys must only set the set*By item and all its children.
+		// Note that mergeModel is a child of JoinModel, not JoinsModel.
+		
+		this.setJoinsModelByMergeId(mergeModel.getId(), connection);
+		
+	}
+
+
+
+	public CachedRowSet getCrossDatatableJoinsAsCachedRowSet() {
+		return this.crossDatatableJoinsAsCachedRowSet;
+	}
+
+
+
+
+	public void updateJoinByJoinModel(JoinModel joinModel, Connection connection) {
+		
+	      try {
+
+	          PreparedStatement preparedStatement = connection.prepareStatement("UPDATE `join` SET merge_id = ?, column_number = ?, `key` = ?, datatable_1_column_name = ?, datatable_2_column_name = ?, column_name = ? WHERE id = ?;");
+	          preparedStatement.setInt(1, joinModel.getMergeModel().getId());
+	          preparedStatement.setInt(2, joinModel.getColumnNumber());
+	          preparedStatement.setBoolean(3, joinModel.getKey());
+	          preparedStatement.setString(4, joinModel.getDatatable1ColumnName());
+	          preparedStatement.setString(5, joinModel.getDatatable2ColumnName());
+	          preparedStatement.setString(6, joinModel.getColumnName());
+	          preparedStatement.setInt(7, joinModel.getId());
+	          preparedStatement.executeUpdate();
+	          preparedStatement.close();
+	          
+	
+	        }
+	        catch(SQLException sqlException){
+		    	sqlException.printStackTrace();
+	        } 
+		
+	}
+
+
+
 
 
 

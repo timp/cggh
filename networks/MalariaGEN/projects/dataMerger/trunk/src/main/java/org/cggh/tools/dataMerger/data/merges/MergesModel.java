@@ -2,7 +2,6 @@ package org.cggh.tools.dataMerger.data.merges;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -10,7 +9,7 @@ import javax.sql.rowset.CachedRowSet;
 
 import org.cggh.tools.dataMerger.data.DataModel;
 import org.cggh.tools.dataMerger.data.datatables.DatatablesModel;
-import org.cggh.tools.dataMerger.data.joins.JoinsModel;
+import org.cggh.tools.dataMerger.data.joins.JoinModel;
 import org.cggh.tools.dataMerger.data.users.UserModel;
 
 
@@ -27,7 +26,6 @@ public class MergesModel implements java.io.Serializable {
 	
 	private MergeModel mergeModel;
 	private DatatablesModel datatablesModel;
-	private JoinsModel joinsModel;
 	
 	
 	public MergesModel() {
@@ -37,8 +35,7 @@ public class MergesModel implements java.io.Serializable {
 		
 
 		this.setMergeModel(new MergeModel());
-		this.setDatatablesModel(new DatatablesModel());		
-		this.setJoinsModel(new JoinsModel());
+		this.setDatatablesModel(new DatatablesModel());	
 		
 		
 	}
@@ -66,23 +63,13 @@ public class MergesModel implements java.io.Serializable {
 		
 		return this.mergeModel;
 	}	    
-	
-	public void setJoinsModel (final JoinsModel joinsModel) {
-		
-		this.joinsModel = joinsModel;
-	}
-	public JoinsModel getJoinsModel () {
-		
-		return this.joinsModel;
-	}		
+
 	
 	
     
 	//With new connection.
-    public Integer createMergeByUploadIds (Integer upload1Id, Integer upload2Id) {
-    	
-    	this.getMergeModel().getUpload1Model().setId(upload1Id);
-    	this.getMergeModel().getUpload2Model().setId(upload2Id);
+    public void setMergeModelByCreatingMerge () {
+
     	
 		try {
 			
@@ -101,12 +88,12 @@ public class MergesModel implements java.io.Serializable {
 			          preparedStatement.close();
 
 				      this.getDataModel().setLastInsertIdByConnection(connection);
-			          this.mergeModel.setId(this.getDataModel().getLastInsertId());
+			          this.getMergeModel().setId(this.getDataModel().getLastInsertId());
 
 				      // See if the datatables have already been loaded in.
 
 				      //This populates the model with the latest db data.
-				      this.getMergeModel().getUpload1Model().setUploadModelById( this.getMergeModel().getUpload1Model().getId(), connection);
+				      this.getMergeModel().getUpload1Model().setUploadModelById(this.getMergeModel().getUpload1Model().getId(), connection);
 				      
 				      
 				      if (!this.getMergeModel().getUpload1Model().isDatatableCreated()) {
@@ -170,13 +157,13 @@ public class MergesModel implements java.io.Serializable {
 						    			  //TODO: version 2? automatic key determination.
 						    			  //Boolean isKey = (this.getMergeModel().getDatatable1Model().getDataAsCachedRowSet().get > && );
 						    			  
-						    			  Integer columnNumber = this.getJoinsModel().getNextColumnNumberByMergeId(this.getMergeModel().getId(), connection);
+						    			  Integer columnNumber = this.getMergeModel().getJoinsModel().getNextColumnNumberByMergeId(this.getMergeModel().getId(), connection);
 						    			  Boolean key = false;
 						    			  String datatable1ColumnName = datatable1ColumnNamesAsStringList.get(i);
 						    			  String datatable2ColumnName = datatable2ColumnNamesAsStringList.get(j);
 						    			  String columnName = datatable1ColumnNamesAsStringList.get(i);
 						    			  
-						    			  this.getJoinsModel().createJoin(this.getMergeModel().getId(), columnNumber, key, datatable1ColumnName, datatable2ColumnName, columnName, connection);
+						    			  this.getMergeModel().getJoinsModel().createJoin(this.getMergeModel().getId(), columnNumber, key, datatable1ColumnName, datatable2ColumnName, columnName, connection);
 						    			  
 						    			  //Remove items to make this more efficient.
 						    			  
@@ -204,13 +191,13 @@ public class MergesModel implements java.io.Serializable {
 					    	  
 					    	  if (!matchFound) {
 					    		  
-				    			  Integer columnNumber = this.getJoinsModel().getNextColumnNumberByMergeId(this.getMergeModel().getId(), connection);
+				    			  Integer columnNumber = this.getMergeModel().getJoinsModel().getNextColumnNumberByMergeId(this.getMergeModel().getId(), connection);
 				    			  Boolean key = false;
 				    			  String datatable1ColumnName = datatable1ColumnNamesAsStringList.get(i);
 				    			  String datatable2ColumnName = null;
 				    			  String columnName = datatable1ColumnNamesAsStringList.get(i);
 				    			  
-				    			  this.getJoinsModel().createJoin(this.getMergeModel().getId(), columnNumber, key, datatable1ColumnName, datatable2ColumnName, columnName, connection);
+				    			  this.getMergeModel().getJoinsModel().createJoin(this.getMergeModel().getId(), columnNumber, key, datatable1ColumnName, datatable2ColumnName, columnName, connection);
 				    			   
 				    			  //Remove this item from the list to make this more efficient.
 				    			  datatable1ColumnNamesAsStringList.remove(i);
@@ -264,13 +251,13 @@ public class MergesModel implements java.io.Serializable {
 					    	  
 					    	  if (!matchFound) {
 					    		  
-				    			  Integer columnNumber = this.getJoinsModel().getNextColumnNumberByMergeId(this.getMergeModel().getId(), connection);
+				    			  Integer columnNumber = this.getMergeModel().getJoinsModel().getNextColumnNumberByMergeId(this.getMergeModel().getId(), connection);
 				    			  Boolean key = false;
 				    			  String datatable1ColumnName = null;
 				    			  String datatable2ColumnName = datatable2ColumnNamesAsStringList.get(i);
 				    			  String columnName = datatable2ColumnNamesAsStringList.get(i);
 				    			  
-				    			  this.getJoinsModel().createJoin(this.getMergeModel().getId(), columnNumber, key, datatable1ColumnName, datatable2ColumnName, columnName, connection);
+				    			  this.getMergeModel().getJoinsModel().createJoin(this.getMergeModel().getId(), columnNumber, key, datatable1ColumnName, datatable2ColumnName, columnName, connection);
 				    			   
 				    			  //Remove this item from the list to make this more efficient.
 				    			  datatable2ColumnNamesAsStringList.remove(i);
@@ -289,9 +276,68 @@ public class MergesModel implements java.io.Serializable {
 				      }
 				      
 				      //TODO: Create auto-resolution
-				      //Need at least one key
+				      //Need at least one key column in the join
+				      
+				      //Determine which columns in the join are unique.
+				      
+				      //Get the columns that include both datatables.
+				      this.getMergeModel().getJoinsModel().setJoinsModelByMergeModel(this.getMergeModel(), connection);
+				      
+				      CachedRowSet crossDatatableJoinsAsCachedRowSet = this.getMergeModel().getJoinsModel().getCrossDatatableJoinsAsCachedRowSet();
+				      
+				      // For each join, for each datatable columns, see if the column contains only unique values
+				      // If both contain only unique values, then mark it as a key.
+				      
+						if (crossDatatableJoinsAsCachedRowSet.next()) {
+
+							//because the check using next() skips the first row.
+							 crossDatatableJoinsAsCachedRowSet.beforeFirst();
+
+							while (crossDatatableJoinsAsCachedRowSet.next()) {
+								 
+								 	//Count the duplicate keys.
+									 if (
+											 this.getMergeModel().getDatatable1Model().getDuplicateValuesCountByColumnName(crossDatatableJoinsAsCachedRowSet.getString("datatable_1_column_name"), connection) == 0
+											 &&
+											 this.getMergeModel().getDatatable1Model().getDuplicateValuesCountByColumnName(crossDatatableJoinsAsCachedRowSet.getString("datatable_2_column_name"), connection) == 0
+											 
+									 ) {
+										 
+										 JoinModel joinModel = new JoinModel();
+										 
+										 joinModel.setId(crossDatatableJoinsAsCachedRowSet.getInt("id"));
+										 joinModel.getMergeModel().setId(crossDatatableJoinsAsCachedRowSet.getInt("merge_id"));
+										 joinModel.setColumnNumber(crossDatatableJoinsAsCachedRowSet.getInt("column_number"));
+										 joinModel.setKey(true);
+										 joinModel.setDatatable1ColumnName(crossDatatableJoinsAsCachedRowSet.getString("datatable_1_column_name"));
+										 joinModel.setDatatable2ColumnName(crossDatatableJoinsAsCachedRowSet.getString("datatable_2_column_name"));
+										 joinModel.setConstant1(crossDatatableJoinsAsCachedRowSet.getString("constant_1"));
+										 joinModel.setConstant2(crossDatatableJoinsAsCachedRowSet.getString("constant_2"));
+										 joinModel.setColumnName(crossDatatableJoinsAsCachedRowSet.getString("column_name"));
+										 
+										 this.getMergeModel().getJoinsModel().updateJoinByJoinModel(joinModel, connection);
+										 
+									 }
+								 
+								 
+							  }
+
+			
+						} else {
+							
+							//TODO:
+							System.out.println("There are no records in crossDatatableJoinsAsCachedRowSet.");
+							
+						}
+				      
+				      //Process duplicate keys
+						
 				      
 				      
+				      
+				      
+				      
+				     
 				      
 			          
 				      //End of merge algorithm
@@ -320,8 +366,6 @@ public class MergesModel implements java.io.Serializable {
 			e.printStackTrace();
 		}
     	
-		
-		return this.mergeModel.getId();
     }
 
 
@@ -348,36 +392,11 @@ public class MergesModel implements java.io.Serializable {
 				Connection connection = this.getDataModel().getNewConnection();
 				 
 				if (!connection.isClosed()) {
-			
-					// Get the user_id
-					Integer user_id = null;
-					
-				      try{
-				          PreparedStatement preparedStatement = connection.prepareStatement("SELECT id FROM user WHERE username = ?;");
-				          preparedStatement.setString(1, this.userModel.getUsername());
-				          preparedStatement.executeQuery();
-				          ResultSet resultSet = preparedStatement.getResultSet();
-	
-				          // There may be no user in the user table.
-				          if (resultSet.next()) {
-				        	  resultSet.first();
-				        	  user_id = resultSet.getInt("id");
-				          } else {
-				        	  System.out.println("Did not find user in user table. This user is not registered. Db query gives !resultSet.next()");
-				          }
-	
-				          resultSet.close();
-				          preparedStatement.close();
-				          
-				        }
-				        catch(SQLException sqlException){
-				        	System.out.println("<p>" + sqlException + "</p>");
-					    	sqlException.printStackTrace();
-				        } 				
+				
 					
 				      try{
 				          PreparedStatement preparedStatement = connection.prepareStatement("SELECT merge.id, upload_1.original_filename, upload_2.original_filename, created_datetime, updated_datetime FROM upload INNER JOIN upload AS upload_1 ON upload_1.id = merge.upload_1_id INNER JOIN upload AS upload_2 ON upload_2.id = merge.upload_2_id WHERE created_by_user_id = ?;");
-				          preparedStatement.setInt(1, user_id);
+				          preparedStatement.setInt(1, this.userModel.getId());
 				          preparedStatement.executeQuery();
 				          Class<?> cachedRowSetImplClass = Class.forName(CACHED_ROW_SET_IMPL_CLASS);
 				          mergesAsCachedRowSet = (CachedRowSet) cachedRowSetImplClass.newInstance();

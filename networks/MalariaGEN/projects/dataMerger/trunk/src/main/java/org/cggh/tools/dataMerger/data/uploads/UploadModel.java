@@ -99,7 +99,7 @@ public class UploadModel implements java.io.Serializable {
 
 
 
-	public void setDatatableCreated(boolean datatableCreated) {
+	public void setDatatableCreated(final boolean datatableCreated) {
 
 		this.datatableCreated = datatableCreated;
 	}
@@ -110,38 +110,43 @@ public class UploadModel implements java.io.Serializable {
 	
 	//TODO: Create getters for these.
 
-	public void setCreatedDatetime(Timestamp createdDatetime) {
+	public void setCreatedDatetime(final Timestamp createdDatetime) {
 
 		this.createdDatetime = createdDatetime;
 	}
 
 
 
-	public void setCreatedByUserId(int createdByUserId) {
+	public void setCreatedByUserId(final int createdByUserId) {
 
 		this.createdByUserId = createdByUserId;
 	}
 
 
 
-	public void setSuccessful(boolean successful) {
+	public void setSuccessful(final boolean successful) {
 
 		this.successful = successful;
 	}
 
 
 
-	public void setRepositoryFilepath(String repositoryFilepath) {
+	public void setRepositoryFilepath(final String repositoryFilepath) {
 
 		this.repositoryFilepath = repositoryFilepath;
 	}
 
 
-
-	public void setOriginalFilename(String originalFilename) {
-
+	public String getOriginalFilename() {
+		return this.originalFilename;
+	}
+	public void setOriginalFilename(final String originalFilename) {
 		this.originalFilename = originalFilename;
 	}
+
+
+
+
 
 
 
