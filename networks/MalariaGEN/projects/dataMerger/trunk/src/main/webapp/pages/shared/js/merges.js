@@ -3,13 +3,15 @@ function postMerge (data) {
 	//TODO: Validate exactly two checkboxes selected.
 	
 	$.ajax({
+		type: 'POST',
 		data: data,
+		url: '/dataMerger/data/merges',
 		dataType: 'json',
 		success: function (data, textStatus, jqXHR) {
 			
 			if (data.id) {
 				
-				//TODO: This URL is horrid.
+				//TODO: This URL is ugly.
 				window.location.href = '/dataMerger/pages/merges/edit-join.jsp?merge_id=' + data.id;
 
 			} else {
@@ -18,8 +20,6 @@ function postMerge (data) {
 				$('.status').html("textStatus: " + textStatus);
 			}
 		},
-		type: 'POST',
-		url: '/dataMerger/data/merges',
 		error: function (jqXHR, textStatus, errorThrown){
             $('.error').html("errorThrown: " + errorThrown);
             $('.status').html("textStatus: " + textStatus);

@@ -146,6 +146,8 @@ public class ScriptsController extends HttpServlet {
 				        		  "created_by_user_id TINYINT(255) UNSIGNED NOT NULL, " + 
 				        		  "created_datetime DATETIME NOT NULL, " +
 				        		  "updated_datetime DATETIME NOT NULL, " +
+				        		  "datatable_1_duplicate_keys_count TINYINT(255) UNSIGNED NULL, " + 
+				        		  "datatable_2_duplicate_keys_count TINYINT(255) UNSIGNED NULL, " + 
 				        		  "total_duplicate_keys_count TINYINT(255) UNSIGNED NULL, " + 
 				        		  "PRIMARY KEY (id), " +
 				        		  "INDEX created_by_user_id_index (created_by_user_id), " + 
@@ -171,7 +173,6 @@ public class ScriptsController extends HttpServlet {
 				        		  "name VARCHAR(255) NOT NULL, " +
 				        		  "upload_id TINYINT(255) UNSIGNED NOT NULL, " + 
 				        		  "created_datetime DATETIME NOT NULL, " +
-				        		  "duplicate_keys_count TINYINT(255) UNSIGNED NULL, " + 
 				        		  "PRIMARY KEY (id), " +
 				        		  "INDEX upload_id_index (upload_id), " + 
 				        		  "FOREIGN KEY (upload_id) REFERENCES upload(id) ON DELETE CASCADE ON UPDATE CASCADE " +

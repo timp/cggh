@@ -7,7 +7,9 @@ import java.sql.SQLException;
 
 import javax.sql.rowset.CachedRowSet;
 
+import org.cggh.tools.dataMerger.data.datatables.DatatableModel;
 import org.cggh.tools.dataMerger.data.merges.MergeModel;
+import org.cggh.tools.dataMerger.data.uploads.UploadsModel;
 
 
 public class JoinsModel implements java.io.Serializable {
@@ -311,6 +313,49 @@ public class JoinsModel implements java.io.Serializable {
 		    	sqlException.printStackTrace();
 	        } 
 		
+	}
+
+
+	public CachedRowSet retrieveJoinsAsCachedRowSetByMergeId(Integer mergeId,
+			Connection connection) {
+
+		MergeModel mergeModel = new MergeModel();
+		mergeModel.setId(mergeId);
+		
+        Class<?> cachedRowSetImplClass = null;
+		try {
+			cachedRowSetImplClass = Class.forName("com.sun.rowset.CachedRowSetImpl");
+		} catch (ClassNotFoundException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		
+		CachedRowSet joinsAsCachedRowSet = null;
+		try {
+			joinsAsCachedRowSet = (CachedRowSet) cachedRowSetImplClass.newInstance();
+		} catch (InstantiationException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		} catch (IllegalAccessException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		
+	      try{
+	          PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM `join` WHERE merge_id = ?;");
+	          preparedStatement.setInt(1, mergeModel.getId());
+	          preparedStatement.executeQuery();
+	         
+	          joinsAsCachedRowSet.populate(preparedStatement.getResultSet());
+	          
+	          preparedStatement.close();
+
+	        }
+	        catch(SQLException sqlException){
+		    	sqlException.printStackTrace();
+	        } 
+		
+		return joinsAsCachedRowSet;
 	}
 
 

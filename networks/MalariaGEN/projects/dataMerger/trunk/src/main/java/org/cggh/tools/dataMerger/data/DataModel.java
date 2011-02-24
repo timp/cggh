@@ -99,18 +99,21 @@ public class DataModel implements java.io.Serializable {
 		return connection;
 	}
 
-	public void setLastInsertIdByConnection(Connection connection) {
+	public Integer retrieveLastInsertIdAsIntegerUsingConnection(Connection connection) {
 
-        try{
+		Integer lastInsertId = null;
+		
+        	try{
 	    	  //TODO: Is this cross-db compatible? ref: @@IDENTITY
-	          PreparedStatement preparedStatement = connection.prepareStatement("SELECT LAST_INSERT_ID();");
+	          PreparedStatement preparedStatement = connection.prepareStatement("SELECT LAST_INSERT_ID() AS lastInsertId;");
 	          preparedStatement.executeQuery();
 	          
 	          ResultSet resultSet = preparedStatement.getResultSet();
 	          if (resultSet.next()) {
 	        	  
 	        	  resultSet.first();
-	        	  this.setLastInsertId(resultSet.getInt(1));
+	        	  
+	        	  lastInsertId =  resultSet.getInt("lastInsertId");
 	        	  
 	          } else {
 	        	  
@@ -125,6 +128,7 @@ public class DataModel implements java.io.Serializable {
 		    	sqlException.printStackTrace();
 	        }
 
+	    return lastInsertId;   
 	}
 
 	public Integer getLastInsertId() {

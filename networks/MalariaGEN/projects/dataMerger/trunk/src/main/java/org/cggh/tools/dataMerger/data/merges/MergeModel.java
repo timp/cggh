@@ -6,6 +6,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 
+import javax.sql.rowset.CachedRowSet;
+
 import org.cggh.tools.dataMerger.data.DataModel;
 import org.cggh.tools.dataMerger.data.datatables.DatatableModel;
 import org.cggh.tools.dataMerger.data.joins.JoinsModel;
@@ -34,6 +36,7 @@ public class MergeModel implements java.io.Serializable {
 
 	private Integer createdByUserId = null;
 	private Integer totalDuplicateKeysCount = null;
+	private CachedRowSet joinsAsCachedRowSet;
 	
 	
 	public MergeModel() {
@@ -65,7 +68,7 @@ public class MergeModel implements java.io.Serializable {
     public void setUserModel (final UserModel userModel) {
         this.userModel  = userModel;
     }
-    public UserModel getUserModel () {
+    public UserModel getCreatedByUserModel () {
         return this.userModel;
     }     
     
@@ -160,6 +163,15 @@ public class MergeModel implements java.io.Serializable {
 	}
 	
 
+	public void setJoinsAsCachedRowSet(
+			CachedRowSet cachedRowSet) {
+
+		this.joinsAsCachedRowSet = cachedRowSet;
+	}
+	public CachedRowSet getJoinsAsCachedRowSet() {
+		return this.joinsAsCachedRowSet;
+	}
+
 	
 	
 	
@@ -233,6 +245,19 @@ public class MergeModel implements java.io.Serializable {
 
 
 	    }
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

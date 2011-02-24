@@ -85,10 +85,10 @@ uploadsModel.setUserModel(userModel);
 		<h2>Uploads</h2>
 
 
-	<div class="status">
-	</div>	
-	<div class="error">
-	</div>
+		<div class="status">
+		</div>	
+		<div class="error">
+		</div>
 
 		<form class="uploads-form">
 		<div class="uploads">
@@ -104,6 +104,7 @@ uploadsModel.setUserModel(userModel);
 	    
   } else {
 	  
+	  //TODO: Error handling
 	  out.print("<p>Error: uploadsAsCachedRowSet is null</p>");
 	  
   }
@@ -118,14 +119,14 @@ uploadsModel.setUserModel(userModel);
 		<div id="file-uploader">
 		       
         	<noscript>          
-            	<p>Please enable JavaScript to use file uploader.</p>
-            	<!-- or put a simple form for upload here -->
+            	<p>Please enable JavaScript to use the file uploader.</p>
+            	<%-- Put a simple form for upload here --%>
         	</noscript>
         	
         	         
     	</div>
 
-		<p>TODO: Fix non-response on merge button press.
+		<p>TODO: Fix non-response on merge button first press.
 		</p>
 
 	</div>	

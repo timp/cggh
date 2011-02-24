@@ -16,38 +16,39 @@ public class JoinsFunctionsModel implements java.io.Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = 8859380104215152126L;
-	private CachedRowSet cachedRowSet = null;
-	private String xhtmlTable = null;
-	private String decoratedXHTMLTable = null;
+	private CachedRowSet joinsAsCachedRowSet = null;
+	private String joinsAsXHTMLTable = null;
+	private String joinsAsDecoratedXHTMLTable = null;
 	private MergeModel mergeModel;
+	private CachedRowSet keyJoinsAsCachedRowSet;
 	
 	public JoinsFunctionsModel() {
 		
 	}
 
 	
-	public void setCachedRowSet (final CachedRowSet cachedRowSet) {
+	public void setJoinsAsCachedRowSet (final CachedRowSet cachedRowSet) {
 		
-		this.cachedRowSet = cachedRowSet;
+		this.joinsAsCachedRowSet = cachedRowSet;
 	}
-	public CachedRowSet getCachedRowSet () {
+	public CachedRowSet getJoinsAsCachedRowSet () {
 		
-		return this.cachedRowSet;
+		return this.joinsAsCachedRowSet;
 	}	
-	public void setXHTMLTable (final String xhtmlTable) {
+	public void setJoinsAsXHTMLTable (final String xhtmlTable) {
 		
-		this.xhtmlTable = xhtmlTable;
+		this.joinsAsXHTMLTable = xhtmlTable;
 	}
-	public String getXHTMLTable () {
+	public String getJoinsAsXHTMLTable () {
 		
-		return this.xhtmlTable;
+		return this.joinsAsXHTMLTable;
 	}	
 	
-	public void setDecoratedXHTMLTable (final String decoratedXHTMLTable) {
-		this.decoratedXHTMLTable = decoratedXHTMLTable;
+	public void setJoinsAsDecoratedXHTMLTable (final String decoratedXHTMLTable) {
+		this.joinsAsDecoratedXHTMLTable = decoratedXHTMLTable;
 	}
-	public String getDecoratedXHTMLTable () {
-		return this.decoratedXHTMLTable;
+	public String getJoinsAsDecoratedXHTMLTable () {
+		return this.joinsAsDecoratedXHTMLTable;
 	}	
 	
 	public void setMergeModel (final MergeModel mergeModel) {
@@ -56,13 +57,14 @@ public class JoinsFunctionsModel implements java.io.Serializable {
 	public MergeModel getMergeModel () {
 		return this.mergeModel;
 	}	
-
-	public void setDecoratedXHTMLTableByCachedRowSet () {
+	
+	
+	public void setJoinsAsDecoratedXHTMLTableByJoinsAsCachedRowSet () {
 
 		String decoratedXHTMLTable = null;
 
 			try {
-				if (cachedRowSet.next()) {
+				if (this.getJoinsAsCachedRowSet().next()) {
 
 					decoratedXHTMLTable = "";
 					
@@ -94,27 +96,27 @@ public class JoinsFunctionsModel implements java.io.Serializable {
 					 decoratedXHTMLTable = decoratedXHTMLTable.concat("</thead>");
 					 
 					//because next() skips the first row.
-					 this.getCachedRowSet().beforeFirst();
+					 this.getJoinsAsCachedRowSet().beforeFirst();
 
-					while (this.getCachedRowSet().next()) {
+					while (this.getJoinsAsCachedRowSet().next()) {
 						 
 						decoratedXHTMLTable = decoratedXHTMLTable.concat("<tr>");
 
-						decoratedXHTMLTable = decoratedXHTMLTable.concat("<td>" + this.getCachedRowSet().getInt("column_number") + "</td>");
+						decoratedXHTMLTable = decoratedXHTMLTable.concat("<td>" + this.getJoinsAsCachedRowSet().getInt("column_number") + "</td>");
 						
-						if (this.getCachedRowSet().getBoolean("key")) {
-							decoratedXHTMLTable = decoratedXHTMLTable.concat("<td><input type=\"checkbox\" name=\"join_id\" value=\"" + this.getCachedRowSet().getInt("id") + "\" checked=\"checked\"/></td>");
+						if (this.getJoinsAsCachedRowSet().getBoolean("key")) {
+							decoratedXHTMLTable = decoratedXHTMLTable.concat("<td><input type=\"checkbox\" name=\"join_id\" value=\"" + this.getJoinsAsCachedRowSet().getInt("id") + "\" checked=\"checked\"/></td>");
 						} else {
-							decoratedXHTMLTable = decoratedXHTMLTable.concat("<td><input type=\"checkbox\" name=\"join_id\" value=\"" + this.getCachedRowSet().getInt("id") + "\" /></td>");
+							decoratedXHTMLTable = decoratedXHTMLTable.concat("<td><input type=\"checkbox\" name=\"join_id\" value=\"" + this.getJoinsAsCachedRowSet().getInt("id") + "\" /></td>");
 						}
 						
-						decoratedXHTMLTable = decoratedXHTMLTable.concat("<td>" + this.getCachedRowSet().getString("datatable_1_column_name") + "</td>");
+						decoratedXHTMLTable = decoratedXHTMLTable.concat("<td>" + this.getJoinsAsCachedRowSet().getString("datatable_1_column_name") + "</td>");
 						decoratedXHTMLTable = decoratedXHTMLTable.concat("<td>TODO: Sample of data</td>");
 						
-						decoratedXHTMLTable = decoratedXHTMLTable.concat("<td>" + this.getCachedRowSet().getString("datatable_2_column_name") + "</td>");
+						decoratedXHTMLTable = decoratedXHTMLTable.concat("<td>" + this.getJoinsAsCachedRowSet().getString("datatable_2_column_name") + "</td>");
 						decoratedXHTMLTable = decoratedXHTMLTable.concat("<td>TODO: Sample of data</td>");
 						
-						decoratedXHTMLTable = decoratedXHTMLTable.concat("<td><input type=\"text\" name=\"column_name\" value=\"" + this.getCachedRowSet().getString("column_name") + "\" /></td>");
+						decoratedXHTMLTable = decoratedXHTMLTable.concat("<td><input type=\"text\" name=\"column_name\" value=\"" + this.getJoinsAsCachedRowSet().getString("column_name") + "\" /></td>");
 						
 						//TODO: mechanism for mapping button to column-specific action
 						decoratedXHTMLTable = decoratedXHTMLTable.concat("<td><button class=\"update-join-column_number-up\">Up</button></td>");
@@ -143,8 +145,51 @@ public class JoinsFunctionsModel implements java.io.Serializable {
 			}
 
 		
-		this.setDecoratedXHTMLTable(decoratedXHTMLTable);
+		this.setJoinsAsDecoratedXHTMLTable(decoratedXHTMLTable);
 	
-	}	
+	}
+
+
+	public void setKeyJoinsAsCachedRowSetByJoinsAsCachedRowSet() {
+
+		CachedRowSet keyJoinsAsCachedRowSet = null;
+		
+		try {
+			if (this.getJoinsAsCachedRowSet().next()) {		
+		
+				//because next() skips the first row.
+				 this.getJoinsAsCachedRowSet().beforeFirst();
+
+				while (this.getJoinsAsCachedRowSet().next()) {
+				
+					
+
+				}
+				
+				
+			} else {
+				
+				//TODO:
+				System.out.println("There are no joins.");
+				
+			}
+			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+				
+		this.setKeyJoinsAsCachedRowSet(keyJoinsAsCachedRowSet);
+	}
+
+
+	public void setKeyJoinsAsCachedRowSet(CachedRowSet keyJoinsAsCachedRowSet) {
+
+
+		this.keyJoinsAsCachedRowSet = keyJoinsAsCachedRowSet;
+	}
+
+
+
 	
 }

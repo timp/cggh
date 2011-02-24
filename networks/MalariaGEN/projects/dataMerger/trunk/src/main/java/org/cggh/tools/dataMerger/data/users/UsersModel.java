@@ -153,5 +153,44 @@ public class UsersModel implements java.io.Serializable {
 			
 			
 	}
+
+	public UserModel retrieveUserAsUserModelByUserId(Integer userId, Connection connection) {
+
+		UserModel userModel = new UserModel();
+		
+		userModel.setId(userId);
+		
+		
+	      try{
+	          PreparedStatement preparedStatement = connection.prepareStatement("SELECT id, username FROM `user` WHERE id = ?;");
+	          preparedStatement.setInt(1, userModel.getId());
+	          preparedStatement.executeQuery();
+	          ResultSet resultSet = preparedStatement.getResultSet();
+	          
+	          if (resultSet.next()) {
+	        	  
+	        	  resultSet.first();
+
+	        	  //Set the data
+	        	  userModel.setUsername(resultSet.getString("username"));
+
+	      	  } else {
+	      		  
+	      		  //TODO:
+	      		  System.out.println("No user found with the specified id.");
+	      		  
+	      	  }
+	          
+	          resultSet.close();
+	          
+	          preparedStatement.close();
+
+	        }
+	        catch(SQLException sqlException){
+		    	sqlException.printStackTrace();
+	        } 
+		
+		return userModel;
+	}
 	
 }

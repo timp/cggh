@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.sql.rowset.CachedRowSet;
 
+import org.cggh.tools.dataMerger.data.merges.MergeModel;
 import org.cggh.tools.dataMerger.data.merges.MergesModel;
 import org.cggh.tools.dataMerger.data.uploads.UploadsModel;
 import org.cggh.tools.dataMerger.data.users.UserModel;
@@ -144,57 +145,76 @@ public class DataController extends HttpServlet {
 				
 		
 		 if (request.getPathInfo().equals("/merges")) {
-			  
-		        this.getMergesModel().setDataModel(this.getDataModel());
-		        this.getMergesModel().setUserModel(this.getUserModel());			  
-			  
-				  StringBuffer jb = new StringBuffer();
-				  String line = null;
+			 
 				  try {
-				    BufferedReader reader = request.getReader();
-				    while ((line = reader.readLine()) != null)
-				      jb.append(line);
-				  } catch (Exception e) { e.printStackTrace(); }
+					  
+					    BufferedReader reader = request.getReader();
+					    String line = null;
+					    StringBuffer stringBuffer = new StringBuffer();
+					    
+					    while ((line = reader.readLine()) != null) {
+					      stringBuffer.append(line);
+					    }
+					    
+						try {
+							JSONObject jsonObject = new JSONObject(stringBuffer.toString());
+							JSONArray uploadIds = jsonObject.getJSONArray("upload_id");
+							
+							try {
+
+
+								//this.getMergesModel().getMergeModel().getUpload1Model().setId(uploadIds.getInt(0));
+								//this.getMergesModel().getMergeModel().getUpload2Model().setId(uploadIds.getInt(1));
+								
+								
+								//this.getMergesModel().setMergeModelByCreatingMerge();
+								
+								
+								MergeModel mergeModel = new MergeModel();
+								mergeModel.getUpload1Model().setId(uploadIds.getInt(0));
+								mergeModel.getUpload2Model().setId(uploadIds.getInt(1));
+								
+								MergesModel mergesModel = new MergesModel();
+								
+								mergesModel.setDataModel(this.getDataModel());
+								mergesModel.setUserModel(this.getUserModel());
+								
+								mergeModel = mergesModel.retrieveMergeAsMergeModelAfterCreatingMergeUsingMergeModel(mergeModel);
+								
+						         response.setContentType("application/json");
+						         response.setCharacterEncoding("UTF-8");				
+								
+						         
+						         //TODO: This needs to depend on the request, e.g. if the post was not ajax.
+					 
+						         //TODO
+						        log("merge_id: " + mergeModel.getId().toString());
+						         
+						        PrintWriter out = response.getWriter();
+								out.println("{\"id\": \"" + mergeModel.getId().toString() + "\"}");		
+								
+								
+								
+							} catch (JSONException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
+							
+			
+						} catch (JSONException e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+						} 
+				    
+				    
+				    
+				  } catch (Exception e) { 
+					  //TODO:
+					  e.printStackTrace(); 
+				  
+				  }
 
 				  
-				  JSONArray uploadIds = null;
-					try {
-						JSONObject jsonObject = new JSONObject(jb.toString());
-						uploadIds = jsonObject.getJSONArray("upload_id");
-		
-					} catch (JSONException e1) {
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
-					}
-
-
-					try {
-
-
-						this.getMergesModel().getMergeModel().getUpload1Model().setId(uploadIds.getInt(0));
-						this.getMergesModel().getMergeModel().getUpload2Model().setId(uploadIds.getInt(1));
-						
-						
-						this.getMergesModel().setMergeModelByCreatingMerge();
-						
-						
-						
-					} catch (JSONException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-			
-	         response.setContentType("application/json");
-	         response.setCharacterEncoding("UTF-8");				
-			
-	         
-	         //TODO: This needs to depend on the request, e.g. if the post was not ajax.
- 
-	         //TODO
-	        log("merge_id: " + this.getMergesModel().getMergeModel().getId().toString());
-	         
-	        PrintWriter out = response.getWriter();
-			out.println("{\"id\": \"" + this.getMergesModel().getMergeModel().getId().toString() + "\"}");		
 			  
 		  } else {
 			  

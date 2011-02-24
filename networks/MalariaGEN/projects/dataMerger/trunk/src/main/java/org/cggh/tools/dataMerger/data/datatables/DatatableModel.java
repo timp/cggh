@@ -5,7 +5,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.sql.rowset.CachedRowSet;
@@ -22,10 +21,9 @@ public class DatatableModel implements java.io.Serializable {
 	private Integer id;
 	private String name;
 	private UploadModel uploadModel;
-	private Integer duplicateKeysCount;
+	private Integer duplicateKeysCount; //Only relevant in the context of a merge with joins with key(s)
 	private Timestamp createdDatetime;
 	private CachedRowSet dataAsCachedRowSet;
-	//private String[] columnNamesAsStringArray;
 	private List<String> columnNamesAsStringList;
 	private Integer duplicateValuesCount;
 	
@@ -35,6 +33,16 @@ public class DatatableModel implements java.io.Serializable {
 		this.setUploadModel(new UploadModel());
 	}
 
+	//To honor no-argument bean constructor
+	public void setDatatableModel(DatatableModel datatableModel) {
+		
+		//TODO: There must be a better way of doing this!? Pity we can't this = that.
+		this.setId(datatableModel.getId());
+		this.setName(datatableModel.getName());
+		this.setUploadModel(datatableModel.getUploadModel());
+		this.setCreatedDatetime(datatableModel.getCreatedDatetime());
+		this.setDuplicateKeysCount(datatableModel.getDuplicateKeysCount());
+	}	
 
 
 	public Integer getId() {
@@ -146,19 +154,6 @@ public class DatatableModel implements java.io.Serializable {
 	
 
 
-
-
-
-
-//	public void setColumnNamesAsStringArray(String[] columnNamesAsStringArray) {
-//
-//		this.columnNamesAsStringArray = columnNamesAsStringArray;
-//		
-//	}
-//	public String[] getColumnNamesAsStringArray() {
-//
-//		return this.columnNamesAsStringArray;
-//	}
 	
 	public void setColumnNamesAsStringList(List<String> columnNamesAsStringList) {
 		
@@ -223,100 +218,13 @@ public class DatatableModel implements java.io.Serializable {
 
 	public void setDatatableModelById(Integer id, Connection connection) {
 
-		  this.setId(id);
-		  
-		  //clear old data
-	  	  this.setName(null);
-		  this.getUploadModel().setId(null);
-		  this.setCreatedDatetime(null);
+		DatatablesModel datatablesModel = new DatatablesModel();
+		
+		this.setDatatableModel(datatablesModel.retrieveDatatableModelById(id, connection));
 
-	      try {
-	          PreparedStatement preparedStatement = connection.prepareStatement(
-	        		  "SELECT id, " + 
-	        		  "name, " +
-	        		  "upload_id, " +  
-	        		  "created_datetime " + 
-	        		  "FROM datatable WHERE id = ?;");
-	          preparedStatement.setInt(1, this.getId());				          
-	          preparedStatement.executeQuery();
-
-	          ResultSet resultSet = preparedStatement.getResultSet();
-
-	          // There may be no such datatable.
-	          if (resultSet.next()) {
-	        	  
-	        	  resultSet.first();
-	        	  
-	        	  this.setId(resultSet.getInt("id"));
-	        	  this.setName(resultSet.getString("name"));
-	        	  this.getUploadModel().setId(resultSet.getInt("upload_id"));
-	        	  this.setCreatedDatetime(resultSet.getTimestamp("created_datetime"));
-	        	  
-	        	  //TODO: Data
-	        	  
-			      try{
-			          PreparedStatement preparedStatement2 = connection.prepareStatement("SELECT * FROM `" + this.getName() + "`;");
-			          preparedStatement2.executeQuery();
-			          
-			          String CACHED_ROW_SET_IMPL_CLASS = "com.sun.rowset.CachedRowSetImpl";
-			          Class<?> cachedRowSetImplClass = Class.forName(CACHED_ROW_SET_IMPL_CLASS);
-			          
-			          //TODO: Make this more memory efficient.
-			          
-			          CachedRowSet dataAsCachedRowSet = (CachedRowSet) cachedRowSetImplClass.newInstance();
-			          dataAsCachedRowSet.populate(preparedStatement2.getResultSet());
-			          
-			          this.setDataAsCachedRowSet(dataAsCachedRowSet);
-			          
-			          //String[] columnNamesAsStringArray = new String[this.getDataAsCachedRowSet().getMetaData().getColumnCount()];
-			          
-			          List<String> columnNamesAsStringList = new ArrayList<String>();
-			          
-			          for (int i = 0; i < this.getDataAsCachedRowSet().getMetaData().getColumnCount(); i++) {
-			        	  
-			        	  //columnNamesAsStringArray[i] = this.getDataAsCachedRowSet().getMetaData().getColumnName(i + 1);
-			        	  
-			        	  columnNamesAsStringList.add(this.getDataAsCachedRowSet().getMetaData().getColumnName(i + 1));
-			          }
-			          
-			          //this.setColumnNamesAsStringArray(columnNamesAsStringArray);
-			          
-			          this.setColumnNamesAsStringList(columnNamesAsStringList);
-			          
-			          preparedStatement2.close();
-
-			        }
-			        catch(SQLException sqlException){
-				    	sqlException.printStackTrace();
-			        } catch (ClassNotFoundException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					} catch (InstantiationException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					} catch (IllegalAccessException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					} 
-	        	  
-	        	  
-	        	  
-	        	  
-	          } else {
-	        	  //TODO: proper logging and error handling
-	        	  System.out.println("Did not find datatable with this id. Db query gives !resultSet.next()");
-	          }
-
-	          resultSet.close();
-	          preparedStatement.close();
-	          
-
-	        }
-	        catch(SQLException sqlException){
-		    	sqlException.printStackTrace();
-	        } 
 		
 	}
+
 
 
 
@@ -368,6 +276,25 @@ public class DatatableModel implements java.io.Serializable {
 	public void setDuplicateValuesCount(final Integer duplicateValuesCount) {
 		
 		this.duplicateValuesCount = duplicateValuesCount;
+	}
+
+
+
+	public void setDuplicateKeysCountByRetrievingById(Connection connection) {
+		
+		DatatablesModel datatablesModel = new DatatablesModel();
+		
+		this.setDuplicateKeysCount(datatablesModel.retrieveDatatableModelById(this.getId(), connection).getDuplicateKeysCount());
+	}
+
+	public void setDatatableModelById(Connection connection) {
+		
+		DatatablesModel datatablesModel = new DatatablesModel();
+		
+		//Get what is in the database.
+		//Set to what is in the database. Use other methods to process or update.
+		this.setDatatableModel(datatablesModel.retrieveDatatableModelById(this.getId(), connection));
+		
 	}
 
 

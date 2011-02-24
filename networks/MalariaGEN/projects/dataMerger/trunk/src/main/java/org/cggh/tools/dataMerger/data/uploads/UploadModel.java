@@ -6,6 +6,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 
+import org.cggh.tools.dataMerger.data.users.UserModel;
+
 
 public class UploadModel implements java.io.Serializable {
 
@@ -13,6 +15,9 @@ public class UploadModel implements java.io.Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = 8176100759738568138L;
+	
+	private UserModel createdByUserModel;
+	
 	private String repositoryFilepath = null;
 	private Integer id = null;
 	private boolean datatableCreated;
@@ -24,10 +29,22 @@ public class UploadModel implements java.io.Serializable {
 	
 	
 	public UploadModel() {
+		
+		this.setCreatedByUserModel(new UserModel());
+	}
 
+	public void setCreatedByUserModel(UserModel userModel) {
+		this.createdByUserModel = userModel;
+	}
+	public UserModel getCreatedByUserModel() {
+		return this.createdByUserModel;
 	}
 
 
+
+
+	
+	
 
 	public Integer getId() {
 		return this.id;
@@ -143,6 +160,8 @@ public class UploadModel implements java.io.Serializable {
 	public void setOriginalFilename(final String originalFilename) {
 		this.originalFilename = originalFilename;
 	}
+
+
 
 
 

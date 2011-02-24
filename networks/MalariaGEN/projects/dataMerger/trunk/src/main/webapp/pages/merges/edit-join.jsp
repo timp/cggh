@@ -69,9 +69,9 @@ mergeModel.setMergeModelById(Integer.parseInt(request.getParameter("merge_id")))
 	  	//TODO: This seems wrong because a set of joins can relate to more than one merge.
 	    joinsFunctionsModel.setMergeModel(mergeModel);
 	    
-	    joinsFunctionsModel.setCachedRowSet(joinsAsCachedRowSet);
-	    joinsFunctionsModel.setDecoratedXHTMLTableByCachedRowSet();
-	    out.print(joinsFunctionsModel.getDecoratedXHTMLTable());
+	    joinsFunctionsModel.setJoinsAsCachedRowSet(joinsAsCachedRowSet);
+	    joinsFunctionsModel.setJoinsAsDecoratedXHTMLTableByJoinsAsCachedRowSet();
+	    out.print(joinsFunctionsModel.getJoinsAsDecoratedXHTMLTable());
 	    
   } else {
 	  

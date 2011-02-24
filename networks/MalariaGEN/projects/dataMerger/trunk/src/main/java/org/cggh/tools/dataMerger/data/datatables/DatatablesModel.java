@@ -9,9 +9,15 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import javax.sql.rowset.CachedRowSet;
 
 import org.cggh.tools.dataMerger.data.DataModel;
 import org.cggh.tools.dataMerger.data.uploads.UploadModel;
+import org.cggh.tools.dataMerger.data.uploads.UploadsModel;
 import org.cggh.tools.dataMerger.data.users.UserModel;
 
 
@@ -71,26 +77,23 @@ public class DatatablesModel implements java.io.Serializable {
     }     
 
 
-	// With a supplied connection.
-	public void createDatatableByUploadModel(UploadModel uploadModel,
+	public DatatableModel retrieveDatatableAsDatatableModelAfterCreatingDatatableUsingUploadId(Integer uploadId,
 			Connection connection) {
 
-		// Creates should not change their own models (but can change the models they are given).
-		// So don't do this: this.setUploadModel(uploadModel);
-		
-		// Determine a name for the new table.
-		// Get the max(id) for the datatable table.
-		this.setMaxIdByConnection(connection);
-		
-		Integer nextUniqueInteger = this.getMaxId() + 1;
-		
-		
-		// Get the datatable by name.
 		DatatableModel datatableModel = new DatatableModel();
+
+		UploadsModel uploadsModel = new UploadsModel();
+		datatableModel.setUploadModel(uploadsModel.retrieveUploadAsUploadModelByUploadId(uploadId, connection));
+				
+		// Determine a name for the new datatable.
+		// Try to get the nextUniqueInteger for the datatable table.
+		Integer nextUniqueInteger = this.retrieveMaxIdAsIntegerUsingConnection(connection) + 1;
 		
-		datatableModel.setDatatableModelByName("datatable_" + nextUniqueInteger, connection);
 		
-		while (datatableModel.getId() != null) {
+		
+		DatatableModel testDatatableModel = this.retrieveDatatableAsDatatableModelUsingName("datatable_" + nextUniqueInteger, connection);
+		
+		while (testDatatableModel.getId() != null) {
 			
 			nextUniqueInteger++;
 			
@@ -99,11 +102,18 @@ public class DatatablesModel implements java.io.Serializable {
 				break;
 			}
 			
-			datatableModel.setDatatableModelByName("datatable_" + nextUniqueInteger, connection);
+			testDatatableModel = this.retrieveDatatableAsDatatableModelUsingName("datatable_" + nextUniqueInteger, connection);
 		}
 		
+		//TODO:
+		System.out.println("Decided to create datatable called " + "datatable_" + nextUniqueInteger);
+		
+		
 		datatableModel.setName("datatable_" + nextUniqueInteger);
-		datatableModel.setUploadModel(uploadModel);
+		
+		
+		//TODO:		
+		System.out.println("Working with upload id = " + datatableModel.getUploadModel().getId());
 		
 		
 		// Create the datatable record.
@@ -125,11 +135,17 @@ public class DatatablesModel implements java.io.Serializable {
 
 	        	    if ((strLine = bufferedReader.readLine()) != null)   {
 
+	        	    	//TODO: Rationalize
+	        	    	
 	        	      String[] columnNames = strLine.split(",");
+	        	      List<String> columnNamesAsStringList = new ArrayList<String>();
+	        	      
 	        	      
 	        	      String strColumnList = "";
 	        	      
 	        	      for (int i = 0; i < columnNames.length; i++) {
+	        	    	  
+	        	    	  columnNamesAsStringList.add(columnNames[i]);
 	        	    	  
 	        	    	  strColumnList = strColumnList.concat("`" + columnNames[i] + "` VARCHAR(255) NULL");
 	        	    	  
@@ -139,6 +155,8 @@ public class DatatablesModel implements java.io.Serializable {
 	        	    	  
 	        	      }
 
+	        	      datatableModel.setColumnNamesAsStringList(columnNamesAsStringList);
+	        	      
 	        	      
 	        	    // Create the table
 	    		      try {
@@ -195,7 +213,7 @@ public class DatatablesModel implements java.io.Serializable {
 	        	    dataInputStream.close();
         	    
         	    } catch (Exception e){
-        	      System.err.println("Error: " + e.getMessage());
+        	      System.err.println("Error getting the column names: " + e.getMessage());
         	    }
 	         
 	         
@@ -211,21 +229,56 @@ public class DatatablesModel implements java.io.Serializable {
 	       
 			
 
-	
+	       return datatableModel;
 		
 		
 	}
 
+	public DatatableModel retrieveDatatableAsDatatableModelUsingName(String name, Connection connection) {
 
+		DatatableModel datatableModel = new DatatableModel();
+		
+		datatableModel.setName(name);
 
-	private Integer getMaxId() {
-		return this.maxId;
+		  //TODO: Data
+		
+	      try {
+	          PreparedStatement preparedStatement = connection.prepareStatement("SELECT id FROM datatable WHERE name = ?;");
+	          preparedStatement.setString(1, datatableModel.getName());				          
+	          preparedStatement.executeQuery();
+
+	          ResultSet resultSet = preparedStatement.getResultSet();
+
+	          // There may be no such datatable.
+	          if (resultSet.next()) {
+	        	  
+	        	  resultSet.first();
+
+	        	  datatableModel.setId(resultSet.getInt("id"));
+	        	  
+	        	  datatableModel = this.retrieveDatatableModelById(datatableModel.getId(), connection);
+
+	          } else {
+	        	  //TODO: proper logging and error handling
+	        	  System.out.println("Did not find datatable with this name. Db query gives !resultSet.next()");
+	          }
+
+	          resultSet.close();
+	          preparedStatement.close();
+	          
+
+	        }
+	        catch(SQLException sqlException){
+		    	sqlException.printStackTrace();
+	        } 
+		
+		return datatableModel;
 	}
 
 
-	private void setMaxIdByConnection(Connection connection) {
+	public Integer retrieveMaxIdAsIntegerUsingConnection(Connection connection) {
 
-		// If the set has a By in it, it should set the whole model.
+		Integer maxId = null;
 		
 	      try {
 	          PreparedStatement preparedStatement = connection.prepareStatement("SELECT MAX(id) AS maxId FROM datatable;");  
@@ -238,15 +291,12 @@ public class DatatablesModel implements java.io.Serializable {
 	        	  
 	        	  resultSet.first();
 	        	  
-	        	  Integer maxId = resultSet.getInt("maxId");
+	        	  maxId = resultSet.getInt("maxId");
 	        	  
-	        	  if (maxId != null) {
+	        	  if (maxId == null) {
 	        		  
-	        		  this.setMaxId(maxId);
-	        		  
-	        	  } else {
 	        		  // There may be no datatables.
-	        		  this.setMaxId(1);
+	        		  maxId = 1;
 	        	  }
 	        	  
 	        	  
@@ -264,12 +314,205 @@ public class DatatablesModel implements java.io.Serializable {
 		    	sqlException.printStackTrace();
 	        } 
 		
-		
+		return maxId;
 	}
 
 
-	public void setMaxId(final int maxId) {
-		this.maxId = maxId;
-	}	
+
+	public DatatableModel retrieveDatatableModelById(Integer datatableId,
+			Connection connection) {
+
+		DatatableModel datatableModel = new DatatableModel();
+		
+
+		datatableModel.setId(datatableId);
+
+
+	      try {
+	          PreparedStatement preparedStatement = connection.prepareStatement(
+	        		  "SELECT id, " + 
+	        		  "name, " +
+	        		  "upload_id, " +  
+	        		  "created_datetime " + 
+	        		  "FROM datatable WHERE id = ?;");
+	          preparedStatement.setInt(1, datatableModel.getId());				          
+	          preparedStatement.executeQuery();
+
+	          ResultSet resultSet = preparedStatement.getResultSet();
+
+	          // There may be no such datatable.
+	          if (resultSet.next()) {
+	        	  
+	        	  resultSet.first();
+	        	  
+	        	  datatableModel.setId(resultSet.getInt("id"));
+	        	  datatableModel.setName(resultSet.getString("name"));
+	        	  datatableModel.getUploadModel().setId(resultSet.getInt("upload_id"));
+	        	  datatableModel.setCreatedDatetime(resultSet.getTimestamp("created_datetime"));
+	        	  
+	        	  //TODO: Data
+	        	  
+			      try{
+			          PreparedStatement preparedStatement2 = connection.prepareStatement("SELECT * FROM `" + datatableModel.getName() + "`;");
+			          preparedStatement2.executeQuery();
+			          
+			          String CACHED_ROW_SET_IMPL_CLASS = "com.sun.rowset.CachedRowSetImpl";
+			          Class<?> cachedRowSetImplClass = Class.forName(CACHED_ROW_SET_IMPL_CLASS);
+			          
+			          //TODO: Make this more memory efficient.
+			          
+			          CachedRowSet dataAsCachedRowSet = (CachedRowSet) cachedRowSetImplClass.newInstance();
+			          dataAsCachedRowSet.populate(preparedStatement2.getResultSet());
+			          
+			          datatableModel.setDataAsCachedRowSet(dataAsCachedRowSet);
+			          
+			          //String[] columnNamesAsStringArray = new String[this.getDataAsCachedRowSet().getMetaData().getColumnCount()];
+			          
+			          List<String> columnNamesAsStringList = new ArrayList<String>();
+			          
+			          for (int i = 0; i < datatableModel.getDataAsCachedRowSet().getMetaData().getColumnCount(); i++) {
+			        	  
+			        	  //columnNamesAsStringArray[i] = this.getDataAsCachedRowSet().getMetaData().getColumnName(i + 1);
+			        	  
+			        	  columnNamesAsStringList.add(datatableModel.getDataAsCachedRowSet().getMetaData().getColumnName(i + 1));
+			          }
+			          
+			          //this.setColumnNamesAsStringArray(columnNamesAsStringArray);
+			          
+			          datatableModel.setColumnNamesAsStringList(columnNamesAsStringList);
+			          
+			          preparedStatement2.close();
+
+			        }
+			        catch(SQLException sqlException){
+				    	sqlException.printStackTrace();
+			        } catch (ClassNotFoundException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (InstantiationException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (IllegalAccessException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} 
+	        	  
+	        	  
+	        	  
+	        	  
+	          } else {
+	        	  //TODO: proper logging and error handling
+	        	  System.out.println("Did not find datatable with this id. Db query gives !resultSet.next()");
+	          }
+
+	          resultSet.close();
+	          preparedStatement.close();
+	          
+
+	        }
+	        catch(SQLException sqlException){
+		    	sqlException.printStackTrace();
+	        } 
+		
+		
+		return datatableModel;
+	}
+
+
+	public DatatableModel retrieveDatatableAsDatatableModelByUploadId(
+			Integer uploadId, Connection connection) {
+
+		UploadModel uploadModel = new UploadModel();
+		uploadModel.setId(uploadId);
+		
+		DatatableModel datatableModel = new DatatableModel();
+
+	      try{
+	          PreparedStatement preparedStatement = connection.prepareStatement("SELECT id, name, upload_id, created_datetime FROM `datatable` WHERE upload_id = ?;");
+	          preparedStatement.setInt(1, uploadModel.getId());
+	          preparedStatement.executeQuery();
+	          ResultSet resultSet = preparedStatement.getResultSet();
+	          
+	          if (resultSet.next()) {
+	        	  
+	        	  resultSet.first();
+
+	        	  //Set the datatable properties
+	        	  datatableModel.setId(resultSet.getInt("id"));
+	        	  datatableModel.setName(resultSet.getString("name"));
+	        	  datatableModel.getUploadModel().setId(resultSet.getInt("upload_id"));
+	        	  datatableModel.setCreatedDatetime(resultSet.getTimestamp("created_datetime"));
+	        	  
+	        	  //Retrieve the datatable data
+	        	  datatableModel.setDataAsCachedRowSet(this.retrieveDataAsCachedRowSetByDatatableName(datatableModel.getName(), connection));
+	        	  
+	        	  //Retrieve the upload data
+	        	  UploadsModel uploadsModel = new UploadsModel();
+	        	  datatableModel.setUploadModel(uploadsModel.retrieveUploadAsUploadModelByUploadId(datatableModel.getUploadModel().getId(), connection));
+	        	  
+	        	  
+	      	  } else {
+	      		  
+	      		  //TODO:
+	      		  System.out.println("No datatable found with the specified upload_id.");
+	      		  
+	      	  }
+	          
+	          resultSet.close();
+	          
+	          preparedStatement.close();
+
+	        }
+	        catch(SQLException sqlException){
+		    	sqlException.printStackTrace();
+	        } 
+		
+		
+		return datatableModel;
+	}
+
+
+	private CachedRowSet retrieveDataAsCachedRowSetByDatatableName(String datatableName,
+			Connection connection) {
+
+		DatatableModel datatableModel = new DatatableModel();
+		datatableModel.setName(datatableName);
+		
+        Class<?> cachedRowSetImplClass = null;
+		try {
+			cachedRowSetImplClass = Class.forName("com.sun.rowset.CachedRowSetImpl");
+		} catch (ClassNotFoundException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		
+		CachedRowSet dataAsCachedRowSet = null;
+		try {
+			dataAsCachedRowSet = (CachedRowSet) cachedRowSetImplClass.newInstance();
+		} catch (InstantiationException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		} catch (IllegalAccessException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		
+	      try{
+	          PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM `" + datatableModel.getName() + "`;");
+	          preparedStatement.executeQuery();
+	         
+	          dataAsCachedRowSet.populate(preparedStatement.getResultSet());
+	          
+	          preparedStatement.close();
+
+	        }
+	        catch(SQLException sqlException){
+		    	sqlException.printStackTrace();
+	        } 
+		
+		return dataAsCachedRowSet;
+	}
+
+
 	
 }
