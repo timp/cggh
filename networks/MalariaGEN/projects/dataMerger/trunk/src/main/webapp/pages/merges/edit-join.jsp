@@ -20,6 +20,10 @@ MergeFunctionsModel mergeFunctionsModel = new MergeFunctionsModel();
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<link rel="stylesheet" href="../shared/css/merges.css" type="text/css" />
+	<script type="text/javascript" src="../shared/js/jquery.min.js"></script>
+	<script type="text/javascript" src="../shared/js/jquery.json.min.js"></script>
+	<script type="text/javascript" src="../shared/js/merges.js"></script>
 <title>Merges</title>
 </head>
 <body>

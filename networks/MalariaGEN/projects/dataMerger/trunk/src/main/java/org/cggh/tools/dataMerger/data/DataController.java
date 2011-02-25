@@ -2,7 +2,8 @@ package org.cggh.tools.dataMerger.data;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.PrintWriter;
+import java.util.Arrays;
+import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -14,7 +15,6 @@ import org.cggh.tools.dataMerger.data.merges.MergeModel;
 import org.cggh.tools.dataMerger.data.merges.MergesModel;
 import org.cggh.tools.dataMerger.data.uploads.UploadsModel;
 import org.cggh.tools.dataMerger.data.users.UserModel;
-import org.cggh.tools.dataMerger.functions.FunctionsModel;
 import org.cggh.tools.dataMerger.functions.uploads.UploadsFunctionsModel;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -23,9 +23,6 @@ import org.json.JSONObject;
 
 
 
-/**
- * Servlet implementation class uploads
- */
 public class DataController extends HttpServlet {
 
 
@@ -37,14 +34,7 @@ public class DataController extends HttpServlet {
 	private static final long serialVersionUID = 2142411300172699330L;
 	private DataModel dataModel = null;
 	private UserModel userModel;
-	
-	private UploadsModel uploadsModel = null;
-	private FunctionsModel functionsModel = null;	
-	private MergesModel mergesModel = null;
 
-	/**
-     * @see HttpServlet#HttpServlet()
-     */
     public DataController() {
         super();
         
@@ -52,12 +42,6 @@ public class DataController extends HttpServlet {
         
         this.setDataModel(new DataModel());
     	this.setUserModel(new UserModel());
-    	
-        this.setUploadsModel(new UploadsModel());
-        this.setFunctionsModel(new FunctionsModel());
-        this.setMergesModel(new MergesModel());
-        
-        
 
         
     }
@@ -76,28 +60,6 @@ public class DataController extends HttpServlet {
         return this.userModel;
     }     
     
-    public void setUploadsModel (final UploadsModel uploadsModel) {
-        this.uploadsModel = uploadsModel;
-    }  
-    public UploadsModel getUploadsModel() {
-        return this.uploadsModel;
-    } 
-    
-    
-    public void setFunctionsModel (final FunctionsModel functionsModel) {
-        this.functionsModel = functionsModel;
-    }  
-    public FunctionsModel getFunctionsModel() {
-        return this.functionsModel;
-    }      
-    
-    public void setMergesModel (final MergesModel mergesModel) {
-        this.mergesModel = mergesModel;
-    }  
-    public MergesModel getMergesModel() {
-        return this.mergesModel;
-    }     
-    
     
     
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -109,39 +71,54 @@ public class DataController extends HttpServlet {
 
 		  if (request.getPathInfo().equals("/uploads")) {
 
-			  UploadsModel uploadsModel = new UploadsModel();
 			  
-			  uploadsModel.setDataModel(this.getDataModel());
-			  uploadsModel.setUserModel(this.getUserModel());
+			  String[] headerAcceptsAsStringArray = request.getHeader("Accept").split(",");
+			  List<String> headerAcceptsAsStringList = Arrays.asList(headerAcceptsAsStringArray);
+			  
+			  if (headerAcceptsAsStringList.contains("text/html")) { 
+			  
+				  response.setContentType("text/html");
+				  
+				  String uploadsAsHTML = null;
+					
+				  UploadsModel uploadsModel = new UploadsModel();
+				  uploadsModel.setDataModel(this.getDataModel());
+				  uploadsModel.setUserModel(this.getUserModel());
 
-			  
-			  CachedRowSet uploadsAsCachedRowSet = uploadsModel.retrieveUploadsAsCachedRowSetUsingUserId(this.getUserModel().getId());
-		
-			  PrintWriter out = response.getWriter();
-			  
-			  if (uploadsAsCachedRowSet != null) {
-		
-				  	UploadsFunctionsModel uploadsFunctionsModel = new UploadsFunctionsModel();
+				  CachedRowSet uploadsAsCachedRowSet = uploadsModel.retrieveUploadsAsCachedRowSetUsingUserId(this.getUserModel().getId());
+			
+				  if (uploadsAsCachedRowSet != null) {
+			
+					  	UploadsFunctionsModel uploadsFunctionsModel = new UploadsFunctionsModel();
+					  
+					  	uploadsFunctionsModel.setCachedRowSet(uploadsAsCachedRowSet);
+					  	uploadsFunctionsModel.setDecoratedXHTMLTableByCachedRowSet();
+					  	
+					  	uploadsAsHTML = uploadsFunctionsModel.getDecoratedXHTMLTable();
+					    
+				  } else {
 				  
-				  	uploadsFunctionsModel.setCachedRowSet(uploadsAsCachedRowSet);
-				  	uploadsFunctionsModel.setDecoratedXHTMLTableByCachedRowSet();
-				    out.print(uploadsFunctionsModel.getDecoratedXHTMLTable());
-				    
-			  } else {
-				  
-				  out.print("<p>Error: uploadsAsCachedRowSet is null</p>");
+					  uploadsAsHTML = "<p>Failed to retrieve Uploads As CachedRowSet Using User Id</p>";
 					  
 				  } 
+				  
+				  
+				  response.getWriter().print(uploadsAsHTML);
+				  
+			  } else {
+				  
+				  response.setContentType("text/plain");
+				  response.getWriter().println("Unhandled Header Accept: " + request.getHeader("Accept"));
+				  
+			  }
 			  
 		  } else {
 			  
-			  System.out.println("Unhandled pathInfo.");
+			  response.getWriter().println("Unhandled Path Info: " + request.getPathInfo());
 		  }
 	}
 
-	/**
-	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
-	 */
+
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
 		this.getDataModel().setDataModelByServletContext(request.getSession().getServletContext());
@@ -151,6 +128,14 @@ public class DataController extends HttpServlet {
 		
 		 if (request.getPathInfo().equals("/merges")) {
 			 
+			 String[] headerAcceptsAsStringArray = request.getHeader("Accept").split(",");
+			  List<String> headerAcceptsAsStringList = Arrays.asList(headerAcceptsAsStringArray);
+			  
+			  if (headerAcceptsAsStringList.contains("application/json")) { 
+			 
+				  response.setContentType("application/json");
+				  String responseAsJSON = null;
+				  
 				  try {
 					  
 					    BufferedReader reader = request.getReader();
@@ -179,17 +164,7 @@ public class DataController extends HttpServlet {
 								
 								mergeModel = mergesModel.retrieveMergeAsMergeModelThroughCreatingMergeUsingMergeModel(mergeModel);
 								
-						         response.setContentType("application/json");
-						         response.setCharacterEncoding("UTF-8");				
-								
-						         
-						         //TODO: This needs to depend on the request, e.g. if the post was not ajax.
-					 
-						         //TODO
-						        log("merge_id: " + mergeModel.getId().toString());
-						         
-						        PrintWriter out = response.getWriter();
-								out.println("{\"id\": \"" + mergeModel.getId().toString() + "\"}");		
+						        responseAsJSON = "{\"id\": \"" + mergeModel.getId().toString() + "\"}";		
 								
 								
 								
@@ -205,18 +180,24 @@ public class DataController extends HttpServlet {
 						} 
 				    
 				    
-				    
 				  } catch (Exception e) { 
 					  //TODO:
 					  e.printStackTrace(); 
 				  
 				  }
-
 				  
+				  response.getWriter().print(responseAsJSON);
+
+			  } else {
+				  
+				  response.setContentType("text/plain");
+				  response.getWriter().println("Unhandled Header Accept: " + request.getHeader("Accept"));
+				  
+			  }
 			  
 		  } else {
 			  
-			  System.out.println("Unhandled pathInfo.");
+			  response.getWriter().println("Unhandled Path Info: " + request.getPathInfo());
 		  }
 		  
 		

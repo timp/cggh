@@ -117,9 +117,9 @@ public class MergeFunctionsModel implements java.io.Serializable {
 						decoratedXHTMLTable = decoratedXHTMLTable.concat("<td>" + this.getJoinsAsCachedRowSet().getInt("column_number") + "</td>");
 						
 						if (this.getJoinsAsCachedRowSet().getBoolean("key")) {
-							decoratedXHTMLTable = decoratedXHTMLTable.concat("<td><input type=\"checkbox\" name=\"join_id\" value=\"" + this.getJoinsAsCachedRowSet().getInt("id") + "\" checked=\"checked\"/></td>");
+							decoratedXHTMLTable = decoratedXHTMLTable.concat("<td><input type=\"checkbox\" name=\"key_" + this.getJoinsAsCachedRowSet().getInt("id") + "\" value=\"" + this.getJoinsAsCachedRowSet().getBoolean("key") + "\" checked=\"checked\"/></td>");
 						} else {
-							decoratedXHTMLTable = decoratedXHTMLTable.concat("<td><input type=\"checkbox\" name=\"join_id\" value=\"" + this.getJoinsAsCachedRowSet().getInt("id") + "\" /></td>");
+							decoratedXHTMLTable = decoratedXHTMLTable.concat("<td><input type=\"checkbox\" name=\"key_" + this.getJoinsAsCachedRowSet().getInt("id") + "\" value=\"" + this.getJoinsAsCachedRowSet().getBoolean("key") + "\" /></td>");
 						}
 						
 						decoratedXHTMLTable = decoratedXHTMLTable.concat("<td>" + this.getJoinsAsCachedRowSet().getString("datatable_1_column_name") + "</td>");
@@ -128,13 +128,21 @@ public class MergeFunctionsModel implements java.io.Serializable {
 						decoratedXHTMLTable = decoratedXHTMLTable.concat("<td>" + this.getJoinsAsCachedRowSet().getString("datatable_2_column_name") + "</td>");
 						decoratedXHTMLTable = decoratedXHTMLTable.concat("<td>TODO: Sample of data</td>");
 						
-						decoratedXHTMLTable = decoratedXHTMLTable.concat("<td><input type=\"text\" name=\"column_name\" value=\"" + this.getJoinsAsCachedRowSet().getString("column_name") + "\" /></td>");
+						decoratedXHTMLTable = decoratedXHTMLTable.concat("<td><input type=\"text\" name=\"column_name_" + this.getJoinsAsCachedRowSet().getInt("id") + "\" value=\"" + this.getJoinsAsCachedRowSet().getString("column_name") + "\" /></td>");
 						
-						//TODO: mechanism for mapping button to column-specific action
-						decoratedXHTMLTable = decoratedXHTMLTable.concat("<td><button class=\"update-join-column_number-up\">Up</button></td>");
-						decoratedXHTMLTable = decoratedXHTMLTable.concat("<td><button class=\"update-join-column_number-down\">Down</button></td>");
+						if (this.getJoinsAsCachedRowSet().getInt("column_number") > 1) {
+							decoratedXHTMLTable = decoratedXHTMLTable.concat("<td><button class=\"update-join-column_number-decrement\" onclick=\"updateJoinColumnNumberByJoinId('" + this.getJoinsAsCachedRowSet().getInt("id") + "','" + (this.getJoinsAsCachedRowSet().getInt("column_number")-1) + "')\">Up</button></td>");
+						} else {
+							decoratedXHTMLTable = decoratedXHTMLTable.concat("<td><button class=\"update-join-column_number-decrement\" disabled=\"disabled\">Up</button></td>");
+						}
 						
-						decoratedXHTMLTable = decoratedXHTMLTable.concat("<td><button class=\"delete-join\">Remove</button></td>");
+						if (this.getJoinsAsCachedRowSet().getInt("column_number") < this.getJoinsAsCachedRowSet().size()) {
+							decoratedXHTMLTable = decoratedXHTMLTable.concat("<td><button class=\"update-join-column_number-increment\" onclick=\"updateJoinColumnNumberByJoinId('" + this.getJoinsAsCachedRowSet().getInt("id") + "','" + (this.getJoinsAsCachedRowSet().getInt("column_number")+1) + "')\">Down</button></td>");
+						} else {	
+							decoratedXHTMLTable = decoratedXHTMLTable.concat("<td><button class=\"update-join-column_number-increment\" disabled=\"disabled\">Down</button></td>");
+						}
+						
+						decoratedXHTMLTable = decoratedXHTMLTable.concat("<td><button class=\"delete-join\" onclick=\"deleteJoinByJoinId('" + this.getJoinsAsCachedRowSet().getInt("id") + "')\">Remove</button></td>");
 						
 						decoratedXHTMLTable = decoratedXHTMLTable.concat("</tr>");
 					  }
