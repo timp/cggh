@@ -419,7 +419,7 @@ public class DatatablesModel implements java.io.Serializable {
 	}
 
 
-	public DatatableModel retrieveDatatableAsDatatableModelByUploadId(
+	public DatatableModel retrieveDatatableAsDatatableModelUsingUploadId(
 			Integer uploadId, Connection connection) {
 
 		UploadModel uploadModel = new UploadModel();

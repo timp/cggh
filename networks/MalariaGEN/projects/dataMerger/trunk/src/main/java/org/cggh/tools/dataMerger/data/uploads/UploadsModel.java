@@ -42,8 +42,11 @@ public class UploadsModel implements java.io.Serializable {
         return this.userModel;
     } 	
 
-   public CachedRowSet getUploadsAsCachedRowSet() {
+   public CachedRowSet retrieveUploadsAsCachedRowSetUsingUserId(Integer userId) {
 
+	   UserModel userModel = new UserModel();
+	   userModel.setId(userId);
+	   
 	   String CACHED_ROW_SET_IMPL_CLASS = "com.sun.rowset.CachedRowSetImpl";
 	   
 	   CachedRowSet uploadsAsCachedRowSet = null;
@@ -56,7 +59,7 @@ public class UploadsModel implements java.io.Serializable {
 
 			      try{
 			          PreparedStatement preparedStatement = connection.prepareStatement("SELECT id, original_filename, created_by_user_id, created_datetime FROM upload WHERE created_by_user_id = ? AND successful = 1;");
-			          preparedStatement.setInt(1, this.getUserModel().getId());
+			          preparedStatement.setInt(1, userModel.getId());
 			          preparedStatement.executeQuery();
 			          Class<?> cachedRowSetImplClass = Class.forName(CACHED_ROW_SET_IMPL_CLASS);
 			          uploadsAsCachedRowSet = (CachedRowSet) cachedRowSetImplClass.newInstance();

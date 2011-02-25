@@ -3,14 +3,8 @@
 <%@ include file="../shared/jsp/prepage.jsp" %>
 <%@ page import="java.util.*" %>
 <%@ page import="javax.sql.rowset.CachedRowSet" %>
-<jsp:useBean id="uploadsModel" class="org.cggh.tools.dataMerger.data.uploads.UploadsModel" scope="page"/>
-<jsp:useBean id="uploadsFunctionsModel" class="org.cggh.tools.dataMerger.functions.uploads.UploadsFunctionsModel" scope="page"/>
-<%
-
-uploadsModel.setDataModel(dataModel);
-uploadsModel.setUserModel(userModel);
-
-%>
+<%@ page import="org.cggh.tools.dataMerger.data.uploads.UploadsModel" %>
+<%@ page import="org.cggh.tools.dataMerger.functions.uploads.UploadsFunctionsModel" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
@@ -94,10 +88,15 @@ uploadsModel.setUserModel(userModel);
 		<div class="uploads">
 <%
 
-  CachedRowSet uploadsAsCachedRowSet = uploadsModel.getUploadsAsCachedRowSet();
+	UploadsModel uploadsModel = new UploadsModel();
+
+	uploadsModel.setDataModel(dataModel);
+
+  CachedRowSet uploadsAsCachedRowSet = uploadsModel.retrieveUploadsAsCachedRowSetUsingUserId(userModel.getId());
 
   if (uploadsAsCachedRowSet != null) {
 
+	  	UploadsFunctionsModel uploadsFunctionsModel = new UploadsFunctionsModel();
 	    uploadsFunctionsModel.setCachedRowSet(uploadsAsCachedRowSet);
 	    uploadsFunctionsModel.setDecoratedXHTMLTableByCachedRowSet();
 	    out.print(uploadsFunctionsModel.getDecoratedXHTMLTable());

@@ -1,4 +1,4 @@
-package org.cggh.tools.dataMerger.functions.joins;
+package org.cggh.tools.dataMerger.functions.merges;
 
 import javax.sql.rowset.CachedRowSet;
 
@@ -8,7 +8,7 @@ import java.sql.SQLException;
 
 
 
-public class JoinsFunctionsModel implements java.io.Serializable {
+public class MergeFunctionsModel implements java.io.Serializable {
 
 
 
@@ -20,9 +20,10 @@ public class JoinsFunctionsModel implements java.io.Serializable {
 	private String joinsAsXHTMLTable = null;
 	private String joinsAsDecoratedXHTMLTable = null;
 	private MergeModel mergeModel;
-	private CachedRowSet keyJoinsAsCachedRowSet;
 	
-	public JoinsFunctionsModel() {
+	public MergeFunctionsModel() {
+		
+		this.setMergeModel(new MergeModel());
 		
 	}
 
@@ -86,8 +87,19 @@ public class JoinsFunctionsModel implements java.io.Serializable {
 					 
 					 decoratedXHTMLTable = decoratedXHTMLTable.concat("<th>Col.#</th>");
 					 decoratedXHTMLTable = decoratedXHTMLTable.concat("<th>Key</th>");
-					 decoratedXHTMLTable = decoratedXHTMLTable.concat("<th colspan=\"2\"><a href=\"javascript:TODOshowDuplicateKeys()\">" + this.getMergeModel().getDatatable1Model().getDuplicateKeysCount() + " duplicate keys</a></th>");
-					 decoratedXHTMLTable = decoratedXHTMLTable.concat("<th colspan=\"2\"><a href=\"javascript:TODOshowDuplicateKeys()\">" + this.getMergeModel().getDatatable2Model().getDuplicateKeysCount() + " duplicate keys</a></th>");
+					 
+					 if (this.getMergeModel().getDatatable1Model().getDuplicateKeysCount() > 0) {
+						 decoratedXHTMLTable = decoratedXHTMLTable.concat("<th colspan=\"2\"><a href=\"javascript:TODOshowDuplicateKeys()\">" + this.getMergeModel().getDatatable1Model().getDuplicateKeysCount() + " duplicate keys</a></th>");
+					 } else {
+						 decoratedXHTMLTable = decoratedXHTMLTable.concat("<th colspan=\"2\"></th>");
+					 }
+					 
+					 if (this.getMergeModel().getDatatable2Model().getDuplicateKeysCount() > 0) {
+						 decoratedXHTMLTable = decoratedXHTMLTable.concat("<th colspan=\"2\"><a href=\"javascript:TODOshowDuplicateKeys()\">" + this.getMergeModel().getDatatable2Model().getDuplicateKeysCount() + " duplicate keys</a></th>");
+					 } else {
+						 decoratedXHTMLTable = decoratedXHTMLTable.concat("<th colspan=\"2\"></th>");
+					 }
+					 
 					 decoratedXHTMLTable = decoratedXHTMLTable.concat("<th>Column name</th>");
 					 decoratedXHTMLTable = decoratedXHTMLTable.concat("<th><!-- Above column for Col.# update buttons --></th>");
 					 decoratedXHTMLTable = decoratedXHTMLTable.concat("<th><!-- Above column for Remove column button --></th>");
@@ -148,47 +160,6 @@ public class JoinsFunctionsModel implements java.io.Serializable {
 		this.setJoinsAsDecoratedXHTMLTable(decoratedXHTMLTable);
 	
 	}
-
-
-	public void setKeyJoinsAsCachedRowSetByJoinsAsCachedRowSet() {
-
-		CachedRowSet keyJoinsAsCachedRowSet = null;
-		
-		try {
-			if (this.getJoinsAsCachedRowSet().next()) {		
-		
-				//because next() skips the first row.
-				 this.getJoinsAsCachedRowSet().beforeFirst();
-
-				while (this.getJoinsAsCachedRowSet().next()) {
-				
-					
-
-				}
-				
-				
-			} else {
-				
-				//TODO:
-				System.out.println("There are no joins.");
-				
-			}
-			
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-				
-		this.setKeyJoinsAsCachedRowSet(keyJoinsAsCachedRowSet);
-	}
-
-
-	public void setKeyJoinsAsCachedRowSet(CachedRowSet keyJoinsAsCachedRowSet) {
-
-
-		this.keyJoinsAsCachedRowSet = keyJoinsAsCachedRowSet;
-	}
-
 
 
 	

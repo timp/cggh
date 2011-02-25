@@ -2,15 +2,19 @@
     pageEncoding="ISO-8859-1"%>
 <%@ include file="../shared/jsp/prepage.jsp" %>
 <%@ page import="javax.sql.rowset.CachedRowSet" %>
-<jsp:useBean id="mergeModel" class="org.cggh.tools.dataMerger.data.merges.MergeModel" scope="page"/>
-<jsp:useBean id="joinsFunctionsModel" class="org.cggh.tools.dataMerger.functions.joins.JoinsFunctionsModel" scope="page"/>
+<%@ page import="org.cggh.tools.dataMerger.data.merges.MergesModel" %>
+<%@ page import="org.cggh.tools.dataMerger.data.merges.MergeModel" %>
+<%@ page import="org.cggh.tools.dataMerger.functions.merges.MergeFunctionsModel" %>
 <%
 
-mergeModel.setDataModel(dataModel);
-mergeModel.setUserModel(userModel);
+MergesModel mergesModel = new MergesModel();
+mergesModel.setDataModel(dataModel);
+mergesModel.setUserModel(userModel);
 
-mergeModel.setMergeModelById(Integer.parseInt(request.getParameter("merge_id")));
+MergeModel mergeModel = new MergeModel();
+mergeModel = mergesModel.retrieveMergeAsMergeModelByMergeId(Integer.parseInt(request.getParameter("merge_id")));
 
+MergeFunctionsModel mergeFunctionsModel = new MergeFunctionsModel();
 %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
@@ -39,13 +43,11 @@ mergeModel.setMergeModelById(Integer.parseInt(request.getParameter("merge_id")))
 			<p>[error: A key is required]
 			</p>
 			<% } %>
-			<p>TODO: Keys count: <%=mergeModel.getJoinsModel().getKeysCount() %></p>
 			
 			<% if (null != mergeModel.getTotalDuplicateKeysCount() && mergeModel.getTotalDuplicateKeysCount() > 0) { %>
 			<p>[error: There are duplicate keys]
 			</p>
 			<% } %>
-			<p>TODO: Duplicate Keys count: <%=mergeModel.getTotalDuplicateKeysCount() %></p>
 		
 		</div>
 		
@@ -66,12 +68,10 @@ mergeModel.setMergeModelById(Integer.parseInt(request.getParameter("merge_id")))
 
   if (joinsAsCachedRowSet != null) {
 
-	  	//TODO: This seems wrong because a set of joins can relate to more than one merge.
-	    joinsFunctionsModel.setMergeModel(mergeModel);
-	    
-	    joinsFunctionsModel.setJoinsAsCachedRowSet(joinsAsCachedRowSet);
-	    joinsFunctionsModel.setJoinsAsDecoratedXHTMLTableByJoinsAsCachedRowSet();
-	    out.print(joinsFunctionsModel.getJoinsAsDecoratedXHTMLTable());
+	    mergeFunctionsModel.setMergeModel(mergeModel);	    
+	    mergeFunctionsModel.setJoinsAsCachedRowSet(joinsAsCachedRowSet);
+	    mergeFunctionsModel.setJoinsAsDecoratedXHTMLTableByJoinsAsCachedRowSet();
+	    out.print(mergeFunctionsModel.getJoinsAsDecoratedXHTMLTable());
 	    
   } else {
 	  

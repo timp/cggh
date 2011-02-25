@@ -15,6 +15,7 @@ import org.cggh.tools.dataMerger.data.merges.MergesModel;
 import org.cggh.tools.dataMerger.data.uploads.UploadsModel;
 import org.cggh.tools.dataMerger.data.users.UserModel;
 import org.cggh.tools.dataMerger.functions.FunctionsModel;
+import org.cggh.tools.dataMerger.functions.uploads.UploadsFunctionsModel;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -101,26 +102,30 @@ public class DataController extends HttpServlet {
     
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-		this.dataModel.setDataModelByServletContext(request.getSession().getServletContext());
-		this.userModel.setDataModel(this.getDataModel());
-		this.userModel.setUserModelByUsername(request.getRemoteUser());
+		this.getDataModel().setDataModelByServletContext(request.getSession().getServletContext());
+		this.getUserModel().setDataModel(this.getDataModel());
+		this.getUserModel().setUserModelByUsername(request.getRemoteUser());
 		
 
 		  if (request.getPathInfo().equals("/uploads")) {
 
-				this.uploadsModel.setDataModel(this.getDataModel());
-				this.uploadsModel.setUserModel(this.getUserModel());
+			  UploadsModel uploadsModel = new UploadsModel();
+			  
+			  uploadsModel.setDataModel(this.getDataModel());
+			  uploadsModel.setUserModel(this.getUserModel());
 
 			  
-			  CachedRowSet uploadsAsCachedRowSet = this.uploadsModel.getUploadsAsCachedRowSet();
+			  CachedRowSet uploadsAsCachedRowSet = uploadsModel.retrieveUploadsAsCachedRowSetUsingUserId(this.getUserModel().getId());
 		
 			  PrintWriter out = response.getWriter();
 			  
 			  if (uploadsAsCachedRowSet != null) {
 		
-				    this.functionsModel.getUploadsFunctionsModel().setCachedRowSet(uploadsAsCachedRowSet);
-				    this.functionsModel.getUploadsFunctionsModel().setDecoratedXHTMLTableByCachedRowSet();
-				    out.print(functionsModel.getUploadsFunctionsModel().getDecoratedXHTMLTable());
+				  	UploadsFunctionsModel uploadsFunctionsModel = new UploadsFunctionsModel();
+				  
+				  	uploadsFunctionsModel.setCachedRowSet(uploadsAsCachedRowSet);
+				  	uploadsFunctionsModel.setDecoratedXHTMLTableByCachedRowSet();
+				    out.print(uploadsFunctionsModel.getDecoratedXHTMLTable());
 				    
 			  } else {
 				  
@@ -163,13 +168,6 @@ public class DataController extends HttpServlet {
 							try {
 
 
-								//this.getMergesModel().getMergeModel().getUpload1Model().setId(uploadIds.getInt(0));
-								//this.getMergesModel().getMergeModel().getUpload2Model().setId(uploadIds.getInt(1));
-								
-								
-								//this.getMergesModel().setMergeModelByCreatingMerge();
-								
-								
 								MergeModel mergeModel = new MergeModel();
 								mergeModel.getUpload1Model().setId(uploadIds.getInt(0));
 								mergeModel.getUpload2Model().setId(uploadIds.getInt(1));
@@ -179,7 +177,7 @@ public class DataController extends HttpServlet {
 								mergesModel.setDataModel(this.getDataModel());
 								mergesModel.setUserModel(this.getUserModel());
 								
-								mergeModel = mergesModel.retrieveMergeAsMergeModelAfterCreatingMergeUsingMergeModel(mergeModel);
+								mergeModel = mergesModel.retrieveMergeAsMergeModelThroughCreatingMergeUsingMergeModel(mergeModel);
 								
 						         response.setContentType("application/json");
 						         response.setCharacterEncoding("UTF-8");				

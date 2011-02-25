@@ -26,19 +26,35 @@ public class MergeScriptsModel implements java.io.Serializable {
 
 
 
-	public void doDatatable1DuplicateKeysCountUsingMergeId(Integer mergeId, Connection connection) {
+	
+	public MergeModel retrieveMergeAsMergeModelThroughDeterminingDatatable1DuplicateKeysCountUsingMergeModel(MergeModel mergeModel, Connection connection) {
 		
-		MergesModel mergesModel = new MergesModel();
-		MergeModel mergeModel = mergesModel.retrieveMergeAsMergeModelByMergeId(mergeId, connection);
-		
-		 //mergeModel should contain joinsAsCachedRowset, two datatableModels, each with a name and dataAsCachedRowSet set.
-		
+		String Datatable1KeyColumnNamesAsSQLCSV = null;
+
+	      StringBuffer stringBuffer   = new StringBuffer(2 * (mergeModel.getDatatable1Model().getKeyColumnNamesAsStringList().size() + 1));
+
+	      stringBuffer.append('`');
+	      for (int i = 0; i < mergeModel.getDatatable1Model().getKeyColumnNamesAsStringList().size(); i++) {
+	    	  
+	    	  stringBuffer.append(mergeModel.getDatatable1Model().getKeyColumnNamesAsStringList().get(i));
+
+	          if (i != mergeModel.getDatatable1Model().getKeyColumnNamesAsStringList().size() - 1) {
+	        	  stringBuffer.append('`');
+	        	  stringBuffer.append(',');
+	        	  stringBuffer.append('`');
+	          }
+	      }
+	      stringBuffer.append('`');
+
+
+	      Datatable1KeyColumnNamesAsSQLCSV = stringBuffer.toString();
+	      
+	      //TODO:
+	      System.out.println("Datatable1KeyColumnNamesAsSQLCSV: " + Datatable1KeyColumnNamesAsSQLCSV);
 		
 	      try{
-	    	  // Get the datatable_1_column_names with keys
-	          PreparedStatement preparedStatement = connection.prepareStatement("SELECT datatable_1_column_name FROM `join` WHERE merge_id = ? AND `key` = ?;");
-	          preparedStatement.setInt(1, mergeModel.getId());
-	          preparedStatement.setBoolean(2, true);
+	    	  //SELECT SUM(duplicateValuesCount) AS totalDuplicateValuesCount FROM (SELECT COUNT(CONCAT(`Row`,`ID`)) AS duplicateValuesCount FROM `datatable_3` GROUP BY CONCAT(`Row`,`ID`) HAVING duplicateValuesCount > 1) AS duplicateValuesCounts;
+	    	  PreparedStatement preparedStatement = connection.prepareStatement("SELECT SUM(duplicateValuesCount) AS totalDuplicateValuesCount FROM (SELECT COUNT(CONCAT(" + Datatable1KeyColumnNamesAsSQLCSV +  ")) AS duplicateValuesCount FROM `" + mergeModel.getDatatable1Model().getName()+ "` GROUP BY CONCAT(" + Datatable1KeyColumnNamesAsSQLCSV +  ") HAVING duplicateValuesCount > 1) AS duplicateValuesCounts;");
 	          preparedStatement.executeQuery();
 	          ResultSet resultSet = preparedStatement.getResultSet();
 	          
@@ -46,32 +62,115 @@ public class MergeScriptsModel implements java.io.Serializable {
 	        	  
 	        	  resultSet.first();
 
-	        	  //TODO
+	        	  Integer totalDuplicateValuesCount = resultSet.getInt("totalDuplicateValuesCount");
 	        	  
-	        	  //Get a duplicateKeysCount for the datatable
-	        	//SELECT SUM(duplicateValuesCount) As totalDuplicateValuesCount FROM (SELECT COUNT(`" + columnName + "`) AS duplicateValuesCount FROM `" + this.getName() + "` GROUP BY `" + columnName + "` HAVING duplicateValuesCount > 1) AS duplicateValuesCounts;
-	    	      
-	        	  //DatatableModel has a getDuplicateValuesCountByColumnName, but not sure it's useful here.
+	        	  if (totalDuplicateValuesCount != null) {
+	        		  
+	        		  mergeModel.getDatatable1Model().setDuplicateKeysCount(totalDuplicateValuesCount);
+	        		  
+	        	  } else {
+	        		  
+	        		  mergeModel.getDatatable1Model().setDuplicateKeysCount(0);
+	        	  }
 	        	  
 	      	  } else {
 	      		  
-	      		  //TODO:
-	      		  System.out.println("No merge found with the specified id.");
-	      		  
+	      		  mergeModel.getDatatable1Model().setDuplicateKeysCount(0);
 	      	  }
 	          
 	          resultSet.close();
-	          
 	          preparedStatement.close();
+	          
+	          
+	          //TODO:
+	          System.out.println("Setting dt1 duplicate keys count to: " + mergeModel.getDatatable1Model().getDuplicateKeysCount());
+	          
+	          MergesModel mergesModel = new MergesModel();
+	          
+	          mergesModel.updateMergeUsingMergeModel(mergeModel, connection);
+	          
 
 	        }
 	        catch(SQLException sqlException){
 		    	sqlException.printStackTrace();
 	        } 
 
+	        
+	        return mergeModel;
 	}
 
+	//TODO: Condense these two identical methods into one.
+	public MergeModel retrieveMergeAsMergeModelThroughDeterminingDatatable2DuplicateKeysCountUsingMergeModel(MergeModel mergeModel, Connection connection) {
+		
+		String Datatable2KeyColumnNamesAsSQLCSV = null;
 
+	      StringBuffer stringBuffer   = new StringBuffer(2 * (mergeModel.getDatatable2Model().getKeyColumnNamesAsStringList().size() + 1));
+
+	      stringBuffer.append('`');
+	      for (int i = 0; i < mergeModel.getDatatable2Model().getKeyColumnNamesAsStringList().size(); i++) {
+	    	  
+	    	  stringBuffer.append(mergeModel.getDatatable2Model().getKeyColumnNamesAsStringList().get(i));
+
+	          if (i != mergeModel.getDatatable2Model().getKeyColumnNamesAsStringList().size() - 1) {
+	        	  stringBuffer.append('`');
+	        	  stringBuffer.append(',');
+	        	  stringBuffer.append('`');
+	          }
+	      }
+	      stringBuffer.append('`');
+
+
+	      Datatable2KeyColumnNamesAsSQLCSV = stringBuffer.toString();
+	      
+	      //TODO:
+	      System.out.println("Datatable2KeyColumnNamesAsSQLCSV: " + Datatable2KeyColumnNamesAsSQLCSV);
+		
+	      try{
+	    	  //SELECT SUM(duplicateValuesCount) AS totalDuplicateValuesCount FROM (SELECT COUNT(CONCAT(`Row`,`ID`)) AS duplicateValuesCount FROM `datatable_3` GROUP BY CONCAT(`Row`,`ID`) HAVING duplicateValuesCount > 1) AS duplicateValuesCounts;
+	    	  PreparedStatement preparedStatement = connection.prepareStatement("SELECT SUM(duplicateValuesCount) AS totalDuplicateValuesCount FROM (SELECT COUNT(CONCAT(" + Datatable2KeyColumnNamesAsSQLCSV +  ")) AS duplicateValuesCount FROM `" + mergeModel.getDatatable2Model().getName()+ "` GROUP BY CONCAT(" + Datatable2KeyColumnNamesAsSQLCSV +  ") HAVING duplicateValuesCount > 1) AS duplicateValuesCounts;");
+	          preparedStatement.executeQuery();
+	          ResultSet resultSet = preparedStatement.getResultSet();
+	          
+	          if (resultSet.next()) {
+	        	  
+	        	  resultSet.first();
+
+	        	  Integer totalDuplicateValuesCount = resultSet.getInt("totalDuplicateValuesCount");
+	        	  
+	        	  if (totalDuplicateValuesCount != null) {
+	        		  
+	        		  mergeModel.getDatatable2Model().setDuplicateKeysCount(totalDuplicateValuesCount);
+	        		  
+	        	  } else {
+	        		  
+	        		  mergeModel.getDatatable2Model().setDuplicateKeysCount(0);
+	        	  }
+	        	  
+	      	  } else {
+	      		  
+	      		  mergeModel.getDatatable2Model().setDuplicateKeysCount(0);
+	      	  }
+	          
+	          resultSet.close();
+	          preparedStatement.close();
+	          
+	          //TODO:
+	          System.out.println("Setting dt2 duplicate keys count to: " + mergeModel.getDatatable2Model().getDuplicateKeysCount());
+	          
+	          
+	          MergesModel mergesModel = new MergesModel();
+	          
+	          mergesModel.updateMergeUsingMergeModel(mergeModel, connection);
+	          
+
+	        }
+	        catch(SQLException sqlException){
+		    	sqlException.printStackTrace();
+	        } 
+
+	        
+	       return mergeModel;
+	}
 
 	
 }

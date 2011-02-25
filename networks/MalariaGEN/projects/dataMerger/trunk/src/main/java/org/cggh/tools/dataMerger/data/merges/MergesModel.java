@@ -28,8 +28,8 @@ public class MergesModel implements java.io.Serializable {
 	private DataModel dataModel;
 	private UserModel userModel;
 	
-	private MergeModel mergeModel;
-	private DatatablesModel datatablesModel;
+	//private MergeModel mergeModel;
+	//private DatatablesModel datatablesModel;
 	
 	
 	public MergesModel() {
@@ -38,8 +38,8 @@ public class MergesModel implements java.io.Serializable {
 		this.setUserModel(new UserModel());			
 		
 
-		this.setMergeModel(new MergeModel());
-		this.setDatatablesModel(new DatatablesModel());	
+		//this.setMergeModel(new MergeModel());
+		//this.setDatatablesModel(new DatatablesModel());	
 		
 		
 	}
@@ -59,16 +59,45 @@ public class MergesModel implements java.io.Serializable {
     } 
 
 
-	public void setMergeModel (final MergeModel mergeModel) {
-		
-		this.mergeModel = mergeModel;
-	}
-	public MergeModel getMergeModel () {
-		
-		return this.mergeModel;
-	}	    
+//	public void setMergeModel (final MergeModel mergeModel) {
+//		
+//		this.mergeModel = mergeModel;
+//	}
+//	public MergeModel getMergeModel () {
+//		
+//		return this.mergeModel;
+//	}	    
 
-	
+    public MergeModel retrieveMergeAsMergeModelByMergeId(Integer mergeId) {
+    	
+    	MergeModel mergeModel = new MergeModel();
+		mergeModel.setId(mergeId);
+		
+		try {
+			
+			Class.forName("com.mysql.jdbc.Driver").newInstance();
+			
+			Connection connection = this.getDataModel().getNewConnection();
+			 
+			if (!connection.isClosed()) {		
+
+				mergeModel = retrieveMergeAsMergeModelByMergeId(mergeModel.getId(), connection);
+				
+				connection.close();
+				
+			} else {
+				
+				System.out.println("connection.isClosed");
+			}
+				
+		} 
+		catch (Exception e) {
+			System.out.println("Exception from getMergesAsCachedRowSet.");
+			e.printStackTrace();
+		}				
+				
+    	return mergeModel;
+    }
 
 
 	public MergeModel retrieveMergeAsMergeModelByMergeId(Integer mergeId, Connection connection) {
@@ -77,7 +106,8 @@ public class MergesModel implements java.io.Serializable {
 		mergeModel.setId(mergeId);
 		
 	      try{
-	          PreparedStatement preparedStatement = connection.prepareStatement("SELECT id, upload_1_id, upload_2_id, created_by_user_id, created_datetime, updated_datetime, datatable_1_duplicate_keys_count, datatable_2_duplicate_keys_count, total_duplicate_keys_count FROM `merge` WHERE id = ?;");
+	          PreparedStatement preparedStatement = connection.prepareStatement("SELECT id, upload_1_id, upload_2_id, created_by_user_id, created_datetime, updated_datetime, datatable_1_duplicate_keys_count, datatable_2_duplicate_keys_count, total_duplicate_keys_count FROM `merge` " + 
+	        		  "WHERE id = ?;");
 	          preparedStatement.setInt(1, mergeModel.getId());
 	          preparedStatement.executeQuery();
 	          ResultSet resultSet = preparedStatement.getResultSet();
@@ -96,17 +126,24 @@ public class MergesModel implements java.io.Serializable {
 	        	  
 	        	  //Retrieve the upload data
 	        	  UploadsModel uploadsModel = new UploadsModel();
+	        	  uploadsModel.setDataModel(this.getDataModel());
 	        	  mergeModel.setUpload1Model(uploadsModel.retrieveUploadAsUploadModelByUploadId(mergeModel.getUpload1Model().getId(), connection));
 	        	  mergeModel.setUpload2Model(uploadsModel.retrieveUploadAsUploadModelByUploadId(mergeModel.getUpload2Model().getId(), connection));
 	        	  
 	        	  //Retrieve the datatable data
 	        	  DatatablesModel datatablesModel = new DatatablesModel();
-	        	  mergeModel.setDatatable1Model(datatablesModel.retrieveDatatableAsDatatableModelByUploadId(mergeModel.getUpload1Model().getId(), connection));
-	        	  mergeModel.setDatatable2Model(datatablesModel.retrieveDatatableAsDatatableModelByUploadId(mergeModel.getUpload2Model().getId(), connection));
+	        	  datatablesModel.setDataModel(this.getDataModel());
+	        	  mergeModel.setDatatable1Model(datatablesModel.retrieveDatatableAsDatatableModelUsingUploadId(mergeModel.getUpload1Model().getId(), connection));
+	        	  mergeModel.setDatatable2Model(datatablesModel.retrieveDatatableAsDatatableModelUsingUploadId(mergeModel.getUpload2Model().getId(), connection));
+	        	  
+	        	  //Add the merge-specific datatable data from the merge data to the datatable models
+	        	  mergeModel.getDatatable1Model().setDuplicateKeysCount(resultSet.getInt("datatable_1_duplicate_keys_count"));
+	        	  mergeModel.getDatatable2Model().setDuplicateKeysCount(resultSet.getInt("datatable_2_duplicate_keys_count"));
 	        	  
 	        	  //Retrieve the joins data
 	        	  JoinsModel joinsModel = new JoinsModel();
-	        	  mergeModel.setJoinsAsCachedRowSet(joinsModel.retrieveJoinsAsCachedRowSetByMergeId(mergeModel.getId(), connection));
+	        	  joinsModel.setDataModel(this.getDataModel());
+	        	  mergeModel.setJoinsModel(joinsModel.retrieveJoinsAsJoinsModelByMergeId(mergeModel.getId(), connection));
 	        	  
 	      	  } else {
 	      		  
@@ -126,15 +163,6 @@ public class MergesModel implements java.io.Serializable {
 		
 		return mergeModel;
 	}
-
-	public DatatablesModel getDatatablesModel() {
-		return this.datatablesModel;
-	}
-	public void setDatatablesModel(final DatatablesModel datatablesModel) {
-		this.datatablesModel = datatablesModel;
-	}
-	
-	
 
 	public CachedRowSet getMergesAsCachedRowSet() {
 	
@@ -182,10 +210,10 @@ public class MergesModel implements java.io.Serializable {
 	
 	
 	
-	     return(mergesAsCachedRowSet);
+	     return mergesAsCachedRowSet;
 	   }
 
-	public MergeModel retrieveMergeAsMergeModelAfterCreatingMergeUsingMergeModel(
+	public MergeModel retrieveMergeAsMergeModelThroughCreatingMergeUsingMergeModel(
 			MergeModel mergeModel) {
 
 
@@ -264,6 +292,7 @@ public class MergesModel implements java.io.Serializable {
 						    			  String columnName = datatable1ColumnNamesAsStringList.get(i);
 						    			  
 						    			  mergeModel.getJoinsModel().createJoin(mergeModel.getId(), columnNumber, key, datatable1ColumnName, datatable2ColumnName, columnName, connection);
+						    			  
 						    			  
 						    			  //Remove items to make this more efficient.
 						    			  
@@ -381,7 +410,7 @@ public class MergesModel implements java.io.Serializable {
 				      //Determine which columns in the join are unique.
 				      
 				      //Get the columns that include both datatables.
-				      mergeModel.getJoinsModel().setJoinsModelByMergeModel(mergeModel, connection);
+				      mergeModel.setJoinsModel(mergeModel.getJoinsModel().retrieveJoinsAsJoinsModelByMergeId(mergeModel.getId(), connection));
 				      
 				      CachedRowSet crossDatatableJoinsAsCachedRowSet = mergeModel.getJoinsModel().getCrossDatatableJoinsAsCachedRowSet();
 				      
@@ -395,7 +424,7 @@ public class MergesModel implements java.io.Serializable {
 
 							while (crossDatatableJoinsAsCachedRowSet.next()) {
 								 
-								 	//Count the duplicate keys.
+								 	
 									 if (
 											 mergeModel.getDatatable1Model().getDuplicateValuesCountByColumnName(crossDatatableJoinsAsCachedRowSet.getString("datatable_1_column_name"), connection) == 0
 											 &&
@@ -416,6 +445,11 @@ public class MergesModel implements java.io.Serializable {
 										 joinModel.setColumnName(crossDatatableJoinsAsCachedRowSet.getString("column_name"));
 										 
 										 mergeModel.getJoinsModel().updateJoinByJoinModel(joinModel, connection);
+										 
+						    			  //Record keyColumnNames to save subsequent lookup
+						    			  mergeModel.getDatatable1Model().getKeyColumnNamesAsStringList().add(crossDatatableJoinsAsCachedRowSet.getString("datatable_1_column_name"));
+						    			  mergeModel.getDatatable2Model().getKeyColumnNamesAsStringList().add(crossDatatableJoinsAsCachedRowSet.getString("datatable_2_column_name"));
+						    			  
 										 
 									 }
 								 
@@ -449,17 +483,24 @@ public class MergesModel implements java.io.Serializable {
 					  
 					  MergeScriptsModel mergeScriptsModel = new MergeScriptsModel();
 					  
-					  mergeScriptsModel.doDatatable1DuplicateKeysCountUsingMergeId(mergeModel.getId(), connection);
+					  //TODO: Simplify
+					  mergeModel = mergeScriptsModel.retrieveMergeAsMergeModelThroughDeterminingDatatable1DuplicateKeysCountUsingMergeModel(mergeModel, connection);
+					  
+					  mergeModel = mergeScriptsModel.retrieveMergeAsMergeModelThroughDeterminingDatatable2DuplicateKeysCountUsingMergeModel(mergeModel, connection);
 					  
 					  
+					  // Add up the duplicate keys
+					  if (mergeModel.getDatatable1Model().getDuplicateKeysCount() != null && mergeModel.getDatatable2Model().getDuplicateKeysCount() != null) {
+						  mergeModel.setTotalDuplicateKeysCount(mergeModel.getDatatable1Model().getDuplicateKeysCount() + mergeModel.getDatatable2Model().getDuplicateKeysCount());
+					  } else {						  
+						  mergeModel.setTotalDuplicateKeysCount(null);
+					  }
+					  
+					  //Save it back to the database
+					  MergesModel mergesModel = new MergesModel();
+					  mergesModel.updateMergeUsingMergeModel(mergeModel, connection);
 					  
 					  
-					  // At this stage, mergeFunctionsModel.getMergeModel() should contain an updated model.
-					  
-					  //this is already done by the mergeScript
-					  //this.updateMergeByMergeModel(mergeFunctionsModel.getMergeModel(), connection);
-						
-					
 			          
 				      //End of merge algorithm
 				      
@@ -491,4 +532,124 @@ public class MergesModel implements java.io.Serializable {
 		
 		return mergeModel;
 	}
+
+	public void updateMergeUsingMergeModel(MergeModel mergeModel,
+			Connection connection) {
+		
+	      try {
+
+	          PreparedStatement preparedStatement = connection.prepareStatement("UPDATE `merge` SET upload_1_id = ?, upload_2_id = ?, updated_datetime = NOW(), datatable_1_duplicate_keys_count = ?, datatable_2_duplicate_keys_count = ?, total_duplicate_keys_count = ? WHERE id = ?;");
+	          preparedStatement.setInt(1, mergeModel.getUpload1Model().getId());
+	          preparedStatement.setInt(2, mergeModel.getUpload2Model().getId());
+	          if (mergeModel.getDatatable1Model().getDuplicateKeysCount() != null) {
+	        	  preparedStatement.setInt(3, mergeModel.getDatatable1Model().getDuplicateKeysCount());
+	        	  
+	        	  //TODO:
+	        	  System.out.println("Setting dt1 duplicate keys count to " + mergeModel.getDatatable1Model().getDuplicateKeysCount());
+	        	  
+	          } else {
+	        	  preparedStatement.setNull(3, java.sql.Types.INTEGER);
+	        	  
+	        	//TODO:
+	        	  System.out.println("Setting dt1 duplicate keys count to null");
+	        	  
+	          }
+	          if (mergeModel.getDatatable2Model().getDuplicateKeysCount() != null) {
+	        	  preparedStatement.setInt(4, mergeModel.getDatatable2Model().getDuplicateKeysCount());
+	        	  
+	        	//TODO:
+	        	  System.out.println("Setting dt2 duplicate keys count to " + mergeModel.getDatatable2Model().getDuplicateKeysCount());
+	        	  
+	          } else {
+	        	  preparedStatement.setNull(4, java.sql.Types.INTEGER);
+	        	  
+	        	//TODO:
+	        	  System.out.println("Setting dt2 duplicate keys count to null");
+	          }
+	          if (mergeModel.getTotalDuplicateKeysCount() != null) {
+	        	  preparedStatement.setInt(5, mergeModel.getTotalDuplicateKeysCount());
+	          } else {
+	        	  preparedStatement.setNull(5, java.sql.Types.INTEGER);
+	          }
+	          preparedStatement.setInt(6, mergeModel.getId());
+	          preparedStatement.executeUpdate();
+	          preparedStatement.close();
+	          
+	
+	        }
+	        catch(SQLException sqlException){
+		    	sqlException.printStackTrace();
+	        } 
+	}
+	
+	   public MergeModel retrieveMergeAsMergeModelUsingMergeId (final Integer mergeId) {
+
+		   MergeModel mergeModel = new MergeModel();
+		   mergeModel.setId(mergeId);
+		   
+			try {
+				
+				Connection connection = this.getDataModel().getNewConnection();
+				 
+				if (!connection.isClosed()) {
+			
+				      try{
+				          PreparedStatement preparedStatement = connection.prepareStatement(
+				        		  	"SELECT id, upload_1_id, upload_2_id, created_by_user_id, created_datetime, updated_datetime, total_duplicate_keys_count FROM merge " + 
+				        		  	"WHERE id = ?;"
+				        		  	);
+				          preparedStatement.setInt(1, mergeModel.getId());
+				          
+				          preparedStatement.executeQuery();
+				          ResultSet resultSet = preparedStatement.getResultSet();
+				          
+				          // There may be no such record
+				          if (resultSet.next()) {
+				        	  
+				        	  resultSet.first();
+				        	  mergeModel.getUpload1Model().setId(resultSet.getInt("upload_1_id"));
+				        	  mergeModel.getUpload2Model().setId(resultSet.getInt("upload_2_id"));
+				        	  mergeModel.setCreatedByUserId(resultSet.getInt("created_by_user_id"));
+				        	  mergeModel.setCreatedDatetime(resultSet.getTimestamp("created_datetime"));
+				        	  mergeModel.setUpdatedDatetime(resultSet.getTimestamp("updated_datetime"));
+				        	  mergeModel.getDatatable1Model().setDuplicateKeysCount(resultSet.getInt("datatable_1_duplicate_keys_count"));
+				        	  mergeModel.getDatatable2Model().setDuplicateKeysCount(resultSet.getInt("datatable_1_duplicate_keys_count"));
+				        	  mergeModel.setTotalDuplicateKeysCount(resultSet.getInt("total_duplicate_keys_count"));
+				        	  
+				          } else {
+				        	  //TODO: proper logging and error handling
+				        	  System.out.println("Db query gives !resultSet.next()");
+				          }
+				          
+				          preparedStatement.close();
+
+				        }
+				        catch(SQLException sqlException){
+				        	System.out.println("<p>" + sqlException + "</p>");
+					    	sqlException.printStackTrace();
+				        } 	
+				        
+					    //TODO: Get the rest of the merge data (column joins, etc.).
+				        mergeModel.getJoinsModel().setJoinsModelByMergeId(mergeModel.getId(), connection);
+				        
+				        
+				
+					connection.close();
+					
+				} else {
+					
+					System.out.println("connection.isClosed");
+				}
+					
+			} 
+			catch (Exception e) {
+				System.out.println("Exception in setJoinModelByMergeId");
+				e.printStackTrace();
+			}
+
+
+			return mergeModel;
+			
+	    }	
+	
 }

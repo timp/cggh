@@ -5,6 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.sql.rowset.CachedRowSet;
@@ -26,11 +27,15 @@ public class DatatableModel implements java.io.Serializable {
 	private CachedRowSet dataAsCachedRowSet;
 	private List<String> columnNamesAsStringList;
 	private Integer duplicateValuesCount;
+	private List<String> keyColumnNamesAsStringList;
 	
 	
 	public DatatableModel() {
 
 		this.setUploadModel(new UploadModel());
+		this.setColumnNamesAsStringList(new ArrayList<String>());
+		this.setKeyColumnNamesAsStringList(new ArrayList<String>());
+		
 	}
 
 	//To honor no-argument bean constructor
@@ -90,6 +95,18 @@ public class DatatableModel implements java.io.Serializable {
 		return this.createdDatetime;
 	}
 
+	
+	public List<String> getKeyColumnNamesAsStringList() {
+		return this.keyColumnNamesAsStringList;
+	}
+
+	public void setKeyColumnNamesAsStringList(List<String> keyColumnNamesAsStringList) {
+		this.keyColumnNamesAsStringList = keyColumnNamesAsStringList;
+	}	
+	
+	
+	//TODO: Refactor references to use (copy query to) datatablesModel.retrieveDatatableAsDatatableModelUsingName(String name, Connection connection)
+	//TODO: With subsquent datatableModel.setDatatableModel(Datatable Model)
 	public void setDatatableModelByName(String name, Connection connection) {
 
 		this.setName(name);
@@ -296,6 +313,8 @@ public class DatatableModel implements java.io.Serializable {
 		this.setDatatableModel(datatablesModel.retrieveDatatableModelById(this.getId(), connection));
 		
 	}
+
+
 
 
 
