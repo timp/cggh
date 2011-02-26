@@ -130,16 +130,18 @@ public class MergeFunctionsModel implements java.io.Serializable {
 						
 						decoratedXHTMLTable = decoratedXHTMLTable.concat("<td><input type=\"text\" name=\"column_name_" + this.getJoinsAsCachedRowSet().getInt("id") + "\" value=\"" + this.getJoinsAsCachedRowSet().getString("column_name") + "\" /></td>");
 						
+						//TODO: Improve move function calls/naming.
+						
 						if (this.getJoinsAsCachedRowSet().getInt("column_number") > 1) {
-							decoratedXHTMLTable = decoratedXHTMLTable.concat("<td><button class=\"update-join-column_number-decrement\" onclick=\"updateJoinColumnNumberByJoinId('" + this.getJoinsAsCachedRowSet().getInt("id") + "','" + (this.getJoinsAsCachedRowSet().getInt("column_number")-1) + "')\">Up</button></td>");
+							decoratedXHTMLTable = decoratedXHTMLTable.concat("<td><button class=\"move up\">Up</button></td>");
 						} else {
-							decoratedXHTMLTable = decoratedXHTMLTable.concat("<td><button class=\"update-join-column_number-decrement\" disabled=\"disabled\">Up</button></td>");
+							decoratedXHTMLTable = decoratedXHTMLTable.concat("<td><button class=\"move up\" disabled=\"disabled\">Up</button></td>");
 						}
 						
 						if (this.getJoinsAsCachedRowSet().getInt("column_number") < this.getJoinsAsCachedRowSet().size()) {
-							decoratedXHTMLTable = decoratedXHTMLTable.concat("<td><button class=\"update-join-column_number-increment\" onclick=\"updateJoinColumnNumberByJoinId('" + this.getJoinsAsCachedRowSet().getInt("id") + "','" + (this.getJoinsAsCachedRowSet().getInt("column_number")+1) + "')\">Down</button></td>");
+							decoratedXHTMLTable = decoratedXHTMLTable.concat("<td><button class=\"move down\">Down</button></td>");
 						} else {	
-							decoratedXHTMLTable = decoratedXHTMLTable.concat("<td><button class=\"update-join-column_number-increment\" disabled=\"disabled\">Down</button></td>");
+							decoratedXHTMLTable = decoratedXHTMLTable.concat("<td><button class=\"move down\" disabled=\"disabled\">Down</button></td>");
 						}
 						
 						decoratedXHTMLTable = decoratedXHTMLTable.concat("<td><button class=\"delete-join\" onclick=\"deleteJoinByJoinId('" + this.getJoinsAsCachedRowSet().getInt("id") + "')\">Remove</button></td>");

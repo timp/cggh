@@ -20,13 +20,27 @@ MergeFunctionsModel mergeFunctionsModel = new MergeFunctionsModel();
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<title>Merges</title>
 <link rel="stylesheet" href="../shared/css/merges.css" type="text/css" />
+
 	<script type="text/javascript" src="../shared/js/jquery.min.js"></script>
 	<script type="text/javascript" src="../shared/js/jquery.json.min.js"></script>
 	
 	<script type="text/javascript" src="../shared/js/shared.js"></script>
 	<script type="text/javascript" src="../shared/js/merges.js"></script>
-<title>Merges</title>
+
+	<script type="text/javascript">
+	
+		$(document).ready(function(){
+			
+			initSharedFunctions();
+			initMergesFunctions();
+
+		});
+	
+	</script>
+
+
 </head>
 <body>
 	<div class="page">
@@ -66,7 +80,7 @@ MergeFunctionsModel mergeFunctionsModel = new MergeFunctionsModel();
 		</div>
 		
 		
-		<form class="join-form">
+		<form class="join-form" onsubmit="return false;">
 		<div class="join">
 <%
 

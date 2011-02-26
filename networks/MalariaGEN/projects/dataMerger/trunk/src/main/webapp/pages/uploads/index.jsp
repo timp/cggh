@@ -87,11 +87,15 @@
         	         
     	</div>
 
-		<p>TODO: Fix JavaScript error: Unexpected token in attribute selector: '!'.
+		<p>FIXME: Fix re-merge datatabled uploads.
+		</p>
+
+		<p>FIXME: Add processing animation upon pressing the merge button.
+		</p>
+
+		<p>FIXME: Fix JavaScript error: Unexpected token in attribute selector: '!'.
 		</p>
 		
-		<p>TODO: Add processing animation upon pressing the merge button.
-		</p>
 
 	</div>	
 

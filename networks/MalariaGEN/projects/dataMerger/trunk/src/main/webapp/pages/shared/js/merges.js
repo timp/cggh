@@ -1,5 +1,25 @@
 function initMergesFunctions () {
 
+	
+	//TODO
+	$('.move').click(function() {
+	    var row = $(this).closest('tr');
+	    if ($(this).hasClass('up'))
+	        row.prev().before(row);
+	    else
+	        row.next().after(row);
+	});
+
+//		$(".up,.down").click(function(){
+//	        var row = $(this).parents("tr:first");
+//	        if ($(this).is(".up")) {
+//	            row.insertBefore(row.prev());
+//	        } else {
+//	            row.insertAfter(row.next());
+//	        }
+//	    });
+
+	
 }
 
 function createMergeUsingUploadIdsAsJSON () {
