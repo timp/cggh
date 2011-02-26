@@ -1,4 +1,11 @@
-function postMerge (data) {
+function initMergesFunctions () {
+
+}
+
+function createMergeUsingUploadIdsAsJSON () {
+	
+	// Get data from uploads form.
+	var data = $.toJSON($('.uploads-form').serializeObject());
 	
 	//TODO: Validate exactly two checkboxes selected.
 	

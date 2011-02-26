@@ -23,6 +23,8 @@ MergeFunctionsModel mergeFunctionsModel = new MergeFunctionsModel();
 <link rel="stylesheet" href="../shared/css/merges.css" type="text/css" />
 	<script type="text/javascript" src="../shared/js/jquery.min.js"></script>
 	<script type="text/javascript" src="../shared/js/jquery.json.min.js"></script>
+	
+	<script type="text/javascript" src="../shared/js/shared.js"></script>
 	<script type="text/javascript" src="../shared/js/merges.js"></script>
 <title>Merges</title>
 </head>

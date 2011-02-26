@@ -15,6 +15,8 @@
 	<script type="text/javascript" src="../shared/js/jquery.min.js"></script>
 	<script type="text/javascript" src="../shared/js/fileuploader.js"></script>
 	<script type="text/javascript" src="../shared/js/jquery.json.min.js"></script>
+	
+	<script type="text/javascript" src="../shared/js/shared.js"></script>
 	<script type="text/javascript" src="../shared/js/uploads.js"></script>
 	<script type="text/javascript" src="../shared/js/merges.js"></script>
 	
@@ -24,51 +26,11 @@
 		
 		function init () {
 			
-			initUploadsScripts();
-			
-			var uploader = new qq.FileUploader({
+			initSharedFunctions();
+			initUploadsFunctions();
+			initMergesFunctions();
 
-				// pass the dom node (ex. $(selector)[0] for jQuery users)
-		        element: document.getElementById('file-uploader'),
-		        
-		            // url of the server-side upload script, should be on the same domain
-		            action: '/dataMerger/files/uploads',
-		            // additional data to send, name-value pairs
-		            params: {},
-		            
-		            // validation    
-		            // ex. ['jpg', 'jpeg', 'png', 'gif'] or []
-		            allowedExtensions: [],        
-		            // each file size limit in bytes
-		            // this option isn't supported in all browsers
-		            sizeLimit: 0, // max size   
-		            minSizeLimit: 0, // min size
-		            
-		            // set to true to output server response to console
-		            debug: true,
-		            
-		            // events         
-		            // you can return false to abort submit
-		            onSubmit: function(id, fileName){},
-		            onProgress: function(id, fileName, loaded, total){},
-		            onComplete: function(id, fileName, responseJSON){ getUploads(); },
-		            onCancel: function(id, fileName){},
-		            
-		            messages: {
-		                // error messages, see qq.FileUploaderBasic for content            
-		            },
-		            showMessage: function(message){ alert(message); }    
-		        
-		        
-		    }); 			
-
-		
-			
-			
-			
 		}
-	
-
 	
 	</script>
 	
@@ -84,7 +46,7 @@
 		<div class="error">
 		</div>
 
-		<form class="uploads-form">
+		<form class="uploads-form" onsubmit="return false;">
 		<div class="uploads">
 <%
 
@@ -125,7 +87,10 @@
         	         
     	</div>
 
-		<p>TODO: Fix non-response on merge button first press.
+		<p>TODO: Fix JavaScript error: Unexpected token in attribute selector: '!'.
+		</p>
+		
+		<p>TODO: Add processing animation upon pressing the merge button.
 		</p>
 
 	</div>	

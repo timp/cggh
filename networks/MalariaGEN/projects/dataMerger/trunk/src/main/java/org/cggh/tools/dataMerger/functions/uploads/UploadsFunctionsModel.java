@@ -92,7 +92,7 @@ public class UploadsFunctionsModel implements java.io.Serializable {
 					
 					decoratedXHTMLTable = decoratedXHTMLTable.concat("<div>TODO: paging</div>");
 					
-					decoratedXHTMLTable = decoratedXHTMLTable.concat("<button class=\"merge-button\">Merge</button>");
+					decoratedXHTMLTable = decoratedXHTMLTable.concat("<button class=\"merge-button\" onclick=\"createMergeUsingUploadIdsAsJSON();\">Merge</button>");
 	
 				} else {
 					

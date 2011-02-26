@@ -49,6 +49,8 @@ public class FilesController extends HttpServlet {
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
+		//TODO: See DataController for better content-negotiation pattern
+		
         //Should be able to access files using a GET request to /dataMerger/files/uploads/[id]
 		//request.getPathInfo().equals("/1")
 		
@@ -183,6 +185,9 @@ public class FilesController extends HttpServlet {
         
         if (request.getPathInfo().equals("/uploads")) {
 	        
+        	//TODO: Proper content-negotiation
+        	response.setContentType("application/json");
+        	
 	        String realPath = getServletContext().getInitParameter("uploadsFileRepositoryBasePath");
 	        
 	        try {
@@ -291,16 +296,16 @@ public class FilesController extends HttpServlet {
 					            fos = new FileOutputStream(new File(realPath + file_id));
 					            IOUtils.copy(is, fos);
 					            response.setStatus(HttpServletResponse.SC_OK);
-					            writer.print("{success: true}");
+					            writer.print("{\"success\": \"true\"}");
 					            successful = true;
 					        } catch (FileNotFoundException ex) {
 					            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-					            writer.print("{success: false}");
+					            writer.print("{\"success\": \"false\"}");
 					            log(FilesController.class.getName() + "has thrown an exception: " + ex.getMessage());
 					            successful = false;
 					        } catch (IOException ex) {
 					            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-					            writer.print("{success: false}");
+					            writer.print("{\"success\": \"false\"}");
 					            log(FilesController.class.getName() + "has thrown an exception: " + ex.getMessage());
 					            successful = false;
 					        } finally {
