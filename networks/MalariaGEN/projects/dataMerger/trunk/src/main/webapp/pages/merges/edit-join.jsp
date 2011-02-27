@@ -72,15 +72,15 @@ MergeFunctionsModel mergeFunctionsModel = new MergeFunctionsModel();
 		</div>
 		
 		<div>
-			<button>Save Join</button>
+			<button class="save join">Save Join</button>
 		
 			<button>Edit Resolutions</button>
 			
-			<a href="">Cancel &amp; Return to Merges</a>
+			<a href="<%= basePath %>pages/merges/">Cancel &amp; Return to Merges</a>
 		</div>
 		
 		
-		<form class="join-form" onsubmit="return false;">
+		<form class="join-form" onsubmit="return false;" autocomplete="off">
 		<div class="join">
 <%
 

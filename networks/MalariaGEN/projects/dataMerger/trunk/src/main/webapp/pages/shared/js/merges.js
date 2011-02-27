@@ -1,13 +1,80 @@
 function initMergesFunctions () {
 
 	
-	//TODO
-	$('.move').click(function() {
-	    var row = $(this).closest('tr');
-	    if ($(this).hasClass('up'))
+	//TODO: move these bindings to separate functions
+	
+	$(".move").click(function() {
+	    var row = $(this).closest("tr");
+	    if ($(this).hasClass("up")) {
+
+	    	var column_number_input_being_moved = row.find('td input[name|="column_number"]');
+	    	var column_number_being_moved = parseInt(column_number_input_being_moved.val());
+	    	
+	    	var min_column_number = 1;
+	    	var max_column_number = row.parent().find('tr').length;
+	    	
+	    	var column_number_being_moved_to = min_column_number;
+	    	
+	    	if (column_number_being_moved > min_column_number) {
+	    		column_number_being_moved_to = column_number_being_moved - 1;
+	    	}
+	    	
+	    	if (column_number_being_moved != column_number_being_moved_to) {
+	    		column_number_input_being_moved.attr('value', column_number_being_moved_to);
+	    		row.prev().find('td input[name|="column_number"]').attr('value', column_number_being_moved_to + 1);
+
+		    	if (column_number_being_moved == max_column_number) {
+		    		//TODO: This is not water-tight
+		    		row.find('td button.down').removeAttr('disabled');
+		    		row.prev().find('td button.down').attr('disabled', 'disabled');
+		    		
+		    	}	    		
+	    		
+		    	if (column_number_being_moved_to == min_column_number) {
+		    		//TODO: This is not water-tight
+		    		row.find('td button.up').attr('disabled', 'disabled');
+		    		row.prev().find('td button.up').removeAttr('disabled');
+		    	}
+	    	}
+	    
 	        row.prev().before(row);
-	    else
+	        
+	    } else {
+	    	
+	    	
+	    	var column_number_input_being_moved = row.find('td input[name|="column_number"]');
+	    	var column_number_being_moved = parseInt(column_number_input_being_moved.val());
+	    	
+	    	var min_column_number = 1;
+	    	var max_column_number = row.parent().find('tr').length;
+	    	
+	    	
+	    	var column_number_being_moved_to = max_column_number;
+	    	
+	    	if (column_number_being_moved < max_column_number) {
+	    		column_number_being_moved_to = column_number_being_moved + 1;
+	    	}
+	    	
+	    	if (column_number_being_moved != column_number_being_moved_to) {
+	    		column_number_input_being_moved.attr('value', column_number_being_moved_to);
+	    		row.next().find('td input[name|="column_number"]').attr('value', column_number_being_moved_to - 1);
+	    		
+		    	if (column_number_being_moved == min_column_number) {
+		    		//TODO: This is not water-tight
+		    		row.find('td button.up').removeAttr('disabled');
+		    		row.next().find('td button.up').attr('disabled', 'disabled');
+		    	}
+
+		    	if (column_number_being_moved_to == max_column_number) {
+		    		//TODO: This is not water-tight
+		    		row.find('td button.down').attr('disabled', 'disabled');
+		    		row.next().find('td button.down').removeAttr('disabled');
+		    		
+		    	}
+	    	}
+	    	
 	        row.next().after(row);
+	    }
 	});
 
 //		$(".up,.down").click(function(){
@@ -19,6 +86,35 @@ function initMergesFunctions () {
 //	        }
 //	    });
 
+	$(".remove").click(function() {
+	    var row = $(this).closest("tr");
+	
+	    //Re-order everything below this row
+	    var column_number_input_being_removed = row.find('td input[name|="column_number"]');
+    	var column_number_being_removed = parseInt(column_number_input_being_removed.val());
+    	var min_column_number = 1;
+    	var parent = row.parent();
+    	var max_column_number = parent.find('tr').length;
+    	
+    	var nextRow = row;
+    	var column_number = column_number_being_removed;
+    	
+    	while (column_number <= max_column_number) {
+    		
+    		nextRow = nextRow.next();
+    		
+    		nextRow.find('td input[name|="column_number"]').attr('value', column_number);
+    		
+    		column_number++;
+    	}
+
+        row.remove();
+        
+        //disable up and down for min and max rows
+        parent.find('tr:first').find('td button.up').attr('disabled', 'disabled');
+        parent.find('tr:last').find('td button.down').attr('disabled', 'disabled');
+        
+	});	
 	
 }
 

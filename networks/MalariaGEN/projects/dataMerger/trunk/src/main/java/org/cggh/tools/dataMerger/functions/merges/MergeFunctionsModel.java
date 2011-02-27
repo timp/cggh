@@ -114,12 +114,12 @@ public class MergeFunctionsModel implements java.io.Serializable {
 						 
 						decoratedXHTMLTable = decoratedXHTMLTable.concat("<tr>");
 
-						decoratedXHTMLTable = decoratedXHTMLTable.concat("<td>" + this.getJoinsAsCachedRowSet().getInt("column_number") + "</td>");
+						decoratedXHTMLTable = decoratedXHTMLTable.concat("<td><input class=\"test\" type=\"text\" name=\"column_number-" + this.getJoinsAsCachedRowSet().getInt("id") + "\" value=\"" + this.getJoinsAsCachedRowSet().getInt("column_number") + "\"/></td>");
 						
 						if (this.getJoinsAsCachedRowSet().getBoolean("key")) {
-							decoratedXHTMLTable = decoratedXHTMLTable.concat("<td><input type=\"checkbox\" name=\"key_" + this.getJoinsAsCachedRowSet().getInt("id") + "\" value=\"" + this.getJoinsAsCachedRowSet().getBoolean("key") + "\" checked=\"checked\"/></td>");
+							decoratedXHTMLTable = decoratedXHTMLTable.concat("<td><input type=\"checkbox\" name=\"key-" + this.getJoinsAsCachedRowSet().getInt("id") + "\" value=\"" + this.getJoinsAsCachedRowSet().getBoolean("key") + "\" checked=\"checked\"/></td>");
 						} else {
-							decoratedXHTMLTable = decoratedXHTMLTable.concat("<td><input type=\"checkbox\" name=\"key_" + this.getJoinsAsCachedRowSet().getInt("id") + "\" value=\"" + this.getJoinsAsCachedRowSet().getBoolean("key") + "\" /></td>");
+							decoratedXHTMLTable = decoratedXHTMLTable.concat("<td><input type=\"checkbox\" name=\"key-" + this.getJoinsAsCachedRowSet().getInt("id") + "\" value=\"" + this.getJoinsAsCachedRowSet().getBoolean("key") + "\" /></td>");
 						}
 						
 						decoratedXHTMLTable = decoratedXHTMLTable.concat("<td>" + this.getJoinsAsCachedRowSet().getString("datatable_1_column_name") + "</td>");
@@ -128,7 +128,7 @@ public class MergeFunctionsModel implements java.io.Serializable {
 						decoratedXHTMLTable = decoratedXHTMLTable.concat("<td>" + this.getJoinsAsCachedRowSet().getString("datatable_2_column_name") + "</td>");
 						decoratedXHTMLTable = decoratedXHTMLTable.concat("<td>TODO: Sample of data</td>");
 						
-						decoratedXHTMLTable = decoratedXHTMLTable.concat("<td><input type=\"text\" name=\"column_name_" + this.getJoinsAsCachedRowSet().getInt("id") + "\" value=\"" + this.getJoinsAsCachedRowSet().getString("column_name") + "\" /></td>");
+						decoratedXHTMLTable = decoratedXHTMLTable.concat("<td><input type=\"text\" name=\"column_name-" + this.getJoinsAsCachedRowSet().getInt("id") + "\" value=\"" + this.getJoinsAsCachedRowSet().getString("column_name") + "\" /></td>");
 						
 						//TODO: Improve move function calls/naming.
 						
@@ -144,7 +144,7 @@ public class MergeFunctionsModel implements java.io.Serializable {
 							decoratedXHTMLTable = decoratedXHTMLTable.concat("<td><button class=\"move down\" disabled=\"disabled\">Down</button></td>");
 						}
 						
-						decoratedXHTMLTable = decoratedXHTMLTable.concat("<td><button class=\"delete-join\" onclick=\"deleteJoinByJoinId('" + this.getJoinsAsCachedRowSet().getInt("id") + "')\">Remove</button></td>");
+						decoratedXHTMLTable = decoratedXHTMLTable.concat("<td><button class=\"remove\">Remove</button></td>");
 						
 						decoratedXHTMLTable = decoratedXHTMLTable.concat("</tr>");
 					  }
