@@ -18,6 +18,7 @@ import org.cggh.tools.dataMerger.data.merges.MergeModel;
 import org.cggh.tools.dataMerger.data.merges.MergesModel;
 import org.cggh.tools.dataMerger.data.uploads.UploadsModel;
 import org.cggh.tools.dataMerger.data.users.UserModel;
+import org.cggh.tools.dataMerger.functions.merges.MergeFunctionsModel;
 import org.cggh.tools.dataMerger.functions.uploads.UploadsFunctionsModel;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -70,16 +71,20 @@ public class DataController extends HttpServlet {
 		this.getDataModel().setDataModelByServletContext(request.getSession().getServletContext());
 		this.getUserModel().setDataModel(this.getDataModel());
 		this.getUserModel().setUserModelByUsername(request.getRemoteUser());
-		
 
+		 Pattern joinsURLPattern = Pattern.compile("/merges/(.*?)/joins");
+		 Matcher joinsURLPatternMatcher = joinsURLPattern.matcher(request.getPathInfo());		
+
+		  String[] headerAcceptsAsStringArray = request.getHeader("Accept").split(",");
+		  List<String> headerAcceptsAsStringList = Arrays.asList(headerAcceptsAsStringArray);		 
+		 
 		  if (request.getPathInfo().equals("/uploads")) {
 
-			  
-			  String[] headerAcceptsAsStringArray = request.getHeader("Accept").split(",");
-			  List<String> headerAcceptsAsStringList = Arrays.asList(headerAcceptsAsStringArray);
-			  
 			  if (headerAcceptsAsStringList.contains("text/html")) { 
 			  
+				  //Otherwise degree symbols turn into question-marks
+				  response.setCharacterEncoding("UTF-8");
+				  
 				  response.setContentType("text/html");
 				  
 				  String uploadsAsHTML = null;
@@ -114,6 +119,60 @@ public class DataController extends HttpServlet {
 				  response.getWriter().println("Unhandled Header Accept: " + request.getHeader("Accept"));
 				  
 			  }
+			
+		  }
+		  else if (joinsURLPatternMatcher.find()) {
+			  
+				 // Get the mergeId 
+				 MergeModel mergeModel = new MergeModel();
+				 mergeModel.setId(Integer.parseInt(joinsURLPatternMatcher.group(1)));  
+				 
+				 MergesModel mergesModel = new MergesModel();
+				 mergesModel.setDataModel(this.getDataModel());
+				 mergeModel = mergesModel.retrieveMergeAsMergeModelByMergeId(mergeModel.getId());
+			  
+				  if (headerAcceptsAsStringList.contains("text/html")) { 
+					  
+					  //Otherwise degree symbols turn into question-marks
+					  response.setCharacterEncoding("UTF-8");
+					  
+					  response.setContentType("text/html");
+					  
+					  String joinsAsHTML = null;
+						
+					  JoinsModel joinsModel = new JoinsModel();
+					  joinsModel.setDataModel(this.getDataModel());
+					  
+					  //FIXME
+					  //joinsModel.setUserModel(this.getUserModel());
+
+					  CachedRowSet joinsAsCachedRowSet = joinsModel.retrieveJoinsAsCachedRowSetByMergeId(mergeModel.getId());
+				
+					  if (joinsAsCachedRowSet != null) {
+				
+						  MergeFunctionsModel mergeFunctionsModel = new MergeFunctionsModel();
+						  
+						    mergeFunctionsModel.setMergeModel(mergeModel);	    
+						    mergeFunctionsModel.setJoinsAsCachedRowSet(joinsAsCachedRowSet);
+						    mergeFunctionsModel.setJoinsAsDecoratedXHTMLTableByJoinsAsCachedRowSet();
+						    joinsAsHTML = mergeFunctionsModel.getJoinsAsDecoratedXHTMLTable();
+						    
+					  } else {
+					  
+						  joinsAsHTML = "<p>Failed to retrieve Joins As CachedRowSet Using Merge Id</p>";
+						  
+					  } 
+					  
+					  
+					  response.getWriter().print(joinsAsHTML);
+					  
+				  } else {
+					  
+					  response.setContentType("text/plain");
+					  response.getWriter().println("Unhandled Header Accept: " + request.getHeader("Accept"));
+					  
+				  } 
+			  
 			  
 		  } else {
 			  
@@ -222,9 +281,8 @@ public class DataController extends HttpServlet {
 		
 		 if (joinsURLPatternMatcher.find()) {
 			 
-			 
+			 // Get the mergeId 
 			 MergeModel mergeModel = new MergeModel();
-			 
 			 mergeModel.setId(Integer.parseInt(joinsURLPatternMatcher.group(1)));
 			 
 			 
@@ -256,8 +314,7 @@ public class DataController extends HttpServlet {
 							
 							joinsModel.updateJoinsByMergeIdUsingJoinsAsJSONObject(mergeModel.getId(), jsonObject);
 							
-							//JSONArray uploadIds = jsonObject.getJSONArray("upload_id");
-							
+							//TODO:
 							responseAsJSON = "{\"got mergeId\": \"" + mergeModel.getId() + "\"}";
 							
 			

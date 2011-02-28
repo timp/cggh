@@ -144,6 +144,8 @@ public class MergesModel implements java.io.Serializable {
 	        	  JoinsModel joinsModel = new JoinsModel();
 	        	  joinsModel.setDataModel(this.getDataModel());
 	        	  mergeModel.setJoinsModel(joinsModel.retrieveJoinsAsJoinsModelByMergeId(mergeModel.getId(), connection));
+	        	  mergeModel.setJoinsAsCachedRowSet(joinsModel.retrieveJoinsAsCachedRowSetByMergeId(mergeModel.getId(), connection));
+	        	  
 	        	  
 	      	  } else {
 	      		  

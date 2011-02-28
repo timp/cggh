@@ -443,9 +443,17 @@ public class DatatablesModel implements java.io.Serializable {
 	        	  //Retrieve the datatable data
 	        	  datatableModel.setDataAsCachedRowSet(this.retrieveDataAsCachedRowSetByDatatableName(datatableModel.getName(), connection));
 	        	  
+	        	  //Retrieve columnNamesAsStringList
+	        	  List<String> columnNamesAsStringList = new ArrayList<String>();
+	        	  for (int i = 1; i <= datatableModel.getDataAsCachedRowSet().getMetaData().getColumnCount(); i++) {
+	        		  columnNamesAsStringList.add(datatableModel.getDataAsCachedRowSet().getMetaData().getColumnName(i));
+	        	  }
+	        	  datatableModel.setColumnNamesAsStringList(columnNamesAsStringList);
+	        	  
 	        	  //Retrieve the upload data
 	        	  UploadsModel uploadsModel = new UploadsModel();
 	        	  datatableModel.setUploadModel(uploadsModel.retrieveUploadAsUploadModelByUploadId(datatableModel.getUploadModel().getId(), connection));
+	        	  
 	        	  
 	        	  
 	      	  } else {

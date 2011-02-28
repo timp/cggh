@@ -69,6 +69,8 @@ public class UploadsFunctionsModel implements java.io.Serializable {
 					 decoratedXHTMLTable = decoratedXHTMLTable.concat("</tr>");
 					 decoratedXHTMLTable = decoratedXHTMLTable.concat("</thead>");
 					 
+					 decoratedXHTMLTable = decoratedXHTMLTable.concat("<tbody>");
+					 
 					//because next() skips the first row.
 					 this.getCachedRowSet().beforeFirst();
 

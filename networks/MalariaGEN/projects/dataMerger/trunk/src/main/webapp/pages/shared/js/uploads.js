@@ -3,6 +3,7 @@ function initUploadsFunctions () {
 	initCreateUploadUsingFileUploaderFunction();
 }
 
+//TODO: Rename this retrieveUploadsAsHTML()
 function getUploads () {
 	
 	$.ajax({

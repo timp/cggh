@@ -5,6 +5,8 @@
 <%@ page import="org.cggh.tools.dataMerger.data.merges.MergesModel" %>
 <%@ page import="org.cggh.tools.dataMerger.data.merges.MergeModel" %>
 <%@ page import="org.cggh.tools.dataMerger.functions.merges.MergeFunctionsModel" %>
+<%@ page import="org.cggh.tools.dataMerger.data.joins.JoinModel" %>
+<%@ page import="org.cggh.tools.dataMerger.functions.joins.JoinFunctionsModel" %>
 <%
 
 MergesModel mergesModel = new MergesModel();
@@ -84,7 +86,7 @@ MergeFunctionsModel mergeFunctionsModel = new MergeFunctionsModel();
 			<a href="<%= basePath %>pages/merges/">Cancel &amp; Return to Merges</a>
 		</div>
 		
-		
+		<!-- Turning off autocomplete prevents FF3 from remembering form values after refresh, which would not be helpful here. -->
 		<form class="joins-form" onsubmit="return false;" autocomplete="off">
 		<div class="joins">
 <%
@@ -108,45 +110,21 @@ MergeFunctionsModel mergeFunctionsModel = new MergeFunctionsModel();
 
 		</form>
 		
-		<form class="new-join">
+		<form class="new-join-form" onsubmit="return false;">
 			<h3>New column:</h3>
 			<%-- TODO: Get this from a service. --%>
-			<table>
-				<tr>
-					<th><!-- Above key label --></th>
-					<th><!-- Above key checkbox --></th>
-					<th colspan="2"><a>[TODO: linked filename 1 here]</a></th>
-					<th colspan="2"><a>[TODO: linked filename 2 here]</a></th>
-					<th>Column name</th>
-					<th><!-- Above insert column selector --></th>
-					<th><!-- Above add column selector --></th>
-					
-				</tr>
-				<tr>
-					<th>Key?</th>
-					<td><input type="checkbox" name="key" value="false"/></td>
-					<td><select><option>[TODO: select columns from datatable 1]</option></select></td>
-					<td>[TODO: data sample]</td>					
-					<td><select><option>[TODO: select columns from datatable 2]</option></select></td>
-					<td>[TODO: data sample]</td>
-					<td><input name="column_name" value="[default from column]"/></td>
-					<td><select><option>[TODO: insertion selector]</option></select></td>
-					<td><button class="add join">Add</button></td>
-				
-				</tr>
-				<!-- TODO: Only if choose constant from selector -->
-				<tr>
-					<td><!-- Below key label --></td>
-					<td><!-- Below key checkbox --></td>
-					<th>Constant:</th>
-					<td><input name="constant_1" value="n/a" /></td>
-					<th>Constant:</th>
-					<td><input name="constant_2" value="" /></td>
-					<td><!-- Below column name --></td>
-					<td><!-- Below insertion selector --></td>
-					<td><!-- Below add button --></td>
-				</tr>
-			</table>
+<%
+
+	JoinModel joinModel = new JoinModel();
+	JoinFunctionsModel joinFunctionsModel = new JoinFunctionsModel();
+
+	
+	joinFunctionsModel.setJoinModel(joinModel);
+	joinFunctionsModel.setMergeModel(mergeModel);
+	joinFunctionsModel.setJoinAsDecoratedXHTMLTableByJoinModel();
+	out.print(joinFunctionsModel.getJoinAsDecoratedXHTMLTable());
+
+%>
 		</form>
 		
 	</div>

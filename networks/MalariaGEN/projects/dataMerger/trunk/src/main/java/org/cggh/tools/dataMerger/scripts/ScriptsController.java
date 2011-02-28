@@ -186,9 +186,12 @@ public class ScriptsController extends HttpServlet {
 				        } 				        
 			        
 				      try{
+				    	  
+				    	  //Note: (255) in BIGINT(255) is only the display width, not the capacity.
+				    	  
 				          Statement statement = connection.createStatement();
 				          statement.executeUpdate("CREATE TABLE `join` (" + 
-				        		  "id TINYINT(255) UNSIGNED NOT NULL AUTO_INCREMENT, " +
+				        		  "id BIGINT(255) UNSIGNED NOT NULL AUTO_INCREMENT, " +
 				        		  "merge_id TINYINT(255) UNSIGNED NOT NULL, " + 
 				        		  "column_number TINYINT(255) UNSIGNED NULL, " +
 				        		  "`key` BOOLEAN NULL, " + 

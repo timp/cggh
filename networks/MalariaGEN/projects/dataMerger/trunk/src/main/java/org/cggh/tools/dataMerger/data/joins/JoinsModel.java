@@ -10,6 +10,7 @@ import javax.sql.rowset.CachedRowSet;
 import org.cggh.tools.dataMerger.data.DataModel;
 import org.cggh.tools.dataMerger.data.merges.MergeModel;
 import org.cggh.tools.dataMerger.data.users.UserModel;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 
@@ -389,6 +390,8 @@ public class JoinsModel implements java.io.Serializable {
 	public void updateJoinsByMergeIdUsingJoinsAsJSONObject(Integer mergeId,
 			JSONObject joinsAsJsonObject) {
 		
+		//TODO: This is cutting a corner (replacing rather than updating).
+		
 		MergeModel mergeModel = new MergeModel();
 		mergeModel.setId(mergeId);
 
@@ -399,13 +402,63 @@ public class JoinsModel implements java.io.Serializable {
 			if (!connection.isClosed()) {
 					
 				  //Remove all the joins for this mergeId
-		          PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM join WHERE merge_id = ?;");
+		          PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM `join` WHERE merge_id = ?;");
 		          preparedStatement.setInt(1, mergeModel.getId());
 		          preparedStatement.executeUpdate();
 		          preparedStatement.close();
 					
 		          //Insert all the joins from this JSON Object
+		          JSONArray columnNumbers = joinsAsJsonObject.getJSONArray("column_number");
+		          JSONArray columnNames = joinsAsJsonObject.getJSONArray("column_name");
+
+		          JoinsModel joinsModel = new JoinsModel();
 		          
+		          for (int i = 0; i < columnNumbers.length(); i++) {
+		        	  
+		        	  JoinModel joinModel = new JoinModel();
+		        	  
+		        	  joinModel.getMergeModel().setId(mergeModel.getId());
+		        	  joinModel.setColumnNumber(columnNumbers.getInt(i));
+		        	  
+		        	  if (joinsAsJsonObject.has("key-" + columnNumbers.getInt(i))) {
+		        	  
+		        		  joinModel.setKey(Boolean.parseBoolean(joinsAsJsonObject.getString("key-" + columnNumbers.getInt(i))));
+		        		  
+		        	  } else {
+		        		  
+		        		  joinModel.setKey(false);
+		        	  }
+
+		        	  if (joinsAsJsonObject.has("datatable_1_column_name-" + columnNumbers.getInt(i))) { 
+		        		  joinModel.setDatatable1ColumnName(joinsAsJsonObject.getString("datatable_1_column_name-" + columnNumbers.getInt(i)));  		  
+		        	  } else {
+		        		  joinModel.setDatatable1ColumnName(null);
+		        	  }
+
+		        	  if (joinsAsJsonObject.has("datatable_2_column_name-" + columnNumbers.getInt(i))) { 
+		        		  joinModel.setDatatable2ColumnName(joinsAsJsonObject.getString("datatable_2_column_name-" + columnNumbers.getInt(i)));  		  
+		        	  } else {
+		        		  joinModel.setDatatable2ColumnName(null);
+		        	  }
+
+		        	  if (joinsAsJsonObject.has("constant_1-" + columnNumbers.getInt(i))) { 
+		        		  joinModel.setConstant1(joinsAsJsonObject.getString("constant_1-" + columnNumbers.getInt(i)));  		  
+		        	  } else {
+		        		  joinModel.setConstant1(null);
+		        	  }
+
+		        	  if (joinsAsJsonObject.has("constant_2-" + columnNumbers.getInt(i))) { 
+		        		  joinModel.setConstant2(joinsAsJsonObject.getString("constant_2-" + columnNumbers.getInt(i)));  		  
+		        	  } else {
+		        		  joinModel.setConstant2(null);
+		        	  }    	  
+		        	  
+		        	  joinModel.setColumnName(columnNames.getString(i));
+		        	  
+		        	  //TODO: createJoinByMergeIdUsingJoinModel(joinModel)
+		        	  joinsModel.createJoin(mergeModel.getId(), joinModel.getColumnNumber(), joinModel.getKey(), joinModel.getDatatable1ColumnName(), joinModel.getDatatable2ColumnName(), joinModel.getColumnName(), connection);
+		        	  
+		          }
 		          
 					
 				connection.close();
@@ -423,6 +476,41 @@ public class JoinsModel implements java.io.Serializable {
 			e.printStackTrace();
 		}
 		
+	}
+
+
+	public CachedRowSet retrieveJoinsAsCachedRowSetByMergeId(Integer mergeId) {
+
+		
+		MergeModel mergeModel = new MergeModel();
+		mergeModel.setId(mergeId);
+
+		CachedRowSet joinsAsCachedRowSet = null;
+		
+		try {
+			
+			Connection connection = this.getDataModel().getNewConnection();
+			 
+			if (!connection.isClosed()) {
+		
+				joinsAsCachedRowSet = this.retrieveJoinsAsCachedRowSetByMergeId(mergeId, connection);
+				
+				connection.close();
+				
+			} else {
+				
+				System.out.println("connection.isClosed");
+			}
+				
+		} 
+		catch (Exception e) {
+			
+			//TODO:
+			System.out.println("Exception in updateJoinsByMergeIdUsingJoinsAsJSONObject");
+			e.printStackTrace();
+		}				
+				
+		return joinsAsCachedRowSet;
 	}
 
 
