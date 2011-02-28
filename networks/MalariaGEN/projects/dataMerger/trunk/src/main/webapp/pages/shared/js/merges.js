@@ -1,7 +1,47 @@
 function initMergesFunctions () {
 
+	initMoveJoinFunction();
+	initRemoveJoinFunction();
+	initSaveJoinFunction();
 	
-	//TODO: move these bindings to separate functions
+}
+
+function createMergeUsingUploadIdsAsJSON () {
+	
+	// Get data from uploads form.
+	var data = $.toJSON($('.uploads-form').serializeObject());
+	
+	//TODO: Validate exactly two checkboxes selected.
+	
+	$.ajax({
+		type: 'POST',
+		data: data,
+		url: '/dataMerger/data/merges',
+		dataType: 'json',
+		success: function (data, textStatus, jqXHR) {
+			
+			if (data.id) {
+				
+				//TODO: This URL is ugly.
+				//TODO: GET /dataMerger/pages/merges/[id]/join
+				window.location.href = '/dataMerger/pages/merges/edit-join.jsp?merge_id=' + data.id;
+
+			} else {
+				alert("data: " + data);
+				alert("data.id: " + data.id);
+				$('.status').html("textStatus: " + textStatus);
+			}
+		},
+		error: function (jqXHR, textStatus, errorThrown){
+            $('.error').html("errorThrown: " + errorThrown);
+            $('.status').html("textStatus: " + textStatus);
+        } 
+	});
+	
+}
+
+
+function initMoveJoinFunction() {
 	
 	$(".move").click(function() {
 	    var row = $(this).closest("tr");
@@ -77,15 +117,21 @@ function initMergesFunctions () {
 	    }
 	});
 
-//		$(".up,.down").click(function(){
-//	        var row = $(this).parents("tr:first");
-//	        if ($(this).is(".up")) {
-//	            row.insertBefore(row.prev());
-//	        } else {
-//	            row.insertAfter(row.next());
-//	        }
-//	    });
 
+
+	//		$(".up,.down").click(function(){
+	//	        var row = $(this).parents("tr:first");
+	//	        if ($(this).is(".up")) {
+	//	            row.insertBefore(row.prev());
+	//	        } else {
+	//	            row.insertAfter(row.next());
+	//	        }
+	//	    });
+
+}
+
+function initRemoveJoinFunction () {
+	
 	$(".remove").click(function() {
 	    var row = $(this).closest("tr");
 	
@@ -115,61 +161,60 @@ function initMergesFunctions () {
         parent.find('tr:last').find('td button.down').attr('disabled', 'disabled');
         
 	});	
-	
+
 }
 
-function createMergeUsingUploadIdsAsJSON () {
+function initSaveJoinFunction () {
 	
-	// Get data from uploads form.
-	var data = $.toJSON($('.uploads-form').serializeObject());
-	
-	//TODO: Validate exactly two checkboxes selected.
-	
-	$.ajax({
-		type: 'POST',
-		data: data,
-		url: '/dataMerger/data/merges',
-		dataType: 'json',
-		success: function (data, textStatus, jqXHR) {
-			
-			if (data.id) {
+	$(".save.join").click(function() {
+		
+		// Get data from uploads form.
+		var data = $.toJSON($('.joins-form').serializeObject());
+		
+		//TODO: Factor this out
+		var urlParams = {};
+		(function () {
+		    var e,
+		        a = /\+/g,  // Regex for replacing addition symbol with a space
+		        r = /([^&=]+)=?([^&]*)/g,
+		        d = function (s) { return decodeURIComponent(s.replace(a, " ")); },
+		        q = window.location.search.substring(1);
+
+		    while (e = r.exec(q))
+		       urlParams[d(e[1])] = d(e[2]);
+		})();
+		
+		//			urlParams = {
+		//			    enc: " Hello ",
+		//			    i: "main",
+		//			    mode: "front",
+		//			    sid: "de8d49b78a85a322c4155015fdce22c4",
+		//			    empty: ""
+		//			}
+		//
+		//			alert(urlParams["mode"]);
+		//			// -> "front"
+		
+		
+		
+		$.ajax({
+			type: 'PUT',
+			data: data,
+			url: '/dataMerger/data/merges/' + urlParams["merge_id"] + '/joins',
+			dataType: 'json',
+			success: function (data, textStatus, jqXHR) {
 				
-				//TODO: This URL is ugly.
-				//TODO: GET /dataMerger/pages/merges/[id]/join
-				window.location.href = '/dataMerger/pages/merges/edit-join.jsp?merge_id=' + data.id;
+					alert("data: " + data);
+					alert("data.id: " + data.id);
+					$('.status').html("textStatus: " + textStatus);
 
-			} else {
-				alert("data: " + data);
-				alert("data.id: " + data.id);
-				$('.status').html("textStatus: " + textStatus);
-			}
-		},
-		error: function (jqXHR, textStatus, errorThrown){
-            $('.error').html("errorThrown: " + errorThrown);
-            $('.status').html("textStatus: " + textStatus);
-        } 
-	});
-	
-}
-
-function updateJoinColumnNumberByJoinId(joinId, columnNumber) {
-	
-	$.ajax({
-		type: 'PUT',
-		data: "{\"columnNumber\":\"" + columnNumber + "\"}",
-		url: '/dataMerger/data/joins/' + joinId,
-		dataType: 'json',
-		success: function (data, textStatus, jqXHR) {
-			
-				alert("data: " + data);
-				alert("data.id: " + data.id);
-				$('.status').html("textStatus: " + textStatus);
-
-		},
-		error: function (jqXHR, textStatus, errorThrown){
-            $('.error').html("errorThrown: " + errorThrown);
-            $('.status').html("textStatus: " + textStatus);
-        } 
+			},
+			error: function (jqXHR, textStatus, errorThrown){
+	            $('.error').html("errorThrown: " + errorThrown);
+	            $('.status').html("textStatus: " + textStatus);
+	        } 
+		});
+		
 	});
 	
 }

@@ -8,10 +8,9 @@ import java.sql.SQLException;
 import javax.sql.rowset.CachedRowSet;
 
 import org.cggh.tools.dataMerger.data.DataModel;
-import org.cggh.tools.dataMerger.data.datatables.DatatableModel;
 import org.cggh.tools.dataMerger.data.merges.MergeModel;
-import org.cggh.tools.dataMerger.data.uploads.UploadsModel;
 import org.cggh.tools.dataMerger.data.users.UserModel;
+import org.json.JSONObject;
 
 
 public class JoinsModel implements java.io.Serializable {
@@ -257,6 +256,12 @@ public class JoinsModel implements java.io.Serializable {
 		this.dataModel = dataModel;
 	}
 
+	public DataModel getDataModel() {
+
+		return this.dataModel;
+	}
+
+
 
 	public void setUserModel(UserModel userModel) {
 		this.userModel = userModel;
@@ -377,6 +382,46 @@ public class JoinsModel implements java.io.Serializable {
 			
 			
 		return joinsModel;
+		
+	}
+
+
+	public void updateJoinsByMergeIdUsingJoinsAsJSONObject(Integer mergeId,
+			JSONObject joinsAsJsonObject) {
+		
+		MergeModel mergeModel = new MergeModel();
+		mergeModel.setId(mergeId);
+
+		try {
+			
+			Connection connection = this.getDataModel().getNewConnection();
+			 
+			if (!connection.isClosed()) {
+					
+				  //Remove all the joins for this mergeId
+		          PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM join WHERE merge_id = ?;");
+		          preparedStatement.setInt(1, mergeModel.getId());
+		          preparedStatement.executeUpdate();
+		          preparedStatement.close();
+					
+		          //Insert all the joins from this JSON Object
+		          
+		          
+					
+				connection.close();
+				
+			} else {
+				
+				System.out.println("connection.isClosed");
+			}
+				
+		} 
+		catch (Exception e) {
+			
+			//TODO:
+			System.out.println("Exception in updateJoinsByMergeIdUsingJoinsAsJSONObject");
+			e.printStackTrace();
+		}
 		
 	}
 

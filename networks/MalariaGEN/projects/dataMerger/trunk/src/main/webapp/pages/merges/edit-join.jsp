@@ -46,6 +46,11 @@ MergeFunctionsModel mergeFunctionsModel = new MergeFunctionsModel();
 	<div class="page">
 		<%@ include file="../shared/jsp/header.jsp" %>
 		<h2>Edit join</h2>
+
+		<div class="status">
+		</div>	
+		<div class="error">
+		</div>
 		
 		<dl>
 		
@@ -80,8 +85,8 @@ MergeFunctionsModel mergeFunctionsModel = new MergeFunctionsModel();
 		</div>
 		
 		
-		<form class="join-form" onsubmit="return false;" autocomplete="off">
-		<div class="join">
+		<form class="joins-form" onsubmit="return false;" autocomplete="off">
+		<div class="joins">
 <%
 
   CachedRowSet joinsAsCachedRowSet = mergeModel.getJoinsModel().getJoinsAsCachedRowSet();
@@ -105,7 +110,43 @@ MergeFunctionsModel mergeFunctionsModel = new MergeFunctionsModel();
 		
 		<form class="new-join">
 			<h3>New column:</h3>
-			<div>TODO: New column UI</div>
+			<%-- TODO: Get this from a service. --%>
+			<table>
+				<tr>
+					<th><!-- Above key label --></th>
+					<th><!-- Above key checkbox --></th>
+					<th colspan="2"><a>[TODO: linked filename 1 here]</a></th>
+					<th colspan="2"><a>[TODO: linked filename 2 here]</a></th>
+					<th>Column name</th>
+					<th><!-- Above insert column selector --></th>
+					<th><!-- Above add column selector --></th>
+					
+				</tr>
+				<tr>
+					<th>Key?</th>
+					<td><input type="checkbox" name="key" value="false"/></td>
+					<td><select><option>[TODO: select columns from datatable 1]</option></select></td>
+					<td>[TODO: data sample]</td>					
+					<td><select><option>[TODO: select columns from datatable 2]</option></select></td>
+					<td>[TODO: data sample]</td>
+					<td><input name="column_name" value="[default from column]"/></td>
+					<td><select><option>[TODO: insertion selector]</option></select></td>
+					<td><button class="add join">Add</button></td>
+				
+				</tr>
+				<!-- TODO: Only if choose constant from selector -->
+				<tr>
+					<td><!-- Below key label --></td>
+					<td><!-- Below key checkbox --></td>
+					<th>Constant:</th>
+					<td><input name="constant_1" value="n/a" /></td>
+					<th>Constant:</th>
+					<td><input name="constant_2" value="" /></td>
+					<td><!-- Below column name --></td>
+					<td><!-- Below insertion selector --></td>
+					<td><!-- Below add button --></td>
+				</tr>
+			</table>
 		</form>
 		
 	</div>

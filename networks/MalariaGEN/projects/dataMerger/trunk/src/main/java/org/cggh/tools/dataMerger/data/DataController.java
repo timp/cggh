@@ -4,6 +4,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -11,6 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.sql.rowset.CachedRowSet;
 
+import org.cggh.tools.dataMerger.data.joins.JoinsModel;
 import org.cggh.tools.dataMerger.data.merges.MergeModel;
 import org.cggh.tools.dataMerger.data.merges.MergesModel;
 import org.cggh.tools.dataMerger.data.uploads.UploadsModel;
@@ -190,6 +193,8 @@ public class DataController extends HttpServlet {
 
 			  } else {
 				  
+				  //FIXME: This will cause a parser error (Invalid JSON).
+				  
 				  response.setContentType("text/plain");
 				  response.getWriter().println("Unhandled Header Accept: " + request.getHeader("Accept"));
 				  
@@ -197,10 +202,95 @@ public class DataController extends HttpServlet {
 			  
 		  } else {
 			  
+			  //FIXME: This will cause a parser error (Invalid JSON).
+			  
 			  response.getWriter().println("Unhandled Path Info: " + request.getPathInfo());
 		  }
 		  
 		
 	}
+	
+	protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
+		this.getDataModel().setDataModelByServletContext(request.getSession().getServletContext());
+		this.getUserModel().setDataModel(this.getDataModel());
+		this.getUserModel().setUserModelByUsername(request.getRemoteUser());
+		
+		 Pattern joinsURLPattern = Pattern.compile("/merges/(.*?)/joins");
+		 Matcher joinsURLPatternMatcher = joinsURLPattern.matcher(request.getPathInfo());
+		 
+		
+		 if (joinsURLPatternMatcher.find()) {
+			 
+			 
+			 MergeModel mergeModel = new MergeModel();
+			 
+			 mergeModel.setId(Integer.parseInt(joinsURLPatternMatcher.group(1)));
+			 
+			 
+			 String[] headerAcceptsAsStringArray = request.getHeader("Accept").split(",");
+			  List<String> headerAcceptsAsStringList = Arrays.asList(headerAcceptsAsStringArray);
+			  
+			  if (headerAcceptsAsStringList.contains("application/json")) { 
+			 
+				  response.setContentType("application/json");
+				  String responseAsJSON = null;
+				  
+				  try {
+					  
+					    BufferedReader reader = request.getReader();
+					    String line = null;
+					    StringBuffer stringBuffer = new StringBuffer();
+					    
+					    while ((line = reader.readLine()) != null) {
+					      stringBuffer.append(line);
+					    }
+					    
+						try {
+							
+							JSONObject jsonObject = new JSONObject(stringBuffer.toString());
+							
+							JoinsModel joinsModel = new JoinsModel();
+							
+							joinsModel.setDataModel(this.getDataModel());
+							
+							joinsModel.updateJoinsByMergeIdUsingJoinsAsJSONObject(mergeModel.getId(), jsonObject);
+							
+							//JSONArray uploadIds = jsonObject.getJSONArray("upload_id");
+							
+							responseAsJSON = "{\"got mergeId\": \"" + mergeModel.getId() + "\"}";
+							
+			
+						} catch (JSONException e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+						} 
+				    
+				    
+				  } catch (Exception e) { 
+					  //TODO:
+					  e.printStackTrace(); 
+				  
+				  }
+				  
+				  response.getWriter().print(responseAsJSON);
+
+			  } else {
+				  
+				  //FIXME: This will cause a parser error (Invalid JSON).
+				  
+				  response.setContentType("text/plain");
+				  response.getWriter().println("Unhandled Header Accept: " + request.getHeader("Accept"));
+				  
+			  }
+			  
+		  } else {
+			  
+			  //FIXME: This will cause a parser error (Invalid JSON).
+			  
+			  response.getWriter().println("Unhandled Path Info: " + request.getPathInfo());
+		  }
+		  
+		
+	}
 }

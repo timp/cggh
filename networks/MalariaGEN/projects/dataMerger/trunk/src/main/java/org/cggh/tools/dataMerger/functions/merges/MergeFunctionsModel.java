@@ -132,17 +132,21 @@ public class MergeFunctionsModel implements java.io.Serializable {
 						
 						//TODO: Improve move function calls/naming.
 						
+						decoratedXHTMLTable = decoratedXHTMLTable.concat("<td>");
+						
 						if (this.getJoinsAsCachedRowSet().getInt("column_number") > 1) {
-							decoratedXHTMLTable = decoratedXHTMLTable.concat("<td><button class=\"move up\">Up</button></td>");
+							decoratedXHTMLTable = decoratedXHTMLTable.concat("<button class=\"move up\">Up</button>");
 						} else {
-							decoratedXHTMLTable = decoratedXHTMLTable.concat("<td><button class=\"move up\" disabled=\"disabled\">Up</button></td>");
+							decoratedXHTMLTable = decoratedXHTMLTable.concat("<button class=\"move up\" disabled=\"disabled\">Up</button>");
 						}
 						
 						if (this.getJoinsAsCachedRowSet().getInt("column_number") < this.getJoinsAsCachedRowSet().size()) {
-							decoratedXHTMLTable = decoratedXHTMLTable.concat("<td><button class=\"move down\">Down</button></td>");
+							decoratedXHTMLTable = decoratedXHTMLTable.concat("<button class=\"move down\">Down</button>");
 						} else {	
-							decoratedXHTMLTable = decoratedXHTMLTable.concat("<td><button class=\"move down\" disabled=\"disabled\">Down</button></td>");
+							decoratedXHTMLTable = decoratedXHTMLTable.concat("<button class=\"move down\" disabled=\"disabled\">Down</button>");
 						}
+						
+						decoratedXHTMLTable = decoratedXHTMLTable.concat("</td>");
 						
 						decoratedXHTMLTable = decoratedXHTMLTable.concat("<td><button class=\"remove\">Remove</button></td>");
 						
