@@ -287,13 +287,16 @@ public class MergesModel implements java.io.Serializable {
 						    			  // We have a match.
 						    			  matchFound = true;
 						    			  
-						    			  Integer columnNumber = mergeModel.getJoinsModel().getNextColumnNumberByMergeId(mergeModel.getId(), connection);
-						    			  Boolean key = false;
-						    			  String datatable1ColumnName = datatable1ColumnNamesAsStringList.get(i);
-						    			  String datatable2ColumnName = datatable2ColumnNamesAsStringList.get(j);
-						    			  String columnName = datatable1ColumnNamesAsStringList.get(i);
+						    			  JoinModel joinModel = new JoinModel();
 						    			  
-						    			  mergeModel.getJoinsModel().createJoin(mergeModel.getId(), columnNumber, key, datatable1ColumnName, datatable2ColumnName, columnName, connection);
+						    			  joinModel.setColumnNumber(mergeModel.getJoinsModel().getNextColumnNumberByMergeId(mergeModel.getId(), connection));
+						    			  joinModel.setKey(false);
+						    			  joinModel.setDatatable1ColumnName(datatable1ColumnNamesAsStringList.get(i));
+						    			  joinModel.setDatatable2ColumnName(datatable2ColumnNamesAsStringList.get(j));
+						    			  joinModel.setColumnName(datatable1ColumnNamesAsStringList.get(i));
+						    			  
+						    			  
+						    			  mergeModel.getJoinsModel().createJoinByMergeIdUsingJoinModel(mergeModel.getId(), joinModel, connection);
 						    			  
 						    			  
 						    			  //Remove items to make this more efficient.
@@ -322,13 +325,16 @@ public class MergesModel implements java.io.Serializable {
 					    	  
 					    	  if (!matchFound) {
 					    		  
-				    			  Integer columnNumber = mergeModel.getJoinsModel().getNextColumnNumberByMergeId(mergeModel.getId(), connection);
-				    			  Boolean key = false;
-				    			  String datatable1ColumnName = datatable1ColumnNamesAsStringList.get(i);
-				    			  String datatable2ColumnName = null;
-				    			  String columnName = datatable1ColumnNamesAsStringList.get(i);
+				    			  JoinModel joinModel = new JoinModel();
 				    			  
-				    			  mergeModel.getJoinsModel().createJoin(mergeModel.getId(), columnNumber, key, datatable1ColumnName, datatable2ColumnName, columnName, connection);
+				    			  joinModel.setColumnNumber(mergeModel.getJoinsModel().getNextColumnNumberByMergeId(mergeModel.getId(), connection));
+				    			  joinModel.setKey(false);
+				    			  joinModel.setDatatable1ColumnName(datatable1ColumnNamesAsStringList.get(i));
+				    			  joinModel.setDatatable2ColumnName(null);
+				    			  joinModel.setColumnName(datatable1ColumnNamesAsStringList.get(i));
+				    			  
+				    			  
+				    			  mergeModel.getJoinsModel().createJoinByMergeIdUsingJoinModel(mergeModel.getId(), joinModel, connection);
 				    			   
 				    			  //Remove this item from the list to make this more efficient.
 				    			  datatable1ColumnNamesAsStringList.remove(i);
@@ -382,13 +388,15 @@ public class MergesModel implements java.io.Serializable {
 					    	  
 					    	  if (!matchFound) {
 					    		  
-				    			  Integer columnNumber = mergeModel.getJoinsModel().getNextColumnNumberByMergeId(mergeModel.getId(), connection);
-				    			  Boolean key = false;
-				    			  String datatable1ColumnName = null;
-				    			  String datatable2ColumnName = datatable2ColumnNamesAsStringList.get(i);
-				    			  String columnName = datatable2ColumnNamesAsStringList.get(i);
+				    			  JoinModel joinModel = new JoinModel();
 				    			  
-				    			  mergeModel.getJoinsModel().createJoin(mergeModel.getId(), columnNumber, key, datatable1ColumnName, datatable2ColumnName, columnName, connection);
+				    			  joinModel.setColumnNumber(mergeModel.getJoinsModel().getNextColumnNumberByMergeId(mergeModel.getId(), connection));
+				    			  joinModel.setKey(false);
+				    			  joinModel.setDatatable1ColumnName(null);
+				    			  joinModel.setDatatable2ColumnName(datatable2ColumnNamesAsStringList.get(i));
+				    			  joinModel.setColumnName(datatable2ColumnNamesAsStringList.get(i));
+				    			  
+				    			  mergeModel.getJoinsModel().createJoinByMergeIdUsingJoinModel(mergeModel.getId(), joinModel, connection);
 				    			   
 				    			  //Remove this item from the list to make this more efficient.
 				    			  datatable2ColumnNamesAsStringList.remove(i);

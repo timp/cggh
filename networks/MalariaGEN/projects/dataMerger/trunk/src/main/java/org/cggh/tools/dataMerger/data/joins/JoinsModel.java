@@ -115,32 +115,28 @@ public class JoinsModel implements java.io.Serializable {
 	}
 
 
-	public void createJoin(Integer mergeId, Integer columnNumber, Boolean key,
-			String datatable1ColumnName, String datatable2ColumnName,
-			String columnName, Connection connection) {
+	public void createJoinByMergeIdUsingJoinModel(Integer mergeId, JoinModel joinModel, Connection connection) {
 		
 		// Creates must not affect exterior models.
 		// So don't use this.joinModel or this.setJoinModel().
 		
-		JoinModel joinModel = new JoinModel();
-		
 		joinModel.getMergeModel().setId(mergeId);
-		joinModel.setColumnNumber(columnNumber);
-		joinModel.setKey(key);
-		joinModel.setDatatable1ColumnName(datatable1ColumnName);
-		joinModel.setDatatable2ColumnName(datatable2ColumnName);
-		joinModel.setColumnName(columnName);
 		
 		
 	      try {
 
-	          PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO `join` (merge_id, column_number, `key`, datatable_1_column_name, datatable_2_column_name, column_name) VALUES (?, ?, ?, ?, ?, ?);");
+	          PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO `join` (merge_id, column_number, `key`, datatable_1_column_name, datatable_2_column_name, constant_1, constant_2, column_name) VALUES (?, ?, ?, ?, ?, ?, ?, ?);");
 	          preparedStatement.setInt(1, joinModel.getMergeModel().getId());
 	          preparedStatement.setInt(2, joinModel.getColumnNumber());
 	          preparedStatement.setBoolean(3, joinModel.getKey());
+	          
 	          preparedStatement.setString(4, joinModel.getDatatable1ColumnName());
 	          preparedStatement.setString(5, joinModel.getDatatable2ColumnName());
-	          preparedStatement.setString(6, joinModel.getColumnName());
+	          
+	          preparedStatement.setString(6, joinModel.getConstant1());
+	          preparedStatement.setString(7, joinModel.getConstant2());
+	          
+	          preparedStatement.setString(8, joinModel.getColumnName());
 	          preparedStatement.executeUpdate();
 	          preparedStatement.close();
 	          
@@ -422,7 +418,7 @@ public class JoinsModel implements java.io.Serializable {
 		        	  
 		        	  if (joinsAsJsonObject.has("key-" + columnNumbers.getInt(i))) {
 		        	  
-		        		  joinModel.setKey(Boolean.parseBoolean(joinsAsJsonObject.getString("key-" + columnNumbers.getInt(i))));
+		        		  joinModel.setKey(true);
 		        		  
 		        	  } else {
 		        		  
@@ -456,7 +452,7 @@ public class JoinsModel implements java.io.Serializable {
 		        	  joinModel.setColumnName(columnNames.getString(i));
 		        	  
 		        	  //TODO: createJoinByMergeIdUsingJoinModel(joinModel)
-		        	  joinsModel.createJoin(mergeModel.getId(), joinModel.getColumnNumber(), joinModel.getKey(), joinModel.getDatatable1ColumnName(), joinModel.getDatatable2ColumnName(), joinModel.getColumnName(), connection);
+		        	  joinsModel.createJoinByMergeIdUsingJoinModel(mergeModel.getId(), joinModel, connection);
 		        	  
 		          }
 		          

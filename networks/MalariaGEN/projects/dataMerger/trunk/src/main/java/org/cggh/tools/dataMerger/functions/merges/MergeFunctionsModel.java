@@ -130,19 +130,33 @@ public class MergeFunctionsModel implements java.io.Serializable {
 						
 						if (this.getJoinsAsCachedRowSet().getString("datatable_1_column_name") != null) {
 							decoratedXHTMLTable = decoratedXHTMLTable.concat("<td><input type=\"text\" readonly=\"readonly\" name=\"datatable_1_column_name-" + this.getJoinsAsCachedRowSet().getInt("column_number") + "\" value=\"" + this.getJoinsAsCachedRowSet().getString("datatable_1_column_name") + "\"/></td>");
+							decoratedXHTMLTable = decoratedXHTMLTable.concat("<td>TODO: Sample of data</td>");
 						} else {
-							decoratedXHTMLTable = decoratedXHTMLTable.concat("<td>NULL</td>");
+							if (this.getJoinsAsCachedRowSet().getString("constant_1") != null) {
+								decoratedXHTMLTable = decoratedXHTMLTable.concat("<td><label for=\"constant_1-" + this.getJoinsAsCachedRowSet().getInt("column_number") + "\">Constant:</label><input type=\"text\" readonly=\"readonly\" name=\"constant_1-" + this.getJoinsAsCachedRowSet().getInt("column_number") + "\" value=\"" + this.getJoinsAsCachedRowSet().getString("constant_1") + "\"/></td>");
+								decoratedXHTMLTable = decoratedXHTMLTable.concat("<td></td>");
+							} else {
+								decoratedXHTMLTable = decoratedXHTMLTable.concat("<td>NULL</td>");
+								decoratedXHTMLTable = decoratedXHTMLTable.concat("<td></td>");
+							}
 						}
 							
-						decoratedXHTMLTable = decoratedXHTMLTable.concat("<td>TODO: Sample of data</td>");
+						
 						
 						if (this.getJoinsAsCachedRowSet().getString("datatable_2_column_name") != null) {
 							decoratedXHTMLTable = decoratedXHTMLTable.concat("<td><input type=\"text\" readonly=\"readonly\" name=\"datatable_2_column_name-" + this.getJoinsAsCachedRowSet().getInt("column_number") + "\" value=\"" + this.getJoinsAsCachedRowSet().getString("datatable_2_column_name") + "\"/></td>");
+							decoratedXHTMLTable = decoratedXHTMLTable.concat("<td>TODO: Sample of data</td>");
 						} else {
-							decoratedXHTMLTable = decoratedXHTMLTable.concat("<td>NULL</td>");
+							if (this.getJoinsAsCachedRowSet().getString("constant_2") != null) {
+								decoratedXHTMLTable = decoratedXHTMLTable.concat("<td><label for=\"constant_2-" + this.getJoinsAsCachedRowSet().getInt("column_number") + "\">Constant:</label><input type=\"text\" readonly=\"readonly\" name=\"constant_2-" + this.getJoinsAsCachedRowSet().getInt("column_number") + "\" value=\"" + this.getJoinsAsCachedRowSet().getString("constant_2") + "\"/></td>");
+								decoratedXHTMLTable = decoratedXHTMLTable.concat("<td></td>");
+							} else {
+								decoratedXHTMLTable = decoratedXHTMLTable.concat("<td>NULL</td>");
+								decoratedXHTMLTable = decoratedXHTMLTable.concat("<td></td>");
+							}
 						}
 						
-						decoratedXHTMLTable = decoratedXHTMLTable.concat("<td>TODO: Sample of data</td>");
+						
 						
 						decoratedXHTMLTable = decoratedXHTMLTable.concat("<td><input type=\"text\" name=\"column_name\" value=\"" + this.getJoinsAsCachedRowSet().getString("column_name") + "\" /></td>");
 						

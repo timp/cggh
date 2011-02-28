@@ -315,7 +315,7 @@ public class DataController extends HttpServlet {
 							joinsModel.updateJoinsByMergeIdUsingJoinsAsJSONObject(mergeModel.getId(), jsonObject);
 							
 							//TODO:
-							responseAsJSON = "{\"got mergeId\": \"" + mergeModel.getId() + "\"}";
+							responseAsJSON = "{\"success\": \"true\"}";
 							
 			
 						} catch (JSONException e1) {

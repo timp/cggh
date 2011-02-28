@@ -113,6 +113,18 @@ public class JoinModel implements java.io.Serializable {
 	}
 
 
+	public String getConstant1() {
+		
+		return this.constant1;
+	}
+
+
+	public String getConstant2() {
+
+		return this.constant2;
+	}
+
+
 
 
     	

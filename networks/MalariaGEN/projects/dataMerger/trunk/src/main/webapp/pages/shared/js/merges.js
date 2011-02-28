@@ -331,32 +331,30 @@ function initAddJoinFunction () {
 		// Get data from new-join form.
 		var data = $.toJSON($('.new-join-form').serializeObject());
 	
-		alert(data);
+		//alert(data);
 		
 		data = $.parseJSON(data);
 		
 		//Rather than posting, add to client-side joins (to be added using Save)
 		
-		var newJoinRow = "";
 		
-		//FIXME: Move row at data.column_number down 1 (and all the rest), then insert this row at position data.column_number
+		var newJoinRow = "";
 		
 		newJoinRow += "<tr>";
 		newJoinRow += "<td><input type=\"text\" name=\"column_number\" value=\"" + data.column_number + "\" readonly=\"readonly\"/></td>";
 		
-		//FIXME
 		if (data.key) {
-			newJoinRow += "<td><input type=\"checkbox\" name=\"key-" + 4000 + "\" value=\"" + data.key + "\" checked=\"checked\"/></td>";
+			newJoinRow += "<td><input type=\"checkbox\" name=\"key-" + data.column_number + "\" value=\"" + data.key + "\" checked=\"checked\"/></td>";
 		} else {
-			newJoinRow += "<td><input type=\"checkbox\" name=\"key-" + 4000 + "\" value=\"" + data.key + "\"/></td>";
+			newJoinRow += "<td><input type=\"checkbox\" name=\"key-" + data.column_number + "\" value=\"" + data.key + "\"/></td>";
 		}
 		
 		if (data.datatable_1_column_name != 'NULL' && data.datatable_1_column_name != 'CONSTANT') {
-			newJoinRow += "<td><input type=\"text\" name=\"database_1_column_name-" + 4000 + "\" value=\"" + data.datatable_1_column_name + "\" readonly=\"readonly\"/></td>";
+			newJoinRow += "<td><input type=\"text\" name=\"database_1_column_name-" + data.column_number + "\" value=\"" + data.datatable_1_column_name + "\" readonly=\"readonly\"/></td>";
 			newJoinRow += "<td>TODO: Sample of data</td>";
 		} 
 		else if (data.datatable_1_column_name == 'CONSTANT') {
-			newJoinRow += "<td><label for=\"constant_1-" + 4000 + "\">Constant:</label><input type=\"text\" name=\"constant_1-" + 4000 + "\" value=\"" + data.constant_1 + "\" readonly=\"readonly\"/></td>";
+			newJoinRow += "<td><label for=\"constant_1-" + data.column_number + "\">Constant:</label><input type=\"text\" name=\"constant_1-" + data.column_number + "\" value=\"" + data.constant_1 + "\" readonly=\"readonly\"/></td>";
 			newJoinRow += "<td></td>";
 		} else {
 			newJoinRow += "<td>NULL</td>";
@@ -364,27 +362,72 @@ function initAddJoinFunction () {
 		}
 		
 		if (data.datatable_2_column_name != 'NULL' && data.datatable_2_column_name != 'CONSTANT') {
-			newJoinRow += "<td><input type=\"text\" name=\"database_2_column_name-" + 4000 + "\" value=\"" + data.datatable_2_column_name + "\" readonly=\"readonly\"/></td>";
+			newJoinRow += "<td><input type=\"text\" name=\"database_2_column_name-" + data.column_number + "\" value=\"" + data.datatable_2_column_name + "\" readonly=\"readonly\"/></td>";
 			newJoinRow += "<td>TODO: Sample of data</td>";
 		} 
 		else if (data.datatable_2_column_name == 'CONSTANT') {
-			newJoinRow += "<td><label for=\"constant_2-" + 4000 + "\">Constant:</label><input type=\"text\" name=\"constant_2-" + 4000 + "\" value=\"" + data.constant_2 + "\" readonly=\"readonly\"/></td>";
+			newJoinRow += "<td><label for=\"constant_2-" + data.column_number + "\">Constant:</label><input type=\"text\" name=\"constant_2-" + data.column_number + "\" value=\"" + data.constant_2 + "\" readonly=\"readonly\"/></td>";
 			newJoinRow += "<td></td>";
 		} else {
 			newJoinRow += "<td>NULL</td>";
 			newJoinRow += "<td></td>";
 		}
 		
-		newJoinRow += "<td><input type=\"text\" name=\"column_name-\" value=\"" + data.column_name + "\"/></td>";
+		newJoinRow += "<td><input type=\"text\" name=\"column_name\" value=\"" + data.column_name + "\"/></td>";
 		
 		newJoinRow += "<td><button class=\"move up\">Up<button/><button class=\"move down\">Down<button/></td>";
 		newJoinRow += "<td><button class=\"remove\">Remove<button/></td>";
 		
-		newJoinRow += "</tr>";
-		
-		$(".joins tbody").append(newJoinRow);
+		newJoinRow += "</tr>";		
 		
 		
+		
+		var max_column_number = $('.joins tr input[name="column_number"]').length;
+		
+		//alert("max_column_number="+max_column_number);
+		
+		//alert("data.column_number="+data.column_number);
+		
+		if (data.column_number > max_column_number) {
+			
+			//alert("appending to end");
+			
+			$(".joins tbody").append(newJoinRow);
+			
+		} else {
+			
+			//FIXME: Move row at data.column_number down 1 (and all the rest), then insert this row at position data.column_number
+
+
+			
+			var row = $('.joins td input[name="column_number"][value="' + data.column_number + '"]').closest("tr");
+			
+			row.before(newJoinRow);
+			
+	    	var nextRow = row;
+	    	var column_number = parseInt(data.column_number) + 1;
+	    	
+	    	//alert("column_number="+column_number);
+	    	
+	    	while (column_number <= max_column_number + 1) {
+	    		
+	    		//alert("column_number="+column_number);
+	    		
+	    		nextRow.find('td input[name="column_number"]').attr('value', column_number.toString());
+	    		nextRow.find('td input[name|="key"]').attr('name', "key-" + column_number.toString());
+	    		nextRow.find('td input[name|="datatable_1_column_name"]').attr('name', "datatable_1_column_name-" + column_number.toString());
+	    		nextRow.find('td input[name|="datatable_2_column_name"]').attr('name', "datatable_2_column_name-" + column_number.toString());
+	    		
+	    		nextRow = nextRow.next();
+	    		
+	    		column_number++;
+	    	}
+			
+	
+			
+			
+		
+		}
 	});	
 	
 }

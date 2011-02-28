@@ -110,7 +110,7 @@ MergeFunctionsModel mergeFunctionsModel = new MergeFunctionsModel();
 
 		</form>
 		
-		<form class="new-join-form" onsubmit="return false;">
+		<form class="new-join-form" onsubmit="return false;" autocomplete="off">
 			<h3>New column:</h3>
 			<%-- TODO: Get this from a service. --%>
 <%
@@ -126,6 +126,13 @@ MergeFunctionsModel mergeFunctionsModel = new MergeFunctionsModel();
 
 %>
 		</form>
+		
+		
+		<p>FIXME: Added join cannot be moved.
+		</p>
+
+		<p>FIXME: Added join to beginning or end breaks up/down buttons.
+		</p>		
 		
 	</div>
 </body>
