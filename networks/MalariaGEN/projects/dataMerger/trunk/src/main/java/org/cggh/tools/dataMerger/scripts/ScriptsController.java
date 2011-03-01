@@ -191,16 +191,15 @@ public class ScriptsController extends HttpServlet {
 				    	  
 				          Statement statement = connection.createStatement();
 				          statement.executeUpdate("CREATE TABLE `join` (" + 
-				        		  "id BIGINT(255) UNSIGNED NOT NULL AUTO_INCREMENT, " +
 				        		  "merge_id TINYINT(255) UNSIGNED NOT NULL, " + 
-				        		  "column_number TINYINT(255) UNSIGNED NULL, " +
+				        		  "column_number TINYINT(255) UNSIGNED NOT NULL, " +
 				        		  "`key` BOOLEAN NULL, " + 
 				        		  "datatable_1_column_name VARCHAR(255) NULL, " +
 				        		  "datatable_2_column_name VARCHAR(255) NULL, " +
 				        		  "constant_1 VARCHAR(255) NULL, " +
 				        		  "constant_2 VARCHAR(255) NULL, " +
 				        		  "column_name VARCHAR(255) NULL, " +
-				        		  "PRIMARY KEY (id), " +
+				        		  "PRIMARY KEY (merge_id, column_number), " +
 				        		  "INDEX merge_id_index (merge_id), " + 
 				        		  "FOREIGN KEY (merge_id) REFERENCES merge(id) ON DELETE CASCADE ON UPDATE CASCADE " +
 				        		  ") ENGINE=InnoDB;");
@@ -212,7 +211,93 @@ public class ScriptsController extends HttpServlet {
 					    	sqlException.printStackTrace();
 				        } 
 							        
+					      try{
+					    	  
+					          Statement statement = connection.createStatement();
+					          statement.executeUpdate("CREATE TABLE `problem_by_column` (" + 
+					        		  "id TINYINT(255) UNSIGNED NOT NULL AUTO_INCREMENT, " +
+					        		  "description VARCHAR(255) NOT NULL, " +
+					        		  "PRIMARY KEY (id) " +
+					        		  ") ENGINE=InnoDB;");
+					          statement.close();
+		
+					        }
+					        catch(SQLException sqlException){
+					        	out.println("<p>" + sqlException + "</p>");
+						    	sqlException.printStackTrace();
+					        }
+
+						      try{
+						    	  
+						          Statement statement = connection.createStatement();
+						          statement.executeUpdate("INSERT INTO `problem_by_column` (" +
+						        		  "description " +
+						        		  ") VALUES ('conflicting values'), ('NULLs in source 1 versus values in source 2'), ('NULLs in source 2 versus values in source 1');");
+						          statement.close();
+			
+						        }
+						        catch(SQLException sqlException){
+						        	out.println("<p>" + sqlException + "</p>");
+							    	sqlException.printStackTrace();
+						        }
+					        
+					        
+					      try{
+					    	  
+					          Statement statement = connection.createStatement();
+					          statement.executeUpdate("CREATE TABLE `solution_by_column` (" + 
+					        		  "id TINYINT(255) UNSIGNED NOT NULL AUTO_INCREMENT, " +
+					        		  "description VARCHAR(255) NOT NULL, " +
+					        		  "PRIMARY KEY (id) " +
+					        		  ") ENGINE=InnoDB;");
+					          statement.close();
+		
+					        }
+					        catch(SQLException sqlException){
+					        	out.println("<p>" + sqlException + "</p>");
+						    	sqlException.printStackTrace();
+					        } 
+				        
+					      try{
+					    	  
+					          Statement statement = connection.createStatement();
+					          statement.executeUpdate("INSERT INTO `solution_by_column` (" +
+					        		  "description " +
+					        		  ") VALUES ('Prefer source 1'), ('Prefer source 2'), ('Use NULL'), ('Use CONSTANT');");
+					          statement.close();
+		
+					        }
+					        catch(SQLException sqlException){
+					        	out.println("<p>" + sqlException + "</p>");
+						    	sqlException.printStackTrace();
+					        }						        
 						        
+					      try{
+					    	  
+					          Statement statement = connection.createStatement();
+					          statement.executeUpdate("CREATE TABLE `resolution_by_column` (" + 
+					        		  "merge_id TINYINT(255) UNSIGNED NOT NULL, " + 
+					        		  "column_number TINYINT(255) UNSIGNED NOT NULL, " +
+					        		  "problem_by_column_id TINYINT(255) NOT NULL, " +
+					        		  "conflicts_count TINYINT(255) NULL, " +
+					        		  "solution_by_column_id TINYINT(255) NULL, " +
+					        		  "constant VARCHAR(255) NULL, " +
+					        		  "PRIMARY KEY (merge_id, column_number, problem_by_column_id), " +
+					        		  "INDEX merge_id_index (merge_id), " +
+					        		  //FIXME: Can't create table 'datamerger.resolutions_by_column' (errno: 150)
+					        		  //"INDEX problem_by_column_id_index (problem_by_column_id), " + 
+					        		  //"INDEX solution_by_column_id_index (solution_by_column_id), " + 
+					        		  "FOREIGN KEY (merge_id) REFERENCES merge(id) ON DELETE CASCADE ON UPDATE CASCADE " +
+					        		  //"FOREIGN KEY (problem_by_column_id) REFERENCES problem_by_column(id) ON DELETE CASCADE ON UPDATE CASCADE, " +
+					        		  //"FOREIGN KEY (solution_by_column_id) REFERENCES solution_by_column(id) ON DELETE CASCADE ON UPDATE CASCADE " +
+					        		  ") ENGINE=InnoDB;");
+					          statement.close();
+		
+					        }
+					        catch(SQLException sqlException){
+					        	out.println("<p>" + sqlException + "</p>");
+						    	sqlException.printStackTrace();
+					        }        
 			
 					connection.close();
 					out.println("Done.");

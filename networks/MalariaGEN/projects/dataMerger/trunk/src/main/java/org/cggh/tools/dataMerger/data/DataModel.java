@@ -25,6 +25,8 @@ public class DataModel implements java.io.Serializable {
 
 	}
 
+	//TODO: Add transaction support
+	
 	public void setDataModelByServletContext (final ServletContext servletContext) {
 		
 		this.setServletContext(servletContext);

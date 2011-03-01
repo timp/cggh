@@ -5,6 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.logging.Logger;
 
 import javax.sql.rowset.CachedRowSet;
 
@@ -23,6 +24,7 @@ public class MergesModel implements java.io.Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = 1917678012559065867L;
+	private final Logger logger = Logger.getLogger("org.cggh.tools.dataMerger.data.merges");
 	
 	
 	private DataModel dataModel;
@@ -295,8 +297,9 @@ public class MergesModel implements java.io.Serializable {
 						    			  joinModel.setDatatable2ColumnName(datatable2ColumnNamesAsStringList.get(j));
 						    			  joinModel.setColumnName(datatable1ColumnNamesAsStringList.get(i));
 						    			  
+						    			  joinModel.setMergeModel(mergeModel);
 						    			  
-						    			  mergeModel.getJoinsModel().createJoinByMergeIdUsingJoinModel(mergeModel.getId(), joinModel, connection);
+						    			  mergeModel.getJoinsModel().createJoinUsingJoinModel(joinModel, connection);
 						    			  
 						    			  
 						    			  //Remove items to make this more efficient.
@@ -327,6 +330,8 @@ public class MergesModel implements java.io.Serializable {
 					    		  
 				    			  JoinModel joinModel = new JoinModel();
 				    			  
+				    			  joinModel.setMergeModel(mergeModel);
+				    			  
 				    			  joinModel.setColumnNumber(mergeModel.getJoinsModel().getNextColumnNumberByMergeId(mergeModel.getId(), connection));
 				    			  joinModel.setKey(false);
 				    			  joinModel.setDatatable1ColumnName(datatable1ColumnNamesAsStringList.get(i));
@@ -334,7 +339,7 @@ public class MergesModel implements java.io.Serializable {
 				    			  joinModel.setColumnName(datatable1ColumnNamesAsStringList.get(i));
 				    			  
 				    			  
-				    			  mergeModel.getJoinsModel().createJoinByMergeIdUsingJoinModel(mergeModel.getId(), joinModel, connection);
+				    			  mergeModel.getJoinsModel().createJoinUsingJoinModel(joinModel, connection);
 				    			   
 				    			  //Remove this item from the list to make this more efficient.
 				    			  datatable1ColumnNamesAsStringList.remove(i);
@@ -390,13 +395,15 @@ public class MergesModel implements java.io.Serializable {
 					    		  
 				    			  JoinModel joinModel = new JoinModel();
 				    			  
+				    			  joinModel.setMergeModel(mergeModel);
+				    			  
 				    			  joinModel.setColumnNumber(mergeModel.getJoinsModel().getNextColumnNumberByMergeId(mergeModel.getId(), connection));
 				    			  joinModel.setKey(false);
 				    			  joinModel.setDatatable1ColumnName(null);
 				    			  joinModel.setDatatable2ColumnName(datatable2ColumnNamesAsStringList.get(i));
 				    			  joinModel.setColumnName(datatable2ColumnNamesAsStringList.get(i));
 				    			  
-				    			  mergeModel.getJoinsModel().createJoinByMergeIdUsingJoinModel(mergeModel.getId(), joinModel, connection);
+				    			  mergeModel.getJoinsModel().createJoinUsingJoinModel(joinModel, connection);
 				    			   
 				    			  //Remove this item from the list to make this more efficient.
 				    			  datatable2ColumnNamesAsStringList.remove(i);
@@ -414,8 +421,8 @@ public class MergesModel implements java.io.Serializable {
 				    	  System.out.println("datatable2ColumnNamesAsStringList is null");
 				      }
 				      
-				      //TODO: Create auto-resolution
-				      //Need at least one key column in the join
+				      // To determine data conflicts
+				      // need at least one key column in the join
 				      
 				      //Determine which columns in the join are unique.
 				      
@@ -444,7 +451,6 @@ public class MergesModel implements java.io.Serializable {
 										 
 										 JoinModel joinModel = new JoinModel();
 										 
-										 joinModel.setId(crossDatatableJoinsAsCachedRowSet.getInt("id"));
 										 joinModel.getMergeModel().setId(crossDatatableJoinsAsCachedRowSet.getInt("merge_id"));
 										 joinModel.setColumnNumber(crossDatatableJoinsAsCachedRowSet.getInt("column_number"));
 										 joinModel.setKey(true);
@@ -473,23 +479,6 @@ public class MergesModel implements java.io.Serializable {
 							System.out.println("There are no records in crossDatatableJoinsAsCachedRowSet.");
 							
 						}
-				      
-						
-						//Work out the duplicate keys
-				      //Calculate, update, [optionally retrieve, set] (potentially test with retrieve, get)
-				
-					  // Ideally
-					  //Integer mergeId = this.getMergeModel().getId();//TODO: Ideally Merges shouldn't have a native MergeModel
-					  
-					  
-					  //THis is already done by the mergeScript
-					  //MergeModel mergeModel = this.retrieveMergeAsMergeModelByMergeId(mergeId, connection);
-					  
-					  
-					  //At this stage, mergeModel should contain joinsAsCachedRowset, two datatableModels, each with a name and dataAsCachedRowSet set.
-					  
-					  //Don't use mergeFunctions because it will be easier and give better performance to count on the database server.
-					  //Don't use mergesModel, because methods are restricted to getters/setters and CRUD.
 					  
 					  MergeScriptsModel mergeScriptsModel = new MergeScriptsModel();
 					  
@@ -509,6 +498,51 @@ public class MergesModel implements java.io.Serializable {
 					  //Save it back to the database
 					  MergesModel mergesModel = new MergesModel();
 					  mergesModel.updateMergeUsingMergeModel(mergeModel, connection);
+					  
+					  // Get the latest (so we have keysCount and totalDuplicateKeysCount)
+					  mergeModel = mergesModel.retrieveMergeAsMergeModelByMergeId(mergeModel.getId(), connection);
+					  
+					  // If there are keys and no duplicate keys, work out data conflicts
+					  
+					  this.logger.info("keysCount="+mergeModel.getJoinsModel().getKeysCount());
+					  this.logger.info("totalDuplicateKeysCount="+mergeModel.getTotalDuplicateKeysCount());
+					  
+					  if (mergeModel.getJoinsModel().getKeysCount() > 0 && mergeModel.getTotalDuplicateKeysCount() == 0) {
+						  
+						  //By Column
+						  
+						  //Already got mergeModel.getDatatable1Model().getKeyColumnNamesAsStringList(), but need them by Join
+						  
+						  JoinsModel joinsModel = new JoinsModel();
+						  
+						  mergeModel.getJoinsModel().setKeyCrossDatatableJoinsAsCachedRowSet(joinsModel.retrieveKeyCrossDatatableJoinsAsCachedRowsetByMergeId(mergeModel.getId(), connection));
+						  mergeModel.getJoinsModel().setNonKeyCrossDatatableJoinsAsCachedRowSet(joinsModel.retrieveNonKeyCrossDatatableJoinsAsCachedRowsetByMergeId(mergeModel.getId(), connection));
+						  
+						  this.logger.info("about to determine conflicts by column");
+						  
+						  //Use scripts
+						  mergeModel = mergeScriptsModel.retrieveMergeAsMergeModelThroughDeterminingConflictsCountByColumnUsingMergeModel(mergeModel, connection);
+						  
+						  this.logger.info("done determining conflicts by column");
+						  
+						  
+						  //Already got crossDatatableJoinsAsCachedRowSet, but need to distinguish key joins from non-key joins
+						  //for each crossDatatableJoin in crossDatatableJoinsAsCachedRowSet
+						  //	
+						  
+
+
+						  //insert problems into the resolutions_by_column table
+						  //merge_id, column_number, problem_by_column_id, conflicts_count
+
+						  
+						  
+						  
+						  
+					  }
+					  
+					  
+					  
 					  
 					  
 			          
@@ -554,27 +588,17 @@ public class MergesModel implements java.io.Serializable {
 	          if (mergeModel.getDatatable1Model().getDuplicateKeysCount() != null) {
 	        	  preparedStatement.setInt(3, mergeModel.getDatatable1Model().getDuplicateKeysCount());
 	        	  
-	        	  //TODO:
-	        	  System.out.println("Setting dt1 duplicate keys count to " + mergeModel.getDatatable1Model().getDuplicateKeysCount());
-	        	  
 	          } else {
 	        	  preparedStatement.setNull(3, java.sql.Types.INTEGER);
-	        	  
-	        	//TODO:
-	        	  System.out.println("Setting dt1 duplicate keys count to null");
 	        	  
 	          }
 	          if (mergeModel.getDatatable2Model().getDuplicateKeysCount() != null) {
 	        	  preparedStatement.setInt(4, mergeModel.getDatatable2Model().getDuplicateKeysCount());
 	        	  
-	        	//TODO:
-	        	  System.out.println("Setting dt2 duplicate keys count to " + mergeModel.getDatatable2Model().getDuplicateKeysCount());
-	        	  
+	        	
 	          } else {
 	        	  preparedStatement.setNull(4, java.sql.Types.INTEGER);
 	        	  
-	        	//TODO:
-	        	  System.out.println("Setting dt2 duplicate keys count to null");
 	          }
 	          if (mergeModel.getTotalDuplicateKeysCount() != null) {
 	        	  preparedStatement.setInt(5, mergeModel.getTotalDuplicateKeysCount());

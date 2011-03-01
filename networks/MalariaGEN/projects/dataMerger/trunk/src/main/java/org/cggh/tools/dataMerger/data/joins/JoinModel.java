@@ -20,8 +20,6 @@ public class JoinModel implements java.io.Serializable {
 	private String datatable2ColumnName;
 	private String columnName;
 
-	private Integer id;
-
 	private String constant1;
 
 	private String constant2;
@@ -34,7 +32,7 @@ public class JoinModel implements java.io.Serializable {
 	}
 
 
-	private void setMergeModel(MergeModel mergeModel) {
+	public void setMergeModel(MergeModel mergeModel) {
 		this.mergeModel = mergeModel;
 	}
 
@@ -90,14 +88,6 @@ public class JoinModel implements java.io.Serializable {
 
 	public String getColumnName() {
 		return this.columnName;
-	}
-
-
-	public void setId(final Integer id) {
-		this.id = id;
-	}
-	public Integer getId() {
-		return this.id;
 	}
 
 

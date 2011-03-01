@@ -67,21 +67,24 @@ MergeFunctionsModel mergeFunctionsModel = new MergeFunctionsModel();
 		<div>
 			
 			<% if (mergeModel.getJoinsModel().getKeysCount() == null || mergeModel.getJoinsModel().getKeysCount() == 0) { %>
-			<p>[error: A key is required]
+			<p>A key is required.
 			</p>
 			<% } %>
 			
 			<% if (null != mergeModel.getTotalDuplicateKeysCount() && mergeModel.getTotalDuplicateKeysCount() > 0) { %>
-			<p>[error: There are duplicate keys]
+			<p>There are duplicate keys.
 			</p>
 			<% } %>
 		
 		</div>
 		
 		<div>
+			<%-- TODO: v2 detect whether there are changes that need saving. Alert choice to save if move off page. --%>
 			<button class="save join">Save Join</button>
 		
-			<button>Edit Resolutions</button>
+			<% if (mergeModel.getJoinsModel().getKeysCount() > 0 && mergeModel.getTotalDuplicateKeysCount() == 0) { %>
+			<button class="edit resolutions">Edit Resolutions</button>
+			<% } %>
 			
 			<a href="<%= basePath %>pages/merges/">Cancel &amp; Return to Merges</a>
 		</div>
@@ -128,11 +131,17 @@ MergeFunctionsModel mergeFunctionsModel = new MergeFunctionsModel();
 		</form>
 		
 		
-		<p>FIXME: Added join cannot be moved.
+		<p>FIXME: Added join cannot be moved. (poss. related to css binding. Use direct js call instead?)
 		</p>
 
-		<p>FIXME: Added join to beginning or end breaks up/down buttons.
+		<p>FIXME: Added join to beginning or end breaks up/down buttons. (poss. related to css binding. Use direct js call instead?)
 		</p>		
+		
+		<p>FIXME: Saving join does not update updatedDate and Key counts. (build and trigger an AJAX GET service.)
+		</p>
+		
+		<p>FIXME: Saving join breaks up/down buttons. (poss. related to css binding. Use direct js call instead?)
+		</p>
 		
 	</div>
 </body>

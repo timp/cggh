@@ -26,6 +26,8 @@ public class JoinsModel implements java.io.Serializable {
 	private CachedRowSet crossDatatableJoinsAsCachedRowSet;
 	private DataModel dataModel;
 	private UserModel userModel;
+	private CachedRowSet keyCrossDatatableJoinsAsCachedRowsetByMergeId;
+	private CachedRowSet nonKeyCrossDatatableJoinsAsCachedRowsetByMergeId;
 
 	//Must not have a joinModel, because joinModel has a mergeModel, which has a joinsModel, causes StackOverflowError
 	//private JoinModel joinModel;
@@ -115,12 +117,7 @@ public class JoinsModel implements java.io.Serializable {
 	}
 
 
-	public void createJoinByMergeIdUsingJoinModel(Integer mergeId, JoinModel joinModel, Connection connection) {
-		
-		// Creates must not affect exterior models.
-		// So don't use this.joinModel or this.setJoinModel().
-		
-		joinModel.getMergeModel().setId(mergeId);
+	public void createJoinUsingJoinModel(JoinModel joinModel, Connection connection) {
 		
 		
 	      try {
@@ -186,14 +183,16 @@ public class JoinsModel implements java.io.Serializable {
 		
 	      try {
 
-	          PreparedStatement preparedStatement = connection.prepareStatement("UPDATE `join` SET merge_id = ?, column_number = ?, `key` = ?, datatable_1_column_name = ?, datatable_2_column_name = ?, column_name = ? WHERE id = ?;");
-	          preparedStatement.setInt(1, joinModel.getMergeModel().getId());
-	          preparedStatement.setInt(2, joinModel.getColumnNumber());
-	          preparedStatement.setBoolean(3, joinModel.getKey());
-	          preparedStatement.setString(4, joinModel.getDatatable1ColumnName());
-	          preparedStatement.setString(5, joinModel.getDatatable2ColumnName());
-	          preparedStatement.setString(6, joinModel.getColumnName());
-	          preparedStatement.setInt(7, joinModel.getId());
+	          PreparedStatement preparedStatement = connection.prepareStatement("UPDATE `join` SET `key` = ?, datatable_1_column_name = ?, datatable_2_column_name = ?, column_name = ? WHERE merge_id = ? AND column_number = ? ;");
+	          
+	          preparedStatement.setBoolean(1, joinModel.getKey());
+	          preparedStatement.setString(2, joinModel.getDatatable1ColumnName());
+	          preparedStatement.setString(3, joinModel.getDatatable2ColumnName());
+	          preparedStatement.setString(4, joinModel.getColumnName());
+	          
+	          preparedStatement.setInt(5, joinModel.getMergeModel().getId());
+	          preparedStatement.setInt(6, joinModel.getColumnNumber());
+	          
 	          preparedStatement.executeUpdate();
 	          preparedStatement.close();
 	          
@@ -275,7 +274,7 @@ public class JoinsModel implements java.io.Serializable {
 
 		
 	      try{
-	          PreparedStatement preparedStatement = connection.prepareStatement("SELECT id, merge_id, column_number, `key`, datatable_1_column_name, datatable_2_column_name, constant_1, constant_2, column_name FROM `join` " + 
+	          PreparedStatement preparedStatement = connection.prepareStatement("SELECT merge_id, column_number, `key`, datatable_1_column_name, datatable_2_column_name, constant_1, constant_2, column_name FROM `join` " + 
 	        	"WHERE merge_id = ?;");
 	          preparedStatement.setInt(1, mergeModel.getId());
 	          preparedStatement.executeQuery();
@@ -330,7 +329,7 @@ public class JoinsModel implements java.io.Serializable {
 		          
 			      try{
 			          PreparedStatement preparedStatement3 = connection.prepareStatement(
-			        		  "SELECT id, merge_id, column_number, `key`, datatable_1_column_name, " + 
+			        		  "SELECT merge_id, column_number, `key`, datatable_1_column_name, " + 
 			        		  "datatable_2_column_name, constant_1, constant_2, column_name FROM `join` WHERE merge_id = ? " +
 			        		  "AND (datatable_1_column_name IS NOT NULL AND datatable_2_column_name IS NOT NULL);");
 			          preparedStatement3.setInt(1, mergeModel.getId());
@@ -413,7 +412,8 @@ public class JoinsModel implements java.io.Serializable {
 		        	  
 		        	  JoinModel joinModel = new JoinModel();
 		        	  
-		        	  joinModel.getMergeModel().setId(mergeModel.getId());
+		        	  joinModel.setMergeModel(mergeModel);
+		        	  
 		        	  joinModel.setColumnNumber(columnNumbers.getInt(i));
 		        	  
 		        	  if (joinsAsJsonObject.has("key-" + columnNumbers.getInt(i))) {
@@ -451,8 +451,7 @@ public class JoinsModel implements java.io.Serializable {
 		        	  
 		        	  joinModel.setColumnName(columnNames.getString(i));
 		        	  
-		        	  //TODO: createJoinByMergeIdUsingJoinModel(joinModel)
-		        	  joinsModel.createJoinByMergeIdUsingJoinModel(mergeModel.getId(), joinModel, connection);
+		        	  joinsModel.createJoinUsingJoinModel(joinModel, connection);
 		        	  
 		          }
 		          
@@ -507,6 +506,116 @@ public class JoinsModel implements java.io.Serializable {
 		}				
 				
 		return joinsAsCachedRowSet;
+	}
+
+
+	public CachedRowSet retrieveKeyCrossDatatableJoinsAsCachedRowsetByMergeId(
+			Integer mergeId, Connection connection) {
+
+		MergeModel mergeModel = new MergeModel();
+		mergeModel.setId(mergeId);
+		
+        Class<?> cachedRowSetImplClass = null;
+		try {
+			cachedRowSetImplClass = Class.forName("com.sun.rowset.CachedRowSetImpl");
+		} catch (ClassNotFoundException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		
+		CachedRowSet keyCrossDatatableJoinsAsCachedRowSet = null;
+		try {
+			keyCrossDatatableJoinsAsCachedRowSet = (CachedRowSet) cachedRowSetImplClass.newInstance();
+		} catch (InstantiationException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		} catch (IllegalAccessException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		
+	      try{
+	          PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM `join` WHERE merge_id = ? AND `key` = TRUE AND datatable_1_column_name IS NOT NULL AND datatable_2_column_name IS NOT NULL;");
+	          preparedStatement.setInt(1, mergeModel.getId());
+	          preparedStatement.executeQuery();
+	         
+	          keyCrossDatatableJoinsAsCachedRowSet.populate(preparedStatement.getResultSet());
+	          
+	          preparedStatement.close();
+
+	        }
+	        catch(SQLException sqlException){
+		    	sqlException.printStackTrace();
+	        } 
+		
+		return keyCrossDatatableJoinsAsCachedRowSet;
+	}
+
+
+	public CachedRowSet retrieveNonKeyCrossDatatableJoinsAsCachedRowsetByMergeId(
+			Integer mergeId, Connection connection) {
+
+		MergeModel mergeModel = new MergeModel();
+		mergeModel.setId(mergeId);
+		
+        Class<?> cachedRowSetImplClass = null;
+		try {
+			cachedRowSetImplClass = Class.forName("com.sun.rowset.CachedRowSetImpl");
+		} catch (ClassNotFoundException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		
+		CachedRowSet nonKeyCrossDatatableJoinsAsCachedRowSet = null;
+		try {
+			nonKeyCrossDatatableJoinsAsCachedRowSet = (CachedRowSet) cachedRowSetImplClass.newInstance();
+		} catch (InstantiationException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		} catch (IllegalAccessException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		
+	      try{
+	          PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM `join` WHERE merge_id = ? AND `key` != TRUE AND datatable_1_column_name IS NOT NULL AND datatable_2_column_name IS NOT NULL;");
+	          preparedStatement.setInt(1, mergeModel.getId());
+	          preparedStatement.executeQuery();
+	         
+	          nonKeyCrossDatatableJoinsAsCachedRowSet.populate(preparedStatement.getResultSet());
+	          
+	          preparedStatement.close();
+
+	        }
+	        catch(SQLException sqlException){
+		    	sqlException.printStackTrace();
+	        } 
+		
+		return nonKeyCrossDatatableJoinsAsCachedRowSet;
+	}
+
+
+	public void setKeyCrossDatatableJoinsAsCachedRowSet(
+			CachedRowSet keyCrossDatatableJoinsAsCachedRowsetByMergeId) {
+		this.keyCrossDatatableJoinsAsCachedRowsetByMergeId = keyCrossDatatableJoinsAsCachedRowsetByMergeId;
+	}
+
+
+	public void setNonKeyCrossDatatableJoinsAsCachedRowSet(
+			CachedRowSet nonKeyCrossDatatableJoinsAsCachedRowsetByMergeId) {
+		this.nonKeyCrossDatatableJoinsAsCachedRowsetByMergeId = nonKeyCrossDatatableJoinsAsCachedRowsetByMergeId;
+	}
+
+
+	public CachedRowSet getKeyCrossDatatableJoinsAsCachedRowSet() {
+		
+		return this.keyCrossDatatableJoinsAsCachedRowsetByMergeId;
+	}
+
+
+	public CachedRowSet getNonKeyCrossDatatableJoinsAsCachedRowSet() {
+
+		return this.nonKeyCrossDatatableJoinsAsCachedRowsetByMergeId;
 	}
 
 
