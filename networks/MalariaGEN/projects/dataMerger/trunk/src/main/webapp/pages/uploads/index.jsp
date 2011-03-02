@@ -12,25 +12,22 @@
 <title>Uploads</title>
 	<link rel="stylesheet" type="text/css" href="../shared/css/fileuploader.css" />
 	
-	<script type="text/javascript" src="../shared/js/jquery.min.js"></script>
-	<script type="text/javascript" src="../shared/js/fileuploader.js"></script>
-	<script type="text/javascript" src="../shared/js/jquery.json.min.js"></script>
 	
+	<script type="text/javascript" src="../shared/js/jquery.min.js"></script>
+	<script type="text/javascript" src="../shared/js/jquery.json.min.js"></script>
 	<script type="text/javascript" src="../shared/js/shared.js"></script>
-	<script type="text/javascript" src="../shared/js/uploads.js"></script>
-	<script type="text/javascript" src="../shared/js/merges.js"></script>
+	
+	<script type="text/javascript" src="js/fileuploader.js"></script>
+	<script type="text/javascript" src="js/uploads.js"></script>
 	
 	<script type="text/javascript">
-	
-		window.onload = init;
-		
-		function init () {
+
+		$(document).ready(function(){
 			
 			initSharedFunctions();
 			initUploadsFunctions();
-			initMergesFunctions();
 
-		}
+		});
 	
 	</script>
 	
@@ -53,22 +50,11 @@
 	UploadsModel uploadsModel = new UploadsModel();
 
 	uploadsModel.setDataModel(dataModel);
+	uploadsModel.setUserModel(userModel);
 
-  CachedRowSet uploadsAsCachedRowSet = uploadsModel.retrieveUploadsAsCachedRowSetUsingUserId(userModel.getId());
+	out.print(uploadsModel.retrieveUploadsAsDecoratedXHTMLTableUsingUploadsModel(uploadsModel));
+	
 
-  if (uploadsAsCachedRowSet != null) {
-
-	  	UploadsFunctionsModel uploadsFunctionsModel = new UploadsFunctionsModel();
-	    uploadsFunctionsModel.setCachedRowSet(uploadsAsCachedRowSet);
-	    uploadsFunctionsModel.setDecoratedXHTMLTableByCachedRowSet();
-	    out.print(uploadsFunctionsModel.getDecoratedXHTMLTable());
-	    
-  } else {
-	  
-	  //TODO: Error handling
-	  out.print("<p>Error: uploadsAsCachedRowSet is null</p>");
-	  
-  }
 %>		
 		</div>
 

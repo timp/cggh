@@ -4,9 +4,7 @@
 <%@ page import="javax.sql.rowset.CachedRowSet" %>
 <%@ page import="org.cggh.tools.dataMerger.data.merges.MergesModel" %>
 <%@ page import="org.cggh.tools.dataMerger.data.merges.MergeModel" %>
-<%@ page import="org.cggh.tools.dataMerger.functions.merges.MergeFunctionsModel" %>
-<%@ page import="org.cggh.tools.dataMerger.data.joins.JoinModel" %>
-<%@ page import="org.cggh.tools.dataMerger.functions.joins.JoinFunctionsModel" %>
+<%@ page import="org.cggh.tools.dataMerger.data.resolutionsByColumn.ResolutionsByColumnModel" %>
 <%
 
 MergesModel mergesModel = new MergesModel();
@@ -16,20 +14,20 @@ mergesModel.setUserModel(userModel);
 MergeModel mergeModel = new MergeModel();
 mergeModel = mergesModel.retrieveMergeAsMergeModelByMergeId(Integer.parseInt(request.getParameter("merge_id")));
 
-MergeFunctionsModel mergeFunctionsModel = new MergeFunctionsModel();
 %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <title>Merges</title>
-<link rel="stylesheet" href="../shared/css/merges.css" type="text/css" />
+<link rel="stylesheet" href="css/merges.css" type="text/css" />
 
 	<script type="text/javascript" src="../shared/js/jquery.min.js"></script>
 	<script type="text/javascript" src="../shared/js/jquery.json.min.js"></script>
 	
 	<script type="text/javascript" src="../shared/js/shared.js"></script>
-	<script type="text/javascript" src="../shared/js/merges.js"></script>
+	
+	<script type="text/javascript" src="js/merges.js"></script>
 
 	<script type="text/javascript">
 	
@@ -86,7 +84,7 @@ MergeFunctionsModel mergeFunctionsModel = new MergeFunctionsModel();
 		</div>
 		
 		<div>
-			<button class="save resolutions">Save Resolutions</button>
+			<button class="save-resolutions-by-column">Save Resolutions</button>
 		
 			<button class="edit join">Edit Join</button>
 			
@@ -97,10 +95,27 @@ MergeFunctionsModel mergeFunctionsModel = new MergeFunctionsModel();
 		</div>
 		
 		<ul>
-			<li><a>By Column</a></li>
-			<li><a>By Row</a></li>
-			<li><a>By Cell</a></li>
+			<!-- TODO: soft-code these link urls -->
+			<li><a href="/dataMerger/pages/merges/edit-resolutions-by-column.jsp?id=<%=mergeModel.getId()%>">By Column</a></li>
+			<li><a href="/dataMerger/pages/merges/edit-resolutions-by-row.jsp?id=<%=mergeModel.getId()%>">By Row</a></li>
+			<li><a href="/dataMerger/pages/merges/edit-resolutions-by-cell.jsp?id=<%=mergeModel.getId()%>">By Cell</a></li>
 		</ul>
+		
+		<div class="resolutions-by-column">
+		<form class="resolutions-by-column-form" onsubmit="return false;" autocomplete="off">
+<%
+	
+	ResolutionsByColumnModel resolutionsByColumnModel = new ResolutionsByColumnModel();
+	resolutionsByColumnModel.setDataModel(dataModel);
+	
+	//FIXME
+	//resolutionsByColumnModel.setUserModel(userModel);
+
+	out.print(resolutionsByColumnModel.retrieveResolutionsByColumnAsDecoratedXHTMLTableUsingMergeModel(mergeModel));
+	
+%>		
+		</form>
+		</div>
 		
 	</div>
 </body>

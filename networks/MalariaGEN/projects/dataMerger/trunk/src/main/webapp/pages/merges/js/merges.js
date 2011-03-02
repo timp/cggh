@@ -4,108 +4,15 @@ function initMergesFunctions () {
 	initRemoveJoinFunction();
 	initSaveJoinFunction();
 	initAddJoinFunction();
-	initEditResolutionsFunction();
-	
-	//TODO: move to separate functions
-	
-	$('.new-join-form select[name=datatable_1_column_name]').change(function() {
-
-		var row = $(this).closest("tr");
-		
-		//alert($(this).val());
-		
-		if ($(this).val() == 'CONSTANT') {
-			row.next().find('th label[for="constant_1"]').css('display', 'inline');
-			row.next().find('td input[name="constant_1"]').css('display', 'inline');
-		} else {
-			row.next().find('th label[for="constant_1"]').css('display', 'none');
-			row.next().find('td input[name="constant_1"]').css('display', 'none');
-		}
-		
-		if (
-				(
-				(row.find('select[name=datatable_2_column_name]').val() == 'NULL' || row.find('select[name=datatable_2_column_name]').val() == 'CONSTANT')
-				&&
-				row.find('input[name=column_name]').val() == ''
-				&&
-				($(this).val() != 'NULL' && $(this).val() != 'CONSTANT')
-				)
-				||
-				($(this).val() != 'NULL' && $(this).val() != 'CONSTANT' && $(this).val() == row.find('select[name=datatable_2_column_name]').val())
-		) {
-			
-			row.find('input[name=column_name]').attr('value', $(this).val());
-		}
-		
-	});
-	
-	$('.new-join-form select[name=datatable_2_column_name]').change(function() {
-
-		var row = $(this).closest("tr");
-		
-		//alert($(this).val());
-		
-		if ($(this).val() == 'CONSTANT') {
-			row.next().find('th label[for="constant_2"]').css('display', 'inline');
-			row.next().find('td input[name="constant_2"]').css('display', 'inline');
-		} else {
-			row.next().find('th label[for="constant_2"]').css('display', 'none');
-			row.next().find('td input[name="constant_2"]').css('display', 'none');
-		}
-
-		
-		if (
-				(
-				(row.find('select[name=datatable_1_column_name]').val() == 'NULL' || row.find('select[name=datatable_1_column_name]').val() == 'CONSTANT')
-				&&
-				row.find('input[name=column_name]').val() == ''
-				&&
-				($(this).val() != 'NULL' && $(this).val() != 'CONSTANT')
-				)
-				||
-				($(this).val() != 'NULL' && $(this).val() != 'CONSTANT' && $(this).val() == row.find('select[name=datatable_1_column_name]').val())
-		) {
-			
-			row.find('input[name=column_name]').attr('value', $(this).val());
-		}		
-		
-	});
+	initEditResolutionsByColumnFunction();
+	initSaveResolutionsByColumnFunction();
+	initChangeDatatable1ColumnNameFunction();
+	initChangeDatatable2ColumnNameFunction();
+	initChangeSolutionByColumnFunction();
 	
 }
 
-function createMergeUsingUploadIdsAsJSON () {
-	
-	// Get data from uploads form.
-	var data = $.toJSON($('.uploads-form').serializeObject());
-	
-	//TODO: Validate exactly two checkboxes selected.
-	
-	$.ajax({
-		type: 'POST',
-		data: data,
-		url: '/dataMerger/data/merges',
-		dataType: 'json',
-		success: function (data, textStatus, jqXHR) {
-			
-			if (data.id) {
-				
-				//TODO: This URL is ugly.
-				//TODO: GET /dataMerger/pages/merges/[id]/join
-				window.location.href = '/dataMerger/pages/merges/edit-join.jsp?merge_id=' + data.id;
 
-			} else {
-				alert("data: " + data);
-				alert("data.id: " + data.id);
-				$('.status').html("textStatus: " + textStatus);
-			}
-		},
-		error: function (jqXHR, textStatus, errorThrown){
-            $('.error').html("errorThrown: " + errorThrown);
-            $('.status').html("textStatus: " + textStatus);
-        } 
-	});
-	
-}
 
 
 function initMoveJoinFunction() {
@@ -294,7 +201,7 @@ function initSaveJoinFunction () {
 			dataType: 'json',
 			success: function (data, textStatus, jqXHR) {
 
-				retrieveJoinsAsHTMLUsingMergeId(urlParams["merge_id"]);
+				retrieveJoinsAsXHTMLUsingMergeId(urlParams["merge_id"]);
 					
 
 			},
@@ -309,7 +216,7 @@ function initSaveJoinFunction () {
 }
 
 
-function retrieveJoinsAsHTMLUsingMergeId (mergeId) {
+function retrieveJoinsAsXHTMLUsingMergeId (mergeId) {
 	
 	
 	$.ajax({
@@ -319,6 +226,79 @@ function retrieveJoinsAsHTMLUsingMergeId (mergeId) {
 		type: 'GET',
 		url: '/dataMerger/data/merges/' + mergeId + '/joins'
 	});	
+}
+
+function initChangeDatatable1ColumnNameFunction () {
+
+
+	$('.new-join-form select[name=datatable_1_column_name]').change(function() {
+
+		var row = $(this).closest("tr");
+		
+		//alert($(this).val());
+		
+		if ($(this).val() == 'CONSTANT') {
+			row.next().find('th label[for="constant_1"]').css('display', 'inline');
+			row.next().find('td input[name="constant_1"]').css('display', 'inline');
+		} else {
+			row.next().find('th label[for="constant_1"]').css('display', 'none');
+			row.next().find('td input[name="constant_1"]').css('display', 'none');
+		}
+		
+		if (
+				(
+				(row.find('select[name=datatable_2_column_name]').val() == 'NULL' || row.find('select[name=datatable_2_column_name]').val() == 'CONSTANT')
+				&&
+				row.find('input[name=column_name]').val() == ''
+				&&
+				($(this).val() != 'NULL' && $(this).val() != 'CONSTANT')
+				)
+				||
+				($(this).val() != 'NULL' && $(this).val() != 'CONSTANT' && $(this).val() == row.find('select[name=datatable_2_column_name]').val())
+		) {
+			
+			row.find('input[name=column_name]').attr('value', $(this).val());
+		}
+		
+	});
+	
+}
+
+function initChangeDatatable2ColumnNameFunction () {
+	
+
+	$('.new-join-form select[name=datatable_2_column_name]').change(function() {
+
+		var row = $(this).closest("tr");
+		
+		//alert($(this).val());
+		
+		if ($(this).val() == 'CONSTANT') {
+			row.next().find('th label[for="constant_2"]').css('display', 'inline');
+			row.next().find('td input[name="constant_2"]').css('display', 'inline');
+		} else {
+			row.next().find('th label[for="constant_2"]').css('display', 'none');
+			row.next().find('td input[name="constant_2"]').css('display', 'none');
+		}
+
+		
+		if (
+				(
+				(row.find('select[name=datatable_1_column_name]').val() == 'NULL' || row.find('select[name=datatable_1_column_name]').val() == 'CONSTANT')
+				&&
+				row.find('input[name=column_name]').val() == ''
+				&&
+				($(this).val() != 'NULL' && $(this).val() != 'CONSTANT')
+				)
+				||
+				($(this).val() != 'NULL' && $(this).val() != 'CONSTANT' && $(this).val() == row.find('select[name=datatable_1_column_name]').val())
+		) {
+			
+			row.find('input[name=column_name]').attr('value', $(this).val());
+		}		
+		
+	});
+	
 }
 
 
@@ -433,9 +413,13 @@ function initAddJoinFunction () {
 	
 }
 
-function initEditResolutionsFunction () {
+
+
+
+
+function initEditResolutionsByColumnFunction () {
 	
-	$(".edit.resolutions").click(function() {
+	$(".edit.resolutions-by-column").click(function() {
 
 		//TODO: Factor this out
 		var urlParams = {};
@@ -451,8 +435,99 @@ function initEditResolutionsFunction () {
 		})();
 		
 		//FIXME:
-		//window.location.href = '/dataMerger/pages/merges/' + urlParams["merge_id"] + '/resolutions';
-		window.location.href = '/dataMerger/pages/merges/edit-resolutions.jsp?merge_id=' + urlParams["merge_id"];
+		//window.location.href = '/dataMerger/pages/merges/' + urlParams["merge_id"] + '/resolutions-by-column';
+		window.location.href = '/dataMerger/pages/merges/edit-resolutions-by-column.jsp?merge_id=' + urlParams["merge_id"];
 		
 	});
+}
+
+
+function initSaveResolutionsByColumnFunction () {
+	
+	$(".save-resolutions-by-column").click(function() {
+		
+		// Get data from uploads form.
+		var data = $.toJSON($('.resolutions-by-column-form').serializeObject());
+		
+		alert(data);
+		
+		//TODO: Factor this out
+		var urlParams = {};
+		(function () {
+		    var e,
+		        a = /\+/g,  // Regex for replacing addition symbol with a space
+		        r = /([^&=]+)=?([^&]*)/g,
+		        d = function (s) { return decodeURIComponent(s.replace(a, " ")); },
+		        q = window.location.search.substring(1);
+
+		    while (e = r.exec(q))
+		       urlParams[d(e[1])] = d(e[2]);
+		})();
+		
+		//			urlParams = {
+		//			    enc: " Hello ",
+		//			    i: "main",
+		//			    mode: "front",
+		//			    sid: "de8d49b78a85a322c4155015fdce22c4",
+		//			    empty: ""
+		//			}
+		//
+		//			alert(urlParams["mode"]);
+		//			// -> "front"
+		
+		
+		
+		$.ajax({
+			type: 'PUT',
+			data: data,
+			url: '/dataMerger/data/merges/' + urlParams["merge_id"] + '/resolutions-by-column',
+			dataType: 'json',
+			success: function (data, textStatus, jqXHR) {
+
+				retrieveResolutionsByColumnAsXHTMLUsingMergeId(urlParams["merge_id"]);
+					
+
+			},
+			error: function (jqXHR, textStatus, errorThrown){
+	            $('.error').html("errorThrown: " + errorThrown);
+	            $('.status').html("textStatus: " + textStatus);
+	        } 
+		});
+		
+	});
+	
+}
+
+function retrieveResolutionsByColumnAsXHTMLUsingMergeId (mergeId) {
+	
+	
+	$.ajax({
+		data: '',
+		dataType: 'html',
+		success: function (data, textStatus, jqXHR) { $('.resolutions-by-column').html(data); },
+		type: 'GET',
+		url: '/dataMerger/data/merges/' + mergeId + '/resolutions-by-column'
+	});	
+}
+
+
+function initChangeSolutionByColumnFunction () {
+	
+
+	$('.resolutions-by-column-form select[name=solution_by_column_id]').change(function() {
+
+		var row = $(this).closest("tr");
+		
+		//alert($(this).val());
+		
+		if ($(this).val() == '4') {
+			row.find('td label[for="constant"]').css('display', 'inline');
+			row.find('td input[name="constant"]').css('display', 'inline');
+		} else {
+			row.find('td label[for="constant"]').css('display', 'none');
+			row.find('td input[name="constant"]').css('display', 'none');
+		}
+
+	});	
+	
 }

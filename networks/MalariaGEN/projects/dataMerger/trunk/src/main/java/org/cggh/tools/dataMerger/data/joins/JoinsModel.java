@@ -406,8 +406,6 @@ public class JoinsModel implements java.io.Serializable {
 		          JSONArray columnNumbers = joinsAsJsonObject.getJSONArray("column_number");
 		          JSONArray columnNames = joinsAsJsonObject.getJSONArray("column_name");
 
-		          JoinsModel joinsModel = new JoinsModel();
-		          
 		          for (int i = 0; i < columnNumbers.length(); i++) {
 		        	  
 		        	  JoinModel joinModel = new JoinModel();
@@ -451,7 +449,7 @@ public class JoinsModel implements java.io.Serializable {
 		        	  
 		        	  joinModel.setColumnName(columnNames.getString(i));
 		        	  
-		        	  joinsModel.createJoinUsingJoinModel(joinModel, connection);
+		        	  this.createJoinUsingJoinModel(joinModel, connection);
 		        	  
 		          }
 		          

@@ -16,6 +16,7 @@ import javax.sql.rowset.CachedRowSet;
 import org.cggh.tools.dataMerger.data.joins.JoinsModel;
 import org.cggh.tools.dataMerger.data.merges.MergeModel;
 import org.cggh.tools.dataMerger.data.merges.MergesModel;
+import org.cggh.tools.dataMerger.data.resolutionsByColumn.ResolutionsByColumnModel;
 import org.cggh.tools.dataMerger.data.uploads.UploadsModel;
 import org.cggh.tools.dataMerger.data.users.UserModel;
 import org.cggh.tools.dataMerger.functions.merges.MergeFunctionsModel;
@@ -72,8 +73,13 @@ public class DataController extends HttpServlet {
 		this.getUserModel().setDataModel(this.getDataModel());
 		this.getUserModel().setUserModelByUsername(request.getRemoteUser());
 
+		//TODO: centralize these
+		
 		 Pattern joinsURLPattern = Pattern.compile("/merges/(.*?)/joins");
-		 Matcher joinsURLPatternMatcher = joinsURLPattern.matcher(request.getPathInfo());		
+		 Matcher joinsURLPatternMatcher = joinsURLPattern.matcher(request.getPathInfo());
+		 
+		 Pattern resolutionsByColumnURLPattern = Pattern.compile("/merges/(\\d+)/resolutions-by-column");
+		 Matcher resolutionsByColumnURLPatternMatcher = resolutionsByColumnURLPattern.matcher(request.getPathInfo());
 
 		  String[] headerAcceptsAsStringArray = request.getHeader("Accept").split(",");
 		  List<String> headerAcceptsAsStringList = Arrays.asList(headerAcceptsAsStringArray);		 
@@ -172,7 +178,44 @@ public class DataController extends HttpServlet {
 					  response.getWriter().println("Unhandled Header Accept: " + request.getHeader("Accept"));
 					  
 				  } 
+
+		  } else if (resolutionsByColumnURLPatternMatcher.find()) {
 			  
+				 // Get the mergeId 
+				 MergeModel mergeModel = new MergeModel();
+				 mergeModel.setId(Integer.parseInt(resolutionsByColumnURLPatternMatcher.group(1)));  
+				 
+				 MergesModel mergesModel = new MergesModel();
+				 mergesModel.setDataModel(this.getDataModel());
+				 mergeModel = mergesModel.retrieveMergeAsMergeModelByMergeId(mergeModel.getId());
+			  
+				  if (headerAcceptsAsStringList.contains("text/html")) { 
+					  
+					  //Otherwise degree symbols turn into question-marks
+					  response.setCharacterEncoding("UTF-8");
+					  
+					  response.setContentType("text/html");
+					  
+					  String resolutionsByColumnAsHTML = null;
+						
+
+						ResolutionsByColumnModel resolutionsByColumnModel = new ResolutionsByColumnModel();
+						resolutionsByColumnModel.setDataModel(dataModel);
+						
+						//FIXME
+						//resolutionsByColumnModel.setUserModel(userModel);
+
+						resolutionsByColumnAsHTML = resolutionsByColumnModel.retrieveResolutionsByColumnAsDecoratedXHTMLTableUsingMergeModel(mergeModel);
+					  
+					  
+					  response.getWriter().print(resolutionsByColumnAsHTML);
+					  
+				  } else {
+					  
+					  response.setContentType("text/plain");
+					  response.getWriter().println("Unhandled Header Accept: " + request.getHeader("Accept"));
+					  
+				  }   
 			  
 		  } else {
 			  
@@ -275,9 +318,13 @@ public class DataController extends HttpServlet {
 		this.getUserModel().setDataModel(this.getDataModel());
 		this.getUserModel().setUserModelByUsername(request.getRemoteUser());
 		
-		 Pattern joinsURLPattern = Pattern.compile("/merges/(.*?)/joins");
+		//TODO: centralize these
+		
+		 Pattern joinsURLPattern = Pattern.compile("/merges/(\\d+)/joins");
 		 Matcher joinsURLPatternMatcher = joinsURLPattern.matcher(request.getPathInfo());
 		 
+		 Pattern resolutionsByColumnURLPattern = Pattern.compile("/merges/(\\d+)/resolutions-by-column");
+		 Matcher resolutionsByColumnURLPatternMatcher = resolutionsByColumnURLPattern.matcher(request.getPathInfo());
 		
 		 if (joinsURLPatternMatcher.find()) {
 			 
@@ -313,6 +360,69 @@ public class DataController extends HttpServlet {
 							joinsModel.setDataModel(this.getDataModel());
 							
 							joinsModel.updateJoinsByMergeIdUsingJoinsAsJSONObject(mergeModel.getId(), jsonObject);
+							
+							//TODO:
+							responseAsJSON = "{\"success\": \"true\"}";
+							
+			
+						} catch (JSONException e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+						} 
+				    
+				    
+				  } catch (Exception e) { 
+					  //TODO:
+					  e.printStackTrace(); 
+				  
+				  }
+				  
+				  response.getWriter().print(responseAsJSON);
+
+			  } else {
+				  
+				  //FIXME: This will cause a parser error (Invalid JSON).
+				  
+				  response.setContentType("text/plain");
+				  response.getWriter().println("Unhandled Header Accept: " + request.getHeader("Accept"));
+				  
+			  }
+
+		  }
+		  else if (resolutionsByColumnURLPatternMatcher.find()) {
+			 
+			 // Get the mergeId 
+			 MergeModel mergeModel = new MergeModel();
+			 mergeModel.setId(Integer.parseInt(resolutionsByColumnURLPatternMatcher.group(1)));
+			 
+			 
+			 String[] headerAcceptsAsStringArray = request.getHeader("Accept").split(",");
+			  List<String> headerAcceptsAsStringList = Arrays.asList(headerAcceptsAsStringArray);
+			  
+			  if (headerAcceptsAsStringList.contains("application/json")) { 
+			 
+				  response.setContentType("application/json");
+				  String responseAsJSON = null;
+				  
+				  try {
+					  
+					    BufferedReader reader = request.getReader();
+					    String line = null;
+					    StringBuffer stringBuffer = new StringBuffer();
+					    
+					    while ((line = reader.readLine()) != null) {
+					      stringBuffer.append(line);
+					    }
+					    
+						try {
+							
+							JSONObject jsonObject = new JSONObject(stringBuffer.toString());
+							
+							ResolutionsByColumnModel resolutionsByColumnModel = new ResolutionsByColumnModel();
+							
+							resolutionsByColumnModel.setDataModel(this.getDataModel());
+							
+							resolutionsByColumnModel.updateResolutionsByColumnByMergeIdUsingResolutionsByColumnAsJSONObject(mergeModel.getId(), jsonObject);
 							
 							//TODO:
 							responseAsJSON = "{\"success\": \"true\"}";

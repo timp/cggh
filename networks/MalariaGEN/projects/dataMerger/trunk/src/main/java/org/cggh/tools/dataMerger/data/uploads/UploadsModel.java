@@ -4,12 +4,14 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.logging.Logger;
 
 import javax.sql.rowset.CachedRowSet;
 
 import org.cggh.tools.dataMerger.data.DataModel;
 import org.cggh.tools.dataMerger.data.users.UserModel;
 import org.cggh.tools.dataMerger.data.users.UsersModel;
+import org.cggh.tools.dataMerger.functions.uploads.UploadsFunctionsModel;
 
 public class UploadsModel implements java.io.Serializable {
 
@@ -17,6 +19,7 @@ public class UploadsModel implements java.io.Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = 4112178863119955390L;
+	private final Logger logger = Logger.getLogger("org.cggh.tools.dataMerger.data.uploads");
 	private DataModel dataModel = null;
 	private UserModel userModel;
 	
@@ -140,6 +143,31 @@ public class UploadsModel implements java.io.Serializable {
 		
 		
 		return uploadModel;
+	}
+	
+	
+	public String retrieveUploadsAsDecoratedXHTMLTableUsingUploadsModel (UploadsModel uploadsModel) {
+		
+		String uploadsAsDecoratedXHTMLTableUsingUploadsModel = "";
+		
+		  CachedRowSet uploadsAsCachedRowSet = uploadsModel.retrieveUploadsAsCachedRowSetUsingUserId(uploadsModel.getUserModel().getId());
+
+		  if (uploadsAsCachedRowSet != null) {
+
+			  	UploadsFunctionsModel uploadsFunctionsModel = new UploadsFunctionsModel();
+			    uploadsFunctionsModel.setCachedRowSet(uploadsAsCachedRowSet);
+			    uploadsFunctionsModel.setDecoratedXHTMLTableByCachedRowSet();
+			    uploadsAsDecoratedXHTMLTableUsingUploadsModel = uploadsFunctionsModel.getDecoratedXHTMLTable();
+			    
+		  } else {
+			  
+			  //TODO: Error handling
+			  this.logger.warning("Error: uploadsAsCachedRowSet is null");
+			  uploadsAsDecoratedXHTMLTableUsingUploadsModel = "<p>Error: uploadsAsCachedRowSet is null</p>";
+			  
+		  }
+		
+		return uploadsAsDecoratedXHTMLTableUsingUploadsModel;
 	}
 
 }

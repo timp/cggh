@@ -102,16 +102,9 @@ public class DatatablesModel implements java.io.Serializable {
 			testDatatableModel = this.retrieveDatatableAsDatatableModelUsingName("datatable_" + nextUniqueInteger, connection);
 		}
 		
-		//TODO:
-		System.out.println("Decided to create datatable called " + "datatable_" + nextUniqueInteger);
-		
-		
+
 		datatableModel.setName("datatable_" + nextUniqueInteger);
-		
-		
-		//TODO:		
-		System.out.println("Working with upload id = " + datatableModel.getUploadModel().getId());
-		
+
 		
 		// Create the datatable record.
 	     try {

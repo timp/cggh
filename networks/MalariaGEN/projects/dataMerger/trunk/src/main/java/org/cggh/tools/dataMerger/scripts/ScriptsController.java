@@ -149,6 +149,7 @@ public class ScriptsController extends HttpServlet {
 				        		  "datatable_1_duplicate_keys_count TINYINT(255) UNSIGNED NULL, " + 
 				        		  "datatable_2_duplicate_keys_count TINYINT(255) UNSIGNED NULL, " + 
 				        		  "total_duplicate_keys_count TINYINT(255) UNSIGNED NULL, " + 
+				        		  "total_conflicts_count TINYINT(255) UNSIGNED NULL, " + 
 				        		  "PRIMARY KEY (id), " +
 				        		  "INDEX created_by_user_id_index (created_by_user_id), " + 
 				        		  "FOREIGN KEY (created_by_user_id) REFERENCES user(id) ON DELETE CASCADE ON UPDATE CASCADE, " +
@@ -284,11 +285,11 @@ public class ScriptsController extends HttpServlet {
 					        		  "constant VARCHAR(255) NULL, " +
 					        		  "PRIMARY KEY (merge_id, column_number, problem_by_column_id), " +
 					        		  "INDEX merge_id_index (merge_id), " +
-					        		  //FIXME: Can't create table 'datamerger.resolutions_by_column' (errno: 150)
-					        		  //"INDEX problem_by_column_id_index (problem_by_column_id), " + 
-					        		  //"INDEX solution_by_column_id_index (solution_by_column_id), " + 
+					        		  "INDEX problem_by_column_id_index (problem_by_column_id), " + 
+					        		  "INDEX solution_by_column_id_index (solution_by_column_id), " + 
 					        		  "FOREIGN KEY (merge_id) REFERENCES merge(id) ON DELETE CASCADE ON UPDATE CASCADE " +
-					        		  //"FOREIGN KEY (problem_by_column_id) REFERENCES problem_by_column(id) ON DELETE CASCADE ON UPDATE CASCADE, " +
+					        		  //FIXME: Can't create table 'datamerger.resolutions_by_column' (errno: 150)
+					        		  //"FOREIGN KEY (problem_by_column_id) REFERENCES problem_by_column(id) ON DELETE CASCADE ON UPDATE CASCADE " +
 					        		  //"FOREIGN KEY (solution_by_column_id) REFERENCES solution_by_column(id) ON DELETE CASCADE ON UPDATE CASCADE " +
 					        		  ") ENGINE=InnoDB;");
 					          statement.close();

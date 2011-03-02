@@ -10,9 +10,9 @@ import javax.sql.rowset.CachedRowSet;
 
 import org.cggh.tools.dataMerger.data.merges.MergeModel;
 import org.cggh.tools.dataMerger.data.merges.MergesModel;
-import org.cggh.tools.dataMerger.data.resolutions.ProblemByColumnModel;
-import org.cggh.tools.dataMerger.data.resolutions.ResolutionByColumnModel;
-import org.cggh.tools.dataMerger.data.resolutions.ResolutionsModel;
+import org.cggh.tools.dataMerger.data.resolutionsByColumn.ProblemByColumnModel;
+import org.cggh.tools.dataMerger.data.resolutionsByColumn.ResolutionByColumnModel;
+import org.cggh.tools.dataMerger.data.resolutionsByColumn.ResolutionsByColumnModel;
 
 
 
@@ -225,7 +225,7 @@ public class MergeScriptsModel implements java.io.Serializable {
 				//because next() skips the first row.
 				nonKeyCrossDatatableJoinsAsCachedRowSet.first();
 				
-				ResolutionsModel resolutionsModel = new ResolutionsModel();
+				ResolutionsByColumnModel resolutionsByColumnModel = new ResolutionsByColumnModel();
 				
 				while (nonKeyCrossDatatableJoinsAsCachedRowSet.next()) {
 				
@@ -256,16 +256,23 @@ public class MergeScriptsModel implements java.io.Serializable {
 			        	  Integer columnValueConflictsCount = resultSet.getInt("columnValueConflictsCount");
 			        	  
 			        	  
-			        	  if (columnValueConflictsCount != null && columnValueConflictsCount > 0) {
+			        	  if (columnValueConflictsCount != null) {
+			        		
+			        		  if (columnValueConflictsCount > 0) {
 			        		  
-			        		  ResolutionByColumnModel resolutionByColumnModel = new ResolutionByColumnModel();
-			        		  
-			        		  resolutionByColumnModel.setMergeModel(mergeModel);
-			        		  resolutionByColumnModel.setColumnNumber(nonKeyCrossDatatableJoinsAsCachedRowSet.getInt("column_number"));
-			        		  resolutionByColumnModel.setProblemByColumnModel(problemByColumnModel);
-			        		  resolutionByColumnModel.setConflictsCount(columnValueConflictsCount);
-			        		  
-			        		  resolutionsModel.createResolutionByColumnUsingResolutionByColumnModel(resolutionByColumnModel, connection);
+				        		  ResolutionByColumnModel resolutionByColumnModel = new ResolutionByColumnModel();
+				        		  
+				        		  resolutionByColumnModel.setMergeModel(mergeModel);
+				        		  resolutionByColumnModel.setColumnNumber(nonKeyCrossDatatableJoinsAsCachedRowSet.getInt("column_number"));
+				        		  resolutionByColumnModel.setProblemByColumnModel(problemByColumnModel);
+				        		  resolutionByColumnModel.setConflictsCount(columnValueConflictsCount);
+				        		  
+				        		  resolutionsByColumnModel.createResolutionByColumnUsingResolutionByColumnModel(resolutionByColumnModel, connection);
+				        		  
+			        		  } else {
+			        			  
+			        			  //Do nothing
+			        		  }
 			        		  
 			        	  } else {
 			        		  
@@ -321,7 +328,7 @@ public class MergeScriptsModel implements java.io.Serializable {
 				        		  resolutionByColumnModel.setProblemByColumnModel(problemByColumnModel);
 				        		  resolutionByColumnModel.setConflictsCount(columnValueConflictsCount);
 				        		  
-				        		  resolutionsModel.createResolutionByColumnUsingResolutionByColumnModel(resolutionByColumnModel, connection);
+				        		  resolutionsByColumnModel.createResolutionByColumnUsingResolutionByColumnModel(resolutionByColumnModel, connection);
 				        		  
 				        	  } else {
 				        		  
@@ -378,7 +385,7 @@ public class MergeScriptsModel implements java.io.Serializable {
 					        		  resolutionByColumnModel.setProblemByColumnModel(problemByColumnModel);
 					        		  resolutionByColumnModel.setConflictsCount(columnValueConflictsCount);
 					        		  
-					        		  resolutionsModel.createResolutionByColumnUsingResolutionByColumnModel(resolutionByColumnModel, connection);
+					        		  resolutionsByColumnModel.createResolutionByColumnUsingResolutionByColumnModel(resolutionByColumnModel, connection);
 					        		  
 					        	  } else {
 					        		  

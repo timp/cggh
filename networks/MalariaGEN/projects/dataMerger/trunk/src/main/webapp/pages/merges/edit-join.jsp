@@ -29,7 +29,8 @@ MergeFunctionsModel mergeFunctionsModel = new MergeFunctionsModel();
 	<script type="text/javascript" src="../shared/js/jquery.json.min.js"></script>
 	
 	<script type="text/javascript" src="../shared/js/shared.js"></script>
-	<script type="text/javascript" src="../shared/js/merges.js"></script>
+	
+	<script type="text/javascript" src="js/merges.js"></script>
 
 	<script type="text/javascript">
 	
@@ -83,7 +84,7 @@ MergeFunctionsModel mergeFunctionsModel = new MergeFunctionsModel();
 			<button class="save join">Save Join</button>
 		
 			<% if (mergeModel.getJoinsModel().getKeysCount() > 0 && mergeModel.getTotalDuplicateKeysCount() == 0) { %>
-			<button class="edit resolutions">Edit Resolutions</button>
+			<button class="edit resolutions-by-column">Edit Resolutions</button>
 			<% } %>
 			
 			<a href="<%= basePath %>pages/merges/">Cancel &amp; Return to Merges</a>
@@ -93,6 +94,8 @@ MergeFunctionsModel mergeFunctionsModel = new MergeFunctionsModel();
 		<form class="joins-form" onsubmit="return false;" autocomplete="off">
 		<div class="joins">
 <%
+
+	//TODO: Update this to use same as uploads and edit-resolutions-by-column
 
   CachedRowSet joinsAsCachedRowSet = mergeModel.getJoinsModel().getJoinsAsCachedRowSet();
 

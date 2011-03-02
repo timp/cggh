@@ -15,6 +15,7 @@ import org.cggh.tools.dataMerger.data.joins.JoinModel;
 import org.cggh.tools.dataMerger.data.joins.JoinsModel;
 import org.cggh.tools.dataMerger.data.uploads.UploadsModel;
 import org.cggh.tools.dataMerger.data.users.UserModel;
+import org.cggh.tools.dataMerger.functions.merges.MergesFunctionsModel;
 import org.cggh.tools.dataMerger.scripts.merges.MergeScriptsModel;
 
 
@@ -30,19 +31,12 @@ public class MergesModel implements java.io.Serializable {
 	private DataModel dataModel;
 	private UserModel userModel;
 	
-	//private MergeModel mergeModel;
-	//private DatatablesModel datatablesModel;
-	
 	
 	public MergesModel() {
 
 		this.setDataModel(new DataModel());
 		this.setUserModel(new UserModel());			
-		
-
-		//this.setMergeModel(new MergeModel());
-		//this.setDatatablesModel(new DatatablesModel());	
-		
+	
 		
 	}
 
@@ -60,15 +54,7 @@ public class MergesModel implements java.io.Serializable {
         return this.userModel;
     } 
 
-
-//	public void setMergeModel (final MergeModel mergeModel) {
-//		
-//		this.mergeModel = mergeModel;
-//	}
-//	public MergeModel getMergeModel () {
-//		
-//		return this.mergeModel;
-//	}	    
+    
 
     public MergeModel retrieveMergeAsMergeModelByMergeId(Integer mergeId) {
     	
@@ -168,54 +154,6 @@ public class MergesModel implements java.io.Serializable {
 		return mergeModel;
 	}
 
-	public CachedRowSet getMergesAsCachedRowSet() {
-	
-		  	   
-		   String CACHED_ROW_SET_IMPL_CLASS = "com.sun.rowset.CachedRowSetImpl";
-		   
-		   CachedRowSet mergesAsCachedRowSet = null;
-		   
-			try {
-				
-				Class.forName("com.mysql.jdbc.Driver").newInstance();
-				
-				Connection connection = this.getDataModel().getNewConnection();
-				 
-				if (!connection.isClosed()) {
-				
-					
-				      try{
-				          PreparedStatement preparedStatement = connection.prepareStatement("SELECT merge.id, upload_1.original_filename, upload_2.original_filename, created_datetime, updated_datetime FROM upload INNER JOIN upload AS upload_1 ON upload_1.id = merge.upload_1_id INNER JOIN upload AS upload_2 ON upload_2.id = merge.upload_2_id WHERE created_by_user_id = ?;");
-				          preparedStatement.setInt(1, this.userModel.getId());
-				          preparedStatement.executeQuery();
-				          Class<?> cachedRowSetImplClass = Class.forName(CACHED_ROW_SET_IMPL_CLASS);
-				          mergesAsCachedRowSet = (CachedRowSet) cachedRowSetImplClass.newInstance();
-				          mergesAsCachedRowSet.populate(preparedStatement.getResultSet());
-				          preparedStatement.close();
-	
-				        }
-				        catch(SQLException sqlException){
-				        	System.out.println("<p>" + sqlException + "</p>");
-					    	sqlException.printStackTrace();
-				        } 	
-				
-					connection.close();
-					
-				} else {
-					
-					System.out.println("connection.isClosed");
-				}
-					
-			} 
-			catch (Exception e) {
-				System.out.println("Exception from getMergesAsCachedRowSet.");
-				e.printStackTrace();
-			}
-	
-	
-	
-	     return mergesAsCachedRowSet;
-	   }
 
 	public MergeModel retrieveMergeAsMergeModelThroughCreatingMergeUsingMergeModel(
 			MergeModel mergeModel) {
@@ -685,5 +623,85 @@ public class MergesModel implements java.io.Serializable {
 			return mergeModel;
 			
 	    }	
+
+		public String retrieveMergesAsDecoratedXHTMLTableUsingMergesModel (MergesModel mergesModel) {
+			
+			String mergesAsDecoratedXHTMLTableUsingMergesModel = null;
+			
+			  CachedRowSet mergesAsCachedRowSet = this.retrieveMergesAsCachedRowSetUsingUserId(mergesModel.getUserModel().getId());
+
+			  if (mergesAsCachedRowSet != null) {
+
+				  	MergesFunctionsModel mergesFunctionsModel = new MergesFunctionsModel();
+				  	mergesFunctionsModel.setMergesAsCachedRowSet(mergesAsCachedRowSet);
+				  	mergesFunctionsModel.setMergesAsDecoratedXHTMLTableUsingMergesAsCachedRowSet();
+				  	mergesAsDecoratedXHTMLTableUsingMergesModel = mergesFunctionsModel.getMergesAsDecoratedXHTMLTable();
+				    
+			  } else {
+				  
+				  //TODO: Error handling
+				  this.logger.warning("Error: mergesAsCachedRowSet is null");
+				  mergesAsDecoratedXHTMLTableUsingMergesModel = "<p>Error: mergesAsCachedRowSet is null</p>";
+				  
+			  }
+			
+			return mergesAsDecoratedXHTMLTableUsingMergesModel;
+		}
+	
+	public CachedRowSet retrieveMergesAsCachedRowSetUsingUserId(Integer userId) {
+		
+		CachedRowSet mergesAsCachedRowSet = null;
+		
+		UserModel userModel = new UserModel();
+		userModel.setId(userId);
+		
+		   String CACHED_ROW_SET_IMPL_CLASS = "com.sun.rowset.CachedRowSetImpl";
+		   
+			try {
+				
+				Class.forName("com.mysql.jdbc.Driver").newInstance();
+				
+				Connection connection = this.getDataModel().getNewConnection();
+				 
+				if (!connection.isClosed()) {
+				
+					 //FIXME: Apparently a bug in CachedRowSet using getX('columnAlias') aka columnLabel, which actually only works with getX('columnName'), so using getX('columnIndex').
+					 
+					
+				      try{
+				          PreparedStatement preparedStatement = connection.prepareStatement("SELECT merge.id, upload_1.id AS upload_1_id, upload_1.original_filename AS upload_1_original_filename, upload_2.id AS 'upload_2_id', upload_2.original_filename AS 'upload_2_original_filename', merge.created_datetime, merge.updated_datetime, merge.total_duplicate_keys_count, merge.total_conflicts_count FROM merge INNER JOIN upload AS upload_1 ON upload_1.id = merge.upload_1_id INNER JOIN upload AS upload_2 ON upload_2.id = merge.upload_2_id WHERE merge.created_by_user_id = ?;");
+				          preparedStatement.setInt(1, userModel.getId());
+				          preparedStatement.executeQuery();
+				          Class<?> cachedRowSetImplClass = Class.forName(CACHED_ROW_SET_IMPL_CLASS);
+				          mergesAsCachedRowSet = (CachedRowSet) cachedRowSetImplClass.newInstance();
+				          mergesAsCachedRowSet.populate(preparedStatement.getResultSet());
+				          preparedStatement.close();
+	
+				        }
+				        catch(SQLException sqlException){
+				        	System.out.println("<p>" + sqlException + "</p>");
+					    	sqlException.printStackTrace();
+				        } 	
+				
+					connection.close();
+					
+				} else {
+					
+					System.out.println("connection.isClosed");
+				}
+					
+			} 
+			catch (Exception e) {
+				System.out.println("Exception from getMergesAsCachedRowSet.");
+				e.printStackTrace();
+			}
+	
+	
+	
+	     return mergesAsCachedRowSet;
+	}
+
+
+
 	
 }

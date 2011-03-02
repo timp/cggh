@@ -1,4 +1,4 @@
-package org.cggh.tools.dataMerger.data.resolutions;
+package org.cggh.tools.dataMerger.data.resolutionsByColumn;
 
 
 public class SolutionByColumnModel implements java.io.Serializable {

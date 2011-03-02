@@ -1,4 +1,4 @@
-package org.cggh.tools.dataMerger.data.resolutions;
+package org.cggh.tools.dataMerger.data.resolutionsByColumn;
 
 import org.cggh.tools.dataMerger.data.merges.MergeModel;
 
@@ -71,6 +71,10 @@ public class ResolutionByColumnModel implements java.io.Serializable {
 
 	public String getConstant() {
 		return this.constant;
+	}
+
+	public void setConstant(String constant) {
+		this.constant = constant;
 	}
 
 	
