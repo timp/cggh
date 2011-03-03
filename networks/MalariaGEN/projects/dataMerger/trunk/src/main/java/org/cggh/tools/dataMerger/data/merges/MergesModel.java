@@ -175,6 +175,11 @@ public class MergesModel implements java.io.Serializable {
 			          preparedStatement.executeUpdate();
 			          preparedStatement.close();
 
+			          
+			          
+			          
+			          
+			          
 			          // Get the model Id
 			          mergeModel.setId(this.getDataModel().retrieveLastInsertIdAsIntegerUsingConnection(connection));
 
@@ -185,6 +190,11 @@ public class MergesModel implements java.io.Serializable {
 				      UploadsModel uploadsModel = new UploadsModel();
 				      mergeModel.setUpload1Model(uploadsModel.retrieveUploadAsUploadModelByUploadId(mergeModel.getUpload1Model().getId(), connection));
 				      mergeModel.setUpload2Model(uploadsModel.retrieveUploadAsUploadModelByUploadId(mergeModel.getUpload2Model().getId(), connection));
+				      
+				      
+				      
+				      
+				      
 				      
 				      
 				      DatatablesModel datatablesModel = new DatatablesModel();
@@ -200,6 +210,14 @@ public class MergesModel implements java.io.Serializable {
 				      }
 			          
 
+				      
+				      
+				      
+				      
+				      
+				      
+				      
+				      
 				      // Create an auto-join
 
 				      // Get the column names for each of the datatables.
@@ -360,8 +378,22 @@ public class MergesModel implements java.io.Serializable {
 				    	  System.out.println("datatable2ColumnNamesAsStringList is null");
 				      }
 				      
+				      
+				      
+				      
+				      
+				      
 				      // To determine data conflicts
 				      // need at least one key column in the join
+				      
+				      
+				      
+				      
+				      
+				      
+				      
+				      
+				      
 				      
 				      //Determine which columns in the join are unique.
 				      
@@ -419,6 +451,12 @@ public class MergesModel implements java.io.Serializable {
 							
 						}
 					  
+						
+						
+						
+						
+						
+						
 					  MergeScriptsModel mergeScriptsModel = new MergeScriptsModel();
 					  
 					  //TODO: Simplify
@@ -441,10 +479,17 @@ public class MergesModel implements java.io.Serializable {
 					  // Get the latest (so we have keysCount and totalDuplicateKeysCount)
 					  mergeModel = mergesModel.retrieveMergeAsMergeModelByMergeId(mergeModel.getId(), connection);
 					  
+					  
+					  
+					  
+					  
+					  
+					  
 					  // If there are keys and no duplicate keys, work out data conflicts
 					  
 					  this.logger.info("keysCount="+mergeModel.getJoinsModel().getKeysCount());
 					  this.logger.info("totalDuplicateKeysCount="+mergeModel.getTotalDuplicateKeysCount());
+					  
 					  
 					  if (mergeModel.getJoinsModel().getKeysCount() > 0 && mergeModel.getTotalDuplicateKeysCount() == 0) {
 						  

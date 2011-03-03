@@ -360,6 +360,10 @@ public class DataController extends HttpServlet {
 							
 							joinsModel.setDataModel(this.getDataModel());
 							
+							
+							//Consider: Instead of using JSONObject, use JoinsFunctionsModel to convert it to something else? 
+							// Maybe a list of JoinModel objects, joinsAsJoinModelList
+							
 							joinsModel.updateJoinsByMergeIdUsingJoinsAsJSONObject(mergeModel.getId(), jsonObject);
 							
 							//TODO:

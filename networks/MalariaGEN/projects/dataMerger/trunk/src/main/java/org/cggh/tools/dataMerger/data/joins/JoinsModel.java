@@ -202,6 +202,8 @@ public class JoinsModel implements java.io.Serializable {
 		    	sqlException.printStackTrace();
 	        } 
 		
+	        //TODO: This will have to trigger a recalculation of conflicts, but may be done a level up (by the referrer/caller of this method)
+	        
 	}
 
 
@@ -385,7 +387,7 @@ public class JoinsModel implements java.io.Serializable {
 	public void updateJoinsByMergeIdUsingJoinsAsJSONObject(Integer mergeId,
 			JSONObject joinsAsJsonObject) {
 		
-		//TODO: This is cutting a corner (replacing rather than updating).
+		//FIXME: This is cutting a corner (replacing rather than updating).
 		
 		MergeModel mergeModel = new MergeModel();
 		mergeModel.setId(mergeId);
@@ -453,6 +455,9 @@ public class JoinsModel implements java.io.Serializable {
 		        	  
 		          }
 		          
+		          
+		          //TODO: This should then trigger a recalculation of conflicts
+		          //(If/when transfer to a column_id/join_id method, would need to determine whether or not to calculate.)
 					
 				connection.close();
 				

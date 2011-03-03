@@ -50,7 +50,7 @@ public class ScriptsController extends HttpServlet {
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
 		
-        //TODO: Factor these out into separate classes. Use interfaces?
+        //TODO: Factor these out into separate classes.
         
 		if (request.getPathInfo().equals("/install-db-v0.0.1")) {
 			
@@ -272,7 +272,8 @@ public class ScriptsController extends HttpServlet {
 					        	out.println("<p>" + sqlException + "</p>");
 						    	sqlException.printStackTrace();
 					        }						        
-						        
+						   
+					        //FIXME: Fix foreign-key references
 					      try{
 					    	  
 					          Statement statement = connection.createStatement();
@@ -285,8 +286,8 @@ public class ScriptsController extends HttpServlet {
 					        		  "constant VARCHAR(255) NULL, " +
 					        		  "PRIMARY KEY (merge_id, column_number, problem_by_column_id), " +
 					        		  "INDEX merge_id_index (merge_id), " +
-					        		  "INDEX problem_by_column_id_index (problem_by_column_id), " + 
-					        		  "INDEX solution_by_column_id_index (solution_by_column_id), " + 
+					        		  "INDEX column_number_index (column_number), " +
+					        		  "INDEX problem_by_column_id_index (problem_by_column_id), " +  
 					        		  "FOREIGN KEY (merge_id) REFERENCES merge(id) ON DELETE CASCADE ON UPDATE CASCADE " +
 					        		  //FIXME: Can't create table 'datamerger.resolutions_by_column' (errno: 150)
 					        		  //"FOREIGN KEY (problem_by_column_id) REFERENCES problem_by_column(id) ON DELETE CASCADE ON UPDATE CASCADE " +
@@ -299,7 +300,86 @@ public class ScriptsController extends HttpServlet {
 					        	out.println("<p>" + sqlException + "</p>");
 						    	sqlException.printStackTrace();
 					        }        
-			
+
+					try{
+			    	  
+			          Statement statement = connection.createStatement();
+			          statement.executeUpdate("CREATE TABLE `solution_by_row` (" + 
+			        		  "id TINYINT(255) UNSIGNED NOT NULL AUTO_INCREMENT, " +
+			        		  "description VARCHAR(255) NOT NULL, " +
+			        		  "PRIMARY KEY (id) " +
+			        		  ") ENGINE=InnoDB;");
+			          statement.close();
+
+			        }
+			        catch(SQLException sqlException){
+			        	out.println("<p>" + sqlException + "</p>");
+				    	sqlException.printStackTrace();
+			        } 
+		        
+			        try{
+			    	  
+			          Statement statement = connection.createStatement();
+			          statement.executeUpdate("INSERT INTO `solution_by_row` (" +
+			        		  "description " +
+			        		  ") VALUES ('Prefer source 1'), ('Prefer source 2'), ('Use NULL'), ('Use CONSTANT'), ('Remove entire row');");
+			          statement.close();
+
+			        }
+			        catch(SQLException sqlException){
+			        	out.println("<p>" + sqlException + "</p>");
+				    	sqlException.printStackTrace();
+			        }
+					   
+			        //TODO: row_key table
+			        //FIXME: Fix foreign-key references
+			        try{
+			    	  
+			          Statement statement = connection.createStatement();
+			          statement.executeUpdate("CREATE TABLE `row_key` (" + 
+			        		  "merge_id TINYINT(255) UNSIGNED NOT NULL, " + 
+			        		  "row_key_id TINYINT(255) UNSIGNED NOT NULL, " +
+			        		  "column_number TINYINT(255) UNSIGNED NOT NULL, " +
+			        		  "value VARCHAR(255) NULL, " +
+			        		  "PRIMARY KEY (merge_id, row_key_id, column_number), " +
+			        		  "INDEX merge_id_index (merge_id), " +
+			        		  "INDEX row_key_id_index (row_key_id), " + 
+			        		  "INDEX column_number (column_number), " + 
+			        		  "FOREIGN KEY (merge_id) REFERENCES merge(id) ON DELETE CASCADE ON UPDATE CASCADE " +
+			        		  ") ENGINE=InnoDB;");
+			          statement.close();
+
+			        }
+			        catch(SQLException sqlException){
+			        	out.println("<p>" + sqlException + "</p>");
+				    	sqlException.printStackTrace();
+			        } 
+			        
+				        
+			        //FIXME: Fix foreign-key references
+			      try{
+			    	  
+			          Statement statement = connection.createStatement();
+			          statement.executeUpdate("CREATE TABLE `resolution_by_row` (" + 
+			        		  "merge_id TINYINT(255) UNSIGNED NOT NULL, " + 
+			        		  "row_key_id TINYINT(255) UNSIGNED NOT NULL, " +
+			        		  "conflicts_count TINYINT(255) NULL, " +
+			        		  "solution_by_row_id TINYINT(255) NULL, " +
+			        		  "constant VARCHAR(255) NULL, " +
+			        		  "PRIMARY KEY (merge_id, row_key_id), " +
+			        		  "INDEX merge_id_index (merge_id), " +
+			        		  "INDEX row_key_id_index (row_key_id), " + 
+			        		  "INDEX solution_by_row_id_index (solution_by_row_id), " + 
+			        		  "FOREIGN KEY (merge_id) REFERENCES merge(id) ON DELETE CASCADE ON UPDATE CASCADE " +
+			        		  ") ENGINE=InnoDB;");
+			          statement.close();
+
+			        }
+			        catch(SQLException sqlException){
+			        	out.println("<p>" + sqlException + "</p>");
+				    	sqlException.printStackTrace();
+			        } 
+					        
 					connection.close();
 					out.println("Done.");
 					
@@ -378,7 +458,8 @@ public class ScriptsController extends HttpServlet {
 //	  	  "bar": "ABCDEFG",
 //	  	  "baz": [52, 97]
 //	  	}
-	   		
+	   	
+			//FIXME: get rid of this test
 			
 	        JSONArray list = new JSONArray();
 	        list.put(52);
