@@ -2,12 +2,15 @@ function initMergesFunctions () {
 
 	initMoveJoinFunction();
 	initRemoveJoinFunction();
+	
 	initSaveJoinFunction();
 	initAddJoinFunction();
 	initEditResolutionsByColumnFunction();
 	initSaveResolutionsByColumnFunction();
 	initChangeDatatable1ColumnNameFunction();
 	initChangeDatatable2ColumnNameFunction();
+	initEditJoinFunction();
+	
 	initChangeSolutionByColumnFunction();
 	
 }
@@ -161,7 +164,7 @@ function initRemoveJoinFunction () {
 
 function initSaveJoinFunction () {
 	
-	$(".save.join").click(function() {
+	$(".save-join").click(function() {
 		
 		// Get data from uploads form.
 		var data = $.toJSON($('.joins-form').serializeObject());
@@ -222,7 +225,13 @@ function retrieveJoinsAsXHTMLUsingMergeId (mergeId) {
 	$.ajax({
 		data: '',
 		dataType: 'html',
-		success: function (data, textStatus, jqXHR) { $('.joins').html(data); },
+		success: function (data, textStatus, jqXHR) { 
+				$('.joins-form').html(data);
+				
+				//The new HTML needs to be re-bound.
+				initMoveJoinFunction();
+				initRemoveJoinFunction();
+		},
 		type: 'GET',
 		url: '/dataMerger/data/merges/' + mergeId + '/joins'
 	});	
@@ -238,10 +247,10 @@ function initChangeDatatable1ColumnNameFunction () {
 		//alert($(this).val());
 		
 		if ($(this).val() == 'CONSTANT') {
-			row.next().find('th label[for="constant_1"]').css('display', 'inline');
+			row.next().find('td label[for="constant_1"]').css('display', 'inline');
 			row.next().find('td input[name="constant_1"]').css('display', 'inline');
 		} else {
-			row.next().find('th label[for="constant_1"]').css('display', 'none');
+			row.next().find('td label[for="constant_1"]').css('display', 'none');
 			row.next().find('td input[name="constant_1"]').css('display', 'none');
 		}
 		
@@ -274,10 +283,10 @@ function initChangeDatatable2ColumnNameFunction () {
 		//alert($(this).val());
 		
 		if ($(this).val() == 'CONSTANT') {
-			row.next().find('th label[for="constant_2"]').css('display', 'inline');
+			row.next().find('td label[for="constant_2"]').css('display', 'inline');
 			row.next().find('td input[name="constant_2"]').css('display', 'inline');
 		} else {
-			row.next().find('th label[for="constant_2"]').css('display', 'none');
+			row.next().find('td label[for="constant_2"]').css('display', 'none');
 			row.next().find('td input[name="constant_2"]').css('display', 'none');
 		}
 
@@ -304,7 +313,7 @@ function initChangeDatatable2ColumnNameFunction () {
 
 function initAddJoinFunction () {
 	
-	$(".add.join").click(function() {
+	$(".add-join").click(function() {
 		
 		//TODO: validation
 		//Column name, not both nulls
@@ -331,27 +340,27 @@ function initAddJoinFunction () {
 		}
 		
 		if (data.datatable_1_column_name != 'NULL' && data.datatable_1_column_name != 'CONSTANT') {
-			newJoinRow += "<td><input type=\"text\" name=\"database_1_column_name-" + data.column_number + "\" value=\"" + data.datatable_1_column_name + "\" readonly=\"readonly\"/></td>";
-			newJoinRow += "<td>TODO: Sample of data</td>";
+			newJoinRow += "<td>";
+			newJoinRow += "<input type=\"text\" name=\"database_1_column_name-" + data.column_number + "\" value=\"" + data.datatable_1_column_name + "\" readonly=\"readonly\"/>";
+			newJoinRow += "<textarea>TODO: Sample of data</textarea>";
+			newJoinRow += "</td>";
 		} 
 		else if (data.datatable_1_column_name == 'CONSTANT') {
 			newJoinRow += "<td><label for=\"constant_1-" + data.column_number + "\">Constant:</label><input type=\"text\" name=\"constant_1-" + data.column_number + "\" value=\"" + data.constant_1 + "\" readonly=\"readonly\"/></td>";
-			newJoinRow += "<td></td>";
 		} else {
 			newJoinRow += "<td>NULL</td>";
-			newJoinRow += "<td></td>";
 		}
 		
 		if (data.datatable_2_column_name != 'NULL' && data.datatable_2_column_name != 'CONSTANT') {
-			newJoinRow += "<td><input type=\"text\" name=\"database_2_column_name-" + data.column_number + "\" value=\"" + data.datatable_2_column_name + "\" readonly=\"readonly\"/></td>";
-			newJoinRow += "<td>TODO: Sample of data</td>";
+			newJoinRow += "<td>";
+			newJoinRow += "<input type=\"text\" name=\"database_2_column_name-" + data.column_number + "\" value=\"" + data.datatable_2_column_name + "\" readonly=\"readonly\"/>";
+			newJoinRow += "<texarea>TODO: Sample of data</textarea>";
+			newJoinRow += "</td>";
 		} 
 		else if (data.datatable_2_column_name == 'CONSTANT') {
 			newJoinRow += "<td><label for=\"constant_2-" + data.column_number + "\">Constant:</label><input type=\"text\" name=\"constant_2-" + data.column_number + "\" value=\"" + data.constant_2 + "\" readonly=\"readonly\"/></td>";
-			newJoinRow += "<td></td>";
 		} else {
 			newJoinRow += "<td>NULL</td>";
-			newJoinRow += "<td></td>";
 		}
 		
 		newJoinRow += "<td><input type=\"text\" name=\"column_name\" value=\"" + data.column_name + "\"/></td>";
@@ -363,7 +372,7 @@ function initAddJoinFunction () {
 		
 		
 		
-		var max_column_number = $('.joins tr input[name="column_number"]').length;
+		var max_column_number = $('.joins-form tr input[name="column_number"]').length;
 		
 		//alert("max_column_number="+max_column_number);
 		
@@ -373,7 +382,7 @@ function initAddJoinFunction () {
 			
 			//alert("appending to end");
 			
-			$(".joins tbody").append(newJoinRow);
+			$(".joins-form tbody").append(newJoinRow);
 			
 		} else {
 			
@@ -381,7 +390,7 @@ function initAddJoinFunction () {
 
 
 			
-			var row = $('.joins td input[name="column_number"][value="' + data.column_number + '"]').closest("tr");
+			var row = $('.joins-form td input[name="column_number"][value="' + data.column_number + '"]').closest("tr");
 			
 			row.before(newJoinRow);
 			
@@ -405,7 +414,9 @@ function initAddJoinFunction () {
 	    	}
 			
 	
-			
+	    	//The new HTML needs to be re-bound.
+			initMoveJoinFunction();
+			initRemoveJoinFunction();
 			
 		
 		}
@@ -419,7 +430,7 @@ function initAddJoinFunction () {
 
 function initEditResolutionsByColumnFunction () {
 	
-	$(".edit.resolutions-by-column").click(function() {
+	$(".edit-resolutions-by-column").click(function() {
 
 		//TODO: Factor this out
 		var urlParams = {};
@@ -449,7 +460,7 @@ function initSaveResolutionsByColumnFunction () {
 		// Get data from uploads form.
 		var data = $.toJSON($('.resolutions-by-column-form').serializeObject());
 		
-		alert(data);
+		//alert(data);
 		
 		//TODO: Factor this out
 		var urlParams = {};
@@ -504,7 +515,11 @@ function retrieveResolutionsByColumnAsXHTMLUsingMergeId (mergeId) {
 	$.ajax({
 		data: '',
 		dataType: 'html',
-		success: function (data, textStatus, jqXHR) { $('.resolutions-by-column').html(data); },
+		success: function (data, textStatus, jqXHR) { 
+			
+				$('.resolutions-by-column-form').html(data);
+				initChangeSolutionByColumnFunction(); // the replaced HTML needs to be re-bound.
+		},
 		type: 'GET',
 		url: '/dataMerger/data/merges/' + mergeId + '/resolutions-by-column'
 	});	
@@ -521,13 +536,50 @@ function initChangeSolutionByColumnFunction () {
 		//alert($(this).val());
 		
 		if ($(this).val() == '4') {
-			row.find('td label[for="constant"]').css('display', 'inline');
-			row.find('td input[name="constant"]').css('display', 'inline');
+			row.find('td label[for|="constant"]').css('display', 'inline');
+			row.find('td input[name|="constant"]').css('display', 'inline');
 		} else {
-			row.find('td label[for="constant"]').css('display', 'none');
-			row.find('td input[name="constant"]').css('display', 'none');
+			row.find('td label[for|="constant"]').css('display', 'none');
+			row.find('td input[name|="constant"]').css('display', 'none');
 		}
 
 	});	
+	
+}
+
+function initEditJoinFunction () {
+	
+	$(".edit-join").click(function() {
+		
+
+		//TODO: Factor this out
+		var urlParams = {};
+		(function () {
+		    var e,
+		        a = /\+/g,  // Regex for replacing addition symbol with a space
+		        r = /([^&=]+)=?([^&]*)/g,
+		        d = function (s) { return decodeURIComponent(s.replace(a, " ")); },
+		        q = window.location.search.substring(1);
+
+		    while (e = r.exec(q))
+		       urlParams[d(e[1])] = d(e[2]);
+		})();
+		
+		//			urlParams = {
+		//			    enc: " Hello ",
+		//			    i: "main",
+		//			    mode: "front",
+		//			    sid: "de8d49b78a85a322c4155015fdce22c4",
+		//			    empty: ""
+		//			}
+		//
+		//			alert(urlParams["mode"]);
+		//			// -> "front"
+		
+		
+		//TODO: Refactor this URL
+		window.location.href = '/dataMerger/pages/merges/edit-join.jsp?merge_id=' + urlParams["merge_id"];
+		
+	});
 	
 }

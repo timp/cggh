@@ -21,6 +21,7 @@ import org.cggh.tools.dataMerger.data.uploads.UploadsModel;
 import org.cggh.tools.dataMerger.data.users.UserModel;
 import org.cggh.tools.dataMerger.functions.merges.MergeFunctionsModel;
 import org.cggh.tools.dataMerger.functions.uploads.UploadsFunctionsModel;
+import org.cggh.tools.dataMerger.scripts.merges.MergeScriptsModel;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -423,6 +424,9 @@ public class DataController extends HttpServlet {
 							resolutionsByColumnModel.setDataModel(this.getDataModel());
 							
 							resolutionsByColumnModel.updateResolutionsByColumnByMergeIdUsingResolutionsByColumnAsJSONObject(mergeModel.getId(), jsonObject);
+							
+							//Note: Total conflicts for the merge is updated as a side-effect of updating the resolutions.
+							
 							
 							//TODO:
 							responseAsJSON = "{\"success\": \"true\"}";

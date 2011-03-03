@@ -94,7 +94,7 @@ public class MergesModel implements java.io.Serializable {
 		mergeModel.setId(mergeId);
 		
 	      try{
-	          PreparedStatement preparedStatement = connection.prepareStatement("SELECT id, upload_1_id, upload_2_id, created_by_user_id, created_datetime, updated_datetime, datatable_1_duplicate_keys_count, datatable_2_duplicate_keys_count, total_duplicate_keys_count FROM `merge` " + 
+	          PreparedStatement preparedStatement = connection.prepareStatement("SELECT id, upload_1_id, upload_2_id, created_by_user_id, created_datetime, updated_datetime, datatable_1_duplicate_keys_count, datatable_2_duplicate_keys_count, total_duplicate_keys_count, total_conflicts_count FROM `merge` " + 
 	        		  "WHERE id = ?;");
 	          preparedStatement.setInt(1, mergeModel.getId());
 	          preparedStatement.executeQuery();
@@ -111,6 +111,7 @@ public class MergesModel implements java.io.Serializable {
 	        	  mergeModel.setCreatedDatetime(resultSet.getTimestamp("created_datetime"));
 	        	  mergeModel.setUpdatedDatetime(resultSet.getTimestamp("updated_datetime"));
 	        	  mergeModel.setTotalDuplicateKeysCount(resultSet.getInt("total_duplicate_keys_count"));
+	        	  mergeModel.setTotalConflictsCount(resultSet.getInt("total_conflicts_count"));
 	        	  
 	        	  //Retrieve the upload data
 	        	  UploadsModel uploadsModel = new UploadsModel();
@@ -463,18 +464,7 @@ public class MergesModel implements java.io.Serializable {
 						  
 						  this.logger.info("done determining conflicts by column");
 						  
-						  
-						  //Already got crossDatatableJoinsAsCachedRowSet, but need to distinguish key joins from non-key joins
-						  //for each crossDatatableJoin in crossDatatableJoinsAsCachedRowSet
-						  //	
-						  
-
-
-						  //insert problems into the resolutions_by_column table
-						  //merge_id, column_number, problem_by_column_id, conflicts_count
-
-						  
-						  
+						  //TODO: By Row
 						  
 						  
 					  }
@@ -520,7 +510,7 @@ public class MergesModel implements java.io.Serializable {
 		
 	      try {
 
-	          PreparedStatement preparedStatement = connection.prepareStatement("UPDATE `merge` SET upload_1_id = ?, upload_2_id = ?, updated_datetime = NOW(), datatable_1_duplicate_keys_count = ?, datatable_2_duplicate_keys_count = ?, total_duplicate_keys_count = ? WHERE id = ?;");
+	          PreparedStatement preparedStatement = connection.prepareStatement("UPDATE `merge` SET upload_1_id = ?, upload_2_id = ?, updated_datetime = NOW(), datatable_1_duplicate_keys_count = ?, datatable_2_duplicate_keys_count = ?, total_duplicate_keys_count = ?, total_conflicts_count = ? WHERE id = ?;");
 	          preparedStatement.setInt(1, mergeModel.getUpload1Model().getId());
 	          preparedStatement.setInt(2, mergeModel.getUpload2Model().getId());
 	          if (mergeModel.getDatatable1Model().getDuplicateKeysCount() != null) {
@@ -543,7 +533,14 @@ public class MergesModel implements java.io.Serializable {
 	          } else {
 	        	  preparedStatement.setNull(5, java.sql.Types.INTEGER);
 	          }
-	          preparedStatement.setInt(6, mergeModel.getId());
+	          
+	          if (mergeModel.getTotalConflictsCount() != null) {
+	        	  preparedStatement.setInt(6, mergeModel.getTotalConflictsCount());
+	          } else {
+	        	  preparedStatement.setNull(6, java.sql.Types.INTEGER);
+	          }
+	          
+	          preparedStatement.setInt(7, mergeModel.getId());
 	          preparedStatement.executeUpdate();
 	          preparedStatement.close();
 	          

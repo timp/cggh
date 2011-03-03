@@ -78,8 +78,8 @@ public class MergeFunctionsModel implements java.io.Serializable {
 					 decoratedXHTMLTable = decoratedXHTMLTable.concat("<th><!-- Above heading for Key --></th>");
 					 
 					 //TODO: This path needs to be dynamic.
-					 decoratedXHTMLTable = decoratedXHTMLTable.concat("<th colspan=\"2\"><a href=\"/dataMerger/files/uploads?id=" + this.getMergeModel().getUpload1Model().getId() + "\">" + this.getMergeModel().getUpload1Model().getOriginalFilename() + "</a></th>");
-					 decoratedXHTMLTable = decoratedXHTMLTable.concat("<th colspan=\"2\"><a href=\"/dataMerger/files/uploads?id=" + this.getMergeModel().getUpload2Model().getId() + "\">" + this.getMergeModel().getUpload2Model().getOriginalFilename() + "</a></th>");
+					 decoratedXHTMLTable = decoratedXHTMLTable.concat("<th><a href=\"/dataMerger/files/uploads?id=" + this.getMergeModel().getUpload1Model().getId() + "\">" + this.getMergeModel().getUpload1Model().getOriginalFilename() + "</a></th>");
+					 decoratedXHTMLTable = decoratedXHTMLTable.concat("<th><a href=\"/dataMerger/files/uploads?id=" + this.getMergeModel().getUpload2Model().getId() + "\">" + this.getMergeModel().getUpload2Model().getOriginalFilename() + "</a></th>");
 					 decoratedXHTMLTable = decoratedXHTMLTable.concat("<th><!-- Above heading for Column name --></th>");
 					 decoratedXHTMLTable = decoratedXHTMLTable.concat("<th><!-- Above column for Col.# update buttons --></th>");
 					 decoratedXHTMLTable = decoratedXHTMLTable.concat("<th><!-- Above column for Remove column button --></th>");
@@ -129,30 +129,30 @@ public class MergeFunctionsModel implements java.io.Serializable {
 						}
 						
 						if (this.getJoinsAsCachedRowSet().getString("datatable_1_column_name") != null) {
-							decoratedXHTMLTable = decoratedXHTMLTable.concat("<td><input type=\"text\" readonly=\"readonly\" name=\"datatable_1_column_name-" + this.getJoinsAsCachedRowSet().getInt("column_number") + "\" value=\"" + this.getJoinsAsCachedRowSet().getString("datatable_1_column_name") + "\"/></td>");
-							decoratedXHTMLTable = decoratedXHTMLTable.concat("<td>TODO: Sample of data</td>");
+							decoratedXHTMLTable = decoratedXHTMLTable.concat("<td>");
+							decoratedXHTMLTable = decoratedXHTMLTable.concat("<input type=\"text\" readonly=\"readonly\" name=\"datatable_1_column_name-" + this.getJoinsAsCachedRowSet().getInt("column_number") + "\" value=\"" + this.getJoinsAsCachedRowSet().getString("datatable_1_column_name") + "\"/>");
+							decoratedXHTMLTable = decoratedXHTMLTable.concat("<textarea>TODO: Sample of data</textarea>");
+							decoratedXHTMLTable = decoratedXHTMLTable.concat("</td>");
 						} else {
 							if (this.getJoinsAsCachedRowSet().getString("constant_1") != null) {
 								decoratedXHTMLTable = decoratedXHTMLTable.concat("<td><label for=\"constant_1-" + this.getJoinsAsCachedRowSet().getInt("column_number") + "\">Constant:</label><input type=\"text\" readonly=\"readonly\" name=\"constant_1-" + this.getJoinsAsCachedRowSet().getInt("column_number") + "\" value=\"" + this.getJoinsAsCachedRowSet().getString("constant_1") + "\"/></td>");
-								decoratedXHTMLTable = decoratedXHTMLTable.concat("<td></td>");
 							} else {
 								decoratedXHTMLTable = decoratedXHTMLTable.concat("<td>NULL</td>");
-								decoratedXHTMLTable = decoratedXHTMLTable.concat("<td></td>");
 							}
 						}
 							
 						
 						
 						if (this.getJoinsAsCachedRowSet().getString("datatable_2_column_name") != null) {
-							decoratedXHTMLTable = decoratedXHTMLTable.concat("<td><input type=\"text\" readonly=\"readonly\" name=\"datatable_2_column_name-" + this.getJoinsAsCachedRowSet().getInt("column_number") + "\" value=\"" + this.getJoinsAsCachedRowSet().getString("datatable_2_column_name") + "\"/></td>");
-							decoratedXHTMLTable = decoratedXHTMLTable.concat("<td>TODO: Sample of data</td>");
+							decoratedXHTMLTable = decoratedXHTMLTable.concat("<td>");
+							decoratedXHTMLTable = decoratedXHTMLTable.concat("<input type=\"text\" readonly=\"readonly\" name=\"datatable_2_column_name-" + this.getJoinsAsCachedRowSet().getInt("column_number") + "\" value=\"" + this.getJoinsAsCachedRowSet().getString("datatable_2_column_name") + "\"/>");
+							decoratedXHTMLTable = decoratedXHTMLTable.concat("<textarea>TODO: Sample of data</textarea>");
+							decoratedXHTMLTable = decoratedXHTMLTable.concat("</td>");
 						} else {
 							if (this.getJoinsAsCachedRowSet().getString("constant_2") != null) {
 								decoratedXHTMLTable = decoratedXHTMLTable.concat("<td><label for=\"constant_2-" + this.getJoinsAsCachedRowSet().getInt("column_number") + "\">Constant:</label><input type=\"text\" readonly=\"readonly\" name=\"constant_2-" + this.getJoinsAsCachedRowSet().getInt("column_number") + "\" value=\"" + this.getJoinsAsCachedRowSet().getString("constant_2") + "\"/></td>");
-								decoratedXHTMLTable = decoratedXHTMLTable.concat("<td></td>");
 							} else {
 								decoratedXHTMLTable = decoratedXHTMLTable.concat("<td>NULL</td>");
-								decoratedXHTMLTable = decoratedXHTMLTable.concat("<td></td>");
 							}
 						}
 						

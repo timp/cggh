@@ -33,6 +33,7 @@ public class MergeModel implements java.io.Serializable {
 	private Integer createdByUserId = null;
 	private Integer totalDuplicateKeysCount = null;
 	private CachedRowSet joinsAsCachedRowSet;
+	private Integer totalConflictsCount;
 	
 	
 	public MergeModel() {
@@ -166,6 +167,20 @@ public class MergeModel implements java.io.Serializable {
 	}
 	public CachedRowSet getJoinsAsCachedRowSet() {
 		return this.joinsAsCachedRowSet;
+	}
+
+
+
+
+
+
+
+	public void setTotalConflictsCount(Integer totalConflictsCount) {
+		this.totalConflictsCount = totalConflictsCount;
+	}
+
+	public Integer getTotalConflictsCount() {
+		return this.totalConflictsCount;
 	}
 
 	

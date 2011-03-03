@@ -73,13 +73,16 @@ public class MergeScriptsModel implements java.io.Serializable {
 	        		  mergeModel.getDatatable1Model().setDuplicateKeysCount(totalDuplicateValuesCount);
 	        		  
 	        	  } else {
-	        		  
+	        		
+	        		  //FIXME:
+	        		  //This happens when there are genuinely no duplicate keys (because the Having clause returns no records, which is then Summed, producing a null value). 
 	        		  mergeModel.getDatatable1Model().setDuplicateKeysCount(0);
 	        	  }
 	        	  
 	      	  } else {
 	      		  
-	      		  mergeModel.getDatatable1Model().setDuplicateKeysCount(0);
+	      		  //This, however, is unexpected.
+	      		  this.logger.severe("No results from duplicate keys count.");
 	      	  }
 	          
 	          resultSet.close();
@@ -147,12 +150,14 @@ public class MergeScriptsModel implements java.io.Serializable {
 	        		  
 	        	  } else {
 	        		  
+	        		  //FIXME:
+	        		  //This happens when there are genuinely zero duplicate keys.
 	        		  mergeModel.getDatatable2Model().setDuplicateKeysCount(0);
 	        	  }
 	        	  
 	      	  } else {
 	      		  
-	      		  mergeModel.getDatatable2Model().setDuplicateKeysCount(0);
+	      		  this.logger.severe("No results for duplicate key count.");
 	      	  }
 	          
 	          resultSet.close();
@@ -218,6 +223,8 @@ public class MergeScriptsModel implements java.io.Serializable {
 				
 		//NOTE: NULL and blank strings are synonymous here, since imports are from text files using blank strings in place of nulls
 		//However, to future-proof in case NULLs appear in the text files, NULLs and '' are treated equally here.
+		
+		//FIXME: There is vast room for improved efficiency here, e.g. get all the counts (or a subset) back in one select.
 		
 		try {
 			if (nonKeyCrossDatatableJoinsAsCachedRowSet.next()) {
@@ -417,6 +424,64 @@ public class MergeScriptsModel implements java.io.Serializable {
 		}
 	        
 		return mergeModel;
+	}
+
+
+
+
+	public MergeModel retrieveMergeAsMergeModelThroughDeterminingTotalConflictsCountByMergeId(
+			Integer mergeId, Connection connection) {
+
+		MergeModel mergeModel = new MergeModel();
+		mergeModel.setId(mergeId);
+		
+		//Get the otherwise complete merge data
+		MergesModel mergesModel = new MergesModel();
+		mergeModel = mergesModel.retrieveMergeAsMergeModelByMergeId(mergeModel.getId(), connection);
+		
+		
+		//TODO: By Row and Cell.
+		
+		
+	      try{
+	    	  //FIXME:
+	    	  PreparedStatement preparedStatement = connection.prepareStatement("SELECT COUNT(conflicts_count) AS totalConflictsCount FROM resolution_by_column WHERE solution_by_column_id IS NULL AND merge_id = ?;");
+	    	  preparedStatement.setInt(1, mergeModel.getId());
+	    	  preparedStatement.executeQuery();
+	          ResultSet resultSet = preparedStatement.getResultSet();
+	          
+	          if (resultSet.next()) {
+	        	  
+	        	  resultSet.first();
+
+	        	  Integer totalConflictsCount = resultSet.getInt("totalConflictsCount");
+	        	  
+	        	  if (totalConflictsCount != null) {
+	        		  
+	        		  mergeModel.setTotalConflictsCount(totalConflictsCount);
+	        		  
+	        	  } else {
+	        		  
+	        		  mergeModel.setTotalConflictsCount(null);
+	        	  }
+	        	  
+	      	  } else {
+	      		  
+	      		mergeModel.setTotalConflictsCount(null);
+	      	  }
+	          
+	          resultSet.close();
+	          preparedStatement.close();
+	          
+	          mergesModel.updateMergeUsingMergeModel(mergeModel, connection);
+	          
+
+	        }
+	        catch(SQLException sqlException){
+		    	sqlException.printStackTrace();
+	        }
+	        
+	        return mergeModel;
 	}
 
 	

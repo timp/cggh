@@ -63,8 +63,8 @@ public class JoinFunctionsModel implements java.io.Serializable {
 		joinAsDecoratedXHTMLTable = joinAsDecoratedXHTMLTable.concat("<tr>");
 		joinAsDecoratedXHTMLTable = joinAsDecoratedXHTMLTable.concat("	<th><!-- Above key label --></th>");
 		joinAsDecoratedXHTMLTable = joinAsDecoratedXHTMLTable.concat("	<th><!-- Above key checkbox --></th>");
-		joinAsDecoratedXHTMLTable = joinAsDecoratedXHTMLTable.concat("	<th colspan=\"2\"><a href=\"/dataMerger/files/uploads?id=" + this.getMergeModel().getUpload1Model().getId() + "\">" + this.getMergeModel().getUpload1Model().getOriginalFilename() + "</a></th>");
-		joinAsDecoratedXHTMLTable = joinAsDecoratedXHTMLTable.concat("	<th colspan=\"2\"><a href=\"/dataMerger/files/uploads?id=" + this.getMergeModel().getUpload2Model().getId() + "\">" + this.getMergeModel().getUpload2Model().getOriginalFilename() + "</a></th>");
+		joinAsDecoratedXHTMLTable = joinAsDecoratedXHTMLTable.concat("	<th><a href=\"/dataMerger/files/uploads?id=" + this.getMergeModel().getUpload1Model().getId() + "\">" + this.getMergeModel().getUpload1Model().getOriginalFilename() + "</a></th>");
+		joinAsDecoratedXHTMLTable = joinAsDecoratedXHTMLTable.concat("	<th><a href=\"/dataMerger/files/uploads?id=" + this.getMergeModel().getUpload2Model().getId() + "\">" + this.getMergeModel().getUpload2Model().getOriginalFilename() + "</a></th>");
 		joinAsDecoratedXHTMLTable = joinAsDecoratedXHTMLTable.concat("	<th>Column name</th>");
 		joinAsDecoratedXHTMLTable = joinAsDecoratedXHTMLTable.concat("	<th><!-- Above insert column selector --></th>");
 		joinAsDecoratedXHTMLTable = joinAsDecoratedXHTMLTable.concat("	<th><!-- Above add column selector --></th>");
@@ -78,7 +78,9 @@ public class JoinFunctionsModel implements java.io.Serializable {
 		joinAsDecoratedXHTMLTable = joinAsDecoratedXHTMLTable.concat("	<th>Key?</th>");
 		joinAsDecoratedXHTMLTable = joinAsDecoratedXHTMLTable.concat("	<td><input type=\"checkbox\" name=\"key\" value=\"false\"/></td>");
 
-		joinAsDecoratedXHTMLTable = joinAsDecoratedXHTMLTable.concat("	<td><select name=\"datatable_1_column_name\">");
+		joinAsDecoratedXHTMLTable = joinAsDecoratedXHTMLTable.concat("	<td>");
+		
+		joinAsDecoratedXHTMLTable = joinAsDecoratedXHTMLTable.concat("	<select name=\"datatable_1_column_name\">");
 
 		joinAsDecoratedXHTMLTable = joinAsDecoratedXHTMLTable.concat("<option selected=\"selected\" value=\"NULL\">NULL</option>");
 		joinAsDecoratedXHTMLTable = joinAsDecoratedXHTMLTable.concat("<option value=\"CONSTANT\">CONSTANT</option>");
@@ -87,11 +89,15 @@ public class JoinFunctionsModel implements java.io.Serializable {
 		for (int i = 0; i < this.getMergeModel().getDatatable1Model().getColumnNamesAsStringList().size(); i++) {
 			joinAsDecoratedXHTMLTable = joinAsDecoratedXHTMLTable.concat("<option value=\"" + this.getMergeModel().getDatatable1Model().getColumnNamesAsStringList().get(i) + "\">" + this.getMergeModel().getDatatable1Model().getColumnNamesAsStringList().get(i) + "</option>");
 		}
-		joinAsDecoratedXHTMLTable = joinAsDecoratedXHTMLTable.concat("	</select></td>");
+		joinAsDecoratedXHTMLTable = joinAsDecoratedXHTMLTable.concat("	</select>");
 		
-		joinAsDecoratedXHTMLTable = joinAsDecoratedXHTMLTable.concat("	<td>[TODO: data sample]</td>");
+		joinAsDecoratedXHTMLTable = joinAsDecoratedXHTMLTable.concat("	<textarea>[TODO: data sample]</textarea>");
 		
-		joinAsDecoratedXHTMLTable = joinAsDecoratedXHTMLTable.concat("	<td><select name=\"datatable_2_column_name\">");
+		joinAsDecoratedXHTMLTable = joinAsDecoratedXHTMLTable.concat("	</td>");
+		
+		joinAsDecoratedXHTMLTable = joinAsDecoratedXHTMLTable.concat("	<td>");
+		
+		joinAsDecoratedXHTMLTable = joinAsDecoratedXHTMLTable.concat("	<select name=\"datatable_2_column_name\">");
 		
 		joinAsDecoratedXHTMLTable = joinAsDecoratedXHTMLTable.concat("<option selected=\"selected\" value=\"NULL\">NULL</option>");
 		joinAsDecoratedXHTMLTable = joinAsDecoratedXHTMLTable.concat("<option value=\"CONSTANT\">CONSTANT</option>");
@@ -100,9 +106,12 @@ public class JoinFunctionsModel implements java.io.Serializable {
 		for (int i = 0; i < this.getMergeModel().getDatatable2Model().getColumnNamesAsStringList().size(); i++) {
 			joinAsDecoratedXHTMLTable = joinAsDecoratedXHTMLTable.concat("<option value=\"" + this.getMergeModel().getDatatable2Model().getColumnNamesAsStringList().get(i) + "\">" + this.getMergeModel().getDatatable2Model().getColumnNamesAsStringList().get(i) + "</option>");
 		}
-		joinAsDecoratedXHTMLTable = joinAsDecoratedXHTMLTable.concat("	</select></td>");
+		joinAsDecoratedXHTMLTable = joinAsDecoratedXHTMLTable.concat("	</select>");
 		
-		joinAsDecoratedXHTMLTable = joinAsDecoratedXHTMLTable.concat("	<td>[TODO: data sample]</td>");
+		joinAsDecoratedXHTMLTable = joinAsDecoratedXHTMLTable.concat("	<textarea>[TODO: data sample]</textarea>");
+		
+		joinAsDecoratedXHTMLTable = joinAsDecoratedXHTMLTable.concat("	</td>");
+		
 		joinAsDecoratedXHTMLTable = joinAsDecoratedXHTMLTable.concat("	<td><input name=\"column_name\" value=\"\"/></td>");
 		
 		
@@ -124,17 +133,15 @@ public class JoinFunctionsModel implements java.io.Serializable {
 		joinAsDecoratedXHTMLTable = joinAsDecoratedXHTMLTable.concat("</select></td>");
 		
 		
-		joinAsDecoratedXHTMLTable = joinAsDecoratedXHTMLTable.concat("	<td><button class=\"add join\">Add</button></td>");
+		joinAsDecoratedXHTMLTable = joinAsDecoratedXHTMLTable.concat("	<td><button class=\"add-join\">Add</button></td>");
 		
 		joinAsDecoratedXHTMLTable = joinAsDecoratedXHTMLTable.concat("</tr>");
 		//<!-- TODO: Only if choose constant from selector -->
 		joinAsDecoratedXHTMLTable = joinAsDecoratedXHTMLTable.concat("<tr>");
 		joinAsDecoratedXHTMLTable = joinAsDecoratedXHTMLTable.concat("	<td><!-- Below key label --></td>");
 		joinAsDecoratedXHTMLTable = joinAsDecoratedXHTMLTable.concat("	<td><!-- Below key checkbox --></td>");
-		joinAsDecoratedXHTMLTable = joinAsDecoratedXHTMLTable.concat("	<th><label for=\"constant_1\">Constant:</label></th>");
-		joinAsDecoratedXHTMLTable = joinAsDecoratedXHTMLTable.concat("	<td><input name=\"constant_1\" value=\"\"/></td>");
-		joinAsDecoratedXHTMLTable = joinAsDecoratedXHTMLTable.concat("	<th><label for=\"constant_2\">Constant:</label></th>");
-		joinAsDecoratedXHTMLTable = joinAsDecoratedXHTMLTable.concat("	<td><input name=\"constant_2\" value=\"\"/></td>");
+		joinAsDecoratedXHTMLTable = joinAsDecoratedXHTMLTable.concat("	<td><label for=\"constant_1\" style=\"display:none;\">Constant:</label><input name=\"constant_1\" value=\"\"/ style=\"display:none;\"></td>");
+		joinAsDecoratedXHTMLTable = joinAsDecoratedXHTMLTable.concat("	<td><label for=\"constant_2\" style=\"display:none;\">Constant:</label><input name=\"constant_2\" value=\"\"/ style=\"display:none;\"></td>");
 		joinAsDecoratedXHTMLTable = joinAsDecoratedXHTMLTable.concat("	<td><!-- Below column name --></td>");
 		joinAsDecoratedXHTMLTable = joinAsDecoratedXHTMLTable.concat("	<td><!-- Below insertion selector --></td>");
 		joinAsDecoratedXHTMLTable = joinAsDecoratedXHTMLTable.concat("	<td><!-- Below add button --></td>");

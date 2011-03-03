@@ -1,6 +1,12 @@
-label[for=constant], label[for=constant_1], label[for=constant_2] {
+/*
+label[for|=constant], label[for=constant_1], label[for=constant_2] {
 		display: none;
 }
-input[name=constant], input[name=constant_1], input[name=constant_2] {
+input[name|=constant], input[name=constant_1], input[name=constant_2] {
 		display: none;
+}
+*/
+
+.joins-form td, .new-join-form td {
+	vertical-align: top;
 }

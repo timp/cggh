@@ -118,9 +118,9 @@ public class ResolutionsByColumnFunctionsModel implements java.io.Serializable {
 						}
 					 
 						if (this.getResolutionsByColumnAsCachedRowSet().getString("constant") != null) {
-							resolutionsByColumnAsDecoratedXHTMLTable = resolutionsByColumnAsDecoratedXHTMLTable.concat("<label for=\"constant\">Constant:</label><input type=\"text\" name=\"constant\" value=\"" + this.getResolutionsByColumnAsCachedRowSet().getString("constant") + "\"/>");
+							resolutionsByColumnAsDecoratedXHTMLTable = resolutionsByColumnAsDecoratedXHTMLTable.concat("<label for=\"constant-" + this.getResolutionsByColumnAsCachedRowSet().getInt("column_number") + "\">Constant:</label><input type=\"text\" name=\"constant-" + this.getResolutionsByColumnAsCachedRowSet().getInt("column_number") + "\" value=\"" + this.getResolutionsByColumnAsCachedRowSet().getString("constant") + "\"/>");
 						} else {
-							resolutionsByColumnAsDecoratedXHTMLTable = resolutionsByColumnAsDecoratedXHTMLTable.concat("<label for=\"constant\">Constant:</label><input type=\"text\" name=\"constant\" value=\"\"/>");
+							resolutionsByColumnAsDecoratedXHTMLTable = resolutionsByColumnAsDecoratedXHTMLTable.concat("<label for=\"constant-" + this.getResolutionsByColumnAsCachedRowSet().getInt("column_number") + "\" style=\"display:none;\">Constant:</label><input type=\"text\" name=\"constant-" + this.getResolutionsByColumnAsCachedRowSet().getInt("column_number") + "\" value=\"\" style=\"display:none;\"/>");
 						}
 						
 					 resolutionsByColumnAsDecoratedXHTMLTable = resolutionsByColumnAsDecoratedXHTMLTable.concat("</td>");

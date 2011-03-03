@@ -14,6 +14,7 @@ import org.cggh.tools.dataMerger.data.merges.MergeModel;
 import org.cggh.tools.dataMerger.data.users.UserModel;
 import org.cggh.tools.dataMerger.functions.merges.MergesFunctionsModel;
 import org.cggh.tools.dataMerger.functions.resolutionsByColumn.ResolutionsByColumnFunctionsModel;
+import org.cggh.tools.dataMerger.scripts.merges.MergeScriptsModel;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -213,7 +214,8 @@ public class ResolutionsByColumnModel implements java.io.Serializable {
 
 	public void updateResolutionsByColumnByMergeIdUsingResolutionsByColumnAsJSONObject(
 			Integer mergeId, JSONObject resolutionsByColumnAsJsonObject) {
-		// TODO Auto-generated method stub
+		
+		//Note: This also updates the merge's total conflict count.
 		
 		//for each index in column_number, update the fields present (except for keys)
 		
@@ -230,7 +232,6 @@ public class ResolutionsByColumnModel implements java.io.Serializable {
 		          JSONArray columnNumbers = resolutionsByColumnAsJsonObject.getJSONArray("column_number");
 		          JSONArray problemByColumnIds = resolutionsByColumnAsJsonObject.getJSONArray("problem_by_column_id");
 		          JSONArray solutionByColumnIds = resolutionsByColumnAsJsonObject.getJSONArray("solution_by_column_id");
-		          JSONArray constants = resolutionsByColumnAsJsonObject.getJSONArray("constant");
 
 		          for (int i = 0; i < columnNumbers.length(); i++) {
 		        	  
@@ -243,18 +244,38 @@ public class ResolutionsByColumnModel implements java.io.Serializable {
 		        	  problemByColumnModel.setId(problemByColumnIds.getInt(i));
 		        	  resolutionByColumnModel.setProblemByColumnModel(problemByColumnModel);
 		        	  
-		        	  //FIXME: Don't want to overwrite conflicts_count with null. Or maybe set to 0 if we now have a solution?
+		        	  //FIXME: Don't want to overwrite conflicts_count with null. Don't set to 0 if you have a solution (loses data).
+		        	  //Merge's total_conflicts_count will only count conflicts that have no solution.
 		        	  
 		        	  SolutionByColumnModel solutionByColumnModel = new SolutionByColumnModel();
-		        	  solutionByColumnModel.setId(solutionByColumnIds.getInt(i));
+		        	  
+		        	  //optInt returns 0 if not an Integer
+		        	  if (solutionByColumnIds.optInt(i) != 0) {
+		        		  solutionByColumnModel.setId(solutionByColumnIds.getInt(i));
+		        	  } else {
+		        		  solutionByColumnModel.setId(null);
+		        	  }
+		        	  
+		        	  
 		        	  resolutionByColumnModel.setSolutionByColumnModel(solutionByColumnModel);
+
+		        	  if (resolutionsByColumnAsJsonObject.has("constant-" + columnNumbers.getInt(i))) {
+			        	  
+		        		  resolutionByColumnModel.setConstant(resolutionsByColumnAsJsonObject.getString("constant-" + columnNumbers.getInt(i)));
+		        		  
+		        	  } else {
+		        		  
+		        		  resolutionByColumnModel.setConstant(null);
+		        	  }
 		        	  
-		        	  resolutionByColumnModel.setConstant(constants.getString(i));
-		        	  
-		        	  
-		        	  //TODO
 		        	  
 		        	  this.updateResolutionByColumnUsingResolutionByColumnModel(resolutionByColumnModel, connection);
+		        	  
+		        	  
+		        	  //TODO: Recount the conflicts (take problems with solutions as 0, otherwise use the resolution conflict_count)
+
+		        	  MergeScriptsModel mergeScriptsModel = new MergeScriptsModel();
+		        	  mergeModel = mergeScriptsModel.retrieveMergeAsMergeModelThroughDeterminingTotalConflictsCountByMergeId(mergeModel.getId(), connection);
 		        	  
 		          }
 		          
@@ -285,8 +306,27 @@ public class ResolutionsByColumnModel implements java.io.Serializable {
 	          PreparedStatement preparedStatement = connection.prepareStatement("UPDATE resolution_by_column SET solution_by_column_id = ?, constant = ? WHERE merge_id = ? AND column_number = ? AND problem_by_column_id = ?;");
 	          
 	          
-	          preparedStatement.setInt(1, resolutionByColumnModel.getSolutionByColumnModel().getId());
-	          preparedStatement.setString(2, resolutionByColumnModel.getConstant());
+	          if (resolutionByColumnModel.getSolutionByColumnModel().getId() != null) {
+	        	  preparedStatement.setInt(1, resolutionByColumnModel.getSolutionByColumnModel().getId());
+	          } else {
+	        	  preparedStatement.setNull(1, java.sql.Types.INTEGER);
+	          }
+	          
+	          //FIXME: What is 4? ("Use CONSTANT")
+	          if (resolutionByColumnModel.getSolutionByColumnModel().getId() != null && resolutionByColumnModel.getSolutionByColumnModel().getId() == 4) {
+	        	  
+		          if (resolutionByColumnModel.getConstant() != null) {
+		        	  
+		        	  //Allow blank string constants (for future-proofing against null/blank string distinctions, especially in export)
+		        	  preparedStatement.setString(2, resolutionByColumnModel.getConstant());
+		        	  
+		          } else {
+		        	  preparedStatement.setNull(2, java.sql.Types.VARCHAR);
+		          }
+		          
+	          } else {
+	        	  preparedStatement.setNull(2, java.sql.Types.VARCHAR);
+	          }
 	          
 	          preparedStatement.setInt(3, resolutionByColumnModel.getMergeModel().getId());
 	          preparedStatement.setInt(4, resolutionByColumnModel.getColumnNumber());

@@ -23,7 +23,8 @@ MergeFunctionsModel mergeFunctionsModel = new MergeFunctionsModel();
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <title>Merges</title>
-<link rel="stylesheet" href="../shared/css/merges.css" type="text/css" />
+
+	<link rel="stylesheet" href="css/merges.css" type="text/css" />
 
 	<script type="text/javascript" src="../shared/js/jquery.min.js"></script>
 	<script type="text/javascript" src="../shared/js/jquery.json.min.js"></script>
@@ -81,10 +82,10 @@ MergeFunctionsModel mergeFunctionsModel = new MergeFunctionsModel();
 		
 		<div>
 			<%-- TODO: v2 detect whether there are changes that need saving. Alert choice to save if move off page. --%>
-			<button class="save join">Save Join</button>
+			<button class="save-join">Save Join</button>
 		
 			<% if (mergeModel.getJoinsModel().getKeysCount() > 0 && mergeModel.getTotalDuplicateKeysCount() == 0) { %>
-			<button class="edit resolutions-by-column">Edit Resolutions</button>
+			<button class="edit-resolutions-by-column">Edit Resolutions</button>
 			<% } %>
 			
 			<a href="<%= basePath %>pages/merges/">Cancel &amp; Return to Merges</a>
@@ -92,7 +93,6 @@ MergeFunctionsModel mergeFunctionsModel = new MergeFunctionsModel();
 		
 		<!-- Turning off autocomplete prevents FF3 from remembering form values after refresh, which would not be helpful here. -->
 		<form class="joins-form" onsubmit="return false;" autocomplete="off">
-		<div class="joins">
 <%
 
 	//TODO: Update this to use same as uploads and edit-resolutions-by-column
@@ -112,7 +112,6 @@ MergeFunctionsModel mergeFunctionsModel = new MergeFunctionsModel();
 	  
   }
 %>		
-		</div>
 
 		</form>
 		
@@ -132,19 +131,14 @@ MergeFunctionsModel mergeFunctionsModel = new MergeFunctionsModel();
 
 %>
 		</form>
-		
-		
-		<p>FIXME: Added join cannot be moved. (poss. related to css binding. Use direct js call instead?)
-		</p>
 
-		<p>FIXME: Added join to beginning or end breaks up/down buttons. (poss. related to css binding. Use direct js call instead?)
+
+		<p>FIXME: Added join to beginning or end breaks up/down buttons disabledness.
 		</p>		
 		
 		<p>FIXME: Saving join does not update updatedDate and Key counts. (build and trigger an AJAX GET service.)
 		</p>
 		
-		<p>FIXME: Saving join breaks up/down buttons. (poss. related to css binding. Use direct js call instead?)
-		</p>
 		
 	</div>
 </body>
