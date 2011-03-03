@@ -101,9 +101,9 @@ mergeModel = mergesModel.retrieveMergeAsMergeModelByMergeId(Integer.parseInt(req
 		
 		<ul>
 			<!-- TODO: soft-code these link urls -->
-			<li><a href="<%= basePath %>pages/merges/edit-resolutions-by-column.jsp?id=<%=mergeModel.getId()%>">By Column</a></li>
-			<li><a href="<%= basePath %>pages/merges/edit-resolutions-by-row.jsp?id=<%=mergeModel.getId()%>">By Row</a></li>
-			<li><a href="<%= basePath %>pages/merges/edit-resolutions-by-cell.jsp?id=<%=mergeModel.getId()%>">By Cell</a></li>
+			<li><a href="<%= basePath %>pages/merges/edit-resolutions-by-column.jsp?merge_id=<%=mergeModel.getId()%>">By Column</a></li>
+			<li><a href="<%= basePath %>pages/merges/edit-resolutions-by-row.jsp?merge_id=<%=mergeModel.getId()%>">By Row</a></li>
+			<li><a href="<%= basePath %>pages/merges/edit-resolutions-by-cell.jsp?merge_id=<%=mergeModel.getId()%>">By Cell</a></li>
 		</ul>
 		
 		<div class="resolutions-by-row">
