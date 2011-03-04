@@ -237,7 +237,7 @@ public class DatatableModel implements java.io.Serializable {
 
 		DatatablesModel datatablesModel = new DatatablesModel();
 		
-		this.setDatatableModel(datatablesModel.retrieveDatatableModelById(id, connection));
+		this.setDatatableModel(datatablesModel.retrieveDatatableAsDatatableModelUsingDatatableId(id, connection));
 
 		
 	}
@@ -301,7 +301,7 @@ public class DatatableModel implements java.io.Serializable {
 		
 		DatatablesModel datatablesModel = new DatatablesModel();
 		
-		this.setDuplicateKeysCount(datatablesModel.retrieveDatatableModelById(this.getId(), connection).getDuplicateKeysCount());
+		this.setDuplicateKeysCount(datatablesModel.retrieveDatatableAsDatatableModelUsingDatatableId(this.getId(), connection).getDuplicateKeysCount());
 	}
 
 	public void setDatatableModelById(Connection connection) {
@@ -310,7 +310,7 @@ public class DatatableModel implements java.io.Serializable {
 		
 		//Get what is in the database.
 		//Set to what is in the database. Use other methods to process or update.
-		this.setDatatableModel(datatablesModel.retrieveDatatableModelById(this.getId(), connection));
+		this.setDatatableModel(datatablesModel.retrieveDatatableAsDatatableModelUsingDatatableId(this.getId(), connection));
 		
 	}
 

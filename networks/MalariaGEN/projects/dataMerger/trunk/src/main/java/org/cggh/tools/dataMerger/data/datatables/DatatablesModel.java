@@ -11,6 +11,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 import javax.sql.rowset.CachedRowSet;
 
@@ -26,6 +27,7 @@ public class DatatablesModel implements java.io.Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = 3509510173706652464L;
+	private final Logger logger = Logger.getLogger("org.cggh.tools.dataMerger.data.datatables");
 
 	private DataModel dataModel;
 	private UserModel userModel;
@@ -165,22 +167,6 @@ public class DatatablesModel implements java.io.Serializable {
 		    		          preparedStatement2.executeUpdate();
 		    		          preparedStatement2.close();
 		    		          
-		    		          
-		    		          // Update the datatable_created flag to save a query or two.
-			    		      try {
-
-			    		          PreparedStatement preparedStatement3 = connection.prepareStatement("UPDATE upload SET datatable_created = 1 WHERE id = ?;");
-			    		          preparedStatement3.setInt(1, datatableModel.getUploadModel().getId());
-			    		          preparedStatement3.executeUpdate();
-			    		          preparedStatement3.close();
-			    		          
-			    		
-			    		        }
-			    		        catch(SQLException sqlException){
-			    			    	sqlException.printStackTrace();
-			    		        } 
-		    		          
-		    		
 		    		        }
 		    		        catch(SQLException sqlException){
 		    			    	sqlException.printStackTrace();
@@ -246,7 +232,7 @@ public class DatatablesModel implements java.io.Serializable {
 
 	        	  datatableModel.setId(resultSet.getInt("id"));
 	        	  
-	        	  datatableModel = this.retrieveDatatableModelById(datatableModel.getId(), connection);
+	        	  datatableModel = this.retrieveDatatableAsDatatableModelUsingDatatableId(datatableModel.getId(), connection);
 
 	          } else {
 	        	  //TODO: proper logging and error handling
@@ -309,7 +295,7 @@ public class DatatablesModel implements java.io.Serializable {
 
 
 
-	public DatatableModel retrieveDatatableModelById(Integer datatableId,
+	public DatatableModel retrieveDatatableAsDatatableModelUsingDatatableId(Integer datatableId,
 			Connection connection) {
 
 		DatatableModel datatableModel = new DatatableModel();
@@ -451,8 +437,9 @@ public class DatatablesModel implements java.io.Serializable {
 	        	  
 	      	  } else {
 	      		  
-	      		  //TODO:
-	      		  System.out.println("No datatable found with the specified upload_id.");
+	      		  //This is not necessarily an error, since might just be checking for existence.
+	      		  this.logger.info("Did not retrieve datatable with the specified upload Id.");
+	      		  
 	      		  
 	      	  }
 	          

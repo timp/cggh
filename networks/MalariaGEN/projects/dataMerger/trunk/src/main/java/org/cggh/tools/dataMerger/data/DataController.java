@@ -260,8 +260,12 @@ public class DataController extends HttpServlet {
 
 
 								MergeModel mergeModel = new MergeModel();
+								
 								mergeModel.getUpload1Model().setId(uploadIds.getInt(0));
 								mergeModel.getUpload2Model().setId(uploadIds.getInt(1));
+								
+								
+								
 								
 								MergesModel mergesModel = new MergesModel();
 								

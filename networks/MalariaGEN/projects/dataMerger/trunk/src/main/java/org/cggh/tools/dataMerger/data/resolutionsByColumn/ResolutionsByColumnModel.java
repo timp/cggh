@@ -177,7 +177,7 @@ public class ResolutionsByColumnModel implements java.io.Serializable {
 				          PreparedStatement preparedStatement = connection.prepareStatement(
 				        		  "SELECT resolution_by_column.column_number, `join`.column_name, resolution_by_column.conflicts_count, resolution_by_column.problem_by_column_id, problem_by_column.description, resolution_by_column.solution_by_column_id, resolution_by_column.constant " + 
 				        		  "FROM resolution_by_column " +
-				        		  "JOIN `join` ON `join`.column_number = resolution_by_column.column_number " +
+				        		  "JOIN `join` ON `join`.merge_id = resolution_by_column.merge_id AND `join`.column_number = resolution_by_column.column_number " +
 				        		  "JOIN problem_by_column ON problem_by_column.id = resolution_by_column.problem_by_column_id " +
 				        		  "WHERE resolution_by_column.merge_id = ?" + 
 				        		  ";");

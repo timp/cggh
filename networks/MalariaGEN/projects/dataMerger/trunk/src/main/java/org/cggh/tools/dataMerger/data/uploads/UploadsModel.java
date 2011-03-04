@@ -100,7 +100,7 @@ public class UploadsModel implements java.io.Serializable {
 		uploadModel.setId(uploadId);
 		
 	      try{
-	          PreparedStatement preparedStatement = connection.prepareStatement("SELECT id, original_filename, repository_filepath, successful, created_by_user_id, created_datetime, datatable_created FROM `upload` WHERE id = ?;");
+	          PreparedStatement preparedStatement = connection.prepareStatement("SELECT id, original_filename, repository_filepath, successful, created_by_user_id, created_datetime FROM `upload` WHERE id = ?;");
 	          preparedStatement.setInt(1, uploadModel.getId());
 	          preparedStatement.executeQuery();
 	          ResultSet resultSet = preparedStatement.getResultSet();
@@ -115,7 +115,6 @@ public class UploadsModel implements java.io.Serializable {
 	        	  uploadModel.setSuccessful(resultSet.getBoolean("successful"));
 	        	  uploadModel.getCreatedByUserModel().setId(resultSet.getInt("created_by_user_id"));
 	        	  uploadModel.setCreatedDatetime(resultSet.getTimestamp("created_datetime"));
-	        	  uploadModel.setDatatableCreated(resultSet.getBoolean("datatable_created"));
 	        	  
 	        	  
 	        	  //Retrieve the user data

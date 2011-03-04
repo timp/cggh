@@ -123,7 +123,6 @@ public class ScriptsController extends HttpServlet {
 				        		  "successful BOOLEAN NULL, " + 
 				        		  "created_by_user_id TINYINT(255) UNSIGNED NOT NULL, " + 
 				        		  "created_datetime DATETIME NOT NULL, " +
-				        		  "datatable_created BOOLEAN NULL, " +
 				        		  "PRIMARY KEY (id), " +
 				        		  "CONSTRAINT unique_path_constraint UNIQUE (repository_filepath), " +
 				        		  "INDEX created_by_user_id_index (created_by_user_id), " + 
