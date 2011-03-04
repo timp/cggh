@@ -368,7 +368,10 @@ public class DataController extends HttpServlet {
 							//Consider: Instead of using JSONObject, use JoinsFunctionsModel to convert it to something else? 
 							// Maybe a list of JoinModel objects, joinsAsJoinModelList
 							
+							// This update should also recalculate conflicts and destroy old resolutions
 							joinsModel.updateJoinsByMergeIdUsingJoinsAsJSONObject(mergeModel.getId(), jsonObject);
+							
+							
 							
 							//TODO:
 							responseAsJSON = "{\"success\": \"true\"}";

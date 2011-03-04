@@ -4,12 +4,17 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Logger;
 
 import javax.sql.rowset.CachedRowSet;
 
 import org.cggh.tools.dataMerger.data.DataModel;
 import org.cggh.tools.dataMerger.data.merges.MergeModel;
+import org.cggh.tools.dataMerger.data.merges.MergesModel;
 import org.cggh.tools.dataMerger.data.users.UserModel;
+import org.cggh.tools.dataMerger.scripts.merges.MergeScriptsModel;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -20,13 +25,15 @@ public class JoinsModel implements java.io.Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = -2278497615197327793L;
+	private final Logger logger = Logger.getLogger("org.cggh.tools.dataMerger.data.joins");
+	
 	private Integer nextColumnNumber;
 	private CachedRowSet joinsAsCachedRowSet;
 	private Integer keysCount;
 	private CachedRowSet crossDatatableJoinsAsCachedRowSet;
 	private DataModel dataModel;
 	private UserModel userModel;
-	private CachedRowSet keyCrossDatatableJoinsAsCachedRowsetByMergeId;
+	private CachedRowSet keyJoinsAsCachedRowsetByMergeId;
 	private CachedRowSet nonKeyCrossDatatableJoinsAsCachedRowsetByMergeId;
 
 	//Must not have a joinModel, because joinModel has a mergeModel, which has a joinsModel, causes StackOverflowError
@@ -456,8 +463,19 @@ public class JoinsModel implements java.io.Serializable {
 		          }
 		          
 		          
-		          //TODO: This should then trigger a recalculation of conflicts
-		          //(If/when transfer to a column_id/join_id method, would need to determine whether or not to calculate.)
+		          //FIXME: This should then trigger a recount of duplicate keys and data conflicts
+		          
+		          //Need a complete, up-to-date mergeModel
+		          MergesModel mergesModel = new MergesModel();
+		          mergeModel = mergesModel.retrieveMergeAsMergeModelByMergeId(mergeModel.getId(), connection);
+		          
+		          //Recount the duplicate keys
+		          mergeModel = mergesModel.retrieveMergeAsMergeModelThroughCountingDuplicateKeysUsingMergeModel(mergeModel, connection);
+		          
+		          //Recount the data conflicts
+		          MergeScriptsModel mergeScriptsModel = new MergeScriptsModel();
+		          mergeModel = mergeScriptsModel.retrieveMergeAsMergeModelThroughDeterminingDataConflictsUsingMergeModel(mergeModel, connection);
+		          
 					
 				connection.close();
 				
@@ -512,7 +530,7 @@ public class JoinsModel implements java.io.Serializable {
 	}
 
 
-	public CachedRowSet retrieveKeyCrossDatatableJoinsAsCachedRowsetByMergeId(
+	public CachedRowSet retrieveKeyJoinsAsCachedRowsetByMergeId(
 			Integer mergeId, Connection connection) {
 
 		MergeModel mergeModel = new MergeModel();
@@ -526,9 +544,9 @@ public class JoinsModel implements java.io.Serializable {
 			e1.printStackTrace();
 		}
 		
-		CachedRowSet keyCrossDatatableJoinsAsCachedRowSet = null;
+		CachedRowSet keyJoinsAsCachedRowSet = null;
 		try {
-			keyCrossDatatableJoinsAsCachedRowSet = (CachedRowSet) cachedRowSetImplClass.newInstance();
+			keyJoinsAsCachedRowSet = (CachedRowSet) cachedRowSetImplClass.newInstance();
 		} catch (InstantiationException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
@@ -542,7 +560,7 @@ public class JoinsModel implements java.io.Serializable {
 	          preparedStatement.setInt(1, mergeModel.getId());
 	          preparedStatement.executeQuery();
 	         
-	          keyCrossDatatableJoinsAsCachedRowSet.populate(preparedStatement.getResultSet());
+	          keyJoinsAsCachedRowSet.populate(preparedStatement.getResultSet());
 	          
 	          preparedStatement.close();
 
@@ -551,7 +569,7 @@ public class JoinsModel implements java.io.Serializable {
 		    	sqlException.printStackTrace();
 	        } 
 		
-		return keyCrossDatatableJoinsAsCachedRowSet;
+		return keyJoinsAsCachedRowSet;
 	}
 
 
@@ -598,9 +616,9 @@ public class JoinsModel implements java.io.Serializable {
 	}
 
 
-	public void setKeyCrossDatatableJoinsAsCachedRowSet(
-			CachedRowSet keyCrossDatatableJoinsAsCachedRowsetByMergeId) {
-		this.keyCrossDatatableJoinsAsCachedRowsetByMergeId = keyCrossDatatableJoinsAsCachedRowsetByMergeId;
+	public void setKeyJoinsAsCachedRowSet(
+			CachedRowSet keyJoinsAsCachedRowsetByMergeId) {
+		this.keyJoinsAsCachedRowsetByMergeId = keyJoinsAsCachedRowsetByMergeId;
 	}
 
 
@@ -610,15 +628,103 @@ public class JoinsModel implements java.io.Serializable {
 	}
 
 
-	public CachedRowSet getKeyCrossDatatableJoinsAsCachedRowSet() {
+	public CachedRowSet getKeyJoinsAsCachedRowSet() {
 		
-		return this.keyCrossDatatableJoinsAsCachedRowsetByMergeId;
+		return this.keyJoinsAsCachedRowsetByMergeId;
 	}
 
 
 	public CachedRowSet getNonKeyCrossDatatableJoinsAsCachedRowSet() {
 
 		return this.nonKeyCrossDatatableJoinsAsCachedRowsetByMergeId;
+	}
+
+
+	public List<String> retrieveDatatable1KeyColumnNamesAsStringListByMergeId(
+			Integer mergeId, Connection connection) {
+		
+		MergeModel mergeModel = new MergeModel();
+		mergeModel.setId(mergeId);
+		
+		List<String> datatable1KeyColumnNamesAsStringList = new ArrayList<String>();
+		
+	      try{
+	          PreparedStatement preparedStatement = connection.prepareStatement("SELECT datatable_1_column_name FROM `join` WHERE `key` = true AND merge_id = ?;");
+	          preparedStatement.setInt(1, mergeModel.getId());
+	          preparedStatement.executeQuery();
+	          ResultSet resultSet = preparedStatement.getResultSet();
+	          
+	          if (resultSet.next()) {
+	        	  
+	        	  resultSet.beforeFirst();
+	        	  
+	        	  while(resultSet.next()){
+
+	        		  datatable1KeyColumnNamesAsStringList.add(resultSet.getString("datatable_1_column_name"));
+	        	  
+	        	  }
+
+	      	  } else {
+	      		  
+	      		  //This is not necessarily an error, because there may be no keys specified in the join.
+	      		  this.logger.info("Did not retrieve any key datatable 1 column names for the specified merge.");
+	      		  
+	      	  }
+	          
+	          resultSet.close();
+	          
+	          preparedStatement.close();
+
+	        }
+	        catch(SQLException sqlException){
+		    	sqlException.printStackTrace();
+	        } 
+	        
+		return datatable1KeyColumnNamesAsStringList;
+	}
+
+	//TODO: Refactor, merge this with the datatable 1 query.
+	public List<String> retrieveDatatable2KeyColumnNamesAsStringListByMergeId(
+			Integer mergeId, Connection connection) {
+		
+		MergeModel mergeModel = new MergeModel();
+		mergeModel.setId(mergeId);
+		
+		List<String> datatable2KeyColumnNamesAsStringList = new ArrayList<String>();
+		
+	      try{
+	          PreparedStatement preparedStatement = connection.prepareStatement("SELECT datatable_2_column_name FROM `join` WHERE `key` = true AND merge_id = ?;");
+	          preparedStatement.setInt(1, mergeModel.getId());
+	          preparedStatement.executeQuery();
+	          ResultSet resultSet = preparedStatement.getResultSet();
+	          
+	          if (resultSet.next()) {
+	        	  
+	        	  resultSet.beforeFirst();
+	        	  
+	        	  while(resultSet.next()){
+
+	        		  datatable2KeyColumnNamesAsStringList.add(resultSet.getString("datatable_2_column_name"));
+	        	  
+	        	  }
+
+	      	  } else {
+	      		  
+	      		  //This is not necessarily an error, because there may be no keys specified in the join.
+	      		  this.logger.info("Did not retrieve any key datatable 2 column names for the specified merge.");
+	      		  
+	      	  }
+	          
+	          resultSet.close();
+	          
+	          preparedStatement.close();
+
+	        }
+	        catch(SQLException sqlException){
+		    	sqlException.printStackTrace();
+	        } 
+	        
+		return datatable2KeyColumnNamesAsStringList;
 	}
 
 

@@ -91,15 +91,15 @@ public class MergeFunctionsModel implements java.io.Serializable {
 					 decoratedXHTMLTable = decoratedXHTMLTable.concat("<th>Key</th>");
 					 
 					 if (this.getMergeModel().getDatatable1Model().getDuplicateKeysCount() > 0) {
-						 decoratedXHTMLTable = decoratedXHTMLTable.concat("<th colspan=\"2\"><a href=\"javascript:TODOshowDuplicateKeys()\">" + this.getMergeModel().getDatatable1Model().getDuplicateKeysCount() + " duplicate keys</a></th>");
+						 decoratedXHTMLTable = decoratedXHTMLTable.concat("<th><a href=\"javascript:TODOshowDuplicateKeys()\">" + this.getMergeModel().getDatatable1Model().getDuplicateKeysCount() + " duplicate keys</a></th>");
 					 } else {
-						 decoratedXHTMLTable = decoratedXHTMLTable.concat("<th colspan=\"2\"></th>");
+						 decoratedXHTMLTable = decoratedXHTMLTable.concat("<th></th>");
 					 }
 					 
 					 if (this.getMergeModel().getDatatable2Model().getDuplicateKeysCount() > 0) {
-						 decoratedXHTMLTable = decoratedXHTMLTable.concat("<th colspan=\"2\"><a href=\"javascript:TODOshowDuplicateKeys()\">" + this.getMergeModel().getDatatable2Model().getDuplicateKeysCount() + " duplicate keys</a></th>");
+						 decoratedXHTMLTable = decoratedXHTMLTable.concat("<th><a href=\"javascript:TODOshowDuplicateKeys()\">" + this.getMergeModel().getDatatable2Model().getDuplicateKeysCount() + " duplicate keys</a></th>");
 					 } else {
-						 decoratedXHTMLTable = decoratedXHTMLTable.concat("<th colspan=\"2\"></th>");
+						 decoratedXHTMLTable = decoratedXHTMLTable.concat("<th></th>");
 					 }
 					 
 					 decoratedXHTMLTable = decoratedXHTMLTable.concat("<th>Column name</th>");

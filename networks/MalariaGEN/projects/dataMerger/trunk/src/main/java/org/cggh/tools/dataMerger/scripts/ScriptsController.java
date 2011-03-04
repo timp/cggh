@@ -148,8 +148,10 @@ public class ScriptsController extends HttpServlet {
 				        		  "datatable_1_duplicate_keys_count TINYINT(255) UNSIGNED NULL, " + 
 				        		  "datatable_2_duplicate_keys_count TINYINT(255) UNSIGNED NULL, " + 
 				        		  "total_duplicate_keys_count TINYINT(255) UNSIGNED NULL, " + 
-				        		  "total_conflicts_count TINYINT(255) UNSIGNED NULL, " + 
+				        		  "total_conflicts_count TINYINT(255) UNSIGNED NULL, " +
+				        		  "joined_datatable_name VARCHAR(255) NULL, " + 
 				        		  "PRIMARY KEY (id), " +
+				        		  "CONSTRAINT unique_joined_datatable_name_constraint UNIQUE (joined_datatable_name), " +
 				        		  "INDEX created_by_user_id_index (created_by_user_id), " + 
 				        		  "FOREIGN KEY (created_by_user_id) REFERENCES user(id) ON DELETE CASCADE ON UPDATE CASCADE, " +
 				        		  "INDEX upload_1_id_index (upload_1_id), " + 
@@ -166,6 +168,7 @@ public class ScriptsController extends HttpServlet {
 				        } 
 			    
 
+				        //FIXME: Constraint for unique name
 				      try{
 				          Statement statement = connection.createStatement();
 				          statement.executeUpdate("CREATE TABLE datatable (" + 
@@ -174,6 +177,7 @@ public class ScriptsController extends HttpServlet {
 				        		  "upload_id TINYINT(255) UNSIGNED NOT NULL, " + 
 				        		  "created_datetime DATETIME NOT NULL, " +
 				        		  "PRIMARY KEY (id), " +
+				        		  "CONSTRAINT unique_name_constraint UNIQUE (name), " +
 				        		  "INDEX upload_id_index (upload_id), " + 
 				        		  "FOREIGN KEY (upload_id) REFERENCES upload(id) ON DELETE CASCADE ON UPDATE CASCADE " +
 				        		  ") ENGINE=InnoDB;");
@@ -330,30 +334,7 @@ public class ScriptsController extends HttpServlet {
 				    	sqlException.printStackTrace();
 			        }
 					   
-			        //TODO: row_key table
-			        //FIXME: Fix foreign-key references
-			        try{
-			    	  
-			          Statement statement = connection.createStatement();
-			          statement.executeUpdate("CREATE TABLE `row_key` (" + 
-			        		  "merge_id TINYINT(255) UNSIGNED NOT NULL, " + 
-			        		  "row_key_id TINYINT(255) UNSIGNED NOT NULL, " +
-			        		  "column_number TINYINT(255) UNSIGNED NOT NULL, " +
-			        		  "value VARCHAR(255) NULL, " +
-			        		  "PRIMARY KEY (merge_id, row_key_id, column_number), " +
-			        		  "INDEX merge_id_index (merge_id), " +
-			        		  "INDEX row_key_id_index (row_key_id), " + 
-			        		  "INDEX column_number (column_number), " + 
-			        		  "FOREIGN KEY (merge_id) REFERENCES merge(id) ON DELETE CASCADE ON UPDATE CASCADE " +
-			        		  ") ENGINE=InnoDB;");
-			          statement.close();
 
-			        }
-			        catch(SQLException sqlException){
-			        	out.println("<p>" + sqlException + "</p>");
-				    	sqlException.printStackTrace();
-			        } 
-			        
 				        
 			        //FIXME: Fix foreign-key references
 			      try{
@@ -361,13 +342,13 @@ public class ScriptsController extends HttpServlet {
 			          Statement statement = connection.createStatement();
 			          statement.executeUpdate("CREATE TABLE `resolution_by_row` (" + 
 			        		  "merge_id TINYINT(255) UNSIGNED NOT NULL, " + 
-			        		  "row_key_id TINYINT(255) UNSIGNED NOT NULL, " +
+			        		  "METADATA_ROW_ID TINYINT(255) UNSIGNED NOT NULL, " +
 			        		  "conflicts_count TINYINT(255) NULL, " +
 			        		  "solution_by_row_id TINYINT(255) NULL, " +
 			        		  "constant VARCHAR(255) NULL, " +
-			        		  "PRIMARY KEY (merge_id, row_key_id), " +
+			        		  "PRIMARY KEY (merge_id, METADATA_ROW_ID), " +
 			        		  "INDEX merge_id_index (merge_id), " +
-			        		  "INDEX row_key_id_index (row_key_id), " + 
+			        		  "INDEX METADATA_ROW_ID_index (METADATA_ROW_ID), " + 
 			        		  "INDEX solution_by_row_id_index (solution_by_row_id), " + 
 			        		  "FOREIGN KEY (merge_id) REFERENCES merge(id) ON DELETE CASCADE ON UPDATE CASCADE " +
 			        		  ") ENGINE=InnoDB;");

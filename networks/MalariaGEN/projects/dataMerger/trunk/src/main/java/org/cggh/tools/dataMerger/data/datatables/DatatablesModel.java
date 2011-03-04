@@ -76,7 +76,7 @@ public class DatatablesModel implements java.io.Serializable {
     }     
 
 
-	public DatatableModel retrieveDatatableAsDatatableModelAfterCreatingDatatableUsingUploadId(Integer uploadId,
+	public DatatableModel retrieveDatatableAsDatatableModelThroughCreatingDatatableUsingUploadId(Integer uploadId,
 			Connection connection) {
 
 		DatatableModel datatableModel = new DatatableModel();
@@ -342,18 +342,14 @@ public class DatatablesModel implements java.io.Serializable {
 			          
 			          datatableModel.setDataAsCachedRowSet(dataAsCachedRowSet);
 			          
-			          //String[] columnNamesAsStringArray = new String[this.getDataAsCachedRowSet().getMetaData().getColumnCount()];
-			          
 			          List<String> columnNamesAsStringList = new ArrayList<String>();
 			          
 			          for (int i = 0; i < datatableModel.getDataAsCachedRowSet().getMetaData().getColumnCount(); i++) {
 			        	  
-			        	  //columnNamesAsStringArray[i] = this.getDataAsCachedRowSet().getMetaData().getColumnName(i + 1);
-			        	  
 			        	  columnNamesAsStringList.add(datatableModel.getDataAsCachedRowSet().getMetaData().getColumnName(i + 1));
+			        	  
 			          }
 			          
-			          //this.setColumnNamesAsStringArray(columnNamesAsStringArray);
 			          
 			          datatableModel.setColumnNamesAsStringList(columnNamesAsStringList);
 			          
