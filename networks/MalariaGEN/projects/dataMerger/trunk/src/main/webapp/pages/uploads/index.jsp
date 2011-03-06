@@ -9,9 +9,13 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>Uploads</title>
-	<link rel="stylesheet" type="text/css" href="../shared/css/fileuploader.css" />
+<title>dataMerger - Uploads</title>
+
 	
+	<link rel="stylesheet" type="text/css" href="../shared/css/fileuploader.css" />
+	<link rel="stylesheet" type="text/css" href="../shared/css/shared.css" />
+	
+	<link rel="stylesheet" type="text/css" href="css/uploads.css" />
 	
 	<script type="text/javascript" src="../shared/js/jquery.min.js"></script>
 	<script type="text/javascript" src="../shared/js/jquery.json.min.js"></script>
@@ -34,8 +38,10 @@
 </head>
 <body>
 	<div class="page">
+	
 		<%@ include file="../shared/jsp/header.jsp" %>
-		<h2>Uploads</h2>
+		
+		<h2 class="page-title">Uploads</h2>
 
 
 		<div class="status">
@@ -44,6 +50,7 @@
 		</div>
 
 		<form class="uploads-form" onsubmit="return false;">
+		
 		<div class="uploads">
 <%
 
@@ -60,8 +67,10 @@
 
 		</form>
 		
+		<hr class="divider-space"/>
 
-		<h3>New upload:</h3>
+
+		<h3 class="field-title">New uploads:</h3>
 
 		<div id="file-uploader">
 		       
@@ -73,6 +82,8 @@
         	         
     	</div>
 
+		<%--
+
 		<p>FIXME: Fix re-merge datatabled uploads.
 		</p>
 
@@ -82,7 +93,7 @@
 		<p>FIXME: Fix JavaScript error: Unexpected token in attribute selector: '!'.
 		</p>
 		
-
+ 		--%>
 	</div>	
 
 </body>

@@ -133,6 +133,7 @@ MergeFunctionsModel mergeFunctionsModel = new MergeFunctionsModel();
 %>
 		</form>
 
+
 		<p>FIXME: Changing the join, just the column order or column name, shouldn't have to trigger a recalculation. (Possibly re-introduce join_id and amend code to simply update if the join_id already exists? Note: This would alter the schema of resolution_by_column, which should then use join_id instead of column_number. Although this approach would require a more complex solution to determine whether or not to recalculate.)
 		</p>	
 

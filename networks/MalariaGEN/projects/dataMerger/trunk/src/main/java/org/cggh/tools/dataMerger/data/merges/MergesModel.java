@@ -10,7 +10,7 @@ import javax.sql.rowset.CachedRowSet;
 
 import org.cggh.tools.dataMerger.data.DataModel;
 import org.cggh.tools.dataMerger.data.datatables.DatatablesModel;
-import org.cggh.tools.dataMerger.data.joinedDatatables.JoinedDatatablesModel;
+import org.cggh.tools.dataMerger.data.joinedKeytables.JoinedKeytablesModel;
 import org.cggh.tools.dataMerger.data.joins.JoinsModel;
 import org.cggh.tools.dataMerger.data.uploads.UploadsModel;
 import org.cggh.tools.dataMerger.data.users.UserModel;
@@ -93,7 +93,7 @@ public class MergesModel implements java.io.Serializable {
 		mergeModel.setId(mergeId);
 		
 	      try{
-	          PreparedStatement preparedStatement = connection.prepareStatement("SELECT id, upload_1_id, upload_2_id, created_by_user_id, created_datetime, updated_datetime, datatable_1_duplicate_keys_count, datatable_2_duplicate_keys_count, total_duplicate_keys_count, total_conflicts_count FROM `merge` " + 
+	          PreparedStatement preparedStatement = connection.prepareStatement("SELECT id, upload_1_id, upload_2_id, created_by_user_id, created_datetime, updated_datetime, datatable_1_duplicate_keys_count, datatable_2_duplicate_keys_count, total_duplicate_keys_count, total_conflicts_count, joined_keytable_name FROM `merge` " + 
 	        		  "WHERE id = ?;");
 	          preparedStatement.setInt(1, mergeModel.getId());
 	          preparedStatement.executeQuery();
@@ -111,6 +111,7 @@ public class MergesModel implements java.io.Serializable {
 	        	  mergeModel.setUpdatedDatetime(resultSet.getTimestamp("updated_datetime"));
 	        	  mergeModel.setTotalDuplicateKeysCount(resultSet.getInt("total_duplicate_keys_count"));
 	        	  mergeModel.setTotalConflictsCount(resultSet.getInt("total_conflicts_count"));
+	        	  mergeModel.getJoinedKeytableModel().setName(resultSet.getString("joined_keytable_name"));
 	        	  
 	        	  //Retrieve the upload data
 	        	  UploadsModel uploadsModel = new UploadsModel();
@@ -328,16 +329,31 @@ public class MergesModel implements java.io.Serializable {
 		  return mergeModel;
 	}
 
-	public MergeModel retrieveMergeAsMergeModelThroughCreatingUncreatedJoinedDatatableUsingMergeModel(MergeModel mergeModel,
+	public MergeModel retrieveMergeAsMergeModelThroughRecreatingJoinedKeytableUsingMergeModel(MergeModel mergeModel,
 			Connection connection) {
 
-		  JoinedDatatablesModel joinedDatatablesModel = new JoinedDatatablesModel();
+		  JoinedKeytablesModel joinedKeytablesModel = new JoinedKeytablesModel();
 
-		  mergeModel.setJoinedDatatableModel(joinedDatatablesModel.retrieveJoinedDatatableAsJoinedDatatableModelUsingMergeId(mergeModel.getId(), connection));
+		  
+		  this.logger.info("1 Joined Keytable Name=" + mergeModel.getJoinedKeytableModel().getName());
+		  
+		  mergeModel.setJoinedKeytableModel(joinedKeytablesModel.retrieveJoinedKeytableAsJoinedKeytableModelUsingMergeId(mergeModel.getId(), connection));
 
-		  if (mergeModel.getJoinedDatatableModel().getName() == null) {
-			  mergeModel.setJoinedDatatableModel(joinedDatatablesModel.retrieveJoinedDatatableAsJoinedDatatableModelThroughCreatingJoinedDatatableUsingMergeId(mergeModel.getId(), connection));
+		  this.logger.info("2 Joined Keytable Name=" + mergeModel.getJoinedKeytableModel().getName());
+		  
+		  if (mergeModel.getJoinedKeytableModel().getName() != null) {
+
+			  // Erase the old joined keytable
+			  joinedKeytablesModel.deleteJoinedKeytableUsingName(mergeModel.getJoinedKeytableModel().getName(), connection);
+			  
+			  mergeModel.getJoinedKeytableModel().setName(null);
+			  
+			  MergesModel mergesModel = new MergesModel();
+			  mergesModel.updateMergeUsingMergeModel(mergeModel, connection);
+			  
 		  }
+		  
+		  mergeModel.setJoinedKeytableModel(joinedKeytablesModel.retrieveJoinedKeytableAsJoinedKeytableModelThroughCreatingJoinedKeytableUsingMergeModel(mergeModel, connection));
 		  
 		  return mergeModel;
 	}
@@ -348,7 +364,7 @@ public class MergesModel implements java.io.Serializable {
 		
 	      try {
 
-	          PreparedStatement preparedStatement = connection.prepareStatement("UPDATE `merge` SET upload_1_id = ?, upload_2_id = ?, updated_datetime = NOW(), datatable_1_duplicate_keys_count = ?, datatable_2_duplicate_keys_count = ?, total_duplicate_keys_count = ?, total_conflicts_count = ? WHERE id = ?;");
+	          PreparedStatement preparedStatement = connection.prepareStatement("UPDATE `merge` SET upload_1_id = ?, upload_2_id = ?, updated_datetime = NOW(), datatable_1_duplicate_keys_count = ?, datatable_2_duplicate_keys_count = ?, total_duplicate_keys_count = ?, total_conflicts_count = ?, joined_keytable_name = ? WHERE id = ?;");
 	          preparedStatement.setInt(1, mergeModel.getUpload1Model().getId());
 	          preparedStatement.setInt(2, mergeModel.getUpload2Model().getId());
 	          if (mergeModel.getDatatable1Model().getDuplicateKeysCount() != null) {
@@ -378,7 +394,14 @@ public class MergesModel implements java.io.Serializable {
 	        	  preparedStatement.setNull(6, java.sql.Types.INTEGER);
 	          }
 	          
-	          preparedStatement.setInt(7, mergeModel.getId());
+	          if (mergeModel.getJoinedKeytableModel().getName() != null) {
+	        	  preparedStatement.setString(7, mergeModel.getJoinedKeytableModel().getName());
+	          } else {
+	        	  preparedStatement.setNull(7, java.sql.Types.VARCHAR);
+	          }
+	          
+	          preparedStatement.setInt(8, mergeModel.getId());
+	          
 	          preparedStatement.executeUpdate();
 	          preparedStatement.close();
 	          

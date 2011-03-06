@@ -8,7 +8,9 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>Merges</title>
+<title>dataMerger - Merges</title>
+
+	<link rel="stylesheet" type="text/css" href="../shared/css/shared.css" />
 
 	<link rel="stylesheet" type="text/css" href="css/merges.css" />
 	
@@ -34,7 +36,9 @@
 <body>
 	<div class="page">
 		<%@ include file="../shared/jsp/header.jsp" %>
-		<h2>Merges</h2>
+		
+		
+		<h2 class="page-title">Merges</h2>
 
 
 		<div class="status">

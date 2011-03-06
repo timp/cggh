@@ -133,16 +133,16 @@ public class DatatablesModel implements java.io.Serializable {
 	        	      List<String> columnNamesAsStringList = new ArrayList<String>();
 	        	      
 	        	      
-	        	      String strColumnList = "";
+	        	      String columnDefinitionsForCreateTableSQL = "";
 	        	      
 	        	      for (int i = 0; i < columnNames.length; i++) {
 	        	    	  
 	        	    	  columnNamesAsStringList.add(columnNames[i]);
 	        	    	  
-	        	    	  strColumnList = strColumnList.concat("`" + columnNames[i] + "` VARCHAR(255) NULL");
+	        	    	  columnDefinitionsForCreateTableSQL = columnDefinitionsForCreateTableSQL.concat("`" + columnNames[i] + "` VARCHAR(255) NULL");
 	        	    	  
 	        	    	  if (i != columnNames.length - 1) {
-	        	    		  strColumnList = strColumnList.concat(", ");
+	        	    		  columnDefinitionsForCreateTableSQL = columnDefinitionsForCreateTableSQL.concat(", ");
 	        	    	  }
 	        	    	  
 	        	      }
@@ -154,7 +154,7 @@ public class DatatablesModel implements java.io.Serializable {
 	    		      try {
 				          Statement statement = connection.createStatement();
 				          statement.executeUpdate("CREATE TABLE `" + datatableModel.getName() + "` (" + 
-				        		  strColumnList + 
+				        		  columnDefinitionsForCreateTableSQL + 
 				        		  ") ENGINE=InnoDB;");
 				          statement.close();
 

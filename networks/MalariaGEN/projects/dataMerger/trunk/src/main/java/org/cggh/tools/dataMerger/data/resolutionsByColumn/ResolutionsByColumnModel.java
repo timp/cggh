@@ -229,10 +229,24 @@ public class ResolutionsByColumnModel implements java.io.Serializable {
 			if (!connection.isClosed()) {
 					
 		          //Insert all the joins from this JSON Object
-		          JSONArray columnNumbers = resolutionsByColumnAsJsonObject.getJSONArray("column_number");
-		          JSONArray problemByColumnIds = resolutionsByColumnAsJsonObject.getJSONArray("problem_by_column_id");
-		          JSONArray solutionByColumnIds = resolutionsByColumnAsJsonObject.getJSONArray("solution_by_column_id");
+				
+		          JSONArray columnNumbers = resolutionsByColumnAsJsonObject.optJSONArray("column_number");
+		          JSONArray problemByColumnIds = resolutionsByColumnAsJsonObject.optJSONArray("problem_by_column_id");
+		          JSONArray solutionByColumnIds = resolutionsByColumnAsJsonObject.optJSONArray("solution_by_column_id");
 
+		          if (columnNumbers == null) {
+		        	  columnNumbers = new JSONArray();
+		        	  columnNumbers.put(resolutionsByColumnAsJsonObject.optInt("column_number"));
+		          }
+		          if (problemByColumnIds == null) {
+		        	  problemByColumnIds = new JSONArray();
+		        	  problemByColumnIds.put(resolutionsByColumnAsJsonObject.optInt("problem_by_column_id"));
+		          }
+		          if (solutionByColumnIds == null) {
+		        	  solutionByColumnIds = new JSONArray();
+		        	  solutionByColumnIds.put(resolutionsByColumnAsJsonObject.optInt("solution_by_column_id"));
+		          }
+		          
 		          for (int i = 0; i < columnNumbers.length(); i++) {
 		        	  
 		        	  ResolutionByColumnModel resolutionByColumnModel = new ResolutionByColumnModel();

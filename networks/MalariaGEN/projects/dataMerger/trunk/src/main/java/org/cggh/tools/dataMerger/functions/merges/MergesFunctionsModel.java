@@ -1,6 +1,8 @@
 package org.cggh.tools.dataMerger.functions.merges;
 
 import java.sql.SQLException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 
 import javax.sql.rowset.CachedRowSet;
 
@@ -33,16 +35,16 @@ public class MergesFunctionsModel implements java.io.Serializable {
 
 				mergesAsDecoratedXHTMLTable = "";
 				
-				mergesAsDecoratedXHTMLTable = mergesAsDecoratedXHTMLTable.concat("<table>");
+				mergesAsDecoratedXHTMLTable = mergesAsDecoratedXHTMLTable.concat("<table class=\"merges-table\">");
 
 				 mergesAsDecoratedXHTMLTable = mergesAsDecoratedXHTMLTable.concat("<thead>");
 				 mergesAsDecoratedXHTMLTable = mergesAsDecoratedXHTMLTable.concat("<tr>");
 				 
-				 mergesAsDecoratedXHTMLTable = mergesAsDecoratedXHTMLTable.concat("<th>ID <a href=\"javascript:TODOsort();\">sort up/down</a></th>");
-				 mergesAsDecoratedXHTMLTable = mergesAsDecoratedXHTMLTable.concat("<th>File 1 <a href=\"javascript:TODOsort();\">sort up/down</a></th>");
-				 mergesAsDecoratedXHTMLTable = mergesAsDecoratedXHTMLTable.concat("<th>File 2 <a href=\"javascript:TODOsort();\">sort up/down</a></th>");
-				 mergesAsDecoratedXHTMLTable = mergesAsDecoratedXHTMLTable.concat("<th>Created <a href=\"javascript:TODOsort();\">sort up/down</a></th>");
-				 mergesAsDecoratedXHTMLTable = mergesAsDecoratedXHTMLTable.concat("<th>Updated <a href=\"javascript:TODOsort();\">sort up/down</a></th>");
+				 mergesAsDecoratedXHTMLTable = mergesAsDecoratedXHTMLTable.concat("<th>ID<!--  <a href=\"javascript:TODOsort();\">sort up/down</a> --></th>");
+				 mergesAsDecoratedXHTMLTable = mergesAsDecoratedXHTMLTable.concat("<th>File 1<!--  <a href=\"javascript:TODOsort();\">sort up/down</a> --></th>");
+				 mergesAsDecoratedXHTMLTable = mergesAsDecoratedXHTMLTable.concat("<th>File 2<!--  <a href=\"javascript:TODOsort();\">sort up/down</a> --></th>");
+				 mergesAsDecoratedXHTMLTable = mergesAsDecoratedXHTMLTable.concat("<th>Created<!--  <a href=\"javascript:TODOsort();\">sort up/down</a> --></th>");
+				 mergesAsDecoratedXHTMLTable = mergesAsDecoratedXHTMLTable.concat("<th>Updated<!--  <a href=\"javascript:TODOsort();\">sort up/down</a> --></th>");
 				 mergesAsDecoratedXHTMLTable = mergesAsDecoratedXHTMLTable.concat("<th><!-- Column for edit-join links --></th>");
 				 mergesAsDecoratedXHTMLTable = mergesAsDecoratedXHTMLTable.concat("<th><!-- Column for edit-resolutions links or duplicate keys count--></th>");
 				 mergesAsDecoratedXHTMLTable = mergesAsDecoratedXHTMLTable.concat("<th><!-- Column for export button or conflicts count --></th>");
@@ -55,9 +57,27 @@ public class MergesFunctionsModel implements java.io.Serializable {
 				//because next() skips the first row.
 				 this.getMergesAsCachedRowSet().beforeFirst();
 
+					String rowStripeClassName = "even "; 
+					String rowFirstClassName = "first ";
+					String rowLastClassName = ""; 
+					
+					DateFormat dateFormat = new SimpleDateFormat("dd MMM yyyy HH:mm");  
+				 
 				while (this.getMergesAsCachedRowSet().next()) {
 					 
-					mergesAsDecoratedXHTMLTable = mergesAsDecoratedXHTMLTable.concat("<tr>");
+					if (rowStripeClassName == "odd ") {
+						rowStripeClassName = "even ";
+					} else {
+						rowStripeClassName = "odd ";
+					}
+					
+					//TODO: This might need changing when paging.
+					if (this.getMergesAsCachedRowSet().isLast()) {
+						rowLastClassName = "last ";
+					}
+					
+					
+					mergesAsDecoratedXHTMLTable = mergesAsDecoratedXHTMLTable.concat("<tr class=\"" + rowStripeClassName + rowFirstClassName + rowLastClassName + "\">");
 
 					 mergesAsDecoratedXHTMLTable = mergesAsDecoratedXHTMLTable.concat("<td>" + this.getMergesAsCachedRowSet().getString("id") + "</td>");
 					 
@@ -67,8 +87,8 @@ public class MergesFunctionsModel implements java.io.Serializable {
 					 mergesAsDecoratedXHTMLTable = mergesAsDecoratedXHTMLTable.concat("<td><a href=\"/dataMerger/files/uploads?id=" + this.getMergesAsCachedRowSet().getInt(2) + "\">" + this.getMergesAsCachedRowSet().getString(3) + "</a></td>");
 					 mergesAsDecoratedXHTMLTable = mergesAsDecoratedXHTMLTable.concat("<td><a href=\"/dataMerger/files/uploads?id=" + this.getMergesAsCachedRowSet().getInt(4) + "\">" + this.getMergesAsCachedRowSet().getString(5) + "</a></td>");
 					 //TODO: format datetime 02 Jan 2011
-					 mergesAsDecoratedXHTMLTable = mergesAsDecoratedXHTMLTable.concat("<td>" + this.getMergesAsCachedRowSet().getTimestamp("created_datetime") + "</td>");
-					 mergesAsDecoratedXHTMLTable = mergesAsDecoratedXHTMLTable.concat("<td>" + this.getMergesAsCachedRowSet().getTimestamp("updated_datetime") + "</td>");
+					 mergesAsDecoratedXHTMLTable = mergesAsDecoratedXHTMLTable.concat("<td>" + dateFormat.format(this.getMergesAsCachedRowSet().getTimestamp("created_datetime")) + "</td>");
+					 mergesAsDecoratedXHTMLTable = mergesAsDecoratedXHTMLTable.concat("<td>" + dateFormat.format(this.getMergesAsCachedRowSet().getTimestamp("updated_datetime")) + "</td>");
 					 
 					 //TODO: Change this URL to a) not hard-coded b) /dataMerger/pages/merges/3/joins
 					 mergesAsDecoratedXHTMLTable = mergesAsDecoratedXHTMLTable.concat("<td><a href=\"/dataMerger/pages/merges/edit-join.jsp?merge_id=" + this.getMergesAsCachedRowSet().getInt("id") + "\">Edit Join</a></td>");
@@ -115,17 +135,19 @@ public class MergesFunctionsModel implements java.io.Serializable {
 					 }
 					 
 					 mergesAsDecoratedXHTMLTable = mergesAsDecoratedXHTMLTable.concat("</tr>");
+					 
+					 rowFirstClassName = "";
 				  }
 
 				mergesAsDecoratedXHTMLTable = mergesAsDecoratedXHTMLTable.concat("</tbody>");
 				 
 				mergesAsDecoratedXHTMLTable = mergesAsDecoratedXHTMLTable.concat("</table>");
 				
-				mergesAsDecoratedXHTMLTable = mergesAsDecoratedXHTMLTable.concat("<div>TODO: paging</div>");
+				mergesAsDecoratedXHTMLTable = mergesAsDecoratedXHTMLTable.concat("<!-- <div>TODO: paging</div> -->");
 				
 			} else {
 				
-				mergesAsDecoratedXHTMLTable = "You have no merges.";
+				mergesAsDecoratedXHTMLTable = "<p>You have no merges.</p>";
 				
 			}
 		} catch (SQLException e) {

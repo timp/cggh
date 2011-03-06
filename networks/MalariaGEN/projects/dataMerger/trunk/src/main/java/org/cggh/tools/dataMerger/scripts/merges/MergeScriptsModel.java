@@ -685,7 +685,7 @@ public class MergeScriptsModel implements java.io.Serializable {
 
 				// If there are no duplicate values in this shared column for either datatable...
 				if (mergeModel.getDatatable1Model().getDuplicateValuesCountByColumnName(mergeModel.getJoinsModel().getCrossDatatableJoinsAsCachedRowSet().getString("datatable_1_column_name"), connection) == 0
-						&& mergeModel.getDatatable1Model().getDuplicateValuesCountByColumnName(mergeModel.getJoinsModel().getCrossDatatableJoinsAsCachedRowSet().getString("datatable_2_column_name"), connection) == 0
+						&& mergeModel.getDatatable2Model().getDuplicateValuesCountByColumnName(mergeModel.getJoinsModel().getCrossDatatableJoinsAsCachedRowSet().getString("datatable_2_column_name"), connection) == 0
 
 				) {
 
@@ -739,8 +739,6 @@ public class MergeScriptsModel implements java.io.Serializable {
 									connection);
 
 					
-					
-					//FIXME: Do this here?
 					
 					//Record keyColumnNames to save two subsequent requests.
 					mergeModel
@@ -802,9 +800,10 @@ public class MergeScriptsModel implements java.io.Serializable {
 			
 			// There are keys and no duplicates.
 			
-			// Create a joined_datatable for the merge data
+			// Create a joined_keytable for the merge data
 			MergesModel mergesModel = new MergesModel();
-			mergeModel = mergesModel.retrieveMergeAsMergeModelThroughCreatingUncreatedJoinedDatatableUsingMergeModel(mergeModel, connection);
+			
+			mergeModel = mergesModel.retrieveMergeAsMergeModelThroughRecreatingJoinedKeytableUsingMergeModel(mergeModel, connection);
 			
 			//TODO:
 			

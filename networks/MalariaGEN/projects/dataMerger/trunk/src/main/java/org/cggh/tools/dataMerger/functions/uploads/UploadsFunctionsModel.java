@@ -1,7 +1,10 @@
 package org.cggh.tools.dataMerger.functions.uploads;
 
 import javax.sql.rowset.CachedRowSet;
+
 import java.sql.SQLException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 
 
 
@@ -55,15 +58,15 @@ public class UploadsFunctionsModel implements java.io.Serializable {
 
 					decoratedXHTMLTable = "";
 					
-					decoratedXHTMLTable = decoratedXHTMLTable.concat("<table>");
+					decoratedXHTMLTable = decoratedXHTMLTable.concat("<table class=\"uploads-table\">");
 
 					 decoratedXHTMLTable = decoratedXHTMLTable.concat("<thead>");
 					 decoratedXHTMLTable = decoratedXHTMLTable.concat("<tr>");
 					 
 					 decoratedXHTMLTable = decoratedXHTMLTable.concat("<th><!-- Column for checkboxes --></th>");
-					 decoratedXHTMLTable = decoratedXHTMLTable.concat("<th>ID <a href=\"javascript:TODOsort();\">sort up/down</a></th>");
-					 decoratedXHTMLTable = decoratedXHTMLTable.concat("<th>Filename <a href=\"javascript:TODOsort();\">sort up/down</a></th>");
-					 decoratedXHTMLTable = decoratedXHTMLTable.concat("<th>Uploaded <a href=\"javascript:TODOsort();\">sort up/down</a></th>");
+					 decoratedXHTMLTable = decoratedXHTMLTable.concat("<th>ID<!--  <a href=\"javascript:TODOsort();\">sort up/down</a> --></th>");
+					 decoratedXHTMLTable = decoratedXHTMLTable.concat("<th>Filename<!--  <a href=\"javascript:TODOsort();\">sort up/down</a> --></th>");
+					 decoratedXHTMLTable = decoratedXHTMLTable.concat("<th>Uploaded<!--  <a href=\"javascript:TODOsort();\">sort up/down</a> --></th>");
 					 decoratedXHTMLTable = decoratedXHTMLTable.concat("<th><!-- Column for download links --></th>");
 					 
 					 decoratedXHTMLTable = decoratedXHTMLTable.concat("</tr>");
@@ -74,31 +77,51 @@ public class UploadsFunctionsModel implements java.io.Serializable {
 					//because next() skips the first row.
 					 this.getCachedRowSet().beforeFirst();
 
+					String rowStripeClassName = "even "; 
+					String rowFirstClassName = "first ";
+					String rowLastClassName = ""; 
+					
+					DateFormat dateFormat = new SimpleDateFormat("dd MMM yyyy");  
+
+					 
 					while (this.getCachedRowSet().next()) {
-						 
-						decoratedXHTMLTable = decoratedXHTMLTable.concat("<tr>");
+						
+						if (rowStripeClassName == "odd ") {
+							rowStripeClassName = "even ";
+						} else {
+							rowStripeClassName = "odd ";
+						}
+						
+						//TODO: This might need changing when paging.
+						if (this.getCachedRowSet().isLast()) {
+							rowLastClassName = "last ";
+						}
+						
+						decoratedXHTMLTable = decoratedXHTMLTable.concat("<tr class=\"" + rowStripeClassName + rowFirstClassName + rowLastClassName + "\">");
 
 						 decoratedXHTMLTable = decoratedXHTMLTable.concat("<td><input type=\"checkbox\" name=\"upload_id\" value=\"" + this.getCachedRowSet().getString("id") + "\" /></td>");
 						 decoratedXHTMLTable = decoratedXHTMLTable.concat("<td>" + this.getCachedRowSet().getString("id") + "</td>");
 						 decoratedXHTMLTable = decoratedXHTMLTable.concat("<td><a href=\"/dataMerger/files/uploads?id=" + this.getCachedRowSet().getString("id") + "\">" + this.getCachedRowSet().getString("original_filename") + "</a></td>");
-						 //TODO: format datetime 02 Jan 2011
-						 decoratedXHTMLTable = decoratedXHTMLTable.concat("<td>" + this.getCachedRowSet().getString("created_datetime") + "</td>");
+						 decoratedXHTMLTable = decoratedXHTMLTable.concat("<td>" + dateFormat.format(this.getCachedRowSet().getTimestamp("created_datetime")) + "</td>");
 						 decoratedXHTMLTable = decoratedXHTMLTable.concat("<td><a href=\"/dataMerger/files/uploads?id=" + this.getCachedRowSet().getString("id") + "\">Download</a></td>");
 						 
 						 decoratedXHTMLTable = decoratedXHTMLTable.concat("</tr>");
+						 
+						 
+						 rowFirstClassName = "";
 					  }
 
 					decoratedXHTMLTable = decoratedXHTMLTable.concat("</tbody>");
 					 
 					decoratedXHTMLTable = decoratedXHTMLTable.concat("</table>");
 					
-					decoratedXHTMLTable = decoratedXHTMLTable.concat("<div>TODO: paging</div>");
+					decoratedXHTMLTable = decoratedXHTMLTable.concat("<!-- <div>TODO: paging</div> -->");
 					
 					decoratedXHTMLTable = decoratedXHTMLTable.concat("<button class=\"merge-button\" onclick=\"createMergeUsingUploadIdsAsJSON();\">Merge</button>");
 	
 				} else {
 					
-					decoratedXHTMLTable = "You have no uploads.";
+					decoratedXHTMLTable = "<p>You have no uploaded files.</p>";
 					
 				}
 			} catch (SQLException e) {

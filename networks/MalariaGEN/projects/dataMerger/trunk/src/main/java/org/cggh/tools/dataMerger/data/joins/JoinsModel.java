@@ -13,7 +13,6 @@ import javax.sql.rowset.CachedRowSet;
 import org.cggh.tools.dataMerger.data.DataModel;
 import org.cggh.tools.dataMerger.data.merges.MergeModel;
 import org.cggh.tools.dataMerger.data.merges.MergesModel;
-import org.cggh.tools.dataMerger.data.users.UserModel;
 import org.cggh.tools.dataMerger.scripts.merges.MergeScriptsModel;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -32,9 +31,9 @@ public class JoinsModel implements java.io.Serializable {
 	private Integer keysCount;
 	private CachedRowSet crossDatatableJoinsAsCachedRowSet;
 	private DataModel dataModel;
-	private UserModel userModel;
-	private CachedRowSet keyJoinsAsCachedRowsetByMergeId;
-	private CachedRowSet nonKeyCrossDatatableJoinsAsCachedRowsetByMergeId;
+
+	private CachedRowSet keyJoinsAsCachedRowset;
+	private CachedRowSet nonKeyCrossDatatableJoinsAsCachedRowset;
 
 	//Must not have a joinModel, because joinModel has a mergeModel, which has a joinsModel, causes StackOverflowError
 	//private JoinModel joinModel;
@@ -240,7 +239,7 @@ public class JoinsModel implements java.io.Serializable {
 		}
 		
 	      try{
-	          PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM `join` WHERE merge_id = ?;");
+	          PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM `join` WHERE merge_id = ? ORDER BY column_number;");
 	          preparedStatement.setInt(1, mergeModel.getId());
 	          preparedStatement.executeQuery();
 	         
@@ -268,9 +267,6 @@ public class JoinsModel implements java.io.Serializable {
 
 
 
-	public void setUserModel(UserModel userModel) {
-		this.userModel = userModel;
-	}
 
 
 	public JoinsModel retrieveJoinsAsJoinsModelByMergeId(Integer mergeId,
@@ -284,7 +280,7 @@ public class JoinsModel implements java.io.Serializable {
 		
 	      try{
 	          PreparedStatement preparedStatement = connection.prepareStatement("SELECT merge_id, column_number, `key`, datatable_1_column_name, datatable_2_column_name, constant_1, constant_2, column_name FROM `join` " + 
-	        	"WHERE merge_id = ?;");
+	        	"WHERE merge_id = ? ORDER BY column_number;");
 	          preparedStatement.setInt(1, mergeModel.getId());
 	          preparedStatement.executeQuery();
 	          ResultSet resultSet = preparedStatement.getResultSet();
@@ -340,7 +336,8 @@ public class JoinsModel implements java.io.Serializable {
 			          PreparedStatement preparedStatement3 = connection.prepareStatement(
 			        		  "SELECT merge_id, column_number, `key`, datatable_1_column_name, " + 
 			        		  "datatable_2_column_name, constant_1, constant_2, column_name FROM `join` WHERE merge_id = ? " +
-			        		  "AND (datatable_1_column_name IS NOT NULL AND datatable_2_column_name IS NOT NULL);");
+			        		  "AND (datatable_1_column_name IS NOT NULL AND datatable_2_column_name IS NOT NULL) " +
+			        		  "ORDER BY column_number;");
 			          preparedStatement3.setInt(1, mergeModel.getId());
 			          preparedStatement3.executeQuery();
 			          ResultSet resultSet3 = preparedStatement3.getResultSet();
@@ -556,7 +553,7 @@ public class JoinsModel implements java.io.Serializable {
 		}
 		
 	      try{
-	          PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM `join` WHERE merge_id = ? AND `key` = TRUE AND datatable_1_column_name IS NOT NULL AND datatable_2_column_name IS NOT NULL;");
+	          PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM `join` WHERE merge_id = ? AND `key` = TRUE AND datatable_1_column_name IS NOT NULL AND datatable_2_column_name IS NOT NULL ORDER BY column_number;");
 	          preparedStatement.setInt(1, mergeModel.getId());
 	          preparedStatement.executeQuery();
 	         
@@ -599,7 +596,7 @@ public class JoinsModel implements java.io.Serializable {
 		}
 		
 	      try{
-	          PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM `join` WHERE merge_id = ? AND `key` != TRUE AND datatable_1_column_name IS NOT NULL AND datatable_2_column_name IS NOT NULL;");
+	          PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM `join` WHERE merge_id = ? AND `key` != TRUE AND datatable_1_column_name IS NOT NULL AND datatable_2_column_name IS NOT NULL ORDER BY column_number;");
 	          preparedStatement.setInt(1, mergeModel.getId());
 	          preparedStatement.executeQuery();
 	         
@@ -617,26 +614,26 @@ public class JoinsModel implements java.io.Serializable {
 
 
 	public void setKeyJoinsAsCachedRowSet(
-			CachedRowSet keyJoinsAsCachedRowsetByMergeId) {
-		this.keyJoinsAsCachedRowsetByMergeId = keyJoinsAsCachedRowsetByMergeId;
+			CachedRowSet keyJoinsAsCachedRowset) {
+		this.keyJoinsAsCachedRowset = keyJoinsAsCachedRowset;
 	}
 
 
 	public void setNonKeyCrossDatatableJoinsAsCachedRowSet(
-			CachedRowSet nonKeyCrossDatatableJoinsAsCachedRowsetByMergeId) {
-		this.nonKeyCrossDatatableJoinsAsCachedRowsetByMergeId = nonKeyCrossDatatableJoinsAsCachedRowsetByMergeId;
+			CachedRowSet nonKeyCrossDatatableJoinsAsCachedRowset) {
+		this.nonKeyCrossDatatableJoinsAsCachedRowset = nonKeyCrossDatatableJoinsAsCachedRowset;
 	}
 
 
 	public CachedRowSet getKeyJoinsAsCachedRowSet() {
 		
-		return this.keyJoinsAsCachedRowsetByMergeId;
+		return this.keyJoinsAsCachedRowset;
 	}
 
 
 	public CachedRowSet getNonKeyCrossDatatableJoinsAsCachedRowSet() {
 
-		return this.nonKeyCrossDatatableJoinsAsCachedRowsetByMergeId;
+		return this.nonKeyCrossDatatableJoinsAsCachedRowset;
 	}
 
 
@@ -649,7 +646,7 @@ public class JoinsModel implements java.io.Serializable {
 		List<String> datatable1KeyColumnNamesAsStringList = new ArrayList<String>();
 		
 	      try{
-	          PreparedStatement preparedStatement = connection.prepareStatement("SELECT datatable_1_column_name FROM `join` WHERE `key` = true AND merge_id = ?;");
+	          PreparedStatement preparedStatement = connection.prepareStatement("SELECT datatable_1_column_name FROM `join` WHERE `key` = true AND merge_id = ? ORDER BY column_number;");
 	          preparedStatement.setInt(1, mergeModel.getId());
 	          preparedStatement.executeQuery();
 	          ResultSet resultSet = preparedStatement.getResultSet();
@@ -693,7 +690,7 @@ public class JoinsModel implements java.io.Serializable {
 		List<String> datatable2KeyColumnNamesAsStringList = new ArrayList<String>();
 		
 	      try{
-	          PreparedStatement preparedStatement = connection.prepareStatement("SELECT datatable_2_column_name FROM `join` WHERE `key` = true AND merge_id = ?;");
+	          PreparedStatement preparedStatement = connection.prepareStatement("SELECT datatable_2_column_name FROM `join` WHERE `key` = true AND merge_id = ? ORDER BY column_number;");
 	          preparedStatement.setInt(1, mergeModel.getId());
 	          preparedStatement.executeQuery();
 	          ResultSet resultSet = preparedStatement.getResultSet();

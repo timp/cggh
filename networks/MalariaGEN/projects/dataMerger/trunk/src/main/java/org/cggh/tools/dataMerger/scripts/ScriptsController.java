@@ -117,7 +117,7 @@ public class ScriptsController extends HttpServlet {
 				      try{
 				          Statement statement = connection.createStatement();
 				          statement.executeUpdate("CREATE TABLE upload (" + 
-				        		  "id TINYINT(255) UNSIGNED NOT NULL AUTO_INCREMENT, " +
+				        		  "id BIGINT(255) UNSIGNED NOT NULL AUTO_INCREMENT, " +
 				        		  "original_filename VARCHAR(255) NOT NULL, " + 
 				        		  "repository_filepath VARCHAR(255) NULL, " + 
 				        		  "successful BOOLEAN NULL, " + 
@@ -140,8 +140,8 @@ public class ScriptsController extends HttpServlet {
 				          Statement statement = connection.createStatement();
 				          statement.executeUpdate("CREATE TABLE merge (" + 
 				        		  "id TINYINT(255) UNSIGNED NOT NULL AUTO_INCREMENT, " +
-				        		  "upload_1_id TINYINT(255) UNSIGNED NOT NULL, " + 
-				        		  "upload_2_id TINYINT(255) UNSIGNED NOT NULL, " + 
+				        		  "upload_1_id BIGINT(255) UNSIGNED NOT NULL, " + 
+				        		  "upload_2_id BIGINT(255) UNSIGNED NOT NULL, " + 
 				        		  "created_by_user_id TINYINT(255) UNSIGNED NOT NULL, " + 
 				        		  "created_datetime DATETIME NOT NULL, " +
 				        		  "updated_datetime DATETIME NOT NULL, " +
@@ -149,9 +149,9 @@ public class ScriptsController extends HttpServlet {
 				        		  "datatable_2_duplicate_keys_count TINYINT(255) UNSIGNED NULL, " + 
 				        		  "total_duplicate_keys_count TINYINT(255) UNSIGNED NULL, " + 
 				        		  "total_conflicts_count TINYINT(255) UNSIGNED NULL, " +
-				        		  "joined_datatable_name VARCHAR(255) NULL, " + 
+				        		  "joined_keytable_name VARCHAR(255) NULL, " + 
 				        		  "PRIMARY KEY (id), " +
-				        		  "CONSTRAINT unique_joined_datatable_name_constraint UNIQUE (joined_datatable_name), " +
+				        		  "CONSTRAINT unique_joined_keytable_name_constraint UNIQUE (joined_keytable_name), " +
 				        		  "INDEX created_by_user_id_index (created_by_user_id), " + 
 				        		  "FOREIGN KEY (created_by_user_id) REFERENCES user(id) ON DELETE CASCADE ON UPDATE CASCADE, " +
 				        		  "INDEX upload_1_id_index (upload_1_id), " + 
@@ -174,7 +174,7 @@ public class ScriptsController extends HttpServlet {
 				          statement.executeUpdate("CREATE TABLE datatable (" + 
 				        		  "id TINYINT(255) UNSIGNED NOT NULL AUTO_INCREMENT, " +
 				        		  "name VARCHAR(255) NOT NULL, " +
-				        		  "upload_id TINYINT(255) UNSIGNED NOT NULL, " + 
+				        		  "upload_id BIGINT(255) UNSIGNED NOT NULL, " + 
 				        		  "created_datetime DATETIME NOT NULL, " +
 				        		  "PRIMARY KEY (id), " +
 				        		  "CONSTRAINT unique_name_constraint UNIQUE (name), " +
