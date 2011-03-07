@@ -342,13 +342,13 @@ public class ScriptsController extends HttpServlet {
 			          Statement statement = connection.createStatement();
 			          statement.executeUpdate("CREATE TABLE `resolution_by_row` (" + 
 			        		  "merge_id TINYINT(255) UNSIGNED NOT NULL, " + 
-			        		  "METADATA_ROW_ID TINYINT(255) UNSIGNED NOT NULL, " +
+			        		  "joined_keytable_id BIGINT(255) UNSIGNED NOT NULL, " +
 			        		  "conflicts_count TINYINT(255) NULL, " +
 			        		  "solution_by_row_id TINYINT(255) NULL, " +
 			        		  "constant VARCHAR(255) NULL, " +
-			        		  "PRIMARY KEY (merge_id, METADATA_ROW_ID), " +
+			        		  "PRIMARY KEY (merge_id, joined_keytable_id), " +
 			        		  "INDEX merge_id_index (merge_id), " +
-			        		  "INDEX METADATA_ROW_ID_index (METADATA_ROW_ID), " + 
+			        		  "INDEX joined_keytable_id_index (joined_keytable_id), " + 
 			        		  "INDEX solution_by_row_id_index (solution_by_row_id), " + 
 			        		  "FOREIGN KEY (merge_id) REFERENCES merge(id) ON DELETE CASCADE ON UPDATE CASCADE " +
 			        		  ") ENGINE=InnoDB;");

@@ -46,7 +46,13 @@ public class ResolutionsByRowFunctionsModel implements java.io.Serializable {
 				 resolutionsByRowAsDecoratedXHTMLTable = resolutionsByRowAsDecoratedXHTMLTable.concat("<thead>");
 				 resolutionsByRowAsDecoratedXHTMLTable = resolutionsByRowAsDecoratedXHTMLTable.concat("<tr>");
 				 
+				 //TODO: key column headers go here.
+				 resolutionsByRowAsDecoratedXHTMLTable = resolutionsByRowAsDecoratedXHTMLTable.concat("<th>TODO: Key columns</th>");
+				 
 				 resolutionsByRowAsDecoratedXHTMLTable = resolutionsByRowAsDecoratedXHTMLTable.concat("<th>Solution</th>");
+				 
+				//TODO: Conflict columns go here. Or all nonKeyCrossDatatable columns, with conflict ones somehow flagged.
+				 resolutionsByRowAsDecoratedXHTMLTable = resolutionsByRowAsDecoratedXHTMLTable.concat("<th>TODO: other columns</th>");
 
 				 resolutionsByRowAsDecoratedXHTMLTable = resolutionsByRowAsDecoratedXHTMLTable.concat("</tr>");
 				 resolutionsByRowAsDecoratedXHTMLTable = resolutionsByRowAsDecoratedXHTMLTable.concat("</thead>");
@@ -60,6 +66,8 @@ public class ResolutionsByRowFunctionsModel implements java.io.Serializable {
 					 
 					resolutionsByRowAsDecoratedXHTMLTable = resolutionsByRowAsDecoratedXHTMLTable.concat("<tr>");
 
+					//TODO
+					resolutionsByRowAsDecoratedXHTMLTable = resolutionsByRowAsDecoratedXHTMLTable.concat("<td>TODO: keys</td>");
 				
 					 resolutionsByRowAsDecoratedXHTMLTable = resolutionsByRowAsDecoratedXHTMLTable.concat("<td>");
 					 
@@ -118,6 +126,10 @@ public class ResolutionsByRowFunctionsModel implements java.io.Serializable {
 						}
 						
 					 resolutionsByRowAsDecoratedXHTMLTable = resolutionsByRowAsDecoratedXHTMLTable.concat("</td>");
+					 
+					 //TODO
+					 resolutionsByRowAsDecoratedXHTMLTable = resolutionsByRowAsDecoratedXHTMLTable.concat("<td>TODO: value comparisons</td>");
+					 
 					 
 					 
 					 resolutionsByRowAsDecoratedXHTMLTable = resolutionsByRowAsDecoratedXHTMLTable.concat("</tr>");

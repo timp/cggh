@@ -5,6 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -722,6 +723,93 @@ public class JoinsModel implements java.io.Serializable {
 	        } 
 	        
 		return datatable2KeyColumnNamesAsStringList;
+	}
+
+
+	//TODO: Combine these somehow
+	public HashMap<Integer, String> retrieveDatatable1ColumnNamesByColumnNumberAsHashMapUsingMergeId(
+			Integer mergeId, Connection connection) {
+		
+		MergeModel mergeModel = new MergeModel();
+		mergeModel.setId(mergeId);
+
+		HashMap<Integer, String> datatable1ColumnNamesByColumnNumberAsHashMap = new HashMap<Integer, String>();
+		
+	      try{
+	          PreparedStatement preparedStatement = connection.prepareStatement("SELECT column_number, datatable_1_column_name FROM `join` WHERE merge_id = ? ORDER BY column_number;");
+	          preparedStatement.setInt(1, mergeModel.getId());
+	          preparedStatement.executeQuery();
+	          ResultSet resultSet = preparedStatement.getResultSet();
+	          
+	          if (resultSet.next()) {
+	        	  
+	        	  resultSet.beforeFirst();
+	        	  
+	        	  while(resultSet.next()){
+
+	        		  datatable1ColumnNamesByColumnNumberAsHashMap.put(resultSet.getInt("column_number"), resultSet.getString("datatable_1_column_name"));
+	        	  
+	        	  }
+
+	      	  } else {
+	      		  
+	      		  this.logger.severe("Did not retrieve any datatable 1 column names for the specified merge.");
+	      		  
+	      	  }
+	          
+	          resultSet.close();
+	          
+	          preparedStatement.close();
+
+	        }
+	        catch(SQLException sqlException){
+		    	sqlException.printStackTrace();
+	        } 
+		
+		return datatable1ColumnNamesByColumnNumberAsHashMap;
+	}
+
+
+	public HashMap<Integer, String> retrieveDatatable2ColumnNamesByColumnNumberAsHashMapUsingMergeId(
+			Integer mergeId, Connection connection) {
+
+		MergeModel mergeModel = new MergeModel();
+		mergeModel.setId(mergeId);
+
+		HashMap<Integer, String> datatable2ColumnNamesByColumnNumberAsHashMap = new HashMap<Integer, String>();
+				
+	      try{
+	          PreparedStatement preparedStatement = connection.prepareStatement("SELECT column_number, datatable_2_column_name FROM `join` WHERE merge_id = ? ORDER BY column_number;");
+	          preparedStatement.setInt(1, mergeModel.getId());
+	          preparedStatement.executeQuery();
+	          ResultSet resultSet = preparedStatement.getResultSet();
+	          
+	          if (resultSet.next()) {
+	        	  
+	        	  resultSet.beforeFirst();
+	        	  
+	        	  while(resultSet.next()){
+
+	        		  datatable2ColumnNamesByColumnNumberAsHashMap.put(resultSet.getInt("column_number"), resultSet.getString("datatable_2_column_name"));
+	        	  
+	        	  }
+
+	      	  } else {
+	      		  
+	      		  this.logger.severe("Did not retrieve any datatable 2 column names for the specified merge.");
+	      		  
+	      	  }
+	          
+	          resultSet.close();
+	          
+	          preparedStatement.close();
+
+	        }
+	        catch(SQLException sqlException){
+		    	sqlException.printStackTrace();
+	        } 
+		
+		return datatable2ColumnNamesByColumnNumberAsHashMap;
 	}
 
 

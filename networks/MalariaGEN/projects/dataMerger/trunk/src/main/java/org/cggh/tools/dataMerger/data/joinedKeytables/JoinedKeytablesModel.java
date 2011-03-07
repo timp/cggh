@@ -141,7 +141,7 @@ public class JoinedKeytablesModel implements java.io.Serializable {
 
 	         
 	         
-		 		String keyColumnDefinitionsForCreateTableSQL = "METADATA_ROW_ID INT UNSIGNED NOT NULL AUTO_INCREMENT, ";
+		 		String keyColumnDefinitionsForCreateTableSQL = "id BIGINT(255) UNSIGNED NOT NULL AUTO_INCREMENT, ";
 		 		
 				String joinForSelectIntoTableSQL = "";
 				String orderForSelectIntoTableSQL = "";
@@ -193,10 +193,10 @@ public class JoinedKeytablesModel implements java.io.Serializable {
 		      try {
 		    	  
 		    	  // Create the table
-		    	  // Note: Cannot reliably make the keys primary keys because max key length is 3072 bytes
+		    	  // Note: Cannot reliably make the keys primary keys because there is  a max key length (3072 bytes)
 		    	  String createJoinedKeytableSQL = "CREATE TABLE `" + joinedKeytableModel.getName() + "` (" + 
 		    	  									keyColumnDefinitionsForCreateTableSQL + 
-									        		  ", PRIMARY KEY (METADATA_ROW_ID) " + 
+									        		  ", PRIMARY KEY (id) " + 
 									        		  ") ENGINE=InnoDB;";
 		    	  
 		    	  this.logger.info("createJoinedKeytableSQL=" + createJoinedKeytableSQL);

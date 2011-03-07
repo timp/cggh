@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -187,15 +188,15 @@ public class MergeScriptsModel implements java.io.Serializable {
 	public MergeModel retrieveMergeAsMergeModelThroughDeterminingProblemsByColumnUsingMergeModel(
 			MergeModel mergeModel, Connection connection) {
 
+		
+		//TODO: Make this logic tighter
+		
 		try {		
 			// Remove all previously recorded problems-by-column for this merge.
 	        PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM `resolution_by_column` WHERE merge_id = ?;");
 	        preparedStatement.setInt(1, mergeModel.getId());
 	        preparedStatement.executeUpdate();
 	        preparedStatement.close();
-	
-	        preparedStatement.close();
-	       
 	
 	      }
 	      catch(SQLException sqlException){
@@ -791,27 +792,189 @@ public class MergeScriptsModel implements java.io.Serializable {
 			//Use scripts
 			mergeModel = this.retrieveMergeAsMergeModelThroughDeterminingProblemsByColumnUsingMergeModel(mergeModel, connection);
 
-			
 			this.logger.info("done determining conflicts by column");
 
-			//TODO: By Row
-			this.logger.info("about to determine conflicts by row");
 			
-			
-			// There are keys and no duplicates.
-			
-			// Create a joined_keytable for the merge data
-			MergesModel mergesModel = new MergesModel();
-			
-			mergeModel = mergesModel.retrieveMergeAsMergeModelThroughRecreatingJoinedKeytableUsingMergeModel(mergeModel, connection);
-			
-			//TODO:
+
+			// If there were no conflicts, no need to look for them again.
+			if (mergeModel.getTotalConflictsCount() > 0) {
+							
+				
+				//TODO: By Row
+				this.logger.info("about to determine conflicts by row");
+				
+				
+				// There are keys and no duplicates.
+				
+				// Create a joined_keytable for the merge data
+				MergesModel mergesModel = new MergesModel();
+				
+				mergeModel = mergesModel.retrieveMergeAsMergeModelThroughRecreatingJoinedKeytableUsingMergeModel(mergeModel, connection);
+				
+				
+				
+				
+				//TODO:
+				mergeModel = this.retrieveMergeAsMergeModelThroughDeterminingProblemsByRowUsingMergeModel(mergeModel, connection);
+				
+			}
 			
 			
 			
 			this.logger.info("done determining conflicts by row");
 
 		}
+		return mergeModel;
+	}
+
+
+
+
+	public MergeModel retrieveMergeAsMergeModelThroughDeterminingProblemsByRowUsingMergeModel(
+			MergeModel mergeModel, Connection connection) {
+		
+		try {		
+			// Remove all previously recorded problems-by-row for this merge.
+	        PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM `resolution_by_row` WHERE merge_id = ?;");
+	        preparedStatement.setInt(1, mergeModel.getId());
+	        preparedStatement.executeUpdate();
+	        preparedStatement.close();
+	
+	        
+	        //CachedRowSet joinedKeytableDataAsCachedRowSet = mergeModel.getJoinedKeytableModel().getDataAsCachedRowSet();
+	        
+	        JoinsModel joinsModel = new JoinsModel();
+
+	        HashMap<Integer, String> datatable1ColumnNamesByColumnNumberAsHashMap = joinsModel.retrieveDatatable1ColumnNamesByColumnNumberAsHashMapUsingMergeId(mergeModel.getId(), connection); 
+	        HashMap<Integer, String> datatable2ColumnNamesByColumnNumberAsHashMap = joinsModel.retrieveDatatable2ColumnNamesByColumnNumberAsHashMapUsingMergeId(mergeModel.getId(), connection);
+	        
+	        String datatable1JoinSQL = "";
+	        String datatable2JoinSQL = "";
+
+	        String columnDefinitionsUsingKeyColumnNamesSQL = "";
+	        //TODO
+	        String joinedKeytableColumnAliasesAsCSVForSelectFromJoinSQL = "";
+	        
+	        CachedRowSet keyJoinsAsCachedRowSet = joinsModel.retrieveKeyJoinsAsCachedRowsetByMergeId(mergeModel.getId(), connection);
+	        
+	        keyJoinsAsCachedRowSet.beforeFirst();
+	        
+	        if (keyJoinsAsCachedRowSet.next()) {
+	        	
+	        	columnDefinitionsUsingKeyColumnNamesSQL = columnDefinitionsUsingKeyColumnNamesSQL.concat("`" + keyJoinsAsCachedRowSet.getString("column_name") + "` VARCHAR(255) ");
+	        	
+	        	datatable1JoinSQL = datatable1JoinSQL.concat("`" + mergeModel.getDatatable1Model().getName() + "`.`" + datatable1ColumnNamesByColumnNumberAsHashMap.get(keyJoinsAsCachedRowSet.getInt("column_number")) + "` = `" + mergeModel.getJoinedKeytableModel().getName() + "`.`key_column_" + keyJoinsAsCachedRowSet.getInt("column_number") + "` ");
+	        	datatable2JoinSQL = datatable2JoinSQL.concat("`" + mergeModel.getDatatable2Model().getName() + "`.`" + datatable2ColumnNamesByColumnNumberAsHashMap.get(keyJoinsAsCachedRowSet.getInt("column_number")) + "` = `" + mergeModel.getJoinedKeytableModel().getName() + "`.`key_column_" + keyJoinsAsCachedRowSet.getInt("column_number") + "` AND `" + mergeModel.getDatatable2Model().getName() + "`.`" + datatable2ColumnNamesByColumnNumberAsHashMap.get(keyJoinsAsCachedRowSet.getInt("column_number")) + "` = `" + mergeModel.getDatatable1Model().getName() + "`.`" + datatable1ColumnNamesByColumnNumberAsHashMap.get(keyJoinsAsCachedRowSet.getInt("column_number")) + "` ");
+	        	
+	        	joinedKeytableColumnAliasesAsCSVForSelectFromJoinSQL = joinedKeytableColumnAliasesAsCSVForSelectFromJoinSQL.concat("`"  + mergeModel.getJoinedKeytableModel().getName() + "`.`key_column_" + keyJoinsAsCachedRowSet.getInt("column_number") + "` AS `" + keyJoinsAsCachedRowSet.getString("column_name") + "` ");
+	        	
+		        while (keyJoinsAsCachedRowSet.next()) {
+		        
+		        	columnDefinitionsUsingKeyColumnNamesSQL = columnDefinitionsUsingKeyColumnNamesSQL.concat(", `" + keyJoinsAsCachedRowSet.getString("column_name") + "` VARCHAR(255) ");
+		        	
+		        	datatable1JoinSQL = datatable1JoinSQL.concat("AND `" + mergeModel.getDatatable1Model().getName() + "`.`" + datatable1ColumnNamesByColumnNumberAsHashMap.get(keyJoinsAsCachedRowSet.getInt("column_number")) + "` = `" + mergeModel.getJoinedKeytableModel().getName() + "`.`key_column_" + keyJoinsAsCachedRowSet.getInt("column_number") + "` ");
+		        	datatable2JoinSQL = datatable2JoinSQL.concat("AND `" + mergeModel.getDatatable2Model().getName() + "`.`" + datatable2ColumnNamesByColumnNumberAsHashMap.get(keyJoinsAsCachedRowSet.getInt("column_number")) + "` = `" + mergeModel.getJoinedKeytableModel().getName() + "`.`key_column_" + keyJoinsAsCachedRowSet.getInt("column_number") + "` AND `" + mergeModel.getDatatable2Model().getName() + "`.`" + datatable2ColumnNamesByColumnNumberAsHashMap.get(keyJoinsAsCachedRowSet.getInt("column_number")) + "` = `" + mergeModel.getDatatable1Model().getName() + "`.`" + datatable1ColumnNamesByColumnNumberAsHashMap.get(keyJoinsAsCachedRowSet.getInt("column_number")) + "` ");
+		        	
+		        	joinedKeytableColumnAliasesAsCSVForSelectFromJoinSQL = joinedKeytableColumnAliasesAsCSVForSelectFromJoinSQL.concat(", `"  + mergeModel.getJoinedKeytableModel().getName() + "`.`key_column_" + keyJoinsAsCachedRowSet.getInt("column_number") + "` AS `" + keyJoinsAsCachedRowSet.getString("column_name") + "` ");
+		        }
+		        
+	        } else {
+	        	this.logger.severe("Did not retrieve any key joins as a cached row set using merge Id: " + mergeModel.getId());
+	        }
+	        
+	        
+
+	        //TODO
+	        String nonKeyCrossDatatableColumnAliasesAsCSVForSelectFromJoinSQL = "";	        
+	        
+	        String columnDefinitionsUsingNonKeyCrossDatatableColumnAndSourceNumbersSQL = "";
+
+	        String columnConflictUnionsSQL = "";
+	        
+	        CachedRowSet nonKeyCrossDatatableJoinsAsCachedRowSet = joinsModel.retrieveNonKeyCrossDatatableJoinsAsCachedRowsetByMergeId(mergeModel.getId(), connection);
+
+	        nonKeyCrossDatatableJoinsAsCachedRowSet.beforeFirst();
+	        
+	        if (nonKeyCrossDatatableJoinsAsCachedRowSet.next()) {
+	        	
+	        	columnDefinitionsUsingNonKeyCrossDatatableColumnAndSourceNumbersSQL = columnDefinitionsUsingNonKeyCrossDatatableColumnAndSourceNumbersSQL.concat("`column_" + nonKeyCrossDatatableJoinsAsCachedRowSet.getString("column_number") + "_source_1` VARCHAR(255), `column_" + nonKeyCrossDatatableJoinsAsCachedRowSet.getString("column_number") + "_source_2` VARCHAR(255) ");
+	        	
+	        	nonKeyCrossDatatableColumnAliasesAsCSVForSelectFromJoinSQL = nonKeyCrossDatatableColumnAliasesAsCSVForSelectFromJoinSQL.concat("`" + mergeModel.getDatatable1Model().getName() + "`.`" + nonKeyCrossDatatableJoinsAsCachedRowSet.getString("datatable_1_column_name") + "` AS `column_" + nonKeyCrossDatatableJoinsAsCachedRowSet.getInt("column_number") + "_source_1`, `" + mergeModel.getDatatable2Model().getName() + "`.`" + nonKeyCrossDatatableJoinsAsCachedRowSet.getString("datatable_2_column_name") + "` AS `column_" + nonKeyCrossDatatableJoinsAsCachedRowSet.getInt("column_number") + "_source_2` ");
+
+	        	//TODO: There must be a better way of doing this.
+	        	columnConflictUnionsSQL = columnConflictUnionsSQL.concat("SELECT joined_keytable_id, 1 AS column_conflict FROM `tmp_joined_datatable_" + mergeModel.getId() + "` WHERE `column_" + nonKeyCrossDatatableJoinsAsCachedRowSet.getInt("column_number") + "_source_1` != `column_" + nonKeyCrossDatatableJoinsAsCachedRowSet.getInt("column_number") + "_source_2` GROUP BY joined_keytable_id ");
+	        	
+		        while (nonKeyCrossDatatableJoinsAsCachedRowSet.next()) {
+		        
+		        	columnDefinitionsUsingNonKeyCrossDatatableColumnAndSourceNumbersSQL = columnDefinitionsUsingNonKeyCrossDatatableColumnAndSourceNumbersSQL.concat(", `column_" + nonKeyCrossDatatableJoinsAsCachedRowSet.getString("column_number") + "_source_1` VARCHAR(255), `column_" + nonKeyCrossDatatableJoinsAsCachedRowSet.getString("column_number") + "_source_2` VARCHAR(255) ");
+
+		        	nonKeyCrossDatatableColumnAliasesAsCSVForSelectFromJoinSQL = nonKeyCrossDatatableColumnAliasesAsCSVForSelectFromJoinSQL.concat(", `" + mergeModel.getDatatable1Model().getName() + "`.`" + nonKeyCrossDatatableJoinsAsCachedRowSet.getString("datatable_1_column_name") + "` AS `column_" + nonKeyCrossDatatableJoinsAsCachedRowSet.getInt("column_number") + "_source_1`, `" + mergeModel.getDatatable2Model().getName() + "`.`" + nonKeyCrossDatatableJoinsAsCachedRowSet.getString("datatable_2_column_name") + "` AS `column_" + nonKeyCrossDatatableJoinsAsCachedRowSet.getInt("column_number") + "_source_2` ");
+		        
+		        	columnConflictUnionsSQL = columnConflictUnionsSQL.concat("UNION ALL SELECT joined_keytable_id, 1 AS column_conflict FROM `tmp_joined_datatable_" + mergeModel.getId() + "` WHERE `column_" + nonKeyCrossDatatableJoinsAsCachedRowSet.getInt("column_number") + "_source_1` != `column_" + nonKeyCrossDatatableJoinsAsCachedRowSet.getInt("column_number") + "_source_2` GROUP BY joined_keytable_id ");
+		        	
+		        }
+		        
+	        } else {
+	        	this.logger.severe("Did not retrieve any non-key cross-datatable joins as a cached row set using merge Id: " + mergeModel.getId());
+	        }	        
+	        
+
+	        
+	        
+	        
+
+	        
+			try {
+
+					
+					//FIXME: Change this to a TEMPORARY table afer testing
+				
+					String createAndPopulateTemporaryJoinedDatatableSQL = "CREATE TABLE `tmp_joined_datatable_" + mergeModel.getId() + "` (joined_keytable_id BIGINT(255), " + columnDefinitionsUsingKeyColumnNamesSQL + ", " + columnDefinitionsUsingNonKeyCrossDatatableColumnAndSourceNumbersSQL + ", PRIMARY KEY (joined_keytable_id)) ENGINE=InnoDB " +
+														        			"SELECT `" + mergeModel.getJoinedKeytableModel().getName() + "`.id AS joined_keytable_id, " + joinedKeytableColumnAliasesAsCSVForSelectFromJoinSQL + ", " + nonKeyCrossDatatableColumnAliasesAsCSVForSelectFromJoinSQL + 
+														        			"FROM `" + mergeModel.getJoinedKeytableModel().getName() + "` " + 
+														        			"JOIN `" + mergeModel.getDatatable1Model().getName() + "` ON " + datatable1JoinSQL + 
+														        			"JOIN `" + mergeModel.getDatatable2Model().getName() + "` ON " + datatable2JoinSQL + 
+														        			"ORDER BY `" + mergeModel.getJoinedKeytableModel().getName() + "`.id" +
+														        			";";
+
+					this.logger.info(createAndPopulateTemporaryJoinedDatatableSQL);
+					
+			        PreparedStatement preparedStatement2 = connection.prepareStatement(createAndPopulateTemporaryJoinedDatatableSQL);
+			        preparedStatement2.executeUpdate();
+			        preparedStatement2.close();
+
+			        //TODO
+					String insertResolutionsByRowThroughCountingConflictsByRowSQL = "" +
+							"INSERT INTO resolution_by_row (merge_id, joined_keytable_id, conflicts_count) " +
+								"SELECT " + mergeModel.getId() + ", joined_keytable_id, SUM(column_conflict) AS conflicts_count FROM (" +
+								columnConflictUnionsSQL +
+								") AS columnConflictUnionTable GROUP BY joined_keytable_id ORDER BY joined_keytable_id " + 
+							";";
+
+					this.logger.info(insertResolutionsByRowThroughCountingConflictsByRowSQL);
+					
+					PreparedStatement preparedStatement3 = connection.prepareStatement(insertResolutionsByRowThroughCountingConflictsByRowSQL);
+					preparedStatement3.executeUpdate();
+					preparedStatement3.close();				
+				
+				
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+	       
+	
+	      }
+	      catch(SQLException sqlException){
+		    	sqlException.printStackTrace();
+	      }
+		
+		
+		
+		// TODO:
+		
+		
+		
 		return mergeModel;
 	}	
 	
