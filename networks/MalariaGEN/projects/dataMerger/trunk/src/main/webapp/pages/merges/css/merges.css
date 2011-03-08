@@ -54,3 +54,8 @@ input[name|=constant], input[name=constant_1], input[name=constant_2] {
 .merges-table tr.even {
     background-color: #cfe2f3;
 }
+
+
+.resolutions-by-row-table td.conflicting-data {
+	color: red;	
+}

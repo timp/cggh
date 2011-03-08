@@ -8,11 +8,7 @@ import java.util.logging.Logger;
 import javax.sql.rowset.CachedRowSet;
 
 import org.cggh.tools.dataMerger.data.DataModel;
-import org.cggh.tools.dataMerger.data.joins.JoinModel;
-import org.cggh.tools.dataMerger.data.joins.JoinsModel;
 import org.cggh.tools.dataMerger.data.merges.MergeModel;
-import org.cggh.tools.dataMerger.data.users.UserModel;
-import org.cggh.tools.dataMerger.functions.merges.MergesFunctionsModel;
 import org.cggh.tools.dataMerger.functions.resolutionsByColumn.ResolutionsByColumnFunctionsModel;
 import org.cggh.tools.dataMerger.scripts.merges.MergeScriptsModel;
 import org.json.JSONArray;
@@ -289,7 +285,7 @@ public class ResolutionsByColumnModel implements java.io.Serializable {
 		        	  //TODO: Recount the conflicts (take problems with solutions as 0, otherwise use the resolution conflict_count)
 
 		        	  MergeScriptsModel mergeScriptsModel = new MergeScriptsModel();
-		        	  mergeModel = mergeScriptsModel.retrieveMergeAsMergeModelThroughDeterminingTotalConflictsCountByMergeId(mergeModel.getId(), connection);
+		        	  mergeModel = mergeScriptsModel.retrieveMergeAsMergeModelThroughDeterminingTotalConflictsCountUsingMergeModel(mergeModel, connection);
 		        	  
 		          }
 		          

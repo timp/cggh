@@ -17,11 +17,11 @@ import org.cggh.tools.dataMerger.data.joins.JoinsModel;
 import org.cggh.tools.dataMerger.data.merges.MergeModel;
 import org.cggh.tools.dataMerger.data.merges.MergesModel;
 import org.cggh.tools.dataMerger.data.resolutionsByColumn.ResolutionsByColumnModel;
+import org.cggh.tools.dataMerger.data.resolutionsByRow.ResolutionsByRowModel;
 import org.cggh.tools.dataMerger.data.uploads.UploadsModel;
 import org.cggh.tools.dataMerger.data.users.UserModel;
 import org.cggh.tools.dataMerger.functions.merges.MergeFunctionsModel;
 import org.cggh.tools.dataMerger.functions.uploads.UploadsFunctionsModel;
-import org.cggh.tools.dataMerger.scripts.merges.MergeScriptsModel;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -81,6 +81,9 @@ public class DataController extends HttpServlet {
 		 
 		 Pattern resolutionsByColumnURLPattern = Pattern.compile("/merges/(\\d+)/resolutions-by-column");
 		 Matcher resolutionsByColumnURLPatternMatcher = resolutionsByColumnURLPattern.matcher(request.getPathInfo());
+		 
+		 Pattern resolutionsByRowURLPattern = Pattern.compile("/merges/(\\d+)/resolutions-by-row");
+		 Matcher resolutionsByRowURLPatternMatcher = resolutionsByRowURLPattern.matcher(request.getPathInfo());
 
 		  String[] headerAcceptsAsStringArray = request.getHeader("Accept").split(",");
 		  List<String> headerAcceptsAsStringList = Arrays.asList(headerAcceptsAsStringArray);		 
@@ -201,7 +204,7 @@ public class DataController extends HttpServlet {
 						
 
 						ResolutionsByColumnModel resolutionsByColumnModel = new ResolutionsByColumnModel();
-						resolutionsByColumnModel.setDataModel(dataModel);
+						resolutionsByColumnModel.setDataModel(this.getDataModel());
 						
 						//FIXME
 						//resolutionsByColumnModel.setUserModel(userModel);
@@ -217,7 +220,46 @@ public class DataController extends HttpServlet {
 					  response.getWriter().println("Unhandled Header Accept: " + request.getHeader("Accept"));
 					  
 				  }   
+
+				  
+		  } else if (resolutionsByRowURLPatternMatcher.find()) {
 			  
+				 // Get the mergeId 
+				 MergeModel mergeModel = new MergeModel();
+				 mergeModel.setId(Integer.parseInt(resolutionsByRowURLPatternMatcher.group(1)));  
+				 
+				 MergesModel mergesModel = new MergesModel();
+				 mergesModel.setDataModel(this.getDataModel());
+				 mergeModel = mergesModel.retrieveMergeAsMergeModelByMergeId(mergeModel.getId());
+			  
+				  if (headerAcceptsAsStringList.contains("text/html")) { 
+					  
+					  //Otherwise degree symbols turn into question-marks
+					  response.setCharacterEncoding("UTF-8");
+					  
+					  response.setContentType("text/html");
+					  
+					  String resolutionsByRowAsHTML = null;
+						
+
+						ResolutionsByRowModel resolutionsByRowModel = new ResolutionsByRowModel();
+						resolutionsByRowModel.setDataModel(this.getDataModel());
+						
+						//FIXME
+						//resolutionsByColumnModel.setUserModel(userModel);
+
+						resolutionsByRowAsHTML = resolutionsByRowModel.retrieveResolutionsByRowAsDecoratedXHTMLTableUsingMergeModel(mergeModel);
+					  
+					  
+					  response.getWriter().print(resolutionsByRowAsHTML);
+					  
+				  } else {
+					  
+					  response.setContentType("text/plain");
+					  response.getWriter().println("Unhandled Header Accept: " + request.getHeader("Accept"));
+					  
+				  }   				  
+				  
 		  } else {
 			  
 			  response.getWriter().println("Unhandled Path Info: " + request.getPathInfo());
@@ -330,6 +372,9 @@ public class DataController extends HttpServlet {
 		 
 		 Pattern resolutionsByColumnURLPattern = Pattern.compile("/merges/(\\d+)/resolutions-by-column");
 		 Matcher resolutionsByColumnURLPatternMatcher = resolutionsByColumnURLPattern.matcher(request.getPathInfo());
+		 
+		 Pattern resolutionsByRowURLPattern = Pattern.compile("/merges/(\\d+)/resolutions-by-row");
+		 Matcher resolutionsByRowURLPatternMatcher = resolutionsByRowURLPattern.matcher(request.getPathInfo());
 		
 		 if (joinsURLPatternMatcher.find()) {
 			 
@@ -465,6 +510,76 @@ public class DataController extends HttpServlet {
 				  response.getWriter().println("Unhandled Header Accept: " + request.getHeader("Accept"));
 				  
 			  }
+
+		  }	  
+		  else if (resolutionsByRowURLPatternMatcher.find()) {
+				 
+				 // Get the mergeId 
+				 MergeModel mergeModel = new MergeModel();
+				 mergeModel.setId(Integer.parseInt(resolutionsByRowURLPatternMatcher.group(1)));
+				 
+				 
+				 String[] headerAcceptsAsStringArray = request.getHeader("Accept").split(",");
+				  List<String> headerAcceptsAsStringList = Arrays.asList(headerAcceptsAsStringArray);
+				  
+				  if (headerAcceptsAsStringList.contains("application/json")) { 
+				 
+					  response.setContentType("application/json");
+					  String responseAsJSON = null;
+					  
+					  try {
+						  
+						    BufferedReader reader = request.getReader();
+						    String line = null;
+						    StringBuffer stringBuffer = new StringBuffer();
+						    
+						    while ((line = reader.readLine()) != null) {
+						      stringBuffer.append(line);
+						    }
+						    
+							try {
+								
+								JSONObject jsonObject = new JSONObject(stringBuffer.toString());
+								
+								ResolutionsByRowModel resolutionsByRowModel = new ResolutionsByRowModel();
+								
+								resolutionsByRowModel.setDataModel(this.getDataModel());
+								
+								resolutionsByRowModel.updateResolutionsByRowByMergeIdUsingResolutionsByRowAsJSONObject(mergeModel.getId(), jsonObject);
+								
+								//Note: Total conflicts for the merge is updated as a side-effect of updating the resolutions.
+								
+								
+								//TODO:
+								responseAsJSON = "{\"success\": \"true\"}";
+								
+				
+							} catch (JSONException e1) {
+								// TODO Auto-generated catch block
+								e1.printStackTrace();
+							} 
+					    
+					    
+					  } catch (Exception e) { 
+						  //TODO:
+						  e.printStackTrace(); 
+					  
+					  }
+					  
+					  response.getWriter().print(responseAsJSON);
+	
+				  } else {
+					  
+					  //FIXME: This will cause a parser error (Invalid JSON).
+					  
+					  response.setContentType("text/plain");
+					  response.getWriter().println("Unhandled Header Accept: " + request.getHeader("Accept"));
+					  
+				  }			  
+			  
+			  
+			  
+			  
 			  
 		  } else {
 			  

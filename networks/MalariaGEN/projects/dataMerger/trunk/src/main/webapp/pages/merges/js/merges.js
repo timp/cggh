@@ -3,15 +3,23 @@ function initMergesFunctions () {
 	initMoveJoinFunction();
 	initRemoveJoinFunction();
 	
+	
 	initSaveJoinFunction();
 	initAddJoinFunction();
-	initEditResolutionsByColumnFunction();
-	initSaveResolutionsByColumnFunction();
 	initChangeDatatable1ColumnNameFunction();
 	initChangeDatatable2ColumnNameFunction();
-	initEditJoinFunction();
+
+	initEditJoinFunction();	
 	
+	initEditResolutionsByColumnFunction();
+	initSaveResolutionsByColumnFunction();
 	initChangeSolutionByColumnFunction();
+	
+	initSaveResolutionsByRowFunction();
+	initChangeSolutionByRowFunction();
+	
+	
+	
 	
 }
 
@@ -170,32 +178,7 @@ function initSaveJoinFunction () {
 		var data = $.toJSON($('.joins-form').serializeObject());
 		
 		//alert(data);
-		
-		//TODO: Factor this out
-		var urlParams = {};
-		(function () {
-		    var e,
-		        a = /\+/g,  // Regex for replacing addition symbol with a space
-		        r = /([^&=]+)=?([^&]*)/g,
-		        d = function (s) { return decodeURIComponent(s.replace(a, " ")); },
-		        q = window.location.search.substring(1);
 
-		    while (e = r.exec(q))
-		       urlParams[d(e[1])] = d(e[2]);
-		})();
-		
-		//			urlParams = {
-		//			    enc: " Hello ",
-		//			    i: "main",
-		//			    mode: "front",
-		//			    sid: "de8d49b78a85a322c4155015fdce22c4",
-		//			    empty: ""
-		//			}
-		//
-		//			alert(urlParams["mode"]);
-		//			// -> "front"
-		
-		
 		
 		$.ajax({
 			type: 'PUT',
@@ -461,31 +444,7 @@ function initSaveResolutionsByColumnFunction () {
 		var data = $.toJSON($('.resolutions-by-column-form').serializeObject());
 		
 		//alert(data);
-		
-		//TODO: Factor this out
-		var urlParams = {};
-		(function () {
-		    var e,
-		        a = /\+/g,  // Regex for replacing addition symbol with a space
-		        r = /([^&=]+)=?([^&]*)/g,
-		        d = function (s) { return decodeURIComponent(s.replace(a, " ")); },
-		        q = window.location.search.substring(1);
 
-		    while (e = r.exec(q))
-		       urlParams[d(e[1])] = d(e[2]);
-		})();
-		
-		//			urlParams = {
-		//			    enc: " Hello ",
-		//			    i: "main",
-		//			    mode: "front",
-		//			    sid: "de8d49b78a85a322c4155015fdce22c4",
-		//			    empty: ""
-		//			}
-		//
-		//			alert(urlParams["mode"]);
-		//			// -> "front"
-		
 		
 		
 		$.ajax({
@@ -552,34 +511,79 @@ function initEditJoinFunction () {
 	$(".edit-join").click(function() {
 		
 
-		//TODO: Factor this out
-		var urlParams = {};
-		(function () {
-		    var e,
-		        a = /\+/g,  // Regex for replacing addition symbol with a space
-		        r = /([^&=]+)=?([^&]*)/g,
-		        d = function (s) { return decodeURIComponent(s.replace(a, " ")); },
-		        q = window.location.search.substring(1);
-
-		    while (e = r.exec(q))
-		       urlParams[d(e[1])] = d(e[2]);
-		})();
-		
-		//			urlParams = {
-		//			    enc: " Hello ",
-		//			    i: "main",
-		//			    mode: "front",
-		//			    sid: "de8d49b78a85a322c4155015fdce22c4",
-		//			    empty: ""
-		//			}
-		//
-		//			alert(urlParams["mode"]);
-		//			// -> "front"
-		
 		
 		//TODO: Refactor this URL
 		window.location.href = '/dataMerger/pages/merges/edit-join.jsp?merge_id=' + urlParams["merge_id"];
 		
 	});
 	
+}
+
+
+function initSaveResolutionsByRowFunction () {
+	
+	$(".save-resolutions-by-row").click(function() {
+		
+		// Get data from uploads form.
+		var data = $.toJSON($('.resolutions-by-row-form').serializeObject());
+		
+		//alert(data);
+		
+
+		$.ajax({
+			type: 'PUT',
+			data: data,
+			url: '/dataMerger/data/merges/' + urlParams["merge_id"] + '/resolutions-by-row',
+			dataType: 'json',
+			success: function (data, textStatus, jqXHR) {
+
+				retrieveResolutionsByRowAsXHTMLUsingMergeId(urlParams["merge_id"]);
+					
+
+			},
+			error: function (jqXHR, textStatus, errorThrown){
+	            $('.error').html("errorThrown: " + errorThrown);
+	            $('.status').html("textStatus: " + textStatus);
+	        } 
+		});
+		
+	});
+	
+}
+
+function initChangeSolutionByRowFunction () {
+	
+
+	$('.resolutions-by-row-form select[name=solution_by_row_id]').change(function() {
+
+		var row = $(this).closest("tr");
+		
+		//alert($(this).val());
+		
+		if ($(this).val() == '4') {
+			row.find('td label[for|="constant"]').css('display', 'inline');
+			row.find('td input[name|="constant"]').css('display', 'inline');
+		} else {
+			row.find('td label[for|="constant"]').css('display', 'none');
+			row.find('td input[name|="constant"]').css('display', 'none');
+		}
+
+	});	
+	
+}
+
+function retrieveResolutionsByRowAsXHTMLUsingMergeId (mergeId) {
+	
+	
+	$.ajax({
+		data: '',
+		dataType: 'html',
+		success: function (data, textStatus, jqXHR) { 
+			
+				$('.resolutions-by-row-form').html(data);
+				initChangeSolutionByRowFunction(); // the replaced HTML needs to be re-bound.
+		},
+		type: 'GET',
+		url: '/dataMerger/data/merges/' + mergeId + '/resolutions-by-row'
+	});	
 }

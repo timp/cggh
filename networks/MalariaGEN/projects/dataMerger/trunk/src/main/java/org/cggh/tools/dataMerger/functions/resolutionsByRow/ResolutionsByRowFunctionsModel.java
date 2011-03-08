@@ -1,6 +1,10 @@
 package org.cggh.tools.dataMerger.functions.resolutionsByRow;
 
 import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.logging.Logger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.sql.rowset.CachedRowSet;
 
@@ -13,9 +17,12 @@ public class ResolutionsByRowFunctionsModel implements java.io.Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = 2410465698437549757L;
+	private final Logger logger = Logger.getLogger("org.cggh.tools.dataMerger.functions.resolutionsByRow");
+	
 	private CachedRowSet resolutionsByRowAsCachedRowSet;
 	private String resolutionsByRowAsDecoratedXHTMLTable;
 	private CachedRowSet solutionsByRowAsCachedRowSet;
+	private HashMap<Integer, String> joinColumnNamesByColumnNumberAsHashMap;
 
 	public ResolutionsByRowFunctionsModel () {
 		
@@ -41,20 +48,77 @@ public class ResolutionsByRowFunctionsModel implements java.io.Serializable {
 
 				resolutionsByRowAsDecoratedXHTMLTable = "";
 				
-				resolutionsByRowAsDecoratedXHTMLTable = resolutionsByRowAsDecoratedXHTMLTable.concat("<table>");
+				resolutionsByRowAsDecoratedXHTMLTable = resolutionsByRowAsDecoratedXHTMLTable.concat("<table class=\"resolutions-by-row-table\">");
 
 				 resolutionsByRowAsDecoratedXHTMLTable = resolutionsByRowAsDecoratedXHTMLTable.concat("<thead>");
 				 resolutionsByRowAsDecoratedXHTMLTable = resolutionsByRowAsDecoratedXHTMLTable.concat("<tr>");
 				 
-				 //TODO: key column headers go here.
-				 resolutionsByRowAsDecoratedXHTMLTable = resolutionsByRowAsDecoratedXHTMLTable.concat("<th>TODO: Key columns</th>");
+				 Pattern joinedKeytableKeyColumnNamePattern = Pattern.compile("^key_column_(\\d+)$");
 				 
-				 resolutionsByRowAsDecoratedXHTMLTable = resolutionsByRowAsDecoratedXHTMLTable.concat("<th>Solution</th>");
 				 
-				//TODO: Conflict columns go here. Or all nonKeyCrossDatatable columns, with conflict ones somehow flagged.
-				 resolutionsByRowAsDecoratedXHTMLTable = resolutionsByRowAsDecoratedXHTMLTable.concat("<th>TODO: other columns</th>");
+		          for (int i = 1; i <= this.getResolutionsByRowAsCachedRowSet().getMetaData().getColumnCount(); i++) {
+
+		        		  Matcher joinedKeytableKeyColumnNamePatternMatcher = joinedKeytableKeyColumnNamePattern.matcher(this.getResolutionsByRowAsCachedRowSet().getMetaData().getColumnName(i));
+		        		  
+		        		  if (joinedKeytableKeyColumnNamePatternMatcher.find()) {
+		        			  
+			        		  Integer columnNumber = Integer.parseInt(joinedKeytableKeyColumnNamePatternMatcher.group(1));
+			        		  
+			        		  this.logger.info("Got columnNumber: " + columnNumber);
+			        		  
+			        		  resolutionsByRowAsDecoratedXHTMLTable = resolutionsByRowAsDecoratedXHTMLTable.concat("<th rowspan=\"2\">" + this.getJoinColumnNamesByColumnNumberAsHashMap().get(columnNumber) + "</th>");
+			        		  
+		        		  }
+
+		          }
+				 
+				 
+				 resolutionsByRowAsDecoratedXHTMLTable = resolutionsByRowAsDecoratedXHTMLTable.concat("<th rowspan=\"2\">Solution</th>");
+				 
+				 
+				 Pattern resolutionsByRowAsCachedRowSetSource1ColumnNamePattern = Pattern.compile("^column_(\\d+)_source_1$");
+				 
+				 this.logger.info("Searching for non-key cross-datatable columns by label...");
+				 
+		          for (int i = 1; i <= this.getResolutionsByRowAsCachedRowSet().getMetaData().getColumnCount(); i++) {
+
+		        		  Matcher resolutionsByRowAsCachedRowSetColumnNamePatternMatcher = resolutionsByRowAsCachedRowSetSource1ColumnNamePattern.matcher(this.getResolutionsByRowAsCachedRowSet().getMetaData().getColumnLabel(i));
+		        		  
+		        		  this.logger.info("Looking at column label: " +  this.getResolutionsByRowAsCachedRowSet().getMetaData().getColumnLabel(i));
+		        		  
+		        		  if (resolutionsByRowAsCachedRowSetColumnNamePatternMatcher.find()) {
+		        		  
+			        		  Integer columnNumber = Integer.parseInt(resolutionsByRowAsCachedRowSetColumnNamePatternMatcher.group(1));
+			        		  
+			        		  this.logger.info("Got columnNumber: " + columnNumber);
+			        		  
+			        		  resolutionsByRowAsDecoratedXHTMLTable += "<th colspan=\"2\">" + this.getJoinColumnNamesByColumnNumberAsHashMap().get(columnNumber) + "</th>";
+		        		  
+		        		  }
+		        	  
+		          }
+				 
 
 				 resolutionsByRowAsDecoratedXHTMLTable = resolutionsByRowAsDecoratedXHTMLTable.concat("</tr>");
+				 
+				 resolutionsByRowAsDecoratedXHTMLTable = resolutionsByRowAsDecoratedXHTMLTable.concat("<tr>");
+
+
+
+		          for (int i = 1; i <= this.getResolutionsByRowAsCachedRowSet().getMetaData().getColumnCount(); i++) {
+		        	  
+		        	  Matcher resolutionsByRowAsCachedRowSetColumnNamePatternMatcher = resolutionsByRowAsCachedRowSetSource1ColumnNamePattern.matcher(this.getResolutionsByRowAsCachedRowSet().getMetaData().getColumnLabel(i));
+		        	  
+		        	  if (resolutionsByRowAsCachedRowSetColumnNamePatternMatcher.find()) {
+
+		        		  resolutionsByRowAsDecoratedXHTMLTable = resolutionsByRowAsDecoratedXHTMLTable.concat("<th>1</th><th>2</th>");
+		        	  
+		        	  }
+		          }
+				 
+
+				 resolutionsByRowAsDecoratedXHTMLTable = resolutionsByRowAsDecoratedXHTMLTable.concat("</tr>");
+				 
 				 resolutionsByRowAsDecoratedXHTMLTable = resolutionsByRowAsDecoratedXHTMLTable.concat("</thead>");
 				 
 				 resolutionsByRowAsDecoratedXHTMLTable = resolutionsByRowAsDecoratedXHTMLTable.concat("<tbody>");
@@ -66,10 +130,18 @@ public class ResolutionsByRowFunctionsModel implements java.io.Serializable {
 					 
 					resolutionsByRowAsDecoratedXHTMLTable = resolutionsByRowAsDecoratedXHTMLTable.concat("<tr>");
 
-					//TODO
-					resolutionsByRowAsDecoratedXHTMLTable = resolutionsByRowAsDecoratedXHTMLTable.concat("<td>TODO: keys</td>");
-				
+			          for (int i = 1; i <= this.getResolutionsByRowAsCachedRowSet().getMetaData().getColumnCount(); i++) {
+			        	  
+			        	  if (this.getResolutionsByRowAsCachedRowSet().getMetaData().getColumnName(i).startsWith("key_column_")) {
+			        		  
+			        		  resolutionsByRowAsDecoratedXHTMLTable = resolutionsByRowAsDecoratedXHTMLTable.concat("<td>" + this.getResolutionsByRowAsCachedRowSet().getString(this.getResolutionsByRowAsCachedRowSet().getMetaData().getColumnName(i)) + "</td>");
+			        	  
+			        	  }
+			          }
+					
 					 resolutionsByRowAsDecoratedXHTMLTable = resolutionsByRowAsDecoratedXHTMLTable.concat("<td>");
+					 
+					 resolutionsByRowAsDecoratedXHTMLTable += "<input type=\"hidden\" name=\"joined_keytable_id\" value=\"" + this.getResolutionsByRowAsCachedRowSet().getString("joined_keytable_id") + "\" />";
 					 
 						try {
 							
@@ -120,16 +192,61 @@ public class ResolutionsByRowFunctionsModel implements java.io.Serializable {
 						}
 					 
 						if (this.getResolutionsByRowAsCachedRowSet().getString("constant") != null) {
-							resolutionsByRowAsDecoratedXHTMLTable = resolutionsByRowAsDecoratedXHTMLTable.concat("<label for=\"constant-" + this.getResolutionsByRowAsCachedRowSet().getInt("column_number") + "\">Constant:</label><input type=\"text\" name=\"constant-" + this.getResolutionsByRowAsCachedRowSet().getInt("column_number") + "\" value=\"" + this.getResolutionsByRowAsCachedRowSet().getString("constant") + "\"/>");
+							resolutionsByRowAsDecoratedXHTMLTable += "<label for=\"constant-" + this.getResolutionsByRowAsCachedRowSet().getInt("joined_keytable_id") + "\">Constant:</label><input type=\"text\" name=\"constant-" + this.getResolutionsByRowAsCachedRowSet().getInt("joined_keytable_id") + "\" value=\"" + this.getResolutionsByRowAsCachedRowSet().getString("constant") + "\"/>";
 						} else {
-							resolutionsByRowAsDecoratedXHTMLTable = resolutionsByRowAsDecoratedXHTMLTable.concat("<label for=\"constant-" + this.getResolutionsByRowAsCachedRowSet().getInt("column_number") + "\" style=\"display:none;\">Constant:</label><input type=\"text\" name=\"constant-" + this.getResolutionsByRowAsCachedRowSet().getInt("column_number") + "\" value=\"\" style=\"display:none;\"/>");
+							resolutionsByRowAsDecoratedXHTMLTable += "<label for=\"constant-" + this.getResolutionsByRowAsCachedRowSet().getInt("joined_keytable_id") + "\" style=\"display:none;\">Constant:</label><input type=\"text\" name=\"constant-" + this.getResolutionsByRowAsCachedRowSet().getInt("joined_keytable_id") + "\" value=\"\" style=\"display:none;\"/>";
 						}
 						
 					 resolutionsByRowAsDecoratedXHTMLTable = resolutionsByRowAsDecoratedXHTMLTable.concat("</td>");
 					 
 					 //TODO
-					 resolutionsByRowAsDecoratedXHTMLTable = resolutionsByRowAsDecoratedXHTMLTable.concat("<td>TODO: value comparisons</td>");
+
+					 this.logger.info("Searching for non-key cross-datatable columns by label (to be used for getting data)...");
 					 
+			          for (int i = 1; i <= this.getResolutionsByRowAsCachedRowSet().getMetaData().getColumnCount(); i++) {
+			        	  
+			        		  Matcher resolutionsByRowAsCachedRowSetColumnNamePatternMatcher = resolutionsByRowAsCachedRowSetSource1ColumnNamePattern.matcher(this.getResolutionsByRowAsCachedRowSet().getMetaData().getColumnLabel(i));
+			        		  
+			        		  this.logger.info("Looking at column label: " +  this.getResolutionsByRowAsCachedRowSet().getMetaData().getColumnLabel(i));
+			        		  
+			        		  if (resolutionsByRowAsCachedRowSetColumnNamePatternMatcher.find()) {
+			        		  
+				        		  Integer columnNumber = Integer.parseInt(resolutionsByRowAsCachedRowSetColumnNamePatternMatcher.group(1));
+				        		  
+				        		  this.logger.info("Got columnNumber: " + columnNumber);
+				        		  
+				        		  String columnLabelForSource2Column = "column_" + columnNumber.toString() + "_source_2";
+				        		  
+				        		  //FIXME: Annoying bug in CachedRowSet means we can't grab the column by its label. :-(
+				        		  //Workaround: look for the column for source 2
+				        		  
+				        		  //TODO:
+				        		  Integer columnIndexForSource2Column = i+1;
+				        		  for (int j = 1; j <= this.getResolutionsByRowAsCachedRowSet().getMetaData().getColumnCount(); j++) {
+				        			  
+				        			  if (columnLabelForSource2Column.equals(this.getResolutionsByRowAsCachedRowSet().getMetaData().getColumnLabel(j))) {
+				        			  
+				        				  columnIndexForSource2Column = j;
+				        				  break;
+				        			  }
+				        				  
+				        		  }
+				        		  
+
+				        		  
+				        		  // Concatenate both sources at the same time, to make sure they are displayed together
+
+				        			  if (this.getResolutionsByRowAsCachedRowSet().getString(i).equals(this.getResolutionsByRowAsCachedRowSet().getString(columnIndexForSource2Column))) {
+
+				        					 resolutionsByRowAsDecoratedXHTMLTable += "<td>" + this.getResolutionsByRowAsCachedRowSet().getString(i)  + "</td><td>" + this.getResolutionsByRowAsCachedRowSet().getString(columnIndexForSource2Column) + "</td>";
+
+				        			  } else {
+				        				  resolutionsByRowAsDecoratedXHTMLTable += "<td class=\"conflicting-data\">" + this.getResolutionsByRowAsCachedRowSet().getString(i)  + "</td><td class=\"conflicting-data\">" + this.getResolutionsByRowAsCachedRowSet().getString(columnIndexForSource2Column) + "</td>";
+				        			  }
+				        		  
+			        		  }
+			        	  
+			          }
 					 
 					 
 					 resolutionsByRowAsDecoratedXHTMLTable = resolutionsByRowAsDecoratedXHTMLTable.concat("</tr>");
@@ -139,8 +256,8 @@ public class ResolutionsByRowFunctionsModel implements java.io.Serializable {
 				 
 				resolutionsByRowAsDecoratedXHTMLTable = resolutionsByRowAsDecoratedXHTMLTable.concat("</table>");
 				
-				resolutionsByRowAsDecoratedXHTMLTable = resolutionsByRowAsDecoratedXHTMLTable.concat("<div>TODO: paging</div>");
-				resolutionsByRowAsDecoratedXHTMLTable = resolutionsByRowAsDecoratedXHTMLTable.concat("<div>TODO: Show solved columns <input type=\"checkbox\"/></div>");
+				resolutionsByRowAsDecoratedXHTMLTable = resolutionsByRowAsDecoratedXHTMLTable.concat("<!-- <div>TODO: paging</div> -->");
+				resolutionsByRowAsDecoratedXHTMLTable = resolutionsByRowAsDecoratedXHTMLTable.concat("<!-- <div>TODO: Show solved columns <input type=\"checkbox\"/></div> -->");
 				
 			} else {
 				
@@ -176,5 +293,12 @@ public class ResolutionsByRowFunctionsModel implements java.io.Serializable {
 		return this.solutionsByRowAsCachedRowSet;
 	}
 
+	public void setJoinColumnNamesByColumnNumberAsHashMap(
+			HashMap<Integer, String> joinColumnNamesByColumnNumberAsHashMap) {
+		this.joinColumnNamesByColumnNumberAsHashMap = joinColumnNamesByColumnNumberAsHashMap;
+	}
+	public HashMap<Integer, String> getJoinColumnNamesByColumnNumberAsHashMap () {
+		return this.joinColumnNamesByColumnNumberAsHashMap;
+	}
 
 }

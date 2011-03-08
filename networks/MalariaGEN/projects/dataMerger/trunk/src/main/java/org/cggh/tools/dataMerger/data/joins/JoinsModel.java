@@ -350,6 +350,14 @@ public class JoinsModel implements java.io.Serializable {
 			          preparedStatement3.close();
 
 			          joinsModel.setCrossDatatableJoinsAsCachedRowSet(crossDatatableJoinsAsCachedRowSet);
+			          
+			          
+			          //FIXME: I think the naming is causing some architectural non-sense here.
+			          
+			          joinsModel.setNonKeyCrossDatatableJoinsAsCachedRowSet(this.retrieveNonKeyCrossDatatableJoinsAsCachedRowsetByMergeId(mergeModel.getId(), connection));
+			          joinsModel.setKeyJoinsAsCachedRowSet(this.retrieveKeyJoinsAsCachedRowsetByMergeId(mergeModel.getId(), connection));
+			          
+			          
 		          
 			        }
 			        catch(SQLException sqlException){
@@ -810,6 +818,64 @@ public class JoinsModel implements java.io.Serializable {
 	        } 
 		
 		return datatable2ColumnNamesByColumnNumberAsHashMap;
+	}
+
+
+	public HashMap<Integer, String> retrieveJoinColumnNamesByColumnNumberAsHashMapUsingMergeModel(
+			MergeModel mergeModel) {
+
+		HashMap<Integer, String> joinColumnNamesByColumnNumberAsHashMap = new HashMap<Integer, String>();
+
+		try {
+			
+			Connection connection = this.getDataModel().getNewConnection();
+			 
+			if (!connection.isClosed()) {		
+		
+			      try{
+			          PreparedStatement preparedStatement = connection.prepareStatement("SELECT column_number, column_name FROM `join` WHERE merge_id = ? ORDER BY column_number;");
+			          preparedStatement.setInt(1, mergeModel.getId());
+			          preparedStatement.executeQuery();
+			          ResultSet resultSet = preparedStatement.getResultSet();
+			          
+			          if (resultSet.next()) {
+			        	  
+			        	  resultSet.beforeFirst();
+			        	  
+			        	  while(resultSet.next()){
+		
+			        		  joinColumnNamesByColumnNumberAsHashMap.put(resultSet.getInt("column_number"), resultSet.getString("column_name"));
+			        	  
+			        	  }
+		
+			      	  } else {
+			      		  
+			      		  this.logger.severe("Did not retrieve any column names for the specified merge id: " + mergeModel.getId());
+			      		  
+			      	  }
+			          
+			          resultSet.close();
+			          
+			          preparedStatement.close();
+		
+			        }
+			        catch(SQLException sqlException){
+				    	sqlException.printStackTrace();
+			        } 		
+	        
+			} else {
+				
+				this.logger.severe("connection.isClosed");
+			}
+				
+		} 
+		catch (Exception e) {
+			
+			this.logger.severe(e.getMessage());
+			e.printStackTrace();
+		}
+		
+		return joinColumnNamesByColumnNumberAsHashMap;
 	}
 
 

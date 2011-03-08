@@ -188,7 +188,6 @@ public class MergeScriptsModel implements java.io.Serializable {
 	public MergeModel retrieveMergeAsMergeModelThroughDeterminingProblemsByColumnUsingMergeModel(
 			MergeModel mergeModel, Connection connection) {
 
-		
 		//TODO: Make this logic tighter
 		
 		try {		
@@ -229,15 +228,6 @@ public class MergeScriptsModel implements java.io.Serializable {
 		
 		//For each nonKeyCrossJoin
 
-		//TODO
-		//SELECT * FROM datatable_1
-		  //JOIN datatable_2 ON datatable_2.key_column_A = datatable_1.key_column_B AND datatable_2.key_column_X = datatable_1.key_column_Y
-		  
-		  //Problems can be one of problem_by_column:
-		  //conflicting values								WHERE datatable_1.column_x != datatable_2.column_y AND datatable_1.column_x IS NOT NULL AND datatable_2.column_y IS NOT NULL
-		  //NULLs in source 1 versus values in source 2		WHERE datatable_1.column_x != datatable_2.column_y AND datatable_1.column_x IS NULL
-		  //NULLs in source 2 versus values in source 1		WHERE datatable_1.column_x != datatable_2.column_y AND datatable_2.column_y IS NULL
-				
 		//NOTE: NULL and blank strings are synonymous here, since imports are from text files using blank strings in place of nulls
 		//However, to future-proof in case NULLs appear in the text files, NULLs and '' are treated equally here.
 		
@@ -247,7 +237,7 @@ public class MergeScriptsModel implements java.io.Serializable {
 			if (nonKeyCrossDatatableJoinsAsCachedRowSet.next()) {
 				
 				//because next() skips the first row.
-				nonKeyCrossDatatableJoinsAsCachedRowSet.first();
+				nonKeyCrossDatatableJoinsAsCachedRowSet.beforeFirst();
 				
 				ResolutionsByColumnModel resolutionsByColumnModel = new ResolutionsByColumnModel();
 				
@@ -446,22 +436,15 @@ public class MergeScriptsModel implements java.io.Serializable {
 
 
 
-	public MergeModel retrieveMergeAsMergeModelThroughDeterminingTotalConflictsCountByMergeId(
-			Integer mergeId, Connection connection) {
+	public MergeModel retrieveMergeAsMergeModelThroughDeterminingTotalConflictsCountUsingMergeModel(
+			MergeModel mergeModel, Connection connection) {
 
-		MergeModel mergeModel = new MergeModel();
-		mergeModel.setId(mergeId);
-		
-		//Get the otherwise complete merge data
-		MergesModel mergesModel = new MergesModel();
-		mergeModel = mergesModel.retrieveMergeAsMergeModelByMergeId(mergeModel.getId(), connection);
-		
-		
-		//TODO: By Row and Cell.
-		
+		// Should only add to the model.
+
+		//Note: relies on resolutions_by_column
+		//FIXME: When the resolutions by row are changed, this needs to take the solutions into account.
 		
 	      try{
-	    	  //FIXME:
 	    	  PreparedStatement preparedStatement = connection.prepareStatement("SELECT COUNT(conflicts_count) AS totalConflictsCount FROM resolution_by_column WHERE solution_by_column_id IS NULL AND merge_id = ?;");
 	    	  preparedStatement.setInt(1, mergeModel.getId());
 	    	  preparedStatement.executeQuery();
@@ -490,6 +473,10 @@ public class MergeScriptsModel implements java.io.Serializable {
 	          resultSet.close();
 	          preparedStatement.close();
 	          
+	          // Update the db with the new info
+	          MergesModel mergesModel = new MergesModel();
+	          
+	          //FIXME: This breaks if it doesn't have the full data, e.g. Upload1Model, Upload2Model.
 	          mergesModel.updateMergeUsingMergeModel(mergeModel, connection);
 	          
 
@@ -498,6 +485,7 @@ public class MergeScriptsModel implements java.io.Serializable {
 		    	sqlException.printStackTrace();
 	        }
 	        
+	        // Return the model with the new info
 	        return mergeModel;
 	}
 
@@ -789,11 +777,14 @@ public class MergeScriptsModel implements java.io.Serializable {
 			this.logger.info("about to determine conflicts by column");
 
 			
-			//Use scripts
+			//Note: This doesn't update the merge's total conflicts count. See separate script call below. 
 			mergeModel = this.retrieveMergeAsMergeModelThroughDeterminingProblemsByColumnUsingMergeModel(mergeModel, connection);
 
 			this.logger.info("done determining conflicts by column");
 
+			
+			// Get an up-to-date count of the total conflicts.
+			mergeModel = this.retrieveMergeAsMergeModelThroughDeterminingTotalConflictsCountUsingMergeModel(mergeModel, connection);
 			
 
 			// If there were no conflicts, no need to look for them again.
@@ -802,9 +793,6 @@ public class MergeScriptsModel implements java.io.Serializable {
 				
 				//TODO: By Row
 				this.logger.info("about to determine conflicts by row");
-				
-				
-				// There are keys and no duplicates.
 				
 				// Create a joined_keytable for the merge data
 				MergesModel mergesModel = new MergesModel();
@@ -817,15 +805,24 @@ public class MergeScriptsModel implements java.io.Serializable {
 				//TODO:
 				mergeModel = this.retrieveMergeAsMergeModelThroughDeterminingProblemsByRowUsingMergeModel(mergeModel, connection);
 				
+				
+				this.logger.info("done determining conflicts by row");
+				
+			} else {
+				
+				this.logger.info("Skipped determining conflicts by row because totalConflictsCount = " + mergeModel.getTotalConflictsCount());
 			}
 			
 			
 			
-			this.logger.info("done determining conflicts by row");
+			
 
 		}
 		return mergeModel;
 	}
+
+
+
 
 
 

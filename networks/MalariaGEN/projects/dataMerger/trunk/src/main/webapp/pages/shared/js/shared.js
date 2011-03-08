@@ -1,7 +1,11 @@
+//Shared vars
+var urlParams = {};
+
+
 function initSharedFunctions () {
 
 	initSerializeObjectFunction();
-
+	initURLParamsVar();
 }
 
 function initSerializeObjectFunction () {
@@ -25,4 +29,31 @@ function initSerializeObjectFunction () {
 	    return o;
 	};
 	
+}
+
+function initURLParamsVar() {
+
+
+	(function () {
+	    var e,
+	        a = /\+/g,  // Regex for replacing addition symbol with a space
+	        r = /([^&=]+)=?([^&]*)/g,
+	        d = function (s) { return decodeURIComponent(s.replace(a, " ")); },
+	        q = window.location.search.substring(1);
+	
+	    while (e = r.exec(q))
+	       urlParams[d(e[1])] = d(e[2]);
+	})();
+	
+	//			urlParams = {
+	//			    enc: " Hello ",
+	//			    i: "main",
+	//			    mode: "front",
+	//			    sid: "de8d49b78a85a322c4155015fdce22c4",
+	//			    empty: ""
+	//			}
+	//
+	//			alert(urlParams["mode"]);
+	//			// -> "front"
+
 }

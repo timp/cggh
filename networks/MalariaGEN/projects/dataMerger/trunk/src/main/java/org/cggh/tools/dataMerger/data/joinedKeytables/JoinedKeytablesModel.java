@@ -114,11 +114,11 @@ public class JoinedKeytablesModel implements java.io.Serializable {
 
 
 		JoinedKeytableModel joinedKeytableModel = new JoinedKeytableModel();
-		
-		// TODO
 
 		joinedKeytableModel.setName("joined_keytable_" + mergeModel.getId());
 		
+		// See whether a table by this name already exists
+		//TODO: This is a bit convoluted. Consider using something like DataModel.isTableExistingByName(name)
 		JoinedKeytableModel testJoinedKeytableModel = this.retrieveJoinedKeytableAsJoinedKeytableModelUsingName(joinedKeytableModel.getName(), connection);
 		
 		if (testJoinedKeytableModel.getDataAsCachedRowSet() == null) {
@@ -268,8 +268,7 @@ public class JoinedKeytablesModel implements java.io.Serializable {
 		
 		joinedKeytableModel.setName(name);
 
-		  //TODO: Data
-		
+
 	      try {
 	          PreparedStatement preparedStatement = connection.prepareStatement("SELECT id, joined_keytable_name FROM `merge` WHERE joined_keytable_name = ?;");
 	          preparedStatement.setString(1, joinedKeytableModel.getName());				          

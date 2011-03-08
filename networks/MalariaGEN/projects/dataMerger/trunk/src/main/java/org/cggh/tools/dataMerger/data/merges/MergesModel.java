@@ -10,6 +10,7 @@ import javax.sql.rowset.CachedRowSet;
 
 import org.cggh.tools.dataMerger.data.DataModel;
 import org.cggh.tools.dataMerger.data.datatables.DatatablesModel;
+import org.cggh.tools.dataMerger.data.joinedKeytables.JoinedKeytableModel;
 import org.cggh.tools.dataMerger.data.joinedKeytables.JoinedKeytablesModel;
 import org.cggh.tools.dataMerger.data.joins.JoinsModel;
 import org.cggh.tools.dataMerger.data.uploads.UploadsModel;
@@ -133,10 +134,17 @@ public class MergesModel implements java.io.Serializable {
 	        	  JoinsModel joinsModel = new JoinsModel();
 	        	  joinsModel.setDataModel(this.getDataModel());
 	        	  mergeModel.setJoinsModel(joinsModel.retrieveJoinsAsJoinsModelByMergeId(mergeModel.getId(), connection));
+	        	  
+	        	  //FIXME: This seems wrong. Refactor to joinsModel.setDataAsCachedRowSet or review naming.
 	        	  mergeModel.setJoinsAsCachedRowSet(joinsModel.retrieveJoinsAsCachedRowSetByMergeId(mergeModel.getId(), connection));
+	        	  
 	        	  //Retrieve the join-specific datatable data from the db and add to the datatable models.
 	        	  mergeModel.getDatatable1Model().setKeyColumnNamesAsStringList(joinsModel.retrieveDatatable1KeyColumnNamesAsStringListByMergeId(mergeModel.getId(), connection));
 	        	  mergeModel.getDatatable2Model().setKeyColumnNamesAsStringList(joinsModel.retrieveDatatable2KeyColumnNamesAsStringListByMergeId(mergeModel.getId(), connection));
+	        	  
+	        	  //Retrieve the joined keytable data
+	        	  JoinedKeytablesModel joinedKeytablesModel = new JoinedKeytablesModel();
+	        	  mergeModel.setJoinedKeytableModel(joinedKeytablesModel.retrieveJoinedKeytableAsJoinedKeytableModelUsingMergeId(mergeModel.getId(), connection));
 	        	  
 	      	  } else {
 	      		  
