@@ -41,3 +41,7 @@
 .uploads-table tr.even {
     background-color: #cfe2f3;
 }
+.merging-indicator {
+	margin-left: 5px;
+	vertical-align: middle;
+}

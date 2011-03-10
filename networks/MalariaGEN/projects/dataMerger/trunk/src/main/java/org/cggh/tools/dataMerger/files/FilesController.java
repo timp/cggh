@@ -14,6 +14,8 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 
 import javax.servlet.ServletContext;
@@ -54,14 +56,23 @@ public class FilesController extends HttpServlet {
         //Should be able to access files using a GET request to /dataMerger/files/uploads/[id]
 		//request.getPathInfo().equals("/1")
 		
-		//Should be able to access files using a GET request to /dataMerger/files/uploads?id=1
+		//Should be able to access files using a GET request to /dataMerger/files/uploads/1
 		//request.getParameter("id");
 		
-		String repository_filepath = null;
-		String original_filename = null;
+		
 
-		if (request.getPathInfo().equals("/uploads")) {
+		Pattern uploadsURLPattern = Pattern.compile("^/uploads/(\\d+)$");
+		 Matcher uploadsURLPatternMatcher = uploadsURLPattern.matcher(request.getPathInfo());
+		
+		
+		if (uploadsURLPatternMatcher.find()) {
+			
+			
+			
+			
 			try {
+				
+				//FIXME: Use DataModel
 				
 				Class.forName("com.mysql.jdbc.Driver").newInstance();
 				
@@ -70,6 +81,7 @@ public class FilesController extends HttpServlet {
 				if (!connection.isClosed()) {
 
 					// Get the user_id
+					//TODO: convert to UserModel.setId
 					Integer user_id = null;
 					
 				      try{
@@ -98,8 +110,13 @@ public class FilesController extends HttpServlet {
 				        //TODO: Bail out if user_id is null
 				        
 				      try{
+				    	  
+				    	//TODO: convert to UploadModel.setId
+				    	  Integer upload_id = Integer.parseInt(uploadsURLPatternMatcher.group(1));
+				    	  
+				    	  
 				          PreparedStatement preparedStatement = connection.prepareStatement("SELECT id, repository_filepath, original_filename FROM upload WHERE id = ? AND created_by_user_id = ?;");
-				          preparedStatement.setInt(1, Integer.parseInt(request.getParameter("id")));
+				          preparedStatement.setInt(1, upload_id);
 				          preparedStatement.setInt(2, user_id);
 				          preparedStatement.executeQuery();
 				          ResultSet resultSet = preparedStatement.getResultSet();
@@ -107,8 +124,50 @@ public class FilesController extends HttpServlet {
 				          // There may be no file in the uploads table.
 				          if (resultSet.next()) {
 				        	  resultSet.first();
+				        	  
+				        	  String repository_filepath = null;
+				      		String original_filename = null;
+				        	  
 				        	  repository_filepath = resultSet.getString("repository_filepath");
 				        	  original_filename = resultSet.getString("original_filename");
+				        	  
+				        	  
+				        	  
+				        	  
+				        	  
+				              File                f        = new File(repository_filepath);
+				              int                 length   = 0;
+				              ServletOutputStream op       = response.getOutputStream();
+				              ServletContext      context  = getServletConfig().getServletContext();
+				              String              mimetype = context.getMimeType( repository_filepath );
+
+
+				              response.setContentType( (mimetype != null) ? mimetype : "application/octet-stream" );
+				              response.setContentLength( (int)f.length() );
+				              response.setHeader( "Content-Disposition", "attachment; filename=\"" + original_filename + "\"" );
+
+				           
+				              //res.setContentType("application/x-download");
+				              //res.setHeader("Content-Disposition", "attachment; filename=" + filename);
+				              
+
+				              byte[] bbuf = new byte[2048]; //8192
+				              DataInputStream in = new DataInputStream(new FileInputStream(f));
+
+				              while ((in != null) && ((length = in.read(bbuf)) != -1))
+				              {
+				                  op.write(bbuf,0,length);
+				              }
+
+				              in.close();
+				              op.flush();
+				              op.close();					        	  
+				        	  
+				        	  
+				        	  
+				        	  
+				        	  
+				        	  
 				          } else {
 				        	  System.out.println("Db query gives !resultSet.next()");
 				          }
@@ -141,33 +200,7 @@ public class FilesController extends HttpServlet {
 			System.out.println("Unhandled pathInfo.");
 		}
 		
-        File                f        = new File(repository_filepath);
-        int                 length   = 0;
-        ServletOutputStream op       = response.getOutputStream();
-        ServletContext      context  = getServletConfig().getServletContext();
-        String              mimetype = context.getMimeType( repository_filepath );
 
-
-        response.setContentType( (mimetype != null) ? mimetype : "application/octet-stream" );
-        response.setContentLength( (int)f.length() );
-        response.setHeader( "Content-Disposition", "attachment; filename=\"" + original_filename + "\"" );
-
-     
-        //res.setContentType("application/x-download");
-        //res.setHeader("Content-Disposition", "attachment; filename=" + filename);
-        
-
-        byte[] bbuf = new byte[2048]; //8192
-        DataInputStream in = new DataInputStream(new FileInputStream(f));
-
-        while ((in != null) && ((length = in.read(bbuf)) != -1))
-        {
-            op.write(bbuf,0,length);
-        }
-
-        in.close();
-        op.flush();
-        op.close();		
 	    
 	}
 

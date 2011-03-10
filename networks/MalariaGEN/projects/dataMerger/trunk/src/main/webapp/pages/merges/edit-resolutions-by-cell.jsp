@@ -4,7 +4,7 @@
 <%@ page import="javax.sql.rowset.CachedRowSet" %>
 <%@ page import="org.cggh.tools.dataMerger.data.merges.MergesModel" %>
 <%@ page import="org.cggh.tools.dataMerger.data.merges.MergeModel" %>
-<%@ page import="org.cggh.tools.dataMerger.data.resolutionsByColumn.ResolutionsByColumnModel" %>
+<%@ page import="org.cggh.tools.dataMerger.data.resolutionsByCell.ResolutionsByCellModel" %>
 <%
 
 MergesModel mergesModel = new MergesModel();
@@ -19,7 +19,7 @@ mergeModel = mergesModel.retrieveMergeAsMergeModelByMergeId(Integer.parseInt(req
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>Merges</title>
+<title>dataMerger - Merges</title>
 <link rel="stylesheet" href="css/merges.css" type="text/css" />
 
 	<script type="text/javascript" src="../shared/js/jquery.min.js"></script>
@@ -89,7 +89,7 @@ mergeModel = mergesModel.retrieveMergeAsMergeModelByMergeId(Integer.parseInt(req
 		</div>
 		
 		<div>
-			<button class="save-resolutions-by-column">Save Resolutions</button>
+			<button class="save-resolutions-by-cell">Save Resolutions</button>
 		
 			<button class="edit-join">Edit Join</button>
 			
@@ -101,29 +101,26 @@ mergeModel = mergesModel.retrieveMergeAsMergeModelByMergeId(Integer.parseInt(req
 		
 		<ul>
 			<!-- TODO: soft-code these link urls -->
-			<li><a href="/dataMerger/pages/merges/edit-resolutions-by-column.jsp?merge_id=<%=mergeModel.getId()%>">By Column</a></li>
-			<li><a href="/dataMerger/pages/merges/edit-resolutions-by-row.jsp?merge_id=<%=mergeModel.getId()%>">By Row</a></li>
-			<li><a href="/dataMerger/pages/merges/edit-resolutions-by-cell.jsp?merge_id=<%=mergeModel.getId()%>">By Cell</a></li>
+			<li><a href="<%= basePath %>pages/merges/edit-resolutions-by-column.jsp?merge_id=<%=mergeModel.getId()%>">By Column</a></li>
+			<li><a href="<%= basePath %>pages/merges/edit-resolutions-by-row.jsp?merge_id=<%=mergeModel.getId()%>">By Row</a></li>
+			<li><a href="<%= basePath %>pages/merges/edit-resolutions-by-cell.jsp?merge_id=<%=mergeModel.getId()%>">By Cell</a></li>
 		</ul>
 		
-		<div class="resolutions-by-column">
-		<form class="resolutions-by-column-form" onsubmit="return false;" autocomplete="off">
+		<div class="resolutions-by-cell">
+		<form class="resolutions-by-cell-form" onsubmit="return false;" autocomplete="off">
 <%
 	
-	ResolutionsByColumnModel resolutionsByColumnModel = new ResolutionsByColumnModel();
-	resolutionsByColumnModel.setDataModel(dataModel);
+	ResolutionsByCellModel resolutionsByCellModel = new ResolutionsByCellModel();
+	resolutionsByCellModel.setDataModel(dataModel);
 	
 	//FIXME
 	//resolutionsByColumnModel.setUserModel(userModel);
 
-	out.print(resolutionsByColumnModel.retrieveResolutionsByColumnAsDecoratedXHTMLTableUsingMergeModel(mergeModel));
+	out.print(resolutionsByCellModel.retrieveResolutionsByCellAsDecoratedXHTMLTableUsingMergeModel(mergeModel));
 	
 %>		
 		</form>
 		</div>
-		
-		<p>FIXME: Saving resolutions doesn't update the conflicts count.
-		</p>
 		
 	</div>
 </body>

@@ -112,7 +112,9 @@ public class MergesModel implements java.io.Serializable {
 	        	  mergeModel.setUpdatedDatetime(resultSet.getTimestamp("updated_datetime"));
 	        	  mergeModel.setTotalDuplicateKeysCount(resultSet.getInt("total_duplicate_keys_count"));
 	        	  mergeModel.setTotalConflictsCount(resultSet.getInt("total_conflicts_count"));
-	        	  mergeModel.getJoinedKeytableModel().setName(resultSet.getString("joined_keytable_name"));
+	        	  
+	        	  //Done further down
+	        	  //mergeModel.getJoinedKeytableModel().setName(resultSet.getString("joined_keytable_name"));
 	        	  
 	        	  //Retrieve the upload data
 	        	  UploadsModel uploadsModel = new UploadsModel();
@@ -352,7 +354,7 @@ public class MergesModel implements java.io.Serializable {
 		  if (mergeModel.getJoinedKeytableModel().getName() != null) {
 
 			  // Erase the old joined keytable
-			  joinedKeytablesModel.deleteJoinedKeytableUsingName(mergeModel.getJoinedKeytableModel().getName(), connection);
+			  joinedKeytablesModel.dropJoinedKeytableUsingName(mergeModel.getJoinedKeytableModel().getName(), connection);
 			  
 			  mergeModel.getJoinedKeytableModel().setName(null);
 			  

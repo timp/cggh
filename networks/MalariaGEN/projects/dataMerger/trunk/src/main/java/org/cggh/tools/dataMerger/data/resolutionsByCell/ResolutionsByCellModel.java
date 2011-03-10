@@ -1,4 +1,4 @@
-package org.cggh.tools.dataMerger.data.resolutionsByRow;
+package org.cggh.tools.dataMerger.data.resolutionsByCell;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -10,24 +10,26 @@ import javax.sql.rowset.CachedRowSet;
 import org.cggh.tools.dataMerger.data.DataModel;
 import org.cggh.tools.dataMerger.data.joins.JoinsModel;
 import org.cggh.tools.dataMerger.data.merges.MergeModel;
-import org.cggh.tools.dataMerger.functions.resolutionsByRow.ResolutionsByRowFunctionsModel;
+import org.cggh.tools.dataMerger.functions.resolutionsByCell.ResolutionsByCellFunctionsModel;
 import org.cggh.tools.dataMerger.scripts.merges.MergeScriptsModel;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 
-public class ResolutionsByRowModel implements java.io.Serializable {
+public class ResolutionsByCellModel implements java.io.Serializable {
+
+
 
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 1573490419082418709L;
+	private static final long serialVersionUID = -145618744750618078L;
 
-	private final Logger logger = Logger.getLogger("org.cggh.tools.dataMerger.data.resolutionsByRow");
+	private final Logger logger = Logger.getLogger("org.cggh.tools.dataMerger.data.resolutionsByCell");
 
 	private DataModel dataModel;
 	
-	public ResolutionsByRowModel() {
+	public ResolutionsByCellModel() {
 
 		this.setDataModel(new DataModel());
 		
@@ -40,39 +42,39 @@ public class ResolutionsByRowModel implements java.io.Serializable {
         return this.dataModel;
     } 
 
-	public String retrieveResolutionsByRowAsDecoratedXHTMLTableUsingMergeModel (MergeModel mergeModel) {
+	public String retrieveResolutionsByCellAsDecoratedXHTMLTableUsingMergeModel (MergeModel mergeModel) {
 		
-		String resolutionsByRowAsDecoratedXHTMLTable = null;
+		String resolutionsByCellAsDecoratedXHTMLTable = null;
 		
-		  CachedRowSet resolutionsByRowAsCachedRowSet = this.retrieveResolutionsByRowAsCachedRowSetUsingMergeModel(mergeModel);
+		  CachedRowSet resolutionsByCellAsCachedRowSet = this.retrieveResolutionsByCellAsCachedRowSetUsingMergeModel(mergeModel);
 
-		  if (resolutionsByRowAsCachedRowSet != null) {
+		  if (resolutionsByCellAsCachedRowSet != null) {
 			  
 
-			  	ResolutionsByRowFunctionsModel resolutionsByRowFunctionsModel = new ResolutionsByRowFunctionsModel();
-			  	resolutionsByRowFunctionsModel.setResolutionsByRowAsCachedRowSet(resolutionsByRowAsCachedRowSet);
-			  	resolutionsByRowFunctionsModel.setSolutionsByRowAsCachedRowSet(this.retrieveSolutionsByRowAsCachedRowSet());
+			  	ResolutionsByCellFunctionsModel resolutionsByCellFunctionsModel = new ResolutionsByCellFunctionsModel();
+			  	resolutionsByCellFunctionsModel.setResolutionsByCellAsCachedRowSet(resolutionsByCellAsCachedRowSet);
+			  	resolutionsByCellFunctionsModel.setSolutionsByCellAsCachedRowSet(this.retrieveSolutionsByCellAsCachedRowSet());
 
 			  	JoinsModel joinsModel = new JoinsModel();
 			  	joinsModel.setDataModel(this.getDataModel());
-			  	resolutionsByRowFunctionsModel.setJoinColumnNamesByColumnNumberAsHashMap(joinsModel.retrieveJoinColumnNamesByColumnNumberAsHashMapUsingMergeModel(mergeModel));
-			  	resolutionsByRowFunctionsModel.setResolutionsByRowAsDecoratedXHTMLTableUsingResolutionsByRowAsCachedRowSet();
-			  	resolutionsByRowAsDecoratedXHTMLTable = resolutionsByRowFunctionsModel.getResolutionsByRowAsDecoratedXHTMLTable();
+			  	resolutionsByCellFunctionsModel.setJoinColumnNamesByColumnNumberAsHashMap(joinsModel.retrieveJoinColumnNamesByColumnNumberAsHashMapUsingMergeModel(mergeModel));
+			  	resolutionsByCellFunctionsModel.setResolutionsByCellAsDecoratedXHTMLTableUsingResolutionsByCellAsCachedRowSet();
+			  	resolutionsByCellAsDecoratedXHTMLTable = resolutionsByCellFunctionsModel.getResolutionsByCellAsDecoratedXHTMLTable();
 			    
 		  } else {
 			  
 			  //TODO: Error handling
-			  this.logger.warning("Error: resolutionsByRowAsCachedRowSet is null");
-			  resolutionsByRowAsDecoratedXHTMLTable = "<p>Error: resolutionsByRowAsCachedRowSet is null</p>";
+			  this.logger.warning("Error: resolutionsByCellAsCachedRowSet is null");
+			  resolutionsByCellAsDecoratedXHTMLTable = "<p>Error: resolutionsByCellAsCachedRowSet is null</p>";
 			  
 		  }
 		
-		return resolutionsByRowAsDecoratedXHTMLTable;
+		return resolutionsByCellAsDecoratedXHTMLTable;
 	}
 
-	public CachedRowSet retrieveSolutionsByRowAsCachedRowSet() {
+	public CachedRowSet retrieveSolutionsByCellAsCachedRowSet() {
 		
-		CachedRowSet solutionsByRowAsCachedRowSet = null;
+		CachedRowSet solutionsByCellAsCachedRowSet = null;
 
 		   String CACHED_ROW_SET_IMPL_CLASS = "com.sun.rowset.CachedRowSetImpl";
 		   
@@ -89,8 +91,8 @@ public class ResolutionsByRowModel implements java.io.Serializable {
 				          PreparedStatement preparedStatement = connection.prepareStatement("SELECT * from solution_by_row;");
 				          preparedStatement.executeQuery();
 				          Class<?> cachedRowSetImplClass = Class.forName(CACHED_ROW_SET_IMPL_CLASS);
-				          solutionsByRowAsCachedRowSet = (CachedRowSet) cachedRowSetImplClass.newInstance();
-				          solutionsByRowAsCachedRowSet.populate(preparedStatement.getResultSet());
+				          solutionsByCellAsCachedRowSet = (CachedRowSet) cachedRowSetImplClass.newInstance();
+				          solutionsByCellAsCachedRowSet.populate(preparedStatement.getResultSet());
 				          preparedStatement.close();
 	
 				        }
@@ -111,13 +113,13 @@ public class ResolutionsByRowModel implements java.io.Serializable {
 				e.printStackTrace();
 			}
 		
-		return solutionsByRowAsCachedRowSet;
+		return solutionsByCellAsCachedRowSet;
 	}
 
-	public CachedRowSet retrieveResolutionsByRowAsCachedRowSetUsingMergeModel(
+	public CachedRowSet retrieveResolutionsByCellAsCachedRowSetUsingMergeModel(
 			MergeModel mergeModel) {
 		
-		CachedRowSet resolutionsByRowAsCachedRowSet = null;
+		CachedRowSet resolutionsByCellAsCachedRowSet = null;
 		
 
 		
@@ -217,7 +219,7 @@ public class ResolutionsByRowModel implements java.io.Serializable {
 					
 				      try{
 				    	  
-				    	  String selectResolutionsByRowSQL = "SELECT resolution_by_row.merge_id, resolution_by_row.joined_keytable_id, resolution_by_row.conflicts_count, resolution_by_row.solution_by_row_id, resolution_by_row.constant " + 
+				    	  String selectResolutionsByCellSQL = "SELECT resolution_by_row.merge_id, resolution_by_row.joined_keytable_id, resolution_by_row.conflicts_count, resolution_by_row.solution_by_row_id, resolution_by_row.constant " + 
 											        		  keyColumnReferencesAsCSVForSelectSQL + 
 											        		  nonKeyCrossDatatableColumnNameAliasesForSelectSQL +  
 											        		  "FROM resolution_by_row " +
@@ -228,15 +230,15 @@ public class ResolutionsByRowModel implements java.io.Serializable {
 											        		  "ORDER BY resolution_by_row.joined_keytable_id " +
 											        		  ";";
 				    	  
-				    	  this.logger.info("selectResolutionsByRowSQL = " + selectResolutionsByRowSQL);
+				    	  this.logger.info("selectResolutionsByCellSQL = " + selectResolutionsByCellSQL);
 				    	  
-				          PreparedStatement preparedStatement = connection.prepareStatement(selectResolutionsByRowSQL);
+				          PreparedStatement preparedStatement = connection.prepareStatement(selectResolutionsByCellSQL);
 				          preparedStatement.setInt(1, mergeModel.getId());
 				          
 				          preparedStatement.executeQuery();
 				          Class<?> cachedRowSetImplClass = Class.forName(CACHED_ROW_SET_IMPL_CLASS);
-				          resolutionsByRowAsCachedRowSet = (CachedRowSet) cachedRowSetImplClass.newInstance();
-				          resolutionsByRowAsCachedRowSet.populate(preparedStatement.getResultSet());
+				          resolutionsByCellAsCachedRowSet = (CachedRowSet) cachedRowSetImplClass.newInstance();
+				          resolutionsByCellAsCachedRowSet.populate(preparedStatement.getResultSet());
 				          preparedStatement.close();
 	
 				        }
@@ -260,11 +262,11 @@ public class ResolutionsByRowModel implements java.io.Serializable {
 	
 	
 	
-	     return resolutionsByRowAsCachedRowSet;
+	     return resolutionsByCellAsCachedRowSet;
 	}
 
-	public void updateResolutionsByRowByMergeIdUsingResolutionsByRowAsJSONObject(
-			Integer mergeId, JSONObject resolutionsByRowAsJsonObject) {
+	public void updateResolutionsByCellByMergeIdUsingResolutionsByCellAsJSONObject(
+			Integer mergeId, JSONObject resolutionsByCellAsJsonObject) {
 		
 		//Note: This also updates the merge's total conflict count.
 		
@@ -283,21 +285,21 @@ public class ResolutionsByRowModel implements java.io.Serializable {
 					
 		          //Insert all the joins from this JSON Object
 				
-		          JSONArray joinedKeytableIds = resolutionsByRowAsJsonObject.optJSONArray("joined_keytable_id");
-		          JSONArray solutionByRowIds = resolutionsByRowAsJsonObject.optJSONArray("solution_by_row_id");
+		          JSONArray joinedKeytableIds = resolutionsByCellAsJsonObject.optJSONArray("joined_keytable_id");
+		          JSONArray solutionByRowIds = resolutionsByCellAsJsonObject.optJSONArray("solution_by_row_id");
 
 		          if (joinedKeytableIds == null) {
 		        	  joinedKeytableIds = new JSONArray();
-		        	  joinedKeytableIds.put(resolutionsByRowAsJsonObject.optInt("joined_keytable_id"));
+		        	  joinedKeytableIds.put(resolutionsByCellAsJsonObject.optInt("joined_keytable_id"));
 		          }
 		          if (solutionByRowIds == null) {
 		        	  solutionByRowIds = new JSONArray();
-		        	  solutionByRowIds.put(resolutionsByRowAsJsonObject.optInt("solution_by_row_id"));
+		        	  solutionByRowIds.put(resolutionsByCellAsJsonObject.optInt("solution_by_row_id"));
 		          }
 		          
 		          for (int i = 0; i < joinedKeytableIds.length(); i++) {
 		        	  
-		        	  ResolutionByRowModel resolutionByRowModel = new ResolutionByRowModel();
+		        	  ResolutionByCellModel resolutionByRowModel = new ResolutionByCellModel();
 		        	  
 		        	  resolutionByRowModel.setMergeModel(mergeModel);
 		        	  resolutionByRowModel.getJoinedKeytableModel().setId(joinedKeytableIds.getInt(i));
@@ -306,7 +308,7 @@ public class ResolutionsByRowModel implements java.io.Serializable {
 		        	  //FIXME: Don't want to overwrite conflicts_count with null. Don't set to 0 if you have a solution (loses data).
 		        	  //Merge's total_conflicts_count will only count conflicts that have no solution.
 		        	  
-		        	  SolutionByRowModel solutionByRowModel = new SolutionByRowModel();
+		        	  SolutionByCellModel solutionByRowModel = new SolutionByCellModel();
 		        	  
 		        	  //optInt returns 0 if not an Integer
 		        	  if (solutionByRowIds.optInt(i) != 0) {
@@ -316,11 +318,11 @@ public class ResolutionsByRowModel implements java.io.Serializable {
 		        	  }
 		        	  
 		        	  
-		        	  resolutionByRowModel.setSolutionByRowModel(solutionByRowModel);
+		        	  resolutionByRowModel.setSolutionByCellModel(solutionByRowModel);
 
-		        	  if (resolutionsByRowAsJsonObject.has("constant-" + joinedKeytableIds.getInt(i))) {
+		        	  if (resolutionsByCellAsJsonObject.has("constant-" + joinedKeytableIds.getInt(i))) {
 			        	  
-		        		  resolutionByRowModel.setConstant(resolutionsByRowAsJsonObject.getString("constant-" + joinedKeytableIds.getInt(i)));
+		        		  resolutionByRowModel.setConstant(resolutionsByCellAsJsonObject.getString("constant-" + joinedKeytableIds.getInt(i)));
 		        		  
 		        	  } else {
 		        		  
@@ -328,7 +330,7 @@ public class ResolutionsByRowModel implements java.io.Serializable {
 		        	  }
 		        	  
 		        	  
-		        	  this.updateResolutionByRowUsingResolutionByRowModel(resolutionByRowModel, connection);
+		        	  this.updateResolutionByCellUsingResolutionByCellModel(resolutionByRowModel, connection);
 		        	  
 		        	  
 		        	  //TODO: Recount the conflicts (take problems with solutions as 0, otherwise use the resolution conflict_count)
@@ -357,22 +359,22 @@ public class ResolutionsByRowModel implements java.io.Serializable {
 		}
 	}
 
-	public void updateResolutionByRowUsingResolutionByRowModel(
-			ResolutionByRowModel resolutionByRowModel, Connection connection) {
+	public void updateResolutionByCellUsingResolutionByCellModel(
+			ResolutionByCellModel resolutionByRowModel, Connection connection) {
 		
 	      try {
 
 	          PreparedStatement preparedStatement = connection.prepareStatement("UPDATE resolution_by_row SET solution_by_row_id = ?, constant = ? WHERE merge_id = ? AND joined_keytable_id = ?;");
 	          
 	          
-	          if (resolutionByRowModel.getSolutionByRowModel().getId() != null) {
-	        	  preparedStatement.setInt(1, resolutionByRowModel.getSolutionByRowModel().getId());
+	          if (resolutionByRowModel.getSolutionByCellModel().getId() != null) {
+	        	  preparedStatement.setInt(1, resolutionByRowModel.getSolutionByCellModel().getId());
 	          } else {
 	        	  preparedStatement.setNull(1, java.sql.Types.INTEGER);
 	          }
 	          
 	          //FIXME: What is 4? ("Use CONSTANT")
-	          if (resolutionByRowModel.getSolutionByRowModel().getId() != null && resolutionByRowModel.getSolutionByRowModel().getId() == 4) {
+	          if (resolutionByRowModel.getSolutionByCellModel().getId() != null && resolutionByRowModel.getSolutionByCellModel().getId() == 4) {
 	        	  
 		          if (resolutionByRowModel.getConstant() != null) {
 		        	  

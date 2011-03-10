@@ -1,0 +1,56 @@
+.merge-info {
+	clear: both;
+	float: left;
+}
+
+.merge-info th {
+	
+	/* Appearance */
+	text-align: left;
+	vertical-align: top;
+}
+
+.merge-info td {
+	padding-left: 10px;
+	padding-bottom: 10px;
+	
+	vertical-align: top;
+}
+
+.problem-messages-container {
+	
+	/* Layout */
+	float: left;	
+	margin-left: 80px;
+	
+	/* Appearance */
+	color: red;
+}
+.problem-messages-container p {
+	margin-top: 0px;	
+}
+
+.buttons {
+	float: right;
+}
+
+.buttons .item {
+	clear: both;
+	float: right;	
+}
+.buttons .item .saving-indicator {
+	margin-right: 5px;
+	vertical-align: middle;
+}
+.buttons .item button {
+	margin-bottom: 5px;
+	width: 150px;
+}
+.buttons .item a {
+	display: block;
+	margin-top: 20px;
+}
+
+.resolutions-container {
+	clear: both;	
+}

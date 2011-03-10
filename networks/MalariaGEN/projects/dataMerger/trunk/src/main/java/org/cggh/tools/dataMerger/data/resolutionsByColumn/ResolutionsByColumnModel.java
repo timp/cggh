@@ -21,7 +21,7 @@ public class ResolutionsByColumnModel implements java.io.Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = 2346858760723955545L;
-	private final Logger logger = Logger.getLogger("org.cggh.tools.dataMerger.data.resolutions");
+	private final Logger logger = Logger.getLogger("org.cggh.tools.dataMerger.data.resolutionsByColumn");
 
 	private DataModel dataModel;
 	

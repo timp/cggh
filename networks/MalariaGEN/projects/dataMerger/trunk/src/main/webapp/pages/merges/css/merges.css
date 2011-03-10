@@ -7,9 +7,7 @@ input[name|=constant], input[name=constant_1], input[name=constant_2] {
 }
 */
 
-.joins-form td, .new-join-form td {
-	vertical-align: top;
-}
+
 
 /* elements in classes */
 
@@ -55,6 +53,9 @@ input[name|=constant], input[name=constant_1], input[name=constant_2] {
     background-color: #cfe2f3;
 }
 
+.merges-table .problem-message-container {
+	color: red;
+}
 
 .resolutions-by-row-table td.conflicting-data {
 	color: red;	

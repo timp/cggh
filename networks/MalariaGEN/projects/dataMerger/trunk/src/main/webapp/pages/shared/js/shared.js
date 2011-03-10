@@ -1,12 +1,17 @@
 //Shared vars
 var urlParams = {};
 
-
 function initSharedFunctions () {
 
 	initSerializeObjectFunction();
 	initURLParamsVar();
 }
+
+function logout () {
+	
+	alert("You will need to close all of your browser windows to log out.");
+}
+
 
 function initSerializeObjectFunction () {
 	

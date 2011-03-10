@@ -101,9 +101,9 @@ public class UploadsFunctionsModel implements java.io.Serializable {
 
 						 decoratedXHTMLTable = decoratedXHTMLTable.concat("<td><input type=\"checkbox\" name=\"upload_id\" value=\"" + this.getCachedRowSet().getString("id") + "\" /></td>");
 						 decoratedXHTMLTable = decoratedXHTMLTable.concat("<td>" + this.getCachedRowSet().getString("id") + "</td>");
-						 decoratedXHTMLTable = decoratedXHTMLTable.concat("<td><a href=\"/dataMerger/files/uploads?id=" + this.getCachedRowSet().getString("id") + "\">" + this.getCachedRowSet().getString("original_filename") + "</a></td>");
+						 decoratedXHTMLTable = decoratedXHTMLTable.concat("<td><a href=\"/dataMerger/files/uploads/" + this.getCachedRowSet().getString("id") + "\">" + this.getCachedRowSet().getString("original_filename") + "</a></td>");
 						 decoratedXHTMLTable = decoratedXHTMLTable.concat("<td>" + dateFormat.format(this.getCachedRowSet().getTimestamp("created_datetime")) + "</td>");
-						 decoratedXHTMLTable = decoratedXHTMLTable.concat("<td><a href=\"/dataMerger/files/uploads?id=" + this.getCachedRowSet().getString("id") + "\">Download</a></td>");
+						 decoratedXHTMLTable = decoratedXHTMLTable.concat("<td><a href=\"/dataMerger/files/uploads/" + this.getCachedRowSet().getString("id") + "\">Download</a></td>");
 						 
 						 decoratedXHTMLTable = decoratedXHTMLTable.concat("</tr>");
 						 
@@ -117,7 +117,7 @@ public class UploadsFunctionsModel implements java.io.Serializable {
 					
 					decoratedXHTMLTable = decoratedXHTMLTable.concat("<!-- <div>TODO: paging</div> -->");
 					
-					decoratedXHTMLTable = decoratedXHTMLTable.concat("<button class=\"merge-button\" onclick=\"createMergeUsingUploadIdsAsJSON();\">Merge</button>");
+					decoratedXHTMLTable = decoratedXHTMLTable.concat("<button class=\"merge-uploads-button\">Merge</button><img class=\"merging-indicator\" src=\"/dataMerger/pages/shared/gif/loading.gif\" style=\"display:none\" title=\"Merging...\"/>");
 	
 				} else {
 					

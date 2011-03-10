@@ -303,7 +303,7 @@ public class JoinedKeytablesModel implements java.io.Serializable {
 		
 	}
 
-	public void deleteJoinedKeytableUsingName(String joinedKeytableName, Connection connection) {
+	public void dropJoinedKeytableUsingName(String joinedKeytableName, Connection connection) {
 
 		JoinedKeytableModel joinedKeytableModel = new JoinedKeytableModel();
 		joinedKeytableModel.setName(joinedKeytableName);

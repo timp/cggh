@@ -76,13 +76,13 @@ public class DataController extends HttpServlet {
 
 		//TODO: centralize these
 		
-		 Pattern joinsURLPattern = Pattern.compile("/merges/(.*?)/joins");
+		 Pattern joinsURLPattern = Pattern.compile("^/merges/(\\d+)/joins$");
 		 Matcher joinsURLPatternMatcher = joinsURLPattern.matcher(request.getPathInfo());
 		 
-		 Pattern resolutionsByColumnURLPattern = Pattern.compile("/merges/(\\d+)/resolutions-by-column");
+		 Pattern resolutionsByColumnURLPattern = Pattern.compile("^/merges/(\\d+)/resolutions-by-column$");
 		 Matcher resolutionsByColumnURLPatternMatcher = resolutionsByColumnURLPattern.matcher(request.getPathInfo());
 		 
-		 Pattern resolutionsByRowURLPattern = Pattern.compile("/merges/(\\d+)/resolutions-by-row");
+		 Pattern resolutionsByRowURLPattern = Pattern.compile("^/merges/(\\d+)/resolutions-by-row$");
 		 Matcher resolutionsByRowURLPatternMatcher = resolutionsByRowURLPattern.matcher(request.getPathInfo());
 
 		  String[] headerAcceptsAsStringArray = request.getHeader("Accept").split(",");

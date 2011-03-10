@@ -27,10 +27,10 @@ button:hover {
 
 
 /* elements in classes */
-.logout a {
+a {
         text-decoration: none;  
 }
-.logout a:hover {
+a:hover {
         text-decoration: underline;     
 }
 
@@ -126,6 +126,7 @@ button:hover {
         /* Layout */
         clear: both;
         margin-left: 0px;
+        margin-bottom: 20px;
         
         
         /* Appearance */

@@ -138,8 +138,12 @@ public class MergeScriptsModel implements java.io.Serializable {
 		
 	      try{
 	    	  //SELECT SUM(duplicateValuesCount) AS totalDuplicateValuesCount FROM (SELECT COUNT(CONCAT(`Row`,`ID`)) AS duplicateValuesCount FROM `datatable_3` GROUP BY CONCAT(`Row`,`ID`) HAVING duplicateValuesCount > 1) AS duplicateValuesCounts;
+
+	    	  
+	    	  
 	    	  PreparedStatement preparedStatement = connection.prepareStatement("SELECT SUM(duplicateValuesCount) AS totalDuplicateValuesCount FROM (SELECT COUNT(CONCAT(" + Datatable2KeyColumnNamesAsSQLCSV +  ")) AS duplicateValuesCount FROM `" + mergeModel.getDatatable2Model().getName()+ "` GROUP BY CONCAT(" + Datatable2KeyColumnNamesAsSQLCSV +  ") HAVING duplicateValuesCount > 1) AS duplicateValuesCounts;");
-	          preparedStatement.executeQuery();
+	          
+	    	  preparedStatement.executeQuery();
 	          ResultSet resultSet = preparedStatement.getResultSet();
 	          
 	          if (resultSet.next()) {
@@ -808,6 +812,14 @@ public class MergeScriptsModel implements java.io.Serializable {
 				
 				this.logger.info("done determining conflicts by row");
 				
+				
+				this.logger.info("about to determine conflicts by cell");
+				
+				//TODO
+				//mergeModel = this.retrieveMergeAsMergeModelThroughDeterminingProblemsByCellUsingMergeModel(mergeModel, connection);
+				
+				this.logger.info("done determining conflicts by cell");
+				
 			} else {
 				
 				this.logger.info("Skipped determining conflicts by row because totalConflictsCount = " + mergeModel.getTotalConflictsCount());
@@ -827,6 +839,15 @@ public class MergeScriptsModel implements java.io.Serializable {
 
 
 
+	public MergeModel retrieveMergeAsMergeModelThroughDeterminingProblemsByCellUsingMergeModel(
+			MergeModel mergeModel, Connection connection) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+
+
 	public MergeModel retrieveMergeAsMergeModelThroughDeterminingProblemsByRowUsingMergeModel(
 			MergeModel mergeModel, Connection connection) {
 		
@@ -838,8 +859,6 @@ public class MergeScriptsModel implements java.io.Serializable {
 	        preparedStatement.close();
 	
 	        
-	        //CachedRowSet joinedKeytableDataAsCachedRowSet = mergeModel.getJoinedKeytableModel().getDataAsCachedRowSet();
-	        
 	        JoinsModel joinsModel = new JoinsModel();
 
 	        HashMap<Integer, String> datatable1ColumnNamesByColumnNumberAsHashMap = joinsModel.retrieveDatatable1ColumnNamesByColumnNumberAsHashMapUsingMergeId(mergeModel.getId(), connection); 
@@ -849,7 +868,6 @@ public class MergeScriptsModel implements java.io.Serializable {
 	        String datatable2JoinSQL = "";
 
 	        String columnDefinitionsUsingKeyColumnNamesSQL = "";
-	        //TODO
 	        String joinedKeytableColumnAliasesAsCSVForSelectFromJoinSQL = "";
 	        
 	        CachedRowSet keyJoinsAsCachedRowSet = joinsModel.retrieveKeyJoinsAsCachedRowsetByMergeId(mergeModel.getId(), connection);
@@ -925,6 +943,15 @@ public class MergeScriptsModel implements java.io.Serializable {
 
 					
 					//FIXME: Change this to a TEMPORARY table afer testing
+
+					String dropTemporaryJoinedDatatableSQL = "DROP TABLE IF EXISTS `tmp_joined_datatable_" + mergeModel.getId() + "`;";
+
+					this.logger.info(dropTemporaryJoinedDatatableSQL);
+					
+					PreparedStatement preparedStatement2 = connection.prepareStatement(dropTemporaryJoinedDatatableSQL);
+					preparedStatement2.executeUpdate();
+					preparedStatement2.close();				
+				
 				
 					String createAndPopulateTemporaryJoinedDatatableSQL = "CREATE TABLE `tmp_joined_datatable_" + mergeModel.getId() + "` (joined_keytable_id BIGINT(255), " + columnDefinitionsUsingKeyColumnNamesSQL + ", " + columnDefinitionsUsingNonKeyCrossDatatableColumnAndSourceNumbersSQL + ", PRIMARY KEY (joined_keytable_id)) ENGINE=InnoDB " +
 														        			"SELECT `" + mergeModel.getJoinedKeytableModel().getName() + "`.id AS joined_keytable_id, " + joinedKeytableColumnAliasesAsCSVForSelectFromJoinSQL + ", " + nonKeyCrossDatatableColumnAliasesAsCSVForSelectFromJoinSQL + 
@@ -936,9 +963,9 @@ public class MergeScriptsModel implements java.io.Serializable {
 
 					this.logger.info(createAndPopulateTemporaryJoinedDatatableSQL);
 					
-			        PreparedStatement preparedStatement2 = connection.prepareStatement(createAndPopulateTemporaryJoinedDatatableSQL);
-			        preparedStatement2.executeUpdate();
-			        preparedStatement2.close();
+			        PreparedStatement preparedStatement3 = connection.prepareStatement(createAndPopulateTemporaryJoinedDatatableSQL);
+			        preparedStatement3.executeUpdate();
+			        preparedStatement3.close();
 
 			        //TODO
 					String insertResolutionsByRowThroughCountingConflictsByRowSQL = "" +
@@ -950,9 +977,9 @@ public class MergeScriptsModel implements java.io.Serializable {
 
 					this.logger.info(insertResolutionsByRowThroughCountingConflictsByRowSQL);
 					
-					PreparedStatement preparedStatement3 = connection.prepareStatement(insertResolutionsByRowThroughCountingConflictsByRowSQL);
-					preparedStatement3.executeUpdate();
-					preparedStatement3.close();				
+					PreparedStatement preparedStatement4 = connection.prepareStatement(insertResolutionsByRowThroughCountingConflictsByRowSQL);
+					preparedStatement4.executeUpdate();
+					preparedStatement4.close();				
 				
 				
 			} catch (SQLException e) {

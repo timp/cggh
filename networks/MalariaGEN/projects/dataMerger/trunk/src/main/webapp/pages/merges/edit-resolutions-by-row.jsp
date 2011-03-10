@@ -64,8 +64,8 @@ mergeModel = mergesModel.retrieveMergeAsMergeModelByMergeId(Integer.parseInt(req
 			<dd>
 				<ol>
 					<%-- TODO: This url should be more dynamic --%>
-					<li><a href="/dataMerger/files/uploads?id=<%=mergeModel.getUpload1Model().getId()%>"><%=mergeModel.getUpload1Model().getOriginalFilename()%></a></li>
-					<li><a href="/dataMerger/files/uploads?id=<%=mergeModel.getUpload2Model().getId()%>"><%=mergeModel.getUpload2Model().getOriginalFilename()%></a></li>
+					<li><a href="/dataMerger/files/uploads/<%=mergeModel.getUpload1Model().getId()%>"><%=mergeModel.getUpload1Model().getOriginalFilename()%></a></li>
+					<li><a href="/dataMerger/files/uploads/<%=mergeModel.getUpload2Model().getId()%>"><%=mergeModel.getUpload2Model().getOriginalFilename()%></a></li>
 				</ol>
 			</dd>
 			

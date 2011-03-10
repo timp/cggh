@@ -469,8 +469,6 @@ public class JoinsModel implements java.io.Serializable {
 		          }
 		          
 		          
-		          //FIXME: This should then trigger a recount of duplicate keys and data conflicts
-		          
 		          //Need a complete, up-to-date mergeModel
 		          MergesModel mergesModel = new MergesModel();
 		          mergeModel = mergesModel.retrieveMergeAsMergeModelByMergeId(mergeModel.getId(), connection);
@@ -478,7 +476,8 @@ public class JoinsModel implements java.io.Serializable {
 		          //Recount the duplicate keys
 		          mergeModel = mergesModel.retrieveMergeAsMergeModelThroughCountingDuplicateKeysUsingMergeModel(mergeModel, connection);
 		          
-		          //Recount the data conflicts
+		          //FIXME
+		          //Recount the data conflicts (should also re-create the joined_keytable)
 		          MergeScriptsModel mergeScriptsModel = new MergeScriptsModel();
 		          mergeModel = mergeScriptsModel.retrieveMergeAsMergeModelThroughDeterminingDataConflictsUsingMergeModel(mergeModel, connection);
 		          
