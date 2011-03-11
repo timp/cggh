@@ -1,0 +1,99 @@
+.resolutions-by-row {
+	clear: both;	
+}
+
+
+.resolutions-by-row-table {
+	width: 100%;
+	border-collapse: collapse;	
+	margin-top: 20px; /* IE8 is ignoring the margin-top */
+	background-color: white;
+	border-top: solid 2px #073763;
+	border-right: solid 2px #073763;
+}
+
+.resolutions-by-row-table td {
+	vertical-align: top;
+}
+
+
+.resolutions-by-row-table th {
+   border-width: 0px;
+   padding-bottom: 5px;
+}
+
+.resolutions-by-row-table tr.first td {
+    border-top: 2px solid #073763;
+}
+.resolutions-by-row-table tr.last td {
+    border-bottom: 2px solid #073763;
+}
+.resolutions-by-row-table td {
+    padding-top: 10px;
+    padding-bottom: 5px;
+    padding-left: 5px;   
+    padding-right: 5px;
+    border-width: 0px;
+}
+.resolutions-by-row-table tr.even {
+    background-color: #cfe2f3;
+}
+.resolutions-by-row-table th {
+	text-align: left;	
+	padding-left: 10px;
+	padding-right: 10px;
+	
+}
+.resolutions-by-row-table td {
+	padding-left: 10px;
+	padding-right: 10px;
+}
+
+.resolutions-by-row-table td.conflicting-data {
+	color: red;	
+}
+.resolutions-by-row-table .key-heading {
+	vertical-align: middle;
+}
+.resolutions-by-row-table .column-heading {
+	text-align: center;
+}
+.resolutions-by-row-table .source_1_value-heading
+, .resolutions-by-row-table .source_2_value-heading {
+	text-align: center;		
+}
+.resolutions-by-row-table .source_1_value-container
+, .resolutions-by-row-table .source_2_value-container {
+	text-align: right;		
+}
+
+.resolutions-by-row-table .solution-heading
+, .resolutions-by-row-table .solution_by_row_id-container
+, .resolutions-by-row-table .column-heading
+, .resolutions-by-row-table .source_1_value-heading
+, .resolutions-by-row-table .source_1_value-container {
+	border-left: 2px solid #073763;
+}
+.resolutions-by-row-table .source_2_value-heading
+, .resolutions-by-row-table .source_2_value-container {
+	border-left: 1px solid #cccccc;
+}
+.resolutions-by-row-table .solution_by_row_id-container select {
+	clear: both;
+	float: left;	
+	
+}
+.resolutions-by-row-table .solution_by_row_id-container label {
+	clear: both;
+	float: left;
+	margin-top: 13px;	
+	
+	font-weight: bold;
+	
+}
+.resolutions-by-row-table .solution_by_row_id-container input {
+	float: left;
+	margin-top: 10px;
+	margin-left: 5px;
+	width: 5em;	
+}

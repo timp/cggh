@@ -1,8 +1,5 @@
 function initResolutionsByColumnFunctions () {
 
-
-	initEditJoinFunction();	
-	
 	initSaveResolutionsByColumnFunction();
 	initChangeSolutionByColumnFunction();
 
@@ -35,7 +32,10 @@ function initSaveResolutionsByColumnFunction () {
 			dataType: 'json',
 			success: function (data, textStatus, jqXHR) {
 
-				retrieveResolutionsByColumnAsXHTMLUsingMergeId(urlParams["merge_id"]);
+				//v1. Just reload the page
+				document.location.reload();
+				
+				//retrieveResolutionsByColumnAsXHTMLUsingMergeId(urlParams["merge_id"]);
 					
 
 			},
@@ -89,20 +89,4 @@ function initChangeSolutionByColumnFunction () {
 	
 }
 
-function initEditJoinFunction () {
-	
-	$(".edit-join").click(function() {
-		
-		if (urlParams["merge_id"] != null) {
-		
-			//TODO: Refactor this URL
-			window.location.href = '/dataMerger/pages/merges/joins?merge_id=' + urlParams["merge_id"];
-			
-		} else {
-			
-			alert("The merge has not been specified ID.");
-		}
-		
-	});
-	
-}
+

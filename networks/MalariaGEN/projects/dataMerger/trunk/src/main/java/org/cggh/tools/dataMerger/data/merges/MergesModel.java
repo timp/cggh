@@ -12,9 +12,12 @@ import org.cggh.tools.dataMerger.data.DataModel;
 import org.cggh.tools.dataMerger.data.datatables.DatatablesModel;
 import org.cggh.tools.dataMerger.data.joinedKeytables.JoinedKeytableModel;
 import org.cggh.tools.dataMerger.data.joinedKeytables.JoinedKeytablesModel;
+import org.cggh.tools.dataMerger.data.joins.JoinModel;
 import org.cggh.tools.dataMerger.data.joins.JoinsModel;
 import org.cggh.tools.dataMerger.data.uploads.UploadsModel;
 import org.cggh.tools.dataMerger.data.users.UserModel;
+import org.cggh.tools.dataMerger.functions.joins.JoinFunctionsModel;
+import org.cggh.tools.dataMerger.functions.merges.MergeFunctionsModel;
 import org.cggh.tools.dataMerger.functions.merges.MergesFunctionsModel;
 import org.cggh.tools.dataMerger.scripts.merges.MergeScriptsModel;
 
@@ -500,7 +503,70 @@ public class MergesModel implements java.io.Serializable {
 	     return mergesAsCachedRowSet;
 	}
 
-
-
 	
+	public String retrieveJoinsAsDecoratedXHTMLTableUsingMergeModel(MergeModel mergeModel) {
+		
+		String joinsAsDecoratedXHTMLTable = "";
+		
+		  CachedRowSet joinsAsCachedRowSet = mergeModel.getJoinsModel().getJoinsAsCachedRowSet();
+			
+		  if (joinsAsCachedRowSet != null) {
+		
+			  MergeFunctionsModel mergeFunctionsModel = new MergeFunctionsModel();
+			  
+			    mergeFunctionsModel.setMergeModel(mergeModel);	    
+			    mergeFunctionsModel.setJoinsAsCachedRowSet(joinsAsCachedRowSet);
+			    mergeFunctionsModel.setJoinsAsDecoratedXHTMLTableUsingJoinsAsCachedRowSet();
+			    joinsAsDecoratedXHTMLTable = mergeFunctionsModel.getJoinsAsDecoratedXHTMLTable();
+			    
+		  } else {
+			  
+			  //TODO: Error handling
+			  this.logger.warning("Error: joinsAsCachedRowSet is null");
+			  joinsAsDecoratedXHTMLTable = "<p>Error: joinsAsCachedRowSet is null</p>";
+			  
+		  }
+		
+		return joinsAsDecoratedXHTMLTable;
+	}
+
+	public String retrieveNewJoinAsDecoratedXHTMLTableUsingMergeModel (MergeModel mergeModel) {
+		
+		String newJoinAsDecoratedXHTMLTable = "";
+		
+		JoinFunctionsModel joinFunctionsModel = new JoinFunctionsModel();
+		joinFunctionsModel.setJoinModel(new JoinModel()); // Unnecessary but explicit
+		joinFunctionsModel.setMergeModel(mergeModel);
+		joinFunctionsModel.setJoinAsDecoratedXHTMLTableByJoinModel();
+		
+		newJoinAsDecoratedXHTMLTable = joinFunctionsModel.getJoinAsDecoratedXHTMLTable();
+	
+		return newJoinAsDecoratedXHTMLTable;
+	}
+
+	public void updateTotalConflictsCountUsingMergeModel(MergeModel mergeModel,
+			Connection connection) {
+		
+	      try {
+
+	          PreparedStatement preparedStatement = connection.prepareStatement("UPDATE `merge` SET total_conflicts_count = ?, updated_datetime = NOW() WHERE id = ?;");
+
+	          if (mergeModel.getTotalConflictsCount() != null) {
+	        	  preparedStatement.setInt(1, mergeModel.getTotalConflictsCount());
+	          } else {
+	        	  preparedStatement.setNull(1, java.sql.Types.INTEGER);
+	          }
+
+	          preparedStatement.setInt(2, mergeModel.getId());
+	          
+	          preparedStatement.executeUpdate();
+	          preparedStatement.close();
+	          
+	
+	        }
+	        catch(SQLException sqlException){
+		    	sqlException.printStackTrace();
+	        } 
+	        
+	}
 }

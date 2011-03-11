@@ -285,7 +285,7 @@ public class ResolutionsByColumnModel implements java.io.Serializable {
 		        	  //TODO: Recount the conflicts (take problems with solutions as 0, otherwise use the resolution conflict_count)
 
 		        	  MergeScriptsModel mergeScriptsModel = new MergeScriptsModel();
-		        	  mergeModel = mergeScriptsModel.retrieveMergeAsMergeModelThroughDeterminingTotalConflictsCountUsingMergeModel(mergeModel, connection);
+		        	  mergeModel = mergeScriptsModel.retrieveMergeAsMergeModelThroughDeterminingTotalConflictsCountByColumnUsingMergeModel(mergeModel, connection);
 		        	  
 		          }
 		          

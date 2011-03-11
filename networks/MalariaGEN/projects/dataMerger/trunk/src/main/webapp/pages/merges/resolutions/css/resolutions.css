@@ -1,0 +1,118 @@
+.merge-info {
+	clear: both;
+	float: left;
+}
+
+.merge-info th {
+	
+	/* Appearance */
+	text-align: left;
+	vertical-align: top;
+}
+
+.merge-info td {
+	padding-left: 10px;
+	padding-bottom: 10px;
+	
+	vertical-align: top;
+}
+.merge-info .sources-list {
+	padding-left: 0px;
+	margin-top: 0;
+	margin-bottom: 0;
+	margin-left: 0; 
+	list-style-position: inside;
+}
+.merge-info .sources-list li {
+	font-weight: bold;
+}
+.merge-info .sources-list li a {
+	font-weight: normal;
+}
+
+.problem-messages-container {
+	
+	/* Layout */
+	float: left;	
+	margin-left: 80px;
+	
+	/* Appearance */
+	color: red;
+}
+.problem-messages-container p {
+	margin-top: 0px;	
+}
+
+.buttons {
+	float: right;
+}
+
+.buttons .item {
+	clear: both;
+	float: right;	
+}
+.buttons .item .saving-indicator {
+	margin-right: 5px;
+	vertical-align: middle;
+}
+.buttons .item button {
+	margin-bottom: 5px;
+	width: 150px;
+}
+.buttons .item a {
+	display: block;
+	margin-top: 20px;
+}
+
+.resolutions-container {
+	clear: both;	
+}
+
+
+.resolutions-menu {
+        /* Layout */
+        clear: both;
+        float: left;
+        margin-top: 30px;
+        margin-bottom: 30px;
+        border-bottom: solid 2px #073763;
+        padding-left: 5px;
+        padding-right: 100px;
+        
+        /* Appearance */
+        list-style-type: none;
+}
+.resolutions-menu .item {
+        float: left;
+}
+.resolutions-menu .item .selected {
+        /* Appearance */
+        background-color: #FFFFFF;      
+        font-weight: bold;
+}
+
+.resolutions-menu .link {
+        /* Layout */
+        float: left;
+        margin-left: 5px;
+        margin-right: 5px;
+        border-top: solid 2px #073763;
+        border-left: solid 2px #073763;
+        border-right: solid 2px #073763;
+        padding-top: 3px;
+        padding-bottom: 3px;
+        padding-left: 20px;
+        padding-right: 20px;
+        
+        
+        /* Appearance */
+        background-color: #cfe2f3;
+        color: #444444;
+        font-size: 10pt;
+        font-weight: normal;
+        text-decoration: none;
+}
+.resolutions-menu .link:hover {
+        background-color: #FFFFFF;      
+}
+

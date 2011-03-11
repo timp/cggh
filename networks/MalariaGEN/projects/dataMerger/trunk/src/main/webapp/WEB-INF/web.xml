@@ -8,6 +8,18 @@
   <servlet>
   	<description>
   	</description>
+  	<display-name>FunctionsController</display-name>
+  	<servlet-name>FunctionsController</servlet-name>
+  	<servlet-class>org.cggh.tools.dataMerger.functions.FunctionsController</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>FunctionsController</servlet-name>
+    <url-pattern>/functions/*</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+  	<description>
+  	</description>
   	<display-name>ScriptsController</display-name>
   	<servlet-name>ScriptsController</servlet-name>
   	<servlet-class>org.cggh.tools.dataMerger.scripts.ScriptsController</servlet-class>

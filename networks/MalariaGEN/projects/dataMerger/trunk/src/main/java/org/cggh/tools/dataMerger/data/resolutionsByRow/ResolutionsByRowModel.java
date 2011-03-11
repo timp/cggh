@@ -337,7 +337,7 @@ public class ResolutionsByRowModel implements java.io.Serializable {
 		        	  
 		        	  //FIXME: This breaks if don't have all the merge info in the model, e.g. Upload1Model.
 		        	  //TODO
-		        	  //mergeModel = mergeScriptsModel.retrieveMergeAsMergeModelThroughDeterminingTotalConflictsCountUsingMergeModel(mergeModel, connection);
+		        	  mergeModel = mergeScriptsModel.retrieveMergeAsMergeModelThroughDeterminingTotalConflictsCountByRowUsingMergeModel(mergeModel, connection);
 		        	  
 		          }
 		          

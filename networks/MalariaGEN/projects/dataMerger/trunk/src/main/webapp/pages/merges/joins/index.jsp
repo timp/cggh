@@ -18,9 +18,11 @@ mergesModel.setUserModel(userModel);
 MergeModel mergeModel = new MergeModel();
 mergeModel = mergesModel.retrieveMergeAsMergeModelByMergeId(Integer.parseInt(request.getParameter("merge_id")));
 
-MergeFunctionsModel mergeFunctionsModel = new MergeFunctionsModel();
-
 DateFormat dateFormat = new SimpleDateFormat("dd MMM yyyy HH:mm");
+
+
+
+
 %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
@@ -107,43 +109,16 @@ DateFormat dateFormat = new SimpleDateFormat("dd MMM yyyy HH:mm");
 			
 			<!-- Turning off autocomplete prevents FF3 from remembering form values after refresh, which would not be helpful here. -->
 			<form class="joins-form" onsubmit="return false;" autocomplete="off">
-				<%
-				
-					//TODO: Update this to use same as uploads and edit-resolutions-by-column
-				
-				  CachedRowSet joinsAsCachedRowSet = mergeModel.getJoinsModel().getJoinsAsCachedRowSet();
-				
-				  if (joinsAsCachedRowSet != null) {
-				
-					    mergeFunctionsModel.setMergeModel(mergeModel);	    
-					    mergeFunctionsModel.setJoinsAsCachedRowSet(joinsAsCachedRowSet);
-					    mergeFunctionsModel.setJoinsAsDecoratedXHTMLTableByJoinsAsCachedRowSet();
-					    out.print(mergeFunctionsModel.getJoinsAsDecoratedXHTMLTable());
-					    
-				  } else {
-					  
-					  out.print("<p>Error: joinsAsCachedRowSet is null</p>");
-					  
-				  }
-				%>		
+			
+				<%=mergesModel.retrieveJoinsAsDecoratedXHTMLTableUsingMergeModel(mergeModel) %>	
 	
 			</form>
 			
 			<form class="new-join-form" onsubmit="return false;" autocomplete="off">
-				<h3>New column:</h3>
-				<%-- TODO: Get this from a service. --%>
-				<%
-				
-					JoinModel joinModel = new JoinModel();
-					JoinFunctionsModel joinFunctionsModel = new JoinFunctionsModel();
-				
-					
-					joinFunctionsModel.setJoinModel(joinModel);
-					joinFunctionsModel.setMergeModel(mergeModel);
-					joinFunctionsModel.setJoinAsDecoratedXHTMLTableByJoinModel();
-					out.print(joinFunctionsModel.getJoinAsDecoratedXHTMLTable());
-				
-				%>
+				<h3 class="new-join-heading-container">New column:</h3>
+				<div class="new-join-table-container">
+				<%=mergesModel.retrieveNewJoinAsDecoratedXHTMLTableUsingMergeModel(mergeModel) %>
+				</div>
 			</form>
 	
 			<%--

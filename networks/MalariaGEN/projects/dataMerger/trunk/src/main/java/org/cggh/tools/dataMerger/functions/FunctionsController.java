@@ -7,6 +7,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import org.cggh.tools.dataMerger.data.DataModel;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -21,19 +23,28 @@ public class FunctionsController extends HttpServlet {
 	 * 
 	 */
 	private static final long serialVersionUID = -1244304670693323712L;
-
+	private DataModel dataModel = null;
+	
     /**
      * @see HttpServlet#HttpServlet()
      */
     public FunctionsController() {
         super();
 
-        
+        this.setDataModel(new DataModel());        
     }
 
+    public void setDataModel (final DataModel dataModel) {
+        this.dataModel  = dataModel;
+    }
+    public DataModel getDataModel () {
+        return this.dataModel;
+    }     
+
+   
+    
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-	    
 	}
 
 	/**

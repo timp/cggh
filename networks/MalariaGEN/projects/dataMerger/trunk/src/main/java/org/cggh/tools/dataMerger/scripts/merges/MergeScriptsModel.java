@@ -440,16 +440,15 @@ public class MergeScriptsModel implements java.io.Serializable {
 
 
 
-	public MergeModel retrieveMergeAsMergeModelThroughDeterminingTotalConflictsCountUsingMergeModel(
+	public MergeModel retrieveMergeAsMergeModelThroughDeterminingTotalConflictsCountByColumnUsingMergeModel(
 			MergeModel mergeModel, Connection connection) {
 
 		// Should only add to the model.
 
 		//Note: relies on resolutions_by_column
-		//FIXME: When the resolutions by row are changed, this needs to take the solutions into account.
-		
+
 	      try{
-	    	  PreparedStatement preparedStatement = connection.prepareStatement("SELECT COUNT(conflicts_count) AS totalConflictsCount FROM resolution_by_column WHERE solution_by_column_id IS NULL AND merge_id = ?;");
+	    	  PreparedStatement preparedStatement = connection.prepareStatement("SELECT SUM(conflicts_count) AS totalConflictsCount FROM resolution_by_column WHERE solution_by_column_id IS NULL AND merge_id = ?;");
 	    	  preparedStatement.setInt(1, mergeModel.getId());
 	    	  preparedStatement.executeQuery();
 	          ResultSet resultSet = preparedStatement.getResultSet();
@@ -481,7 +480,8 @@ public class MergeScriptsModel implements java.io.Serializable {
 	          MergesModel mergesModel = new MergesModel();
 	          
 	          //FIXME: This breaks if it doesn't have the full data, e.g. Upload1Model, Upload2Model.
-	          mergesModel.updateMergeUsingMergeModel(mergeModel, connection);
+	          //mergesModel.updateMergeUsingMergeModel(mergeModel, connection);
+	          mergesModel.updateTotalConflictsCountUsingMergeModel(mergeModel, connection);
 	          
 
 	        }
@@ -788,7 +788,7 @@ public class MergeScriptsModel implements java.io.Serializable {
 
 			
 			// Get an up-to-date count of the total conflicts.
-			mergeModel = this.retrieveMergeAsMergeModelThroughDeterminingTotalConflictsCountUsingMergeModel(mergeModel, connection);
+			mergeModel = this.retrieveMergeAsMergeModelThroughDeterminingTotalConflictsCountByColumnUsingMergeModel(mergeModel, connection);
 			
 
 			// If there were no conflicts, no need to look for them again.
@@ -808,6 +808,10 @@ public class MergeScriptsModel implements java.io.Serializable {
 				
 				//TODO:
 				mergeModel = this.retrieveMergeAsMergeModelThroughDeterminingProblemsByRowUsingMergeModel(mergeModel, connection);
+				
+				
+				// Get an up-to-date count of the total conflicts.
+				mergeModel = this.retrieveMergeAsMergeModelThroughDeterminingTotalConflictsCountByRowUsingMergeModel(mergeModel, connection);
 				
 				
 				this.logger.info("done determining conflicts by row");
@@ -835,6 +839,61 @@ public class MergeScriptsModel implements java.io.Serializable {
 
 
 
+
+
+
+
+	public MergeModel retrieveMergeAsMergeModelThroughDeterminingTotalConflictsCountByRowUsingMergeModel(
+			MergeModel mergeModel, Connection connection) {
+
+
+	      try{
+	    	  PreparedStatement preparedStatement = connection.prepareStatement("SELECT SUM(conflicts_count) AS totalConflictsCount FROM resolution_by_row WHERE solution_by_row_id IS NULL AND merge_id = ?;");
+	    	  preparedStatement.setInt(1, mergeModel.getId());
+	    	  preparedStatement.executeQuery();
+	          ResultSet resultSet = preparedStatement.getResultSet();
+	          
+	          if (resultSet.next()) {
+	        	  
+	        	  resultSet.first();
+
+	        	  Integer totalConflictsCount = resultSet.getInt("totalConflictsCount");
+	        	  
+	        	  if (totalConflictsCount != null) {
+	        		  
+	        		  mergeModel.setTotalConflictsCount(totalConflictsCount);
+	        		  
+	        	  } else {
+	        		  
+	        		  mergeModel.setTotalConflictsCount(null);
+	        	  }
+	        	  
+	      	  } else {
+	      		  
+	      		mergeModel.setTotalConflictsCount(null);
+	      	  }
+	          
+	          resultSet.close();
+	          preparedStatement.close();
+	          
+	          // Update the db with the new info
+	          MergesModel mergesModel = new MergesModel();
+	          
+	          //FIXME: This breaks if it doesn't have the full data, e.g. Upload1Model, Upload2Model.
+	          //mergesModel.updateMergeUsingMergeModel(mergeModel, connection);
+	          mergesModel.updateTotalConflictsCountUsingMergeModel(mergeModel, connection);
+	          
+
+	        }
+	        catch(SQLException sqlException){
+		    	sqlException.printStackTrace();
+	        }
+	        
+	        // Return the model with the new info
+	        return mergeModel;
+		
+		
+	}
 
 
 
@@ -1000,6 +1059,15 @@ public class MergeScriptsModel implements java.io.Serializable {
 		
 		
 		return mergeModel;
+	}
+
+
+
+
+	public MergeModel retrieveMergeAsMergeModelThroughDeterminingTotalConflictsCountByCellUsingMergeModel(
+			MergeModel mergeModel, Connection connection) {
+		// TODO Auto-generated method stub
+		return null;
 	}	
 	
 }

@@ -52,10 +52,10 @@ public class ResolutionsByCellFunctionsModel implements java.io.Serializable {
 
 				resolutionsByCellAsDecoratedXHTMLTable = "";
 				
-				resolutionsByCellAsDecoratedXHTMLTable = resolutionsByCellAsDecoratedXHTMLTable.concat("<table class=\"resolutions-by-row-table\">");
+				resolutionsByCellAsDecoratedXHTMLTable += "<table class=\"resolutions-by-cell-table\">";
 
-				 resolutionsByCellAsDecoratedXHTMLTable = resolutionsByCellAsDecoratedXHTMLTable.concat("<thead>");
-				 resolutionsByCellAsDecoratedXHTMLTable = resolutionsByCellAsDecoratedXHTMLTable.concat("<tr>");
+				 resolutionsByCellAsDecoratedXHTMLTable += "<thead>";
+				 resolutionsByCellAsDecoratedXHTMLTable += "<tr>";
 				 
 				 Pattern joinedKeytableKeyColumnNamePattern = Pattern.compile("^key_column_(\\d+)$");
 				 
@@ -70,14 +70,14 @@ public class ResolutionsByCellFunctionsModel implements java.io.Serializable {
 			        		  
 			        		  this.logger.info("Got columnNumber: " + columnNumber);
 			        		  
-			        		  resolutionsByCellAsDecoratedXHTMLTable = resolutionsByCellAsDecoratedXHTMLTable.concat("<th rowspan=\"2\">" + this.getJoinColumnNamesByColumnNumberAsHashMap().get(columnNumber) + "</th>");
+			        		  resolutionsByCellAsDecoratedXHTMLTable += "<th class=\"key-heading\" rowspan=\"2\">" + this.getJoinColumnNamesByColumnNumberAsHashMap().get(columnNumber) + "</th>";
 			        		  
 		        		  }
 
 		          }
 				 
 				 
-				 resolutionsByCellAsDecoratedXHTMLTable = resolutionsByCellAsDecoratedXHTMLTable.concat("<th rowspan=\"2\">Solution</th>");
+				 resolutionsByCellAsDecoratedXHTMLTable += "<th class=\"solution-heading\" rowspan=\"2\">Solution</th>";
 				 
 				 
 				 Pattern resolutionsByCellAsCachedRowSetSource1ColumnNamePattern = Pattern.compile("^column_(\\d+)_source_1$");
@@ -96,16 +96,16 @@ public class ResolutionsByCellFunctionsModel implements java.io.Serializable {
 			        		  
 			        		  this.logger.info("Got columnNumber: " + columnNumber);
 			        		  
-			        		  resolutionsByCellAsDecoratedXHTMLTable += "<th colspan=\"2\">" + this.getJoinColumnNamesByColumnNumberAsHashMap().get(columnNumber) + "</th>";
+			        		  resolutionsByCellAsDecoratedXHTMLTable += "<th class=\"column-heading\" colspan=\"2\">" + this.getJoinColumnNamesByColumnNumberAsHashMap().get(columnNumber) + "</th>";
 		        		  
 		        		  }
 		        	  
 		          }
 				 
 
-				 resolutionsByCellAsDecoratedXHTMLTable = resolutionsByCellAsDecoratedXHTMLTable.concat("</tr>");
+				 resolutionsByCellAsDecoratedXHTMLTable += "</tr>";
 				 
-				 resolutionsByCellAsDecoratedXHTMLTable = resolutionsByCellAsDecoratedXHTMLTable.concat("<tr>");
+				 resolutionsByCellAsDecoratedXHTMLTable += "<tr>";
 
 
 
@@ -115,35 +115,50 @@ public class ResolutionsByCellFunctionsModel implements java.io.Serializable {
 		        	  
 		        	  if (resolutionsByCellAsCachedRowSetColumnNamePatternMatcher.find()) {
 
-		        		  resolutionsByCellAsDecoratedXHTMLTable = resolutionsByCellAsDecoratedXHTMLTable.concat("<th>1</th><th>2</th>");
+		        		  resolutionsByCellAsDecoratedXHTMLTable += "<th class=\"source_1_value-heading\">1</th><th class=\"source_2_value-heading\">2</th>";
 		        	  
 		        	  }
 		          }
 				 
 
-				 resolutionsByCellAsDecoratedXHTMLTable = resolutionsByCellAsDecoratedXHTMLTable.concat("</tr>");
+				 resolutionsByCellAsDecoratedXHTMLTable += "</tr>";
 				 
-				 resolutionsByCellAsDecoratedXHTMLTable = resolutionsByCellAsDecoratedXHTMLTable.concat("</thead>");
+				 resolutionsByCellAsDecoratedXHTMLTable += "</thead>";
 				 
-				 resolutionsByCellAsDecoratedXHTMLTable = resolutionsByCellAsDecoratedXHTMLTable.concat("<tbody>");
+				 resolutionsByCellAsDecoratedXHTMLTable += "<tbody>";
 				 
 				//because next() skips the first row.
 				 this.getResolutionsByCellAsCachedRowSet().beforeFirst();
 
+					String rowStripeClassName = "even "; 
+					String rowFirstClassName = "first ";
+					String rowLastClassName = ""; 	
+				 
 				while (this.getResolutionsByCellAsCachedRowSet().next()) {
-					 
-					resolutionsByCellAsDecoratedXHTMLTable = resolutionsByCellAsDecoratedXHTMLTable.concat("<tr>");
+
+					if (rowStripeClassName == "odd ") {
+						rowStripeClassName = "even ";
+					} else {
+						rowStripeClassName = "odd ";
+					}
+					
+					//TODO: This might need changing when paging.
+					if (this.getResolutionsByCellAsCachedRowSet().isLast()) {
+						rowLastClassName = "last ";
+					}					
+					
+					resolutionsByCellAsDecoratedXHTMLTable += "<tr class=\"" + rowStripeClassName + rowFirstClassName + rowLastClassName + "\">";
 
 			          for (int i = 1; i <= this.getResolutionsByCellAsCachedRowSet().getMetaData().getColumnCount(); i++) {
 			        	  
 			        	  if (this.getResolutionsByCellAsCachedRowSet().getMetaData().getColumnName(i).startsWith("key_column_")) {
 			        		  
-			        		  resolutionsByCellAsDecoratedXHTMLTable = resolutionsByCellAsDecoratedXHTMLTable.concat("<td>" + this.getResolutionsByCellAsCachedRowSet().getString(this.getResolutionsByCellAsCachedRowSet().getMetaData().getColumnName(i)) + "</td>");
+			        		  resolutionsByCellAsDecoratedXHTMLTable += "<td>" + this.getResolutionsByCellAsCachedRowSet().getString(this.getResolutionsByCellAsCachedRowSet().getMetaData().getColumnName(i)) + "</td>";
 			        	  
 			        	  }
 			          }
 					
-					 resolutionsByCellAsDecoratedXHTMLTable = resolutionsByCellAsDecoratedXHTMLTable.concat("<td>");
+					 resolutionsByCellAsDecoratedXHTMLTable += "<td class=\"solution_by_cell_id-container\">";
 					 
 					 resolutionsByCellAsDecoratedXHTMLTable += "<input type=\"hidden\" name=\"joined_keytable_id\" value=\"" + this.getResolutionsByCellAsCachedRowSet().getString("joined_keytable_id") + "\" />";
 					 
@@ -154,15 +169,15 @@ public class ResolutionsByCellFunctionsModel implements java.io.Serializable {
 							
 							if (this.getSolutionsByCellAsCachedRowSet().next()) {
 								
-								resolutionsByCellAsDecoratedXHTMLTable = resolutionsByCellAsDecoratedXHTMLTable.concat("<select name=\"solution_by_row_id\">");
+								resolutionsByCellAsDecoratedXHTMLTable += "<select name=\"solution_by_cell_id\">";
 
 								//FIXME: Should the null option be in the table?
 								
-								resolutionsByCellAsDecoratedXHTMLTable = resolutionsByCellAsDecoratedXHTMLTable.concat("<option value=\"\">");
+								resolutionsByCellAsDecoratedXHTMLTable += "<option value=\"\">";
 
-								 resolutionsByCellAsDecoratedXHTMLTable = resolutionsByCellAsDecoratedXHTMLTable.concat("Unresolved");
+								 resolutionsByCellAsDecoratedXHTMLTable += "Unresolved";
 								 
-								 resolutionsByCellAsDecoratedXHTMLTable = resolutionsByCellAsDecoratedXHTMLTable.concat("</option>");				
+								 resolutionsByCellAsDecoratedXHTMLTable += "</option>";				
 								 
 								//because next() skips the first row.
 								 this.getSolutionsByCellAsCachedRowSet().beforeFirst();
@@ -171,23 +186,23 @@ public class ResolutionsByCellFunctionsModel implements java.io.Serializable {
 									
 									String selectedAttribute = "";
 									
-									if (this.getResolutionsByCellAsCachedRowSet().getInt("solution_by_row_id") == this.getSolutionsByCellAsCachedRowSet().getInt("id")) {
+									if (this.getResolutionsByCellAsCachedRowSet().getInt("solution_by_cell_id") == this.getSolutionsByCellAsCachedRowSet().getInt("id")) {
 										selectedAttribute = " selected=\"selected\"";
 									}
 									
-									resolutionsByCellAsDecoratedXHTMLTable = resolutionsByCellAsDecoratedXHTMLTable.concat("<option value=\"" + this.getSolutionsByCellAsCachedRowSet().getString("id") + "\"" + selectedAttribute + ">");
+									resolutionsByCellAsDecoratedXHTMLTable += "<option value=\"" + this.getSolutionsByCellAsCachedRowSet().getString("id") + "\"" + selectedAttribute + ">";
 
 									 resolutionsByCellAsDecoratedXHTMLTable = resolutionsByCellAsDecoratedXHTMLTable.concat(this.getSolutionsByCellAsCachedRowSet().getString("description"));
 									 
-									 resolutionsByCellAsDecoratedXHTMLTable = resolutionsByCellAsDecoratedXHTMLTable.concat("</option>");
+									 resolutionsByCellAsDecoratedXHTMLTable += "</option>";
 								}
 									 
-								resolutionsByCellAsDecoratedXHTMLTable = resolutionsByCellAsDecoratedXHTMLTable.concat("</select>");
+								resolutionsByCellAsDecoratedXHTMLTable += "</select>";
 								
 								
 							} else {
 								
-								resolutionsByCellAsDecoratedXHTMLTable = "There are no solutions by row.";
+								resolutionsByCellAsDecoratedXHTMLTable = "There are no solutions by cell.";
 								
 							}
 						} catch (SQLException e) {
@@ -201,7 +216,7 @@ public class ResolutionsByCellFunctionsModel implements java.io.Serializable {
 							resolutionsByCellAsDecoratedXHTMLTable += "<label for=\"constant-" + this.getResolutionsByCellAsCachedRowSet().getInt("joined_keytable_id") + "\" style=\"display:none;\">Constant:</label><input type=\"text\" name=\"constant-" + this.getResolutionsByCellAsCachedRowSet().getInt("joined_keytable_id") + "\" value=\"\" style=\"display:none;\"/>";
 						}
 						
-					 resolutionsByCellAsDecoratedXHTMLTable = resolutionsByCellAsDecoratedXHTMLTable.concat("</td>");
+					 resolutionsByCellAsDecoratedXHTMLTable += "</td>";
 					 
 					 //TODO
 
@@ -240,12 +255,16 @@ public class ResolutionsByCellFunctionsModel implements java.io.Serializable {
 				        		  
 				        		  // Concatenate both sources at the same time, to make sure they are displayed together
 
-				        			  if (this.getResolutionsByCellAsCachedRowSet().getString(i).equals(this.getResolutionsByCellAsCachedRowSet().getString(columnIndexForSource2Column))) {
+				        		  
+				        		  Integer solutionByRowId = this.getResolutionsByCellAsCachedRowSet().getInt("solution_by_cell_id");
+				        		  
+				        			  if (this.getResolutionsByCellAsCachedRowSet().getString(i).equals(this.getResolutionsByCellAsCachedRowSet().getString(columnIndexForSource2Column)) || solutionByRowId != 0) {
 
-				        					 resolutionsByCellAsDecoratedXHTMLTable += "<td>" + this.getResolutionsByCellAsCachedRowSet().getString(i)  + "</td><td>" + this.getResolutionsByCellAsCachedRowSet().getString(columnIndexForSource2Column) + "</td>";
+				        					 resolutionsByCellAsDecoratedXHTMLTable += "<td class=\"source_1_value-container\">" + this.getResolutionsByCellAsCachedRowSet().getString(i)  + "</td><td class=\"source_2_value-container\">" + this.getResolutionsByCellAsCachedRowSet().getString(columnIndexForSource2Column) + "</td>";
 
 				        			  } else {
-				        				  resolutionsByCellAsDecoratedXHTMLTable += "<td class=\"conflicting-data\">" + this.getResolutionsByCellAsCachedRowSet().getString(i)  + "</td><td class=\"conflicting-data\">" + this.getResolutionsByCellAsCachedRowSet().getString(columnIndexForSource2Column) + "</td>";
+				        				  
+				        				  resolutionsByCellAsDecoratedXHTMLTable += "<td class=\"source_1_value-container conflicting-data\">" + this.getResolutionsByCellAsCachedRowSet().getString(i)  + "</td><td class=\"source_2_value-container conflicting-data\">" + this.getResolutionsByCellAsCachedRowSet().getString(columnIndexForSource2Column) + "</td>";
 				        			  }
 				        		  
 			        		  }
@@ -253,15 +272,17 @@ public class ResolutionsByCellFunctionsModel implements java.io.Serializable {
 			          }
 					 
 					 
-					 resolutionsByCellAsDecoratedXHTMLTable = resolutionsByCellAsDecoratedXHTMLTable.concat("</tr>");
+					 resolutionsByCellAsDecoratedXHTMLTable += "</tr>";
+					 
+					 rowFirstClassName = "";
 				}
 					 
-				resolutionsByCellAsDecoratedXHTMLTable = resolutionsByCellAsDecoratedXHTMLTable.concat("</tbody>");
+				resolutionsByCellAsDecoratedXHTMLTable += "</tbody>";
 				 
-				resolutionsByCellAsDecoratedXHTMLTable = resolutionsByCellAsDecoratedXHTMLTable.concat("</table>");
+				resolutionsByCellAsDecoratedXHTMLTable += "</table>";
 				
-				resolutionsByCellAsDecoratedXHTMLTable = resolutionsByCellAsDecoratedXHTMLTable.concat("<!-- <div>TODO: paging</div> -->");
-				resolutionsByCellAsDecoratedXHTMLTable = resolutionsByCellAsDecoratedXHTMLTable.concat("<!-- <div>TODO: Show solved columns <input type=\"checkbox\"/></div> -->");
+				resolutionsByCellAsDecoratedXHTMLTable += "<!-- <div>TODO: paging</div> -->";
+				resolutionsByCellAsDecoratedXHTMLTable += "<!-- <div>TODO: Show solved columns <input type=\"checkbox\"/></div> -->";
 				
 			} else {
 				

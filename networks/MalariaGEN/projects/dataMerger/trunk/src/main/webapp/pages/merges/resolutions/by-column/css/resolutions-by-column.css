@@ -1,56 +1,77 @@
-.merge-info {
-	clear: both;
-	float: left;
+
+
+.resolutions-by-column {
+	clear: both;	
 }
 
-.merge-info th {
-	
-	/* Appearance */
-	text-align: left;
+
+.resolutions-by-column-table {
+	width: 100%;
+	border-collapse: collapse;	
+	margin-top: 20px;
+	/* IE8 is ignoring the margin-top */
+}
+
+.resolutions-by-column-table td {
 	vertical-align: top;
 }
 
-.merge-info td {
+
+.resolutions-by-column-table th {
+   border-width: 0px;
+   padding-bottom: 5px;
+}
+
+.resolutions-by-column-table tr.first td {
+    border-top: 2px solid #073763;
+}
+.resolutions-by-column-table tr.last td {
+    border-bottom: 2px solid #073763;
+}
+.resolutions-by-column-table td {
+    padding-top: 10px;
+    padding-bottom: 5px;
+    padding-left: 5px;   
+    padding-right: 5px;
+    border-width: 0px;
+}
+.resolutions-by-column-table tr.even {
+    background-color: #cfe2f3;
+}
+.resolutions-by-column-table th {
+	text-align: left;	
 	padding-left: 10px;
-	padding-bottom: 10px;
-	
-	vertical-align: top;
 }
-
-.problem-messages-container {
-	
-	/* Layout */
-	float: left;	
-	margin-left: 80px;
-	
-	/* Appearance */
+.resolutions-by-column-table td {
+	padding-left: 10px;
+}
+.resolutions-by-column-table .column_name-container {
+	font-weight: bold;
+}
+.resolutions-by-column-table .problem-heading
+, .resolutions-by-column-table .problem_description-container
+, .resolutions-by-column-table .solution-heading
+, .resolutions-by-column-table .solution_by_column_id-container {
+	border-left: 2px solid #073763;
+}
+.resolutions-by-column-table .unresolved-problem-container {
 	color: red;
 }
-.problem-messages-container p {
-	margin-top: 0px;	
-}
-
-.buttons {
-	float: right;
-}
-
-.buttons .item {
+.resolutions-by-column-table .solution_by_column_id-container select {
 	clear: both;
-	float: right;	
+	float: left;	
+	
 }
-.buttons .item .saving-indicator {
-	margin-right: 5px;
-	vertical-align: middle;
+.resolutions-by-column-table .solution_by_column_id-container label {
+	clear: both;
+	float: left;
+	margin-top: 13px;	
+	
+	font-weight: bold;
+	
 }
-.buttons .item button {
-	margin-bottom: 5px;
-	width: 150px;
-}
-.buttons .item a {
-	display: block;
-	margin-top: 20px;
-}
-
-.resolutions-container {
-	clear: both;	
+.resolutions-by-column-table .solution_by_column_id-container input {
+	float: left;
+	margin-top: 10px;
+	margin-left: 5px;	
 }

@@ -15,8 +15,8 @@ body {
 button {
 	background-color: #cccccc;
 	border: solid 2px #073763;	
-	padding-top: 3px;
-	padding-bottom: 3px;
+	padding-top: 2px;
+	padding-bottom: 2px;
 	padding-left: 10px;
 	padding-right: 10px;
 	cursor: pointer;

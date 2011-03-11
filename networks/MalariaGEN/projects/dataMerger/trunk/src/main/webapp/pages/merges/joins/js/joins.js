@@ -19,8 +19,11 @@ function initMoveJoinFunction() {
 	    var row = $(this).closest("tr");
 	    if ($(this).hasClass("up")) {
 
+	    	//Note: Don't trust the column_number in the DOM (bug). Use row index instead.
+	    	// i.e. don't depend on column_number_input_being_moved.val(), use row.index() + 1.
+	    	
 	    	var column_number_input_being_moved = row.find('td input[name="column_number"]');
-	    	var column_number_being_moved = parseInt(column_number_input_being_moved.val());
+	    	var column_number_being_moved = row.index() + 1;
 	    	
 	    	var min_column_number = 1;
 	    	var max_column_number = row.parent().find('tr').length;
@@ -78,7 +81,7 @@ function initMoveJoinFunction() {
 	    	
 	    	
 	    	var column_number_input_being_moved = row.find('td input[name="column_number"]');
-	    	var column_number_being_moved = parseInt(column_number_input_being_moved.val());
+	    	var column_number_being_moved = row.index() + 1;
 	    	
 	    	var min_column_number = 1;
 	    	var max_column_number = row.parent().find('tr').length;
@@ -175,6 +178,12 @@ function initRemoveJoinFunction () {
     		nextRow.find('td input[name|="datatable_1_column_name"]').attr('name', "datatable_1_column_name-" + column_number.toString());
     		nextRow.find('td input[name|="datatable_2_column_name"]').attr('name', "datatable_2_column_name-" + column_number.toString());
     		
+    		if (column_number % 2 == 0) {
+    			nextRow.removeClass('odd').addClass('even');
+    		} else {
+    			nextRow.removeClass('even').addClass('odd');
+    		}
+    		
     		column_number++;
     	}
 
@@ -183,6 +192,10 @@ function initRemoveJoinFunction () {
         //disable up and down for min and max rows
         parent.find('tr:first').find('td button.up').attr('disabled', 'disabled');
         parent.find('tr:last').find('td button.down').attr('disabled', 'disabled');
+        parent.find('tr:first').addClass('first');
+        parent.find('tr:last').addClass('last');
+        
+        syncNewJoinColumnNumberOptions();
         
 	});	
 
@@ -205,8 +218,13 @@ function initSaveJoinFunction () {
 			dataType: 'json',
 			success: function (data, textStatus, jqXHR) {
 
-				retrieveJoinsAsXHTMLUsingMergeId(urlParams["merge_id"]);
-					
+				//v1. Just reload the page.
+				document.location.reload();
+				
+				//retrieveJoinsAsXHTMLUsingMergeId(urlParams["merge_id"]);
+				
+				//TODO: 
+				//retrieveMergeSummaryAsXHTMLUsingMergeId(urlParams["merge_id"]);
 
 			},
 			error: function (jqXHR, textStatus, errorThrown){
@@ -272,6 +290,22 @@ function initChangeDatatable1ColumnNameFunction () {
 			row.find('input[name=column_name]').attr('value', $(this).val());
 		}
 		
+		
+		if (
+		
+				($(this).val() == 'NULL' || $(this).val() == 'CONSTANT')
+				||
+				(row.find('select[name=datatable_2_column_name]').val() == 'NULL' || row.find('select[name=datatable_2_column_name]').val() == 'CONSTANT')
+		
+		) {
+			
+			row.find('input[name=key]').attr("disabled", "disabled").removeAttr("checked");
+			
+		} else {
+			
+			row.find('input[name=key]').removeAttr("disabled");
+		}
+		
 	});
 	
 }
@@ -308,6 +342,22 @@ function initChangeDatatable2ColumnNameFunction () {
 			
 			row.find('input[name=column_name]').attr('value', $(this).val());
 		}		
+
+		
+		if (
+				
+				($(this).val() == 'NULL' || $(this).val() == 'CONSTANT')
+				||
+				(row.find('select[name=datatable_1_column_name]').val() == 'NULL' || row.find('select[name=datatable_1_column_name]').val() == 'CONSTANT')
+		
+		) {
+			
+			row.find('input[name=key]').attr("disabled", "disabled").removeAttr("checked");
+			
+		} else {
+			
+			row.find('input[name=key]').removeAttr("disabled");
+		}
 		
 	});
 	
@@ -317,6 +367,8 @@ function initChangeDatatable2ColumnNameFunction () {
 function initAddJoinFunction () {
 	
 	$(".add-join").click(function() {
+		
+		//FIXME: This needs to be kept in sync with the mergeFunctions HTML
 		
 		//TODO: validation
 		//Column name, not both nulls
@@ -330,52 +382,98 @@ function initAddJoinFunction () {
 		
 		//Rather than posting, add to client-side joins (to be added using Save)
 		
+		var min_column_number = 1;
+		var max_column_number = $('.joins-form tbody tr').length;
+		
+		//alert("1 max_column_number: " + max_column_number);
 		
 		var newJoinRow = "";
-		
-		newJoinRow += "<tr>";
-		newJoinRow += "<td><input type=\"text\" name=\"column_number\" value=\"" + data.column_number + "\" readonly=\"readonly\"/></td>";
-		
-		if (data.key) {
-			newJoinRow += "<td><input type=\"checkbox\" name=\"key-" + data.column_number + "\" value=\"" + data.key + "\" checked=\"checked\"/></td>";
+
+		var rowStripeClassName = ""; 
+		var rowFirstClassName = "";
+		var rowLastClassName = ""; 		
+
+		if (data.column_number % 2 == 0) {
+			rowStripeClassName = "even ";
 		} else {
-			newJoinRow += "<td><input type=\"checkbox\" name=\"key-" + data.column_number + "\" value=\"" + data.key + "\"/></td>";
+			rowStripeClassName = "odd ";
+		}		
+		
+		if (data.column_number == min_column_number) {
+			rowFirstClassName = "first ";
+		} else {
+			rowFirstClassName = "";
+		}		
+		
+		if (data.column_number > max_column_number) {
+			rowLastClassName = "last ";
+		} else {
+			rowLastClassName = "";
+		}
+		
+
+		
+		newJoinRow += "<tr class=\"" + rowStripeClassName + rowFirstClassName + rowLastClassName + "\">";
+		
+		newJoinRow += "<td class=\"column_number-container\"><input type=\"text\" name=\"column_number\" value=\"" + data.column_number + "\" readonly=\"readonly\"/></td>";
+		
+		if (
+				data.datatable_1_column_name == 'NULL' || data.datatable_1_column_name == 'CONSTANT'
+				||
+				data.datatable_2_column_name == 'NULL' || data.datatable_2_column_name == 'CONSTANT'
+			) {
+			
+			newJoinRow += "<td class=\"key-container\"><input type=\"checkbox\" name=\"key-" + data.column_number + "\" value=\"" + data.key + "\" disabled=\"disabled\"/></td>";
+			
+		} else {
+			
+			if (data.key) {
+				newJoinRow += "<td class=\"key-container\"><input type=\"checkbox\" name=\"key-" + data.column_number + "\" value=\"" + data.key + "\" checked=\"checked\"/></td>";
+			} else {
+				newJoinRow += "<td class=\"key-container\"><input type=\"checkbox\" name=\"key-" + data.column_number + "\" value=\"" + data.key + "\"/></td>";
+			}
 		}
 		
 		if (data.datatable_1_column_name != 'NULL' && data.datatable_1_column_name != 'CONSTANT') {
-			newJoinRow += "<td>";
+			newJoinRow += "<td class=\"datatable_1_column_name-container\">";
 			newJoinRow += "<input type=\"text\" name=\"database_1_column_name-" + data.column_number + "\" value=\"" + data.datatable_1_column_name + "\" readonly=\"readonly\"/>";
-			newJoinRow += "<textarea>TODO: Sample of data</textarea>";
+
+			//TODO
+			//newJoinRow += "<textarea>TODO: Sample of data</textarea>";
+			
 			newJoinRow += "</td>";
 		} 
 		else if (data.datatable_1_column_name == 'CONSTANT') {
-			newJoinRow += "<td><label for=\"constant_1-" + data.column_number + "\">Constant:</label><input type=\"text\" name=\"constant_1-" + data.column_number + "\" value=\"" + data.constant_1 + "\" readonly=\"readonly\"/></td>";
+			newJoinRow += "<td class=\"constant_1-container\"><label for=\"constant_1-" + data.column_number + "\">Constant:</label><input type=\"text\" name=\"constant_1-" + data.column_number + "\" value=\"" + data.constant_1 + "\" readonly=\"readonly\"/></td>";
 		} else {
-			newJoinRow += "<td>NULL</td>";
+			newJoinRow += "<td class=\"null-container\">NULL</td>";
 		}
 		
 		if (data.datatable_2_column_name != 'NULL' && data.datatable_2_column_name != 'CONSTANT') {
-			newJoinRow += "<td>";
+			newJoinRow += "<td class=\"datatable_2_column_name-container\">";
 			newJoinRow += "<input type=\"text\" name=\"database_2_column_name-" + data.column_number + "\" value=\"" + data.datatable_2_column_name + "\" readonly=\"readonly\"/>";
-			newJoinRow += "<texarea>TODO: Sample of data</textarea>";
+			
+			//TODO
+			//newJoinRow += "<texarea>TODO: Sample of data</textarea>";
+			
 			newJoinRow += "</td>";
 		} 
 		else if (data.datatable_2_column_name == 'CONSTANT') {
-			newJoinRow += "<td><label for=\"constant_2-" + data.column_number + "\">Constant:</label><input type=\"text\" name=\"constant_2-" + data.column_number + "\" value=\"" + data.constant_2 + "\" readonly=\"readonly\"/></td>";
+			newJoinRow += "<td class=\"constant_2-container\"><label for=\"constant_2-" + data.column_number + "\">Constant:</label><input type=\"text\" name=\"constant_2-" + data.column_number + "\" value=\"" + data.constant_2 + "\" readonly=\"readonly\"/></td>";
 		} else {
-			newJoinRow += "<td>NULL</td>";
+			newJoinRow += "<td class=\"null-container\">NULL</td>";
 		}
 		
-		newJoinRow += "<td><input type=\"text\" name=\"column_name\" value=\"" + data.column_name + "\"/></td>";
+		newJoinRow += "<td class=\"column_name-container\"><input type=\"text\" name=\"column_name\" value=\"" + data.column_name + "\"/></td>";
 		
-		newJoinRow += "<td><button class=\"move up\">Up<button/><button class=\"move down\">Down<button/></td>";
-		newJoinRow += "<td><button class=\"remove\">Remove<button/></td>";
+		newJoinRow += "<td class=\"move-row-buttons-container\"><button class=\"move up\"><img src=\"/dataMerger/pages/shared/png/up.png\" title=\"Up\" /></button><button class=\"move down\"><img src=\"/dataMerger/pages/shared/png/down.png\" title=\"Down\" /></button></td>";
+		newJoinRow += "<td class=\"remove-button-container\"><button class=\"remove\">Remove</button></td>";
 		
 		newJoinRow += "</tr>";		
 		
 		
 		
-		var max_column_number = $('.joins-form tr input[name="column_number"]').length;
+		
 		
 		//alert("max_column_number="+max_column_number);
 		
@@ -384,48 +482,69 @@ function initAddJoinFunction () {
 		if (data.column_number > max_column_number) {
 			
 			//alert("appending to end");
+
+			//TODO: Remove the last class from the row this is replacing
+			$('.joins-form tr:last').removeClass("last");
+
 			
 			$(".joins-form tbody").append(newJoinRow);
 			
+			
+
+			
 		} else {
 			
-			//FIXME: Move row at data.column_number down 1 (and all the rest), then insert this row at position data.column_number
+			// Move row at data.column_number down 1 (and all the rest), then insert this row at position data.column_number
 
-
+			//alert("data.column_number " + data.column_number);
 			
-			var row = $('.joins-form td input[name="column_number"][value="' + data.column_number + '"]').closest("tr");
-			
-			row.before(newJoinRow);
-			
-	    	var nextRow = row;
-	    	var column_number = parseInt(data.column_number) + 1;
+			//FIXME FIXME FIXME
+			// The selector momentarily applies to two elements, both with the same column_number
+	
 	    	
-	    	//alert("column_number="+column_number);
+	    	var nextRow = $('.joins-form tbody tr:nth-child(' + data.column_number + ')');
 	    	
-	    	while (column_number <= max_column_number + 1) {
+	    	var nextRow_new_column_number = parseInt(data.column_number) + 1;
+	    	
+	    	while (nextRow_new_column_number <= max_column_number + 1) {
 	    		
-	    		//alert("column_number="+column_number);
+	    		//alert("max_column_number="+max_column_number);
 	    		
-	    		nextRow.find('td input[name="column_number"]').attr('value', column_number.toString());
-	    		nextRow.find('td input[name|="key"]').attr('name', "key-" + column_number.toString());
-	    		nextRow.find('td input[name|="datatable_1_column_name"]').attr('name', "datatable_1_column_name-" + column_number.toString());
-	    		nextRow.find('td input[name|="datatable_2_column_name"]').attr('name', "datatable_2_column_name-" + column_number.toString());
+	    		nextRow.find('td input[name="column_number"]').val(nextRow_new_column_number.toString());
+	    		nextRow.find('td input[name|="key"]').attr('name', "key-" + nextRow_new_column_number.toString());
+	    		nextRow.find('td input[name|="datatable_1_column_name"]').attr('name', "datatable_1_column_name-" + nextRow_new_column_number.toString());
+	    		nextRow.find('td input[name|="datatable_2_column_name"]').attr('name', "datatable_2_column_name-" + nextRow_new_column_number.toString());
+	    		
+	    		if (nextRow_new_column_number % 2 == 0) {
+	    			nextRow.removeClass('odd').addClass('even');
+	    		} else {
+	    			nextRow.removeClass('even').addClass('odd');
+	    		}
 	    		
 	    		nextRow = nextRow.next();
 	    		
-	    		column_number++;
+	    		nextRow_new_column_number++;
 	    	}
-			
-	
-	    	//The new HTML needs to be re-bound.
-			initMoveJoinFunction();
-			initRemoveJoinFunction();
-			
-		
+
+	    	//Note: FF3 + Chrome (oddly enough not IE8) had bug with setting/selecting column_name value
+	    	
+	    	var rowToInsertBefore = $('.joins-form tbody tr:nth-child(' + data.column_number + ')');
+	    	
+	    	rowToInsertBefore.removeClass("first");
+	    	
+	    	rowToInsertBefore.before(newJoinRow);
+	    	
 		}
 		
-		//Re-bind the moving functions
-		initMoveJoinFunction()
+
+		//The new HTML needs to be re-bound.
+		initMoveJoinFunction();
+		initRemoveJoinFunction();
+		
+		// Get a new join (and re-bind it)
+		retrieveNewJoinAsXHTML();
+
+		
 	});	
 	
 }
@@ -434,23 +553,77 @@ function initAddJoinFunction () {
 function initEditResolutionsByColumnFunction () {
 	
 	$(".edit-resolutions-by-column").click(function() {
-
-		//TODO: Factor this out
-		var urlParams = {};
-		(function () {
-		    var e,
-		        a = /\+/g,  // Regex for replacing addition symbol with a space
-		        r = /([^&=]+)=?([^&]*)/g,
-		        d = function (s) { return decodeURIComponent(s.replace(a, " ")); },
-		        q = window.location.search.substring(1);
-
-		    while (e = r.exec(q))
-		       urlParams[d(e[1])] = d(e[2]);
-		})();
 		
 		//FIXME:
 		//window.location.href = '/dataMerger/pages/merges/' + urlParams["merge_id"] + '/resolutions-by-column';
 		window.location.href = '/dataMerger/pages/merges/resolutions/by-column?merge_id=' + urlParams["merge_id"];
 		
 	});
+}
+
+function retrieveNewJoinAsXHTML () {
+
+	$.ajax({
+		type: 'GET',
+		url: '/dataMerger/data/merges/' + urlParams["merge_id"] + '/joins/join',
+		data: '',
+		  //FIXME: This content-type isn't necessary, just a test
+		contentType: 'application/json',
+		dataType: 'html',
+		success: function (data, textStatus, jqXHR) {
+			
+				$('.new-join-table-container').html(data);
+				
+				//The new HTML needs to be re-bound.
+				initAddJoinFunction();
+				initChangeDatatable1ColumnNameFunction();
+				initChangeDatatable2ColumnNameFunction();
+				syncNewJoinColumnNumberOptions();
+		},
+		error: function (jqXHR, textStatus, errorThrown){
+            $('.error').html("errorThrown: " + errorThrown);
+            $('.status').html("textStatus: " + textStatus);
+        }
+	});	
+	
+}
+
+
+function syncNewJoinColumnNumberOptions () {
+
+	if ($('.new-join-form select[name="column_number"] option').length <= $('.joins-form input[name="column_number"]').length) {
+		
+		$('.new-join-form select[name="column_number"]').find('option[value="' + $('.new-join-form select[name="column_number"] option').length + '"]').text( ($('.new-join-form select[name="column_number"] option').length - 1) + ' --> <-- ' + $('.new-join-form select[name="column_number"] option').length);
+		$('.new-join-form select[name="column_number"]').find('option[value="' + $('.new-join-form select[name="column_number"] option').length + '"]').removeAttr('selected');
+		
+		while ($('.new-join-form select[name="column_number"] option').length <= $('.joins-form input[name="column_number"]').length) {
+			
+			$('.new-join-form select[name="column_number"]').append('<option value="' + ($('.new-join-form select[name="column_number"] option').length + 1) + '">' + $('.new-join-form select[name="column_number"] option').length + ' --> <-- ' + ($('.new-join-form select[name="column_number"] option').length + 1) + '</option>');
+		}
+		
+		$('.new-join-form select[name="column_number"]').find('option[value="' + $('.new-join-form select[name="column_number"] option').length + '"]').text('place last');
+		$('.new-join-form select[name="column_number"]').find('option[value="' + $('.new-join-form select[name="column_number"] option').length + '"]').attr('selected', 'selected');
+	}
+
+	// if deleted
+	if ($('.new-join-form select[name="column_number"] option').length > ($('.joins-form input[name="column_number"]').length + 1)) {
+		
+		$('.new-join-form select[name="column_number"]').find('option[value="' + $('.new-join-form select[name="column_number"] option').length + '"]').text( ($('.new-join-form select[name="column_number"] option').length - 1) + ' --> <-- ' + $('.new-join-form select[name="column_number"] option').length);
+		$('.new-join-form select[name="column_number"]').find('option[value="' + $('.new-join-form select[name="column_number"] option').length + '"]').removeAttr('selected');
+		
+		while ($('.new-join-form select[name="column_number"] option').length > ($('.joins-form input[name="column_number"]').length + 1)) {
+			
+			$('.new-join-form select[name="column_number"] option:last').remove();
+		}
+		
+		$('.new-join-form select[name="column_number"]').find('option[value="' + $('.new-join-form select[name="column_number"] option').length + '"]').text('place last');
+		$('.new-join-form select[name="column_number"]').find('option[value="' + $('.new-join-form select[name="column_number"] option').length + '"]').attr('selected', 'selected');
+	}	
+	
+}
+
+function retrieveMergeSummaryAsXHTMLUsingMergeId (mergeId) {
+	
+	//TODO
+	//Currently just reloading page. Might not be worth doing separate AJAX calls.
 }

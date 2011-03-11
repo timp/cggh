@@ -1,6 +1,7 @@
 package org.cggh.tools.dataMerger.data.resolutionsByCell;
 
 import org.cggh.tools.dataMerger.data.joinedKeytables.JoinedKeytableModel;
+import org.cggh.tools.dataMerger.data.joins.JoinModel;
 import org.cggh.tools.dataMerger.data.merges.MergeModel;
 
 
@@ -15,12 +16,18 @@ public class ResolutionByCellModel implements java.io.Serializable {
 	private JoinedKeytableModel joinedKeytableModel;
 	private SolutionByCellModel solutionByCellModel;
 	private String constant;
+	private JoinModel joinModel;
 
 	public ResolutionByCellModel() {
 
 		this.setMergeModel(new MergeModel());
 		this.setJoinedKeytableModel(new JoinedKeytableModel());
 		this.setSolutionByCellModel(new SolutionByCellModel());
+		this.setJoinModel(new JoinModel());
+	}
+
+	public void setJoinModel(JoinModel joinModel) {
+		this.joinModel = joinModel;
 	}
 
 	public void setSolutionByCellModel(
@@ -60,6 +67,11 @@ public class ResolutionByCellModel implements java.io.Serializable {
 
 	public void setConstant(String constant) {
 		this.constant = constant;
+	}
+
+	public JoinModel getJoinModel() {
+		// TODO Auto-generated method stub
+		return this.joinModel;
 	}
 
 	

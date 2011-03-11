@@ -5,6 +5,14 @@
 <%@ page import="javax.sql.rowset.CachedRowSet" %>
 <%@ page import="org.cggh.tools.dataMerger.data.uploads.UploadsModel" %>
 <%@ page import="org.cggh.tools.dataMerger.functions.uploads.UploadsFunctionsModel" %>
+<%
+
+	UploadsModel uploadsModel = new UploadsModel();
+
+	uploadsModel.setDataModel(dataModel);
+	uploadsModel.setUserModel(userModel);
+
+%>	
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
@@ -52,17 +60,7 @@
 		<form class="uploads-form" onsubmit="return false;">
 		
 		<div class="uploads">
-<%
-
-	UploadsModel uploadsModel = new UploadsModel();
-
-	uploadsModel.setDataModel(dataModel);
-	uploadsModel.setUserModel(userModel);
-
-	out.print(uploadsModel.retrieveUploadsAsDecoratedXHTMLTableUsingUploadsModel(uploadsModel));
-	
-
-%>		
+			<%=uploadsModel.retrieveUploadsAsDecoratedXHTMLTableUsingUploadsModel(uploadsModel) %>		
 		</div>
 
 		</form>

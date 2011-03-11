@@ -6,7 +6,7 @@
 <%@ page import="java.text.SimpleDateFormat" %>
 <%@ page import="org.cggh.tools.dataMerger.data.merges.MergesModel" %>
 <%@ page import="org.cggh.tools.dataMerger.data.merges.MergeModel" %>
-<%@ page import="org.cggh.tools.dataMerger.data.resolutionsByColumn.ResolutionsByColumnModel" %>
+<%@ page import="org.cggh.tools.dataMerger.data.resolutionsByRow.ResolutionsByRowModel" %>
 <%
 
 MergesModel mergesModel = new MergesModel();
@@ -18,8 +18,8 @@ mergeModel = mergesModel.retrieveMergeAsMergeModelByMergeId(Integer.parseInt(req
 
 DateFormat dateFormat = new SimpleDateFormat("dd MMM yyyy HH:mm");
 
-ResolutionsByColumnModel resolutionsByColumnModel = new ResolutionsByColumnModel();
-resolutionsByColumnModel.setDataModel(dataModel);
+ResolutionsByRowModel resolutionsByRowModel = new ResolutionsByRowModel();
+resolutionsByRowModel.setDataModel(dataModel);
 
 //FIXME
 //resolutionsByColumnModel.setUserModel(userModel);
@@ -30,12 +30,11 @@ resolutionsByColumnModel.setDataModel(dataModel);
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <title>dataMerger - Merges - Resolutions</title>
 
-	
 	<link rel="stylesheet" type="text/css" href="../../../shared/css/shared.css" />
 	
 	<link rel="stylesheet" type="text/css" href="../css/resolutions.css" />
-	
-	<link rel="stylesheet" href="css/resolutions-by-column.css" type="text/css" />
+
+	<link rel="stylesheet" href="css/resolutions-by-row.css" type="text/css" />
 
 	<script type="text/javascript" src="../../../shared/js/jquery.min.js"></script>
 	<script type="text/javascript" src="../../../shared/js/jquery.json.min.js"></script>
@@ -44,7 +43,7 @@ resolutionsByColumnModel.setDataModel(dataModel);
 	
 	<script type="text/javascript" src="../js/resolutions.js"></script>
 	
-	<script type="text/javascript" src="js/resolutions-by-column.js"></script>
+	<script type="text/javascript" src="js/resolutions-by-row.js"></script>
 
 	<script type="text/javascript">
 	
@@ -52,7 +51,7 @@ resolutionsByColumnModel.setDataModel(dataModel);
 			
 			initSharedFunctions();
 			initResolutionsFunctions();
-			initResolutionsByColumnFunctions();
+			initResolutionsByRowFunctions();
 
 		});
 	
@@ -63,15 +62,13 @@ resolutionsByColumnModel.setDataModel(dataModel);
 <body>
 	<div class="page">
 		<%@ include file="../../../shared/jsp/header.jsp" %>
-		
-		<h2 class="page-title">Edit Resolutions</h2>
+		<h2>Edit Resolutions</h2>
 
 		<div class="status">
 		</div>	
 		<div class="error">
 		</div>
 		
-
 		<div class="merge-info">
 			<table>
 			
@@ -113,7 +110,7 @@ resolutionsByColumnModel.setDataModel(dataModel);
 		</div>
 		
 		<div class="buttons">
-			<div class="item"><img class="saving-indicator" src="../../../shared/gif/loading.gif" style="display:none" title="Saving..."/><button class="save-resolutions-by-column">Save Resolutions</button></div>
+			<div class="item"><img class="saving-indicator" src="../../../shared/gif/loading.gif" style="display:none" title="Saving..."/><button class="save-resolutions-by-row">Save Resolutions</button></div>
 		
 			<div class="item"><button class="edit-join">Edit Join</button></div>
 			
@@ -125,9 +122,9 @@ resolutionsByColumnModel.setDataModel(dataModel);
 			
 			<div class="item"><a href="<%= basePath %>pages/merges/">Cancel &amp; Return to Merges</a></div>
 		</div>
-		
+
 		<div class="resolutions-container">
-		
+			
 			<ul class="resolutions-menu">
 
 				<% if (request.getServletPath().startsWith("/pages/merges/resolutions/by-column")) { %>
@@ -148,17 +145,14 @@ resolutionsByColumnModel.setDataModel(dataModel);
 				
 			</ul>
 			
-			<div class="resolutions-by-column">
-			<form class="resolutions-by-column-form" onsubmit="return false;" autocomplete="off">
-				<%=resolutionsByColumnModel.retrieveResolutionsByColumnAsDecoratedXHTMLTableUsingMergeModel(mergeModel) %>		
+			<div class="resolutions-by-row">
+			<form class="resolutions-by-row-form" onsubmit="return false;" autocomplete="off">
+				<%=resolutionsByRowModel.retrieveResolutionsByRowAsDecoratedXHTMLTableUsingMergeModel(mergeModel) %>	
 			</form>
 			</div>
-			
-			<%-- 
-			<p>FIXME: Saving resolutions doesn't update the conflicts count.
-			</p>
-			--%>
+		
 		</div>
+		
 	</div>
 </body>
 </html>
