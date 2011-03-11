@@ -1,7 +1,7 @@
-package org.cggh.tools.dataMerger.data.resolutionsByColumn;
+package org.cggh.tools.dataMerger.data.resolutions.byColumn;
 
 
-public class ProblemByColumnModel implements java.io.Serializable {
+public class ConflictModel implements java.io.Serializable {
 
 	/**
 	 * 
@@ -10,7 +10,7 @@ public class ProblemByColumnModel implements java.io.Serializable {
 
 	private Integer id;
 	
-	public ProblemByColumnModel() {
+	public ConflictModel() {
 
 		
 	}

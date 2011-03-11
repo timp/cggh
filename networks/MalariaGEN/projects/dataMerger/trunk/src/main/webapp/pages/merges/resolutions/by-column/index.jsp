@@ -6,7 +6,7 @@
 <%@ page import="java.text.SimpleDateFormat" %>
 <%@ page import="org.cggh.tools.dataMerger.data.merges.MergesModel" %>
 <%@ page import="org.cggh.tools.dataMerger.data.merges.MergeModel" %>
-<%@ page import="org.cggh.tools.dataMerger.data.resolutionsByColumn.ResolutionsByColumnModel" %>
+<%@ page import="org.cggh.tools.dataMerger.data.resolutions.byColumn.ResolutionsByColumnModel" %>
 <%
 
 MergesModel mergesModel = new MergesModel();

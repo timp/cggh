@@ -67,8 +67,7 @@
 	text-align: right;		
 }
 
-.resolutions-by-cell-table .solution-heading
-, .resolutions-by-cell-table .solution_by_cell_id-container
+.resolutions-by-cell-table .solution_by_cell_id-container
 , .resolutions-by-cell-table .column-heading
 , .resolutions-by-cell-table .source_1_value-heading
 , .resolutions-by-cell-table .source_1_value-container {
@@ -78,12 +77,20 @@
 , .resolutions-by-cell-table .source_2_value-container {
 	border-left: 1px solid #cccccc;
 }
-.resolutions-by-cell-table .solution_by_cell_id-container select {
+.resolutions-by-cell-table .solution-heading
+, .resolutions-by-cell-table .solution_by_cell_id-container {
+	border-left: 1px solid #cccccc;	
+}
+
+.resolutions-by-cell-table td select {
 	clear: both;
 	float: left;	
 	
 }
-.resolutions-by-cell-table .solution_by_cell_id-container label {
+.resolutions-by-cell-table td select.unresolved {
+	color: red;	
+}
+.resolutions-by-cell-table td label {
 	clear: both;
 	float: left;
 	margin-top: 13px;	
@@ -91,9 +98,9 @@
 	font-weight: bold;
 	
 }
-.resolutions-by-cell-table .solution_by_cell_id-container input {
+.resolutions-by-cell-table td input {
 	float: left;
 	margin-top: 10px;
 	margin-left: 5px;
-	width: 5em;	
+	width: 4em;	
 }

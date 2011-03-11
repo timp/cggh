@@ -10,7 +10,6 @@ import javax.sql.rowset.CachedRowSet;
 
 import org.cggh.tools.dataMerger.data.DataModel;
 import org.cggh.tools.dataMerger.data.datatables.DatatablesModel;
-import org.cggh.tools.dataMerger.data.joinedKeytables.JoinedKeytableModel;
 import org.cggh.tools.dataMerger.data.joinedKeytables.JoinedKeytablesModel;
 import org.cggh.tools.dataMerger.data.joins.JoinModel;
 import org.cggh.tools.dataMerger.data.joins.JoinsModel;

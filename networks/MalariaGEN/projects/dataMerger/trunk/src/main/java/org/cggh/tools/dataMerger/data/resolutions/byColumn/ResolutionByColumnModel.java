@@ -1,4 +1,4 @@
-package org.cggh.tools.dataMerger.data.resolutionsByColumn;
+package org.cggh.tools.dataMerger.data.resolutions.byColumn;
 
 import org.cggh.tools.dataMerger.data.merges.MergeModel;
 
@@ -11,7 +11,7 @@ public class ResolutionByColumnModel implements java.io.Serializable {
 	private static final long serialVersionUID = 740975466778430807L;
 	private MergeModel mergeModel;
 	private Integer columnNumber;
-	private ProblemByColumnModel problemByColumnModel;
+	private ConflictModel conflictModel;
 	private Integer conflictsCount;
 	private SolutionByColumnModel solutionByColumnModel;
 	private String constant;
@@ -19,7 +19,7 @@ public class ResolutionByColumnModel implements java.io.Serializable {
 	public ResolutionByColumnModel() {
 
 		this.setMergeModel(new MergeModel());
-		this.setProblemByColumnModel(new ProblemByColumnModel());
+		this.setConflictModel(new ConflictModel());
 		this.setSolutionByColumnModel(new SolutionByColumnModel());
 	}
 
@@ -37,9 +37,9 @@ public class ResolutionByColumnModel implements java.io.Serializable {
 		this.columnNumber = columnNumber;
 	}
 
-	public void setProblemByColumnModel(
-			ProblemByColumnModel problemByColumnModel) {
-		this.problemByColumnModel = problemByColumnModel;
+	public void setConflictModel(
+			ConflictModel conflictModel) {
+		this.conflictModel = conflictModel;
 		
 	}
 
@@ -56,8 +56,8 @@ public class ResolutionByColumnModel implements java.io.Serializable {
 		return this.columnNumber;
 	}
 
-	public ProblemByColumnModel getProblemByColumnModel() {
-		return this.problemByColumnModel;
+	public ConflictModel getConflictModel() {
+		return this.conflictModel;
 	}
 
 	public Integer getConflictsCount() {

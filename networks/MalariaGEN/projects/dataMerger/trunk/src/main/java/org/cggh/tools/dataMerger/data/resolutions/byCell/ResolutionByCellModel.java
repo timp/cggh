@@ -1,4 +1,4 @@
-package org.cggh.tools.dataMerger.data.resolutionsByCell;
+package org.cggh.tools.dataMerger.data.resolutions.byCell;
 
 import org.cggh.tools.dataMerger.data.joinedKeytables.JoinedKeytableModel;
 import org.cggh.tools.dataMerger.data.joins.JoinModel;

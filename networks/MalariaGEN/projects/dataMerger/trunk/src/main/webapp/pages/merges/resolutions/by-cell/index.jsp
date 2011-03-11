@@ -6,7 +6,7 @@
 <%@ page import="java.text.SimpleDateFormat" %>
 <%@ page import="org.cggh.tools.dataMerger.data.merges.MergesModel" %>
 <%@ page import="org.cggh.tools.dataMerger.data.merges.MergeModel" %>
-<%@ page import="org.cggh.tools.dataMerger.data.resolutionsByCell.ResolutionsByCellModel" %>
+<%@ page import="org.cggh.tools.dataMerger.data.resolutions.byCell.ResolutionsByCellModel" %>
 <%
 
 MergesModel mergesModel = new MergesModel();
@@ -62,7 +62,7 @@ resolutionsByCellModel.setDataModel(dataModel);
 <body>
 	<div class="page">
 		<%@ include file="../../../shared/jsp/header.jsp" %>
-		<h2>Edit Resolutions</h2>
+		<h2 class="page-title">Edit Resolutions</h2>
 
 		<div class="status">
 		</div>	

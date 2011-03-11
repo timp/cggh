@@ -41,7 +41,9 @@ public class JoinsModel implements java.io.Serializable {
 	
 	
 	public JoinsModel() {
-
+		
+		
+		//this.setDataModel(new DataModel());
 	}
 
     

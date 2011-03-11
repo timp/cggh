@@ -1,4 +1,4 @@
-package org.cggh.tools.dataMerger.data.resolutionsByCell;
+package org.cggh.tools.dataMerger.data.resolutions.byCell;
 
 
 public class SolutionByCellModel implements java.io.Serializable {

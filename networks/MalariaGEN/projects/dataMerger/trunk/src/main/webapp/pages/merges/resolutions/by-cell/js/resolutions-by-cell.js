@@ -54,7 +54,7 @@ function initSaveResolutionsByCellFunction () {
 function initChangeSolutionByCellFunction () {
 	
 
-	$('.resolutions-by-cell-form select[name=solution_by_row_id]').change(function() {
+	$('.resolutions-by-cell-form select[name=solution_by_cell_id]').change(function() {
 
 		var row = $(this).closest("tr");
 		

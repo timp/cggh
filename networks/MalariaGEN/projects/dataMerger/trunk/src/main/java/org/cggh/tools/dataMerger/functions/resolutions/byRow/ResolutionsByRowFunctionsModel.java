@@ -1,4 +1,4 @@
-package org.cggh.tools.dataMerger.functions.resolutionsByRow;
+package org.cggh.tools.dataMerger.functions.resolutions.byRow;
 
 import java.sql.SQLException;
 import java.util.HashMap;
@@ -165,11 +165,16 @@ public class ResolutionsByRowFunctionsModel implements java.io.Serializable {
 							
 							if (this.getSolutionsByRowAsCachedRowSet().next()) {
 								
-								resolutionsByRowAsDecoratedXHTMLTable += "<select name=\"solution_by_row_id\">";
+								
+								if (this.getResolutionsByRowAsCachedRowSet().getInt("solution_by_row_id") == 0) {
+									resolutionsByRowAsDecoratedXHTMLTable += "<select name=\"solution_by_row_id\" class=\"unresolved\">";
+								} else {
+									resolutionsByRowAsDecoratedXHTMLTable += "<select name=\"solution_by_row_id\">";
+								}
 
 								//FIXME: Should the null option be in the table?
 								
-								resolutionsByRowAsDecoratedXHTMLTable += "<option value=\"\">";
+								resolutionsByRowAsDecoratedXHTMLTable += "<option class=\"unresolved-option\" value=\"\">";
 
 								 resolutionsByRowAsDecoratedXHTMLTable += "Unresolved";
 								 

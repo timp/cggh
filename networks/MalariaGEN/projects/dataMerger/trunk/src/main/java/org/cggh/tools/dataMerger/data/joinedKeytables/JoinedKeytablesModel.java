@@ -10,7 +10,6 @@ import java.util.logging.Logger;
 
 import javax.sql.rowset.CachedRowSet;
 
-import org.cggh.tools.dataMerger.data.datatables.DatatableModel;
 import org.cggh.tools.dataMerger.data.merges.MergeModel;
 
 public class JoinedKeytablesModel implements java.io.Serializable {

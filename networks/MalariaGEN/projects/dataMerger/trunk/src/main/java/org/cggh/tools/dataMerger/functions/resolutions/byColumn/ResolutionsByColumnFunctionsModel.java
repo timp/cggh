@@ -1,4 +1,4 @@
-package org.cggh.tools.dataMerger.functions.resolutionsByColumn;
+package org.cggh.tools.dataMerger.functions.resolutions.byColumn;
 
 import java.sql.SQLException;
 
@@ -85,9 +85,9 @@ public class ResolutionsByColumnFunctionsModel implements java.io.Serializable {
 					 Integer solutionByColumnId = this.getResolutionsByColumnAsCachedRowSet().getInt("solution_by_column_id");
 					 
 					 if (solutionByColumnId == 0) {
-						 resolutionsByColumnAsDecoratedXHTMLTable += "<td class=\"problem_description-container unresolved-problem-container\"><input type=\"hidden\" name=\"problem_by_column_id\" value=\"" + this.getResolutionsByColumnAsCachedRowSet().getString("problem_by_column_id") + "\"/>" + this.getResolutionsByColumnAsCachedRowSet().getInt("conflicts_count") + " " + this.getResolutionsByColumnAsCachedRowSet().getString("description") +"</td>";
+						 resolutionsByColumnAsDecoratedXHTMLTable += "<td class=\"problem_description-container unresolved-problem-container\"><input type=\"hidden\" name=\"conflict_id\" value=\"" + this.getResolutionsByColumnAsCachedRowSet().getString("conflict_id") + "\"/>" + this.getResolutionsByColumnAsCachedRowSet().getInt("conflicts_count") + " " + this.getResolutionsByColumnAsCachedRowSet().getString("description") +"</td>";
 					 } else {
-						 resolutionsByColumnAsDecoratedXHTMLTable += "<td class=\"problem_description-container\"><input type=\"hidden\" name=\"problem_by_column_id\" value=\"" + this.getResolutionsByColumnAsCachedRowSet().getString("problem_by_column_id") + "\"/>" + this.getResolutionsByColumnAsCachedRowSet().getInt("conflicts_count") + " " + this.getResolutionsByColumnAsCachedRowSet().getString("description") + "</td>";
+						 resolutionsByColumnAsDecoratedXHTMLTable += "<td class=\"problem_description-container\"><input type=\"hidden\" name=\"conflict_id\" value=\"" + this.getResolutionsByColumnAsCachedRowSet().getString("conflict_id") + "\"/>" + this.getResolutionsByColumnAsCachedRowSet().getInt("conflicts_count") + " " + this.getResolutionsByColumnAsCachedRowSet().getString("description") + "</td>";
 					 }
 					 
 					 //TODO
@@ -106,7 +106,7 @@ public class ResolutionsByColumnFunctionsModel implements java.io.Serializable {
 
 								//FIXME: Should the null option be in the table?
 								
-								resolutionsByColumnAsDecoratedXHTMLTable += "<option value=\"\">";
+								resolutionsByColumnAsDecoratedXHTMLTable += "<option class=\"unresolved-option\" value=\"\">";
 
 								 resolutionsByColumnAsDecoratedXHTMLTable += "Unresolved";
 								 

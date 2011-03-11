@@ -1,4 +1,4 @@
-package org.cggh.tools.dataMerger.data.resolutionsByColumn;
+package org.cggh.tools.dataMerger.data.resolutions.byColumn;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -9,7 +9,7 @@ import javax.sql.rowset.CachedRowSet;
 
 import org.cggh.tools.dataMerger.data.DataModel;
 import org.cggh.tools.dataMerger.data.merges.MergeModel;
-import org.cggh.tools.dataMerger.functions.resolutionsByColumn.ResolutionsByColumnFunctionsModel;
+import org.cggh.tools.dataMerger.functions.resolutions.byColumn.ResolutionsByColumnFunctionsModel;
 import org.cggh.tools.dataMerger.scripts.merges.MergeScriptsModel;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -37,41 +37,7 @@ public class ResolutionsByColumnModel implements java.io.Serializable {
     public DataModel getDataModel () {
         return this.dataModel;
     } 
-	
-	public void createResolutionByColumnUsingResolutionByColumnModel(
-			ResolutionByColumnModel resolutionByColumnModel,
-			Connection connection) {
-		
-	      try {
 
-	          PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO `resolution_by_column` (merge_id, column_number, problem_by_column_id, conflicts_count, solution_by_column_id, constant) VALUES (?, ?, ?, ?, ?, ?);");
-	          preparedStatement.setInt(1, resolutionByColumnModel.getMergeModel().getId());
-	          preparedStatement.setInt(2, resolutionByColumnModel.getColumnNumber());
-	          preparedStatement.setInt(3, resolutionByColumnModel.getProblemByColumnModel().getId());
-	          preparedStatement.setInt(4, resolutionByColumnModel.getConflictsCount());
-	          if (resolutionByColumnModel.getSolutionByColumnModel().getId() != null) {
-	        	  preparedStatement.setInt(5, resolutionByColumnModel.getSolutionByColumnModel().getId());
-	          } else {
-	        	  preparedStatement.setNull(5, java.sql.Types.INTEGER);
-	          }
-	          if (resolutionByColumnModel.getConstant() != null) {
-	        	  preparedStatement.setString(6, resolutionByColumnModel.getConstant());
-	          } else {
-	        	  preparedStatement.setNull(6, java.sql.Types.VARCHAR);
-	          }
-	        
-
-	          preparedStatement.executeUpdate();
-	          preparedStatement.close();
-	          
-	
-	        }
-	        catch(SQLException sqlException){
-		    	sqlException.printStackTrace();
-	        } 	
-		
-		
-	}
 
 	public String retrieveResolutionsByColumnAsDecoratedXHTMLTableUsingMergeModel (MergeModel mergeModel) {
 		
@@ -166,17 +132,24 @@ public class ResolutionsByColumnModel implements java.io.Serializable {
 				 
 				if (!connection.isClosed()) {
 				
-					 //FIXME: Apparently a bug in CachedRowSet using getX('columnAlias') aka columnLabel, which actually only works with getX('columnName'), so using getX('columnIndex').
+					 //Note: A bug in CachedRowSet using getX('columnAlias') aka columnLabel, which actually only works with getX('columnName'), so using getX('columnIndex').
 					 
 					
 				      try{
+				    	  
+				    	  //TODO: The old way (remove when tested the new way)
+				    	  
+				          
 				          PreparedStatement preparedStatement = connection.prepareStatement(
-				        		  "SELECT resolution_by_column.column_number, `join`.column_name, resolution_by_column.conflicts_count, resolution_by_column.problem_by_column_id, problem_by_column.description, resolution_by_column.solution_by_column_id, resolution_by_column.constant " + 
-				        		  "FROM resolution_by_column " +
-				        		  "JOIN `join` ON `join`.merge_id = resolution_by_column.merge_id AND `join`.column_number = resolution_by_column.column_number " +
-				        		  "JOIN problem_by_column ON problem_by_column.id = resolution_by_column.problem_by_column_id " +
-				        		  "WHERE resolution_by_column.merge_id = ?" + 
-				        		  ";");
+				        		  "SELECT resolution.column_number, `join`.column_name, COUNT(*) AS conflicts_count, resolution.conflict_id, conflict.description, resolution.solution_by_column_id, resolution.constant " + 
+				        		  "FROM resolution " +
+				        		  "JOIN `join` ON `join`.merge_id = resolution.merge_id AND `join`.column_number = resolution.column_number " +
+				        		  "JOIN conflict ON conflict.id = resolution.conflict_id " +
+				        		  "WHERE resolution.merge_id = ? AND resolution.solution_by_row_id IS NULL AND resolution.solution_by_cell_id IS NULL " +
+				        		  "GROUP BY resolution.column_number " +
+				        		  "ORDER BY resolution.column_number " +
+				        		  ";");				    	  
+				    	  
 				          preparedStatement.setInt(1, mergeModel.getId());
 				          preparedStatement.executeQuery();
 				          Class<?> cachedRowSetImplClass = Class.forName(CACHED_ROW_SET_IMPL_CLASS);
@@ -227,16 +200,16 @@ public class ResolutionsByColumnModel implements java.io.Serializable {
 		          //Insert all the joins from this JSON Object
 				
 		          JSONArray columnNumbers = resolutionsByColumnAsJsonObject.optJSONArray("column_number");
-		          JSONArray problemByColumnIds = resolutionsByColumnAsJsonObject.optJSONArray("problem_by_column_id");
+		          JSONArray conflictIds = resolutionsByColumnAsJsonObject.optJSONArray("conflict_id");
 		          JSONArray solutionByColumnIds = resolutionsByColumnAsJsonObject.optJSONArray("solution_by_column_id");
 
 		          if (columnNumbers == null) {
 		        	  columnNumbers = new JSONArray();
 		        	  columnNumbers.put(resolutionsByColumnAsJsonObject.optInt("column_number"));
 		          }
-		          if (problemByColumnIds == null) {
-		        	  problemByColumnIds = new JSONArray();
-		        	  problemByColumnIds.put(resolutionsByColumnAsJsonObject.optInt("problem_by_column_id"));
+		          if (conflictIds == null) {
+		        	  conflictIds = new JSONArray();
+		        	  conflictIds.put(resolutionsByColumnAsJsonObject.optInt("conflict_id"));
 		          }
 		          if (solutionByColumnIds == null) {
 		        	  solutionByColumnIds = new JSONArray();
@@ -250,9 +223,9 @@ public class ResolutionsByColumnModel implements java.io.Serializable {
 		        	  resolutionByColumnModel.setMergeModel(mergeModel);
 		        	  resolutionByColumnModel.setColumnNumber(columnNumbers.getInt(i));
 		        	  
-		        	  ProblemByColumnModel problemByColumnModel = new ProblemByColumnModel();
-		        	  problemByColumnModel.setId(problemByColumnIds.getInt(i));
-		        	  resolutionByColumnModel.setProblemByColumnModel(problemByColumnModel);
+		        	  ConflictModel problemByColumnModel = new ConflictModel();
+		        	  problemByColumnModel.setId(conflictIds.getInt(i));
+		        	  resolutionByColumnModel.setConflictModel(problemByColumnModel);
 		        	  
 		        	  //FIXME: Don't want to overwrite conflicts_count with null. Don't set to 0 if you have a solution (loses data).
 		        	  //Merge's total_conflicts_count will only count conflicts that have no solution.
@@ -285,7 +258,7 @@ public class ResolutionsByColumnModel implements java.io.Serializable {
 		        	  //TODO: Recount the conflicts (take problems with solutions as 0, otherwise use the resolution conflict_count)
 
 		        	  MergeScriptsModel mergeScriptsModel = new MergeScriptsModel();
-		        	  mergeModel = mergeScriptsModel.retrieveMergeAsMergeModelThroughDeterminingTotalConflictsCountByColumnUsingMergeModel(mergeModel, connection);
+		        	  mergeModel = mergeScriptsModel.retrieveMergeAsMergeModelThroughDeterminingTotalConflictsCountUsingMergeModel(mergeModel, connection);
 		        	  
 		          }
 		          
@@ -313,9 +286,8 @@ public class ResolutionsByColumnModel implements java.io.Serializable {
 		
 	      try {
 
-	          PreparedStatement preparedStatement = connection.prepareStatement("UPDATE resolution_by_column SET solution_by_column_id = ?, constant = ? WHERE merge_id = ? AND column_number = ? AND problem_by_column_id = ?;");
-	          
-	          
+	    	  PreparedStatement preparedStatement = connection.prepareStatement("UPDATE resolution SET solution_by_column_id = ?, constant = ? WHERE merge_id = ? AND column_number = ? AND conflict_id = ?;");
+	    	  
 	          if (resolutionByColumnModel.getSolutionByColumnModel().getId() != null) {
 	        	  preparedStatement.setInt(1, resolutionByColumnModel.getSolutionByColumnModel().getId());
 	          } else {
@@ -340,7 +312,7 @@ public class ResolutionsByColumnModel implements java.io.Serializable {
 	          
 	          preparedStatement.setInt(3, resolutionByColumnModel.getMergeModel().getId());
 	          preparedStatement.setInt(4, resolutionByColumnModel.getColumnNumber());
-	          preparedStatement.setInt(5, resolutionByColumnModel.getProblemByColumnModel().getId());
+	          preparedStatement.setInt(5, resolutionByColumnModel.getConflictModel().getId());
 	          
 	          preparedStatement.executeUpdate();
 	          preparedStatement.close();

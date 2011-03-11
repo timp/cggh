@@ -1,4 +1,4 @@
-package org.cggh.tools.dataMerger.data.resolutionsByRow;
+package org.cggh.tools.dataMerger.data.resolutions.byRow;
 
 
 public class SolutionByRowModel implements java.io.Serializable {

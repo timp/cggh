@@ -83,6 +83,9 @@
 	float: left;	
 	
 }
+.resolutions-by-row-table td select.unresolved {
+	color: red;	
+}
 .resolutions-by-row-table .solution_by_row_id-container label {
 	clear: both;
 	float: left;

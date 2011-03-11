@@ -1,4 +1,4 @@
-package org.cggh.tools.dataMerger.data.resolutionsByRow;
+package org.cggh.tools.dataMerger.data.resolutions.byRow;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -10,7 +10,7 @@ import javax.sql.rowset.CachedRowSet;
 import org.cggh.tools.dataMerger.data.DataModel;
 import org.cggh.tools.dataMerger.data.joins.JoinsModel;
 import org.cggh.tools.dataMerger.data.merges.MergeModel;
-import org.cggh.tools.dataMerger.functions.resolutionsByRow.ResolutionsByRowFunctionsModel;
+import org.cggh.tools.dataMerger.functions.resolutions.byRow.ResolutionsByRowFunctionsModel;
 import org.cggh.tools.dataMerger.scripts.merges.MergeScriptsModel;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -132,22 +132,6 @@ public class ResolutionsByRowModel implements java.io.Serializable {
 				if (!connection.isClosed()) {
 
 					
-					//FIXME
-					//TODO
-					
-//					USE datamerger;
-//					SELECT resolution_by_row.merge_id, resolution_by_row.joined_keytable_id, resolution_by_row.conflicts_count, resolution_by_row.solution_by_row_id, resolution_by_row.constant
-//					, joined_keytable_1.key_column_2, joined_keytable_1.key_column_20
-//					, datatable_1.`Row` AS `column_1_source_1`, datatable_2.`Row` AS `column_1_source_2`
-//					FROM resolution_by_row 
-//					JOIN joined_keytable_1 ON joined_keytable_1.id = resolution_by_row.joined_keytable_id
-//					JOIN datatable_1 ON datatable_1.`ID` = joined_keytable_1.key_column_2 AND datatable_1.`Sample Label` = joined_keytable_1.key_column_20
-//					JOIN datatable_2 ON datatable_2.`ID` = joined_keytable_1.key_column_2 AND datatable_2.`Sample Label` = joined_keytable_1.key_column_20
-//					WHERE resolution_by_row.merge_id = 1
-//					ORDER BY resolution_by_row.joined_keytable_id
-//					;
-					
-					
 					String keyColumnReferencesAsCSVForSelectSQL = "";
 
 
@@ -217,16 +201,18 @@ public class ResolutionsByRowModel implements java.io.Serializable {
 					
 				      try{
 				    	  
-				    	  String selectResolutionsByRowSQL = "SELECT resolution_by_row.merge_id, resolution_by_row.joined_keytable_id, resolution_by_row.conflicts_count, resolution_by_row.solution_by_row_id, resolution_by_row.constant " + 
-											        		  keyColumnReferencesAsCSVForSelectSQL + 
-											        		  nonKeyCrossDatatableColumnNameAliasesForSelectSQL +  
-											        		  "FROM resolution_by_row " +
-											        		  "JOIN `" + mergeModel.getJoinedKeytableModel().getName() + "` ON `" + mergeModel.getJoinedKeytableModel().getName() + "`.id = resolution_by_row.joined_keytable_id " +
-											        		  "JOIN `" + mergeModel.getDatatable1Model().getName() + "` ON " + datatable1JoinConditionSQL + 
-											        		  "JOIN `" + mergeModel.getDatatable2Model().getName() + "` ON " + datatable2JoinConditionSQL + 
-											        		  "WHERE resolution_by_row.merge_id = ? " +
-											        		  "ORDER BY resolution_by_row.joined_keytable_id " +
-											        		  ";";
+				    	  
+				    	  String selectResolutionsByRowSQL = "SELECT resolution.merge_id, resolution.joined_keytable_id, COUNT(*) AS conflicts_count, resolution.solution_by_row_id, resolution.constant " + 
+		        		  keyColumnReferencesAsCSVForSelectSQL + 
+		        		  nonKeyCrossDatatableColumnNameAliasesForSelectSQL +  
+		        		  "FROM resolution " +
+		        		  "JOIN `" + mergeModel.getJoinedKeytableModel().getName() + "` ON `" + mergeModel.getJoinedKeytableModel().getName() + "`.id = resolution.joined_keytable_id " +
+		        		  "JOIN `" + mergeModel.getDatatable1Model().getName() + "` ON " + datatable1JoinConditionSQL + 
+		        		  "JOIN `" + mergeModel.getDatatable2Model().getName() + "` ON " + datatable2JoinConditionSQL + 
+		        		  "WHERE resolution.merge_id = ?  AND resolution.solution_by_column_id IS NULL AND resolution.solution_by_cell_id IS NULL " +
+		        		  "GROUP BY resolution.joined_keytable_id " +
+		        		  "ORDER BY resolution.joined_keytable_id " +
+		        		  ";";				    	  
 				    	  
 				    	  this.logger.info("selectResolutionsByRowSQL = " + selectResolutionsByRowSQL);
 				    	  
@@ -335,9 +321,8 @@ public class ResolutionsByRowModel implements java.io.Serializable {
 
 		        	  MergeScriptsModel mergeScriptsModel = new MergeScriptsModel();
 		        	  
-		        	  //FIXME: This breaks if don't have all the merge info in the model, e.g. Upload1Model.
-		        	  //TODO
-		        	  mergeModel = mergeScriptsModel.retrieveMergeAsMergeModelThroughDeterminingTotalConflictsCountByRowUsingMergeModel(mergeModel, connection);
+
+		        	  mergeModel = mergeScriptsModel.retrieveMergeAsMergeModelThroughDeterminingTotalConflictsCountUsingMergeModel(mergeModel, connection);
 		        	  
 		          }
 		          
@@ -362,7 +347,7 @@ public class ResolutionsByRowModel implements java.io.Serializable {
 		
 	      try {
 
-	          PreparedStatement preparedStatement = connection.prepareStatement("UPDATE resolution_by_row SET solution_by_row_id = ?, constant = ? WHERE merge_id = ? AND joined_keytable_id = ?;");
+	    	  PreparedStatement preparedStatement = connection.prepareStatement("UPDATE resolution SET solution_by_row_id = ?, constant = ? WHERE merge_id = ? AND joined_keytable_id = ?;");
 	          
 	          
 	          if (resolutionByRowModel.getSolutionByRowModel().getId() != null) {

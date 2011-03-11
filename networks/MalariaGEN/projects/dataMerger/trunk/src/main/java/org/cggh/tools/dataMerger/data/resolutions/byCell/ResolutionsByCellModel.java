@@ -1,4 +1,4 @@
-package org.cggh.tools.dataMerger.data.resolutionsByCell;
+package org.cggh.tools.dataMerger.data.resolutions.byCell;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -10,7 +10,8 @@ import javax.sql.rowset.CachedRowSet;
 import org.cggh.tools.dataMerger.data.DataModel;
 import org.cggh.tools.dataMerger.data.joins.JoinsModel;
 import org.cggh.tools.dataMerger.data.merges.MergeModel;
-import org.cggh.tools.dataMerger.functions.resolutionsByCell.ResolutionsByCellFunctionsModel;
+import org.cggh.tools.dataMerger.data.resolutions.ResolutionsModel;
+import org.cggh.tools.dataMerger.functions.resolutions.byCell.ResolutionsByCellFunctionsModel;
 import org.cggh.tools.dataMerger.scripts.merges.MergeScriptsModel;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -58,6 +59,12 @@ public class ResolutionsByCellModel implements java.io.Serializable {
 			  	JoinsModel joinsModel = new JoinsModel();
 			  	joinsModel.setDataModel(this.getDataModel());
 			  	resolutionsByCellFunctionsModel.setJoinColumnNamesByColumnNumberAsHashMap(joinsModel.retrieveJoinColumnNamesByColumnNumberAsHashMapUsingMergeModel(mergeModel));
+			  	
+			  	ResolutionsModel resolutionsModel = new ResolutionsModel();
+			  	resolutionsModel.setDataModel(this.getDataModel());
+			  	resolutionsByCellFunctionsModel.setUnresolvedConflictsCountByColumnNumberAsHashMap(resolutionsModel.retrieveUnresolvedConflictsCountByColumnNumberAsHashMapUsingMergeModel(mergeModel));
+			  	resolutionsByCellFunctionsModel.setUnresolvedStatusByCellCoordsAsHashMap(resolutionsModel.retrieveUnresolvedStatusByCellCoordsAsHashMapUsingMergeModel(mergeModel));
+			  	
 			  	resolutionsByCellFunctionsModel.setResolutionsByCellAsDecoratedXHTMLTableUsingResolutionsByCellAsCachedRowSet();
 			  	resolutionsByCellAsDecoratedXHTMLTable = resolutionsByCellFunctionsModel.getResolutionsByCellAsDecoratedXHTMLTable();
 			    
@@ -207,15 +214,16 @@ public class ResolutionsByCellModel implements java.io.Serializable {
 					
 				      try{
 				    	  
-				    	  String selectResolutionsByCellSQL = "SELECT resolution_by_cell.merge_id, resolution_by_cell.joined_keytable_id, resolution_by_cell.solution_by_cell_id, resolution_by_cell.constant " + 
+				    	  String selectResolutionsByCellSQL = "SELECT resolution.merge_id, resolution.joined_keytable_id, resolution.solution_by_cell_id, resolution.constant " + 
 											        		  keyColumnReferencesAsCSVForSelectSQL + 
 											        		  nonKeyCrossDatatableColumnNameAliasesForSelectSQL +  
-											        		  "FROM resolution_by_cell " +
-											        		  "JOIN `" + mergeModel.getJoinedKeytableModel().getName() + "` ON `" + mergeModel.getJoinedKeytableModel().getName() + "`.id = resolution_by_cell.joined_keytable_id " +
+											        		  "FROM resolution " +
+											        		  "JOIN `" + mergeModel.getJoinedKeytableModel().getName() + "` ON `" + mergeModel.getJoinedKeytableModel().getName() + "`.id = resolution.joined_keytable_id " +
 											        		  "JOIN `" + mergeModel.getDatatable1Model().getName() + "` ON " + datatable1JoinConditionSQL + 
 											        		  "JOIN `" + mergeModel.getDatatable2Model().getName() + "` ON " + datatable2JoinConditionSQL + 
-											        		  "WHERE resolution_by_cell.merge_id = ? " +
-											        		  "ORDER BY resolution_by_cell.joined_keytable_id " +
+											        		  "WHERE resolution.merge_id = ? AND resolution.solution_by_column_id IS NULL AND resolution.solution_by_row_id IS NULL " +
+											        		  "GROUP BY resolution.joined_keytable_id " +
+											        		  "ORDER BY resolution.joined_keytable_id " +
 											        		  ";";
 				    	  
 				    	  this.logger.info("selectResolutionsByCellSQL = " + selectResolutionsByCellSQL);
@@ -340,7 +348,7 @@ public class ResolutionsByCellModel implements java.io.Serializable {
 		        	  
 		        	  //FIXME: This breaks if don't have all the merge info in the model, e.g. Upload1Model.
 		        	  //TODO
-		        	  mergeModel = mergeScriptsModel.retrieveMergeAsMergeModelThroughDeterminingTotalConflictsCountByCellUsingMergeModel(mergeModel, connection);
+		        	  mergeModel = mergeScriptsModel.retrieveMergeAsMergeModelThroughDeterminingTotalConflictsCountUsingMergeModel(mergeModel, connection);
 		        	  
 		          }
 		          
