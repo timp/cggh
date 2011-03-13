@@ -102,11 +102,15 @@ public class ResolutionsByColumnFunctionsModel implements java.io.Serializable {
 							
 							if (this.getSolutionsByColumnAsCachedRowSet().next()) {
 								
-								resolutionsByColumnAsDecoratedXHTMLTable += "<select name=\"solution_by_column_id\">";
+								if (solutionByColumnId == 0) {
+									resolutionsByColumnAsDecoratedXHTMLTable += "<select class=\"unresolved\" name=\"solution_by_column_id\">";
+								} else {
+									resolutionsByColumnAsDecoratedXHTMLTable += "<select name=\"solution_by_column_id\">";
+								}
 
 								//FIXME: Should the null option be in the table?
 								
-								resolutionsByColumnAsDecoratedXHTMLTable += "<option class=\"unresolved-option\" value=\"\">";
+								resolutionsByColumnAsDecoratedXHTMLTable += "<option value=\"\">";
 
 								 resolutionsByColumnAsDecoratedXHTMLTable += "Unresolved";
 								 

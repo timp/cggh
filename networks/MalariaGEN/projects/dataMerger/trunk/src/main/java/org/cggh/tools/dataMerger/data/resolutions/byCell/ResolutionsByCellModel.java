@@ -66,6 +66,10 @@ public class ResolutionsByCellModel implements java.io.Serializable {
 			  	resolutionsModel.setDataModel(this.getDataModel());
 			  	resolutionsByCellFunctionsModel.setUnresolvedByColumnOrRowConflictsCountUsingColumnNumberAsHashMap(resolutionsModel.retrieveUnresolvedByColumnOrRowConflictsCountUsingColumnNumberAsHashMapUsingMergeModel(mergeModel));
 			  	resolutionsByCellFunctionsModel.setUnresolvedByColumnOrRowStatusUsingCellCoordsAsHashMap(resolutionsModel.retrieveUnresolvedByColumnOrRowStatusUsingCellCoordsAsHashMapUsingMergeModel(mergeModel));
+
+			  	resolutionsByCellFunctionsModel.setConstantUsingCellCoordsAsHashMap(resolutionsModel.retrieveConstantUsingCellCoordsAsHashMapUsingMergeModel(mergeModel));
+			  	resolutionsByCellFunctionsModel.setNullOrConstantSolutionUsingColumnNumberAsHashMap(resolutionsModel.retrieveNullOrConstantSolutionUsingColumnNumberAsHashMapUsingMergeModel(mergeModel));
+					  	
 			  	
 			  	resolutionsByCellFunctionsModel.setResolutionsByCellAsDecoratedXHTMLTableUsingResolutionsByCellAsCachedRowSet();
 			  	resolutionsByCellAsDecoratedXHTMLTable = resolutionsByCellFunctionsModel.getResolutionsByCellAsDecoratedXHTMLTable();

@@ -52,8 +52,12 @@
 	color: red;	
 }
 .resolutions-by-cell-table td.resolved-conflicting-data {
+	color: #CCCCCC;	
+}
+.resolutions-by-cell-table td.preferred-source {
 	color: orange;	
 }
+
 .resolutions-by-cell-table .key-heading {
 	padding-right: 10px;
 	vertical-align: middle;
@@ -81,10 +85,16 @@
 	border-left: 1px solid #cccccc;
 }
 .resolutions-by-cell-table .solution-heading
-, .resolutions-by-cell-table .solution_by_cell_id-container {
-	border-left: 1px solid #cccccc;	
+, .resolutions-by-cell-table .solution_by_cell_id-container
+, .resolutions-by-cell-table .constant-heading {
+	border-left: 1px solid #cccccc;
 }
-
+.resolutions-by-cell-table .constant-container
+ {
+	border-left: 1px solid #cccccc;
+	
+	color: orange;
+}
 .resolutions-by-cell-table td select {
 	clear: both;
 	float: left;	

@@ -154,4 +154,266 @@ public class ResolutionsModel implements java.io.Serializable {
 		return unresolvedByColumnOrRowStatusUsingCellCoordsAsHashMap;		
 	}
 
+	
+	/////////////////TODO:
+	// Use 
+	// retrieveUnresolvedByColumnOrRowStatusUsingCellCoordsAsHashMapUsingMergeModel
+	// above as starting point 
+	
+	public HashMap<String, Integer> retrieveSolutionByColumnIdUsingCellCoordsAsHashMapUsingMergeModel(
+			MergeModel mergeModel) {
+		
+		HashMap<String, Integer> solutionByColumnIdUsingCellCoordsAsHashMap = new HashMap<String, Integer>();
+
+		try {
+			
+			Connection connection = this.getDataModel().getNewConnection();
+			 
+			if (!connection.isClosed()) {		
+		
+			      try{
+			          PreparedStatement preparedStatement = connection.prepareStatement("SELECT joined_keytable_id, column_number, solution_by_column_id FROM `resolution` WHERE merge_id = ? ORDER BY joined_keytable_id, column_number;");
+			          preparedStatement.setInt(1, mergeModel.getId());
+			          preparedStatement.executeQuery();
+			          ResultSet resultSet = preparedStatement.getResultSet();
+			          
+			          if (resultSet.next()) {
+			        	  
+			        	  resultSet.beforeFirst();
+			        	  
+			        	  while(resultSet.next()){
+		
+			        		 
+			        		  Integer joinedKeytableId = resultSet.getInt("joined_keytable_id");
+			        		  Integer columnNumber = resultSet.getInt("column_number");
+			        		  String cellCoords = joinedKeytableId.toString() + "," + columnNumber.toString();
+			        		  
+			        		  solutionByColumnIdUsingCellCoordsAsHashMap.put(cellCoords, resultSet.getInt("solution_by_column_id"));
+			        	  
+			        	  }
+		
+			      	  } else {
+			      		  
+			      		  //There may be no unresolved conflicts
+			      		  this.logger.info("Did not retrieve any solution_by_column_ids using the specified merge id: " + mergeModel.getId());
+			      		  
+			      	  }
+			          
+			          resultSet.close();
+			          
+			          preparedStatement.close();
+		
+			        }
+			        catch(SQLException sqlException){
+				    	sqlException.printStackTrace();
+			        } 		
+	        
+			} else {
+				
+				this.logger.severe("connection.isClosed");
+			}
+				
+		} 
+		catch (Exception e) {
+			
+			this.logger.severe(e.getMessage());
+			e.printStackTrace();
+		}
+		
+		return solutionByColumnIdUsingCellCoordsAsHashMap;	
+	}
+
+	public HashMap<String, Integer> retrieveSolutionByCellIdUsingCellCoordsAsHashMapUsingMergeModel(
+			MergeModel mergeModel) {
+		
+		HashMap<String, Integer> solutionByCellIdUsingCellCoordsAsHashMap = new HashMap<String, Integer>();
+
+		try {
+			
+			Connection connection = this.getDataModel().getNewConnection();
+			 
+			if (!connection.isClosed()) {		
+		
+			      try{
+			          PreparedStatement preparedStatement = connection.prepareStatement("SELECT joined_keytable_id, column_number, solution_by_cell_id FROM `resolution` WHERE merge_id = ? ORDER BY joined_keytable_id, column_number;");
+			          preparedStatement.setInt(1, mergeModel.getId());
+			          preparedStatement.executeQuery();
+			          ResultSet resultSet = preparedStatement.getResultSet();
+			          
+			          if (resultSet.next()) {
+			        	  
+			        	  resultSet.beforeFirst();
+			        	  
+			        	  while(resultSet.next()){
+		
+			        		 
+			        		  Integer joinedKeytableId = resultSet.getInt("joined_keytable_id");
+			        		  Integer columnNumber = resultSet.getInt("column_number");
+			        		  String cellCoords = joinedKeytableId.toString() + "," + columnNumber.toString();
+			        		  
+			        		  solutionByCellIdUsingCellCoordsAsHashMap.put(cellCoords, resultSet.getInt("solution_by_cell_id"));
+			        	  
+			        	  }
+		
+			      	  } else {
+			      		  
+			      		  //There may be no unresolved conflicts
+			      		  this.logger.info("Did not retrieve any solution_by_cell_ids using the specified merge id: " + mergeModel.getId());
+			      		  
+			      	  }
+			          
+			          resultSet.close();
+			          
+			          preparedStatement.close();
+		
+			        }
+			        catch(SQLException sqlException){
+				    	sqlException.printStackTrace();
+			        } 		
+	        
+			} else {
+				
+				this.logger.severe("connection.isClosed");
+			}
+				
+		} 
+		catch (Exception e) {
+			
+			this.logger.severe(e.getMessage());
+			e.printStackTrace();
+		}
+		
+		return solutionByCellIdUsingCellCoordsAsHashMap;	
+	}
+
+	public HashMap<String, String> retrieveConstantUsingCellCoordsAsHashMapUsingMergeModel(
+			MergeModel mergeModel) {
+
+		HashMap<String, String> constantUsingCellCoordsAsHashMap = new HashMap<String, String>();
+
+		try {
+			
+			Connection connection = this.getDataModel().getNewConnection();
+			 
+			if (!connection.isClosed()) {		
+		
+			      try{
+			          PreparedStatement preparedStatement = connection.prepareStatement("SELECT joined_keytable_id, column_number, constant FROM `resolution` WHERE merge_id = ? ORDER BY joined_keytable_id, column_number;");
+			          preparedStatement.setInt(1, mergeModel.getId());
+			          preparedStatement.executeQuery();
+			          ResultSet resultSet = preparedStatement.getResultSet();
+			          
+			          if (resultSet.next()) {
+			        	  
+			        	  resultSet.beforeFirst();
+			        	  
+			        	  while(resultSet.next()){
+		
+			        		 
+			        		  Integer joinedKeytableId = resultSet.getInt("joined_keytable_id");
+			        		  Integer columnNumber = resultSet.getInt("column_number");
+			        		  String cellCoords = joinedKeytableId.toString() + "," + columnNumber.toString();
+			        		  
+			        		  constantUsingCellCoordsAsHashMap.put(cellCoords, resultSet.getString("constant"));
+			        	  
+			        	  }
+		
+			      	  } else {
+			      		  
+			      		  //There may be no unresolved conflicts
+			      		  this.logger.info("Did not retrieve any constants using the specified merge id: " + mergeModel.getId());
+			      		  
+			      	  }
+			          
+			          resultSet.close();
+			          
+			          preparedStatement.close();
+		
+			        }
+			        catch(SQLException sqlException){
+				    	sqlException.printStackTrace();
+			        } 		
+	        
+			} else {
+				
+				this.logger.severe("connection.isClosed");
+			}
+				
+		} 
+		catch (Exception e) {
+			
+			this.logger.severe(e.getMessage());
+			e.printStackTrace();
+		}
+		
+		return constantUsingCellCoordsAsHashMap;
+		
+	}
+
+	public HashMap<Integer, Boolean> retrieveNullOrConstantSolutionUsingColumnNumberAsHashMapUsingMergeModel(
+			MergeModel mergeModel) {
+		
+		HashMap<Integer, Boolean> nullOrConstantSolutionUsingColumnNumberAsHashMap = new HashMap<Integer, Boolean>();
+		
+		try {
+			
+			Connection connection = this.getDataModel().getNewConnection();
+			 
+			if (!connection.isClosed()) {		
+		
+			      try{
+			          PreparedStatement preparedStatement = connection.prepareStatement(
+			        		  "SELECT column_number FROM `resolution` WHERE merge_id = ? " +
+			          			"AND (solution_by_column_id = 3 OR solution_by_column_id = 4 OR solution_by_row_id = 3 OR solution_by_row_id = 4 OR solution_by_cell_id = 3 OR solution_by_cell_id = 4) " +
+			          			"ORDER BY column_number" +
+			          			";");
+			          preparedStatement.setInt(1, mergeModel.getId());
+			          preparedStatement.executeQuery();
+			          ResultSet resultSet = preparedStatement.getResultSet();
+			          
+			          if (resultSet.next()) {
+			        	  
+			        	  resultSet.beforeFirst();
+			        	  
+			        	  while(resultSet.next()){
+		
+			        		  nullOrConstantSolutionUsingColumnNumberAsHashMap.put(resultSet.getInt("column_number"), true);
+			        	  
+			        	  }
+		
+			      	  } else {
+			      		  
+			      		  //There may be no unresolved conflicts
+			      		  this.logger.info("Did not retrieve any null/constant counts using the specified merge id: " + mergeModel.getId());
+			      		  
+			      	  }
+			          
+			          resultSet.close();
+			          
+			          preparedStatement.close();
+		
+			        }
+			        catch(SQLException sqlException){
+				    	sqlException.printStackTrace();
+			        } 		
+	        
+			} else {
+				
+				this.logger.severe("connection.isClosed");
+			}
+				
+		} 
+		catch (Exception e) {
+			
+			this.logger.severe(e.getMessage());
+			e.printStackTrace();
+		}
+		
+		return nullOrConstantSolutionUsingColumnNumberAsHashMap;
+	}
+
+	
+	
+	
+	
 }

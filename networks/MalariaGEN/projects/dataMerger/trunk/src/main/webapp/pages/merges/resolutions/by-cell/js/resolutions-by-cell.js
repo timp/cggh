@@ -54,18 +54,23 @@ function initSaveResolutionsByCellFunction () {
 function initChangeSolutionByCellFunction () {
 	
 
-	$('.resolutions-by-cell-form select[name=solution_by_cell_id]').change(function() {
+	$('.resolutions-by-cell-form select[name|=solution_by_cell_id]').change(function() {
 
 		var row = $(this).closest("tr");
 		
 		//alert($(this).val());
 		
+		var selectName = $(this).attr('name');
+		
+		//19 is the lenght of "solution_by_cell_id"
+		var suffix = selectName.substring(19, selectName.length);
+		
 		if ($(this).val() == '4') {
-			row.find('td label[for|="constant"]').css('display', 'inline');
-			row.find('td input[name|="constant"]').css('display', 'inline');
+			row.find('td label[for|="constant' + suffix + '"]').css('display', 'inline');
+			row.find('td input[name|="constant' + suffix + '"]').css('display', 'inline');
 		} else {
-			row.find('td label[for|="constant"]').css('display', 'none');
-			row.find('td input[name|="constant"]').css('display', 'none');
+			row.find('td label[for|="constant' + suffix + '"]').css('display', 'none');
+			row.find('td input[name|="constant' + suffix + '"]').css('display', 'none');
 		}
 
 	});	

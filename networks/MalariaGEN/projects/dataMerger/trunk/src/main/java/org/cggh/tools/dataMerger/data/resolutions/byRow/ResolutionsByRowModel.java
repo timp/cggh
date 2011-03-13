@@ -10,6 +10,7 @@ import javax.sql.rowset.CachedRowSet;
 import org.cggh.tools.dataMerger.data.DataModel;
 import org.cggh.tools.dataMerger.data.joins.JoinsModel;
 import org.cggh.tools.dataMerger.data.merges.MergeModel;
+import org.cggh.tools.dataMerger.data.resolutions.ResolutionsModel;
 import org.cggh.tools.dataMerger.functions.resolutions.byRow.ResolutionsByRowFunctionsModel;
 import org.cggh.tools.dataMerger.scripts.merges.MergeScriptsModel;
 import org.json.JSONArray;
@@ -56,6 +57,15 @@ public class ResolutionsByRowModel implements java.io.Serializable {
 			  	JoinsModel joinsModel = new JoinsModel();
 			  	joinsModel.setDataModel(this.getDataModel());
 			  	resolutionsByRowFunctionsModel.setJoinColumnNamesByColumnNumberAsHashMap(joinsModel.retrieveJoinColumnNamesByColumnNumberAsHashMapUsingMergeModel(mergeModel));
+			  	
+			  	/////////TODO:
+			  	ResolutionsModel resolutionsModel = new ResolutionsModel();
+			  	resolutionsModel.setDataModel(this.getDataModel());
+			  	resolutionsByRowFunctionsModel.setSolutionByColumnIdUsingCellCoordsAsHashMap(resolutionsModel.retrieveSolutionByColumnIdUsingCellCoordsAsHashMapUsingMergeModel(mergeModel));
+			  	resolutionsByRowFunctionsModel.setSolutionByCellIdUsingCellCoordsAsHashMap(resolutionsModel.retrieveSolutionByCellIdUsingCellCoordsAsHashMapUsingMergeModel(mergeModel));
+			  	resolutionsByRowFunctionsModel.setConstantUsingCellCoordsAsHashMap(resolutionsModel.retrieveConstantUsingCellCoordsAsHashMapUsingMergeModel(mergeModel));
+			  	resolutionsByRowFunctionsModel.setNullOrConstantSolutionUsingColumnNumberAsHashMap(resolutionsModel.retrieveNullOrConstantSolutionUsingColumnNumberAsHashMapUsingMergeModel(mergeModel));
+			  	
 			  	resolutionsByRowFunctionsModel.setResolutionsByRowAsDecoratedXHTMLTableUsingResolutionsByRowAsCachedRowSet();
 			  	resolutionsByRowAsDecoratedXHTMLTable = resolutionsByRowFunctionsModel.getResolutionsByRowAsDecoratedXHTMLTable();
 			    
@@ -349,10 +359,32 @@ public class ResolutionsByRowModel implements java.io.Serializable {
 		
 	      try {
 
-	    	  PreparedStatement preparedStatement = connection.prepareStatement(
-	    			  "UPDATE resolution SET solution_by_row_id = ?, constant = ? " +
-	    			  "WHERE merge_id = ? AND joined_keytable_id = ? AND solution_by_column_id IS NULL AND solution_by_cell_id IS NULL " +
-	    			  ";");
+	    	  String updateResolutionByRowSQL = "";
+	    	  
+	          //FIXME: What is 5? ("Remove entire row")
+	    	  
+	    	  // This approach is difficult to undo. Instead only apply at export stage. 
+//	          if (resolutionByRowModel.getSolutionByRowModel().getId() != null && resolutionByRowModel.getSolutionByRowModel().getId() == 5) {
+//	        	  
+//	        	  updateResolutionByRowSQL = 
+//	    			  "UPDATE resolution SET solution_by_row_id = ?, constant = ? " +
+//	    			  "WHERE merge_id = ? AND joined_keytable_id = ? " +
+//	    			  ";";
+//		          
+//	          } else {
+//	        	  
+//	        	  updateResolutionByRowSQL = 
+//	    			  "UPDATE resolution SET solution_by_row_id = ?, constant = ? " +
+//	    			  "WHERE merge_id = ? AND joined_keytable_id = ? AND solution_by_column_id IS NULL AND solution_by_cell_id IS NULL " +
+//	    			  ";";
+//	          }	    	  
+	    	  
+        	  updateResolutionByRowSQL = 
+    			  "UPDATE resolution SET solution_by_row_id = ?, constant = ? " +
+    			  "WHERE merge_id = ? AND joined_keytable_id = ? AND solution_by_column_id IS NULL AND solution_by_cell_id IS NULL " +
+    			  ";";	    	  
+	    	  
+	    	  PreparedStatement preparedStatement = connection.prepareStatement(updateResolutionByRowSQL);
 	          
 	          
 	          if (resolutionByRowModel.getSolutionByRowModel().getId() != null) {

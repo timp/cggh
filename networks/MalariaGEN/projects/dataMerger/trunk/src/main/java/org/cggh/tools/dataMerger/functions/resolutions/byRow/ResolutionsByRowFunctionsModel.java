@@ -23,6 +23,11 @@ public class ResolutionsByRowFunctionsModel implements java.io.Serializable {
 	private String resolutionsByRowAsDecoratedXHTMLTable;
 	private CachedRowSet solutionsByRowAsCachedRowSet;
 	private HashMap<Integer, String> joinColumnNamesByColumnNumberAsHashMap;
+	
+	private HashMap<String, Integer> solutionByColumnIdUsingCellCoordsAsHashMap;
+	private HashMap<String, Integer> solutionByCellIdUsingCellCoordsAsHashMap;
+	private HashMap<String, String> constantUsingCellCoordsAsHashMap;
+	private HashMap<Integer, Boolean> nullOrConstantSolutionUsingColumnNumberAsHashMap;
 
 	public ResolutionsByRowFunctionsModel () {
 		
@@ -92,8 +97,13 @@ public class ResolutionsByRowFunctionsModel implements java.io.Serializable {
 			        		  
 			        		  //this.logger.info("Got columnNumber: " + columnNumber);
 			        		  
-			        		  resolutionsByRowAsDecoratedXHTMLTable += "<th class=\"column-heading\" colspan=\"2\">" + this.getJoinColumnNamesByColumnNumberAsHashMap().get(columnNumber) + "</th>";
-		        		  
+			        		  
+
+			        		  if (this.getNullOrConstantSolutionUsingColumnNumberAsHashMap().get(columnNumber) != null) {
+			        			  resolutionsByRowAsDecoratedXHTMLTable += "<th class=\"column-heading\" colspan=\"3\">" + this.getJoinColumnNamesByColumnNumberAsHashMap().get(columnNumber) + "</th>";
+			        		  } else {
+			        			  resolutionsByRowAsDecoratedXHTMLTable += "<th class=\"column-heading\" colspan=\"2\">" + this.getJoinColumnNamesByColumnNumberAsHashMap().get(columnNumber) + "</th>";  
+			        		  }
 		        		  }
 		        	  
 		          }
@@ -113,6 +123,12 @@ public class ResolutionsByRowFunctionsModel implements java.io.Serializable {
 
 		        		  resolutionsByRowAsDecoratedXHTMLTable += "<th class=\"source_1_value-heading\">1</th><th class=\"source_2_value-heading\">2</th>";
 		        	  
+		        		  Integer columnNumber = Integer.parseInt(resolutionsByRowAsCachedRowSetColumnNamePatternMatcher.group(1));
+		        		  
+		        		  if (this.getNullOrConstantSolutionUsingColumnNumberAsHashMap().get(columnNumber) != null) {
+		        			  resolutionsByRowAsDecoratedXHTMLTable += "<th class=\"constant-heading\">Constant</th>";
+		        		  }
+		        		  
 		        	  }
 		          }
 				 
@@ -257,15 +273,137 @@ public class ResolutionsByRowFunctionsModel implements java.io.Serializable {
 				        		  // Concatenate both sources at the same time, to make sure they are displayed together
 
 				        		  
-				        		  Integer solutionByRowId = this.getResolutionsByRowAsCachedRowSet().getInt("solution_by_row_id");
+				        		  //Integer solutionByRowId = this.getResolutionsByRowAsCachedRowSet().getInt("solution_by_row_id");
 				        		  
-				        			  if (this.getResolutionsByRowAsCachedRowSet().getString(i).equals(this.getResolutionsByRowAsCachedRowSet().getString(columnIndexForSource2Column)) || solutionByRowId != 0) {
+				        			  if (this.getResolutionsByRowAsCachedRowSet().getString(i).equals(this.getResolutionsByRowAsCachedRowSet().getString(columnIndexForSource2Column))) {
 
+				        				  // There is no conflict
+				        				  
 				        					 resolutionsByRowAsDecoratedXHTMLTable += "<td class=\"source_1_value-container\">" + this.getResolutionsByRowAsCachedRowSet().getString(i)  + "</td><td class=\"source_2_value-container\">" + this.getResolutionsByRowAsCachedRowSet().getString(columnIndexForSource2Column) + "</td>";
+				        					 if (this.getNullOrConstantSolutionUsingColumnNumberAsHashMap().get(columnNumber) != null) {
+			        							  resolutionsByRowAsDecoratedXHTMLTable += "<td class=\"constant-container\"><!-- Above/below constants --></td>";
+			        						  }
 
 				        			  } else {
 				        				  
-				        				  resolutionsByRowAsDecoratedXHTMLTable += "<td class=\"source_1_value-container conflicting-data\">" + this.getResolutionsByRowAsCachedRowSet().getString(i)  + "</td><td class=\"source_2_value-container conflicting-data\">" + this.getResolutionsByRowAsCachedRowSet().getString(columnIndexForSource2Column) + "</td>";
+				        				  // There is a conflict
+				        				  Integer solutionByRowId = this.getResolutionsByRowAsCachedRowSet().getInt("solution_by_row_id");
+				        				  
+				        				  String constant = this.getConstantUsingCellCoordsAsHashMap().get(this.getResolutionsByRowAsCachedRowSet().getInt("joined_keytable_id") + "," + columnNumber.toString());
+				        				  
+				        				  if (this.getSolutionByColumnIdUsingCellCoordsAsHashMap().get(this.getResolutionsByRowAsCachedRowSet().getInt("joined_keytable_id") + "," + columnNumber.toString()) != null && this.getSolutionByColumnIdUsingCellCoordsAsHashMap().get(this.getResolutionsByRowAsCachedRowSet().getInt("joined_keytable_id") + "," + columnNumber.toString()) != 0) {
+				        					  
+				        					  // Solved by Column
+				        					  
+				        					  Integer solutionByColumnID = this.getSolutionByColumnIdUsingCellCoordsAsHashMap().get(this.getResolutionsByRowAsCachedRowSet().getInt("joined_keytable_id") + "," + columnNumber.toString());
+				        					  
+				        					  // TODO: What is id 1? Need some sort of enumeration.
+				        					  
+				        					  if (solutionByColumnID != null && solutionByColumnID == 1) {
+				        						  // Prefer source 1
+				        						  resolutionsByRowAsDecoratedXHTMLTable += "<td class=\"source_1_value-container resolved-conflicting-data preferred-source\">" + this.getResolutionsByRowAsCachedRowSet().getString(i)  + "</td><td class=\"source_2_value-container resolved-conflicting-data\">" + this.getResolutionsByRowAsCachedRowSet().getString(columnIndexForSource2Column) + "</td>";
+				        						  if (this.getNullOrConstantSolutionUsingColumnNumberAsHashMap().get(columnNumber) != null) {
+				        							  resolutionsByRowAsDecoratedXHTMLTable += "<td class=\"constant-container\"><!-- Above/below constants --></td>";
+				        						  }
+				        					  } else if (solutionByColumnID != null && solutionByColumnID == 2) {
+				        						  // Prefer source 2
+				        						  resolutionsByRowAsDecoratedXHTMLTable += "<td class=\"source_1_value-container resolved-conflicting-data\">" + this.getResolutionsByRowAsCachedRowSet().getString(i)  + "</td><td class=\"source_2_value-container resolved-conflicting-data preferred-source\">" + this.getResolutionsByRowAsCachedRowSet().getString(columnIndexForSource2Column) + "</td>";
+				        						  if (this.getNullOrConstantSolutionUsingColumnNumberAsHashMap().get(columnNumber) != null) {
+				        							  resolutionsByRowAsDecoratedXHTMLTable += "<td class=\"constant-container\"><!-- Above/below constants --></td>";
+				        						  }
+				        					  } else if (solutionByColumnID != null && solutionByColumnID == 3) {
+				        						  // Use NULL	
+				        						  resolutionsByRowAsDecoratedXHTMLTable += "<td class=\"source_1_value-container resolved-conflicting-data\">" + this.getResolutionsByRowAsCachedRowSet().getString(i)  + "</td><td class=\"source_2_value-container resolved-conflicting-data\">" + this.getResolutionsByRowAsCachedRowSet().getString(columnIndexForSource2Column) + "</td><td class=\"constant-container\">NULL</td>";
+				        					  } else if (solutionByColumnID != null && solutionByColumnID == 4) {
+				        						  // Constant				        						  
+				        						  resolutionsByRowAsDecoratedXHTMLTable += "<td class=\"source_1_value-container resolved-conflicting-data\">" + this.getResolutionsByRowAsCachedRowSet().getString(i)  + "</td><td class=\"source_2_value-container resolved-conflicting-data\">" + this.getResolutionsByRowAsCachedRowSet().getString(columnIndexForSource2Column) + "</td><td class=\"constant-container\">" + constant + "</td>";
+				        					  } else {
+				        						  //TODO: Error, unexpect ID
+				        						  resolutionsByRowAsDecoratedXHTMLTable += "<td class=\"source_1_value-container resolved-conflicting-data\">" + this.getResolutionsByRowAsCachedRowSet().getString(i)  + "</td><td class=\"source_2_value-container resolved-conflicting-data\">" + this.getResolutionsByRowAsCachedRowSet().getString(columnIndexForSource2Column) + "</td>";
+				        						  if (this.getNullOrConstantSolutionUsingColumnNumberAsHashMap().get(columnNumber) != null) {
+				        							  resolutionsByRowAsDecoratedXHTMLTable += "<td class=\"constant-container\"><!-- Above/below constants --></td>";
+				        						  }
+				        					  }
+				        					  
+				        				  } 
+				        				  else if (this.getSolutionByCellIdUsingCellCoordsAsHashMap().get(this.getResolutionsByRowAsCachedRowSet().getInt("joined_keytable_id") + "," + columnNumber.toString()) != null && this.getSolutionByCellIdUsingCellCoordsAsHashMap().get(this.getResolutionsByRowAsCachedRowSet().getInt("joined_keytable_id") + "," + columnNumber.toString()) != 0) {
+				        					  
+				        					// Solved by Cell
+				        					  
+				        					  Integer solutionByCellId = this.getSolutionByCellIdUsingCellCoordsAsHashMap().get(this.getResolutionsByRowAsCachedRowSet().getInt("joined_keytable_id") + "," + columnNumber.toString());
+				        					  
+				        					  
+				        					  // TODO: What is id 1? Need some sort of enumeration.
+				        					  
+				        					  if (solutionByCellId != null && solutionByCellId == 1) {
+				        						  // Prefer source 1
+				        						  resolutionsByRowAsDecoratedXHTMLTable += "<td class=\"source_1_value-container resolved-conflicting-data preferred-source\">" + this.getResolutionsByRowAsCachedRowSet().getString(i)  + "</td><td class=\"source_2_value-container resolved-conflicting-data\">" + this.getResolutionsByRowAsCachedRowSet().getString(columnIndexForSource2Column) + "</td>";
+				        						  if (this.getNullOrConstantSolutionUsingColumnNumberAsHashMap().get(columnNumber) != null) {
+				        							  resolutionsByRowAsDecoratedXHTMLTable += "<td class=\"constant-container\"><!-- Above/below constants --></td>";
+				        						  }
+				        					  } else if (solutionByCellId != null && solutionByCellId == 2) {
+				        						  // Prefer source 2
+				        						  resolutionsByRowAsDecoratedXHTMLTable += "<td class=\"source_1_value-container resolved-conflicting-data\">" + this.getResolutionsByRowAsCachedRowSet().getString(i)  + "</td><td class=\"source_2_value-container resolved-conflicting-data preferred-source\">" + this.getResolutionsByRowAsCachedRowSet().getString(columnIndexForSource2Column) + "</td>";
+				        						  if (this.getNullOrConstantSolutionUsingColumnNumberAsHashMap().get(columnNumber) != null) {
+				        							  resolutionsByRowAsDecoratedXHTMLTable += "<td class=\"constant-container\"><!-- Above/below constants --></td>";
+				        						  }
+				        					  } else if (solutionByCellId != null && solutionByCellId == 3) {
+				        						  // Use NULL	
+				        						  resolutionsByRowAsDecoratedXHTMLTable += "<td class=\"source_1_value-container resolved-conflicting-data\">" + this.getResolutionsByRowAsCachedRowSet().getString(i)  + "</td><td class=\"source_2_value-container resolved-conflicting-data\">" + this.getResolutionsByRowAsCachedRowSet().getString(columnIndexForSource2Column) + "</td><td class=\"constant-container\">NULL</td>";
+				        					  } else if (solutionByCellId != null && solutionByCellId == 4) {
+				        						  // Constant				        						  
+				        						  resolutionsByRowAsDecoratedXHTMLTable += "<td class=\"source_1_value-container resolved-conflicting-data\">" + this.getResolutionsByRowAsCachedRowSet().getString(i)  + "</td><td class=\"source_2_value-container resolved-conflicting-data\">" + this.getResolutionsByRowAsCachedRowSet().getString(columnIndexForSource2Column) + "</td><td class=\"constant-container\">" + constant + "</td>";
+				        					  } else {
+				        						  //TODO: Error, unexpected ID
+				        						  resolutionsByRowAsDecoratedXHTMLTable += "<td class=\"source_1_value-container resolved-conflicting-data\">" + this.getResolutionsByRowAsCachedRowSet().getString(i)  + "</td><td class=\"source_2_value-container resolved-conflicting-data\">" + this.getResolutionsByRowAsCachedRowSet().getString(columnIndexForSource2Column) + "</td>";
+				        						  if (this.getNullOrConstantSolutionUsingColumnNumberAsHashMap().get(columnNumber) != null) {
+				        							  resolutionsByRowAsDecoratedXHTMLTable += "<td class=\"constant-container\"><!-- Above/below constants --></td>";
+				        						  }
+				        					  }
+
+				        				  } else if (solutionByRowId != null && solutionByRowId != 0) {
+					        					  
+						        					// Solved by Row
+						        					  
+						        					  // TODO: What is id 1? Need some sort of enumeration.
+						        					  
+						        					  if (solutionByRowId != null && solutionByRowId == 1) {
+						        						  // Prefer source 1
+						        						  resolutionsByRowAsDecoratedXHTMLTable += "<td class=\"source_1_value-container resolved-conflicting-data preferred-source\">" + this.getResolutionsByRowAsCachedRowSet().getString(i)  + "</td><td class=\"source_2_value-container resolved-conflicting-data\">" + this.getResolutionsByRowAsCachedRowSet().getString(columnIndexForSource2Column) + "</td>";
+						        						  if (this.getNullOrConstantSolutionUsingColumnNumberAsHashMap().get(columnNumber) != null) {
+						        							  resolutionsByRowAsDecoratedXHTMLTable += "<td class=\"constant-container\"><!-- Above/below constants --></td>";
+						        						  }
+						        					  } else if (solutionByRowId != null && solutionByRowId == 2) {
+						        						  // Prefer source 2
+						        						  resolutionsByRowAsDecoratedXHTMLTable += "<td class=\"source_1_value-container resolved-conflicting-data\">" + this.getResolutionsByRowAsCachedRowSet().getString(i)  + "</td><td class=\"source_2_value-container resolved-conflicting-data preferred-source\">" + this.getResolutionsByRowAsCachedRowSet().getString(columnIndexForSource2Column) + "</td>";
+						        						  if (this.getNullOrConstantSolutionUsingColumnNumberAsHashMap().get(columnNumber) != null) {
+						        							  resolutionsByRowAsDecoratedXHTMLTable += "<td class=\"constant-container\"><!-- Above/below constants --></td>";
+						        						  }
+						        					  } else if (solutionByRowId != null && solutionByRowId == 3) {
+						        						  // Use NULL	
+						        						  resolutionsByRowAsDecoratedXHTMLTable += "<td class=\"source_1_value-container resolved-conflicting-data\">" + this.getResolutionsByRowAsCachedRowSet().getString(i)  + "</td><td class=\"source_2_value-container resolved-conflicting-data\">" + this.getResolutionsByRowAsCachedRowSet().getString(columnIndexForSource2Column) + "</td><td class=\"constant-container\">NULL</td>";
+						        					  } else if (solutionByRowId != null && solutionByRowId == 4) {
+						        						  // Constant				        						  
+						        						  resolutionsByRowAsDecoratedXHTMLTable += "<td class=\"source_1_value-container resolved-conflicting-data\">" + this.getResolutionsByRowAsCachedRowSet().getString(i)  + "</td><td class=\"source_2_value-container resolved-conflicting-data\">" + this.getResolutionsByRowAsCachedRowSet().getString(columnIndexForSource2Column) + "</td><td class=\"constant-container\">" + constant + "</td>";
+						        					  } else if (solutionByRowId != null && solutionByRowId == 5) {
+						        						  // Constant				        						  
+						        						  resolutionsByRowAsDecoratedXHTMLTable += "<td class=\"source_1_value-container resolved-conflicting-data\">" + this.getResolutionsByRowAsCachedRowSet().getString(i)  + "</td><td class=\"source_2_value-container resolved-conflicting-data\">" + this.getResolutionsByRowAsCachedRowSet().getString(columnIndexForSource2Column) + "</td>";
+						        					  } else {
+						        						  //TODO: Error, unexpected ID
+						        						  resolutionsByRowAsDecoratedXHTMLTable += "<td class=\"source_1_value-container resolved-conflicting-data\">" + this.getResolutionsByRowAsCachedRowSet().getString(i)  + "</td><td class=\"source_2_value-container resolved-conflicting-data\">" + this.getResolutionsByRowAsCachedRowSet().getString(columnIndexForSource2Column) + "</td>";
+						        						  if (this.getNullOrConstantSolutionUsingColumnNumberAsHashMap().get(columnNumber) != null) {
+						        							  resolutionsByRowAsDecoratedXHTMLTable += "<td class=\"constant-container\"><!-- Above/below constants --></td>";
+						        						  }
+						        					  }
+						        					 				        					  
+				        					  
+				        				  } else {
+				        					  resolutionsByRowAsDecoratedXHTMLTable += "<td class=\"source_1_value-container conflicting-data\">" + this.getResolutionsByRowAsCachedRowSet().getString(i)  + "</td><td class=\"source_2_value-container conflicting-data\">" + this.getResolutionsByRowAsCachedRowSet().getString(columnIndexForSource2Column) + "</td>";  
+				        					  if (this.getNullOrConstantSolutionUsingColumnNumberAsHashMap().get(columnNumber) != null) {
+			        							  resolutionsByRowAsDecoratedXHTMLTable += "<td class=\"constant-container\"><!-- Above/below constants --></td>";
+			        						  }
+				        				  }
+				        				  
 				        			  }
 				        		  
 			        		  }
@@ -325,6 +463,42 @@ public class ResolutionsByRowFunctionsModel implements java.io.Serializable {
 	}
 	public HashMap<Integer, String> getJoinColumnNamesByColumnNumberAsHashMap () {
 		return this.joinColumnNamesByColumnNumberAsHashMap;
+	}
+
+	public void setSolutionByColumnIdUsingCellCoordsAsHashMap(
+			HashMap<String, Integer> solutionByColumnIdUsingCellCoordsAsHashMap) {
+		this.solutionByColumnIdUsingCellCoordsAsHashMap = solutionByColumnIdUsingCellCoordsAsHashMap;
+	}
+
+	public HashMap<String, Integer> getSolutionByColumnIdUsingCellCoordsAsHashMap() {
+		return solutionByColumnIdUsingCellCoordsAsHashMap;
+	}
+
+	public void setSolutionByCellIdUsingCellCoordsAsHashMap(
+			HashMap<String, Integer> solutionByCellIdUsingCellCoordsAsHashMap) {
+		this.solutionByCellIdUsingCellCoordsAsHashMap = solutionByCellIdUsingCellCoordsAsHashMap;
+	}
+
+	public HashMap<String, Integer> getSolutionByCellIdUsingCellCoordsAsHashMap() {
+		return solutionByCellIdUsingCellCoordsAsHashMap;
+	}
+
+	public void setConstantUsingCellCoordsAsHashMap(
+			HashMap<String, String> constantUsingCellCoordsAsHashMap) {
+		this.constantUsingCellCoordsAsHashMap = constantUsingCellCoordsAsHashMap;
+	}
+
+	public HashMap<String, String> getConstantUsingCellCoordsAsHashMap() {
+		return constantUsingCellCoordsAsHashMap;
+	}
+
+	public void setNullOrConstantSolutionUsingColumnNumberAsHashMap(
+			HashMap<Integer, Boolean> nullOrConstantSolutionUsingColumnNumberAsHashMap) {
+		this.nullOrConstantSolutionUsingColumnNumberAsHashMap = nullOrConstantSolutionUsingColumnNumberAsHashMap;
+	}
+
+	public HashMap<Integer, Boolean> getNullOrConstantSolutionUsingColumnNumberAsHashMap() {
+		return nullOrConstantSolutionUsingColumnNumberAsHashMap;
 	}
 
 }

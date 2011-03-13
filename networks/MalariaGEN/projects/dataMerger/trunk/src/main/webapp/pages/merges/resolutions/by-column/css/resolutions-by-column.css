@@ -55,12 +55,15 @@
 	border-left: 2px solid #073763;
 }
 .resolutions-by-column-table .unresolved-problem-container {
-	color: red;
+	/* color: red; */
 }
 .resolutions-by-column-table .solution_by_column_id-container select {
 	clear: both;
 	float: left;	
 	
+}
+.resolutions-by-column-table .solution_by_column_id-container select.unresolved {
+	border: 1px solid red;
 }
 
 .resolutions-by-column-table .solution_by_column_id-container label {
