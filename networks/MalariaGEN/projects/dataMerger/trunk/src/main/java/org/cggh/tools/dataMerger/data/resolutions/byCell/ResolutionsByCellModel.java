@@ -3,7 +3,6 @@ package org.cggh.tools.dataMerger.data.resolutions.byCell;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.util.Iterator;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
