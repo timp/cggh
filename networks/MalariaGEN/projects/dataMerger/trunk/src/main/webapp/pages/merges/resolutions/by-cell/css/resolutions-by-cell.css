@@ -51,6 +51,9 @@
 .resolutions-by-cell-table td.conflicting-data {
 	color: red;	
 }
+.resolutions-by-cell-table td.resolved-conflicting-data {
+	color: orange;	
+}
 .resolutions-by-cell-table .key-heading {
 	padding-right: 10px;
 	vertical-align: middle;

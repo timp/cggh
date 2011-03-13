@@ -219,80 +219,99 @@ public class ResolutionsByCellFunctionsModel implements java.io.Serializable {
 
 				        					 if (this.getUnresolvedByColumnOrRowConflictsCountUsingColumnNumberAsHashMap().get(columnNumber) != null && this.getUnresolvedByColumnOrRowConflictsCountUsingColumnNumberAsHashMap().get(columnNumber) > 0) {
 				        					 
-				        						 resolutionsByCellAsDecoratedXHTMLTable += "<td class=\"solution_by_cell_id-container\"><!-- No solution selector required here --></td>";
+				        						 resolutionsByCellAsDecoratedXHTMLTable += "<td class=\"solution_by_cell_id-container\"><!-- No solution selector required here because there is no conflict --></td>";
 				        					 
 				        					 }
 				        					 
 				        					 
-				        			  } else if (this.getUnresolvedByColumnOrRowStatusUsingCellCoordsAsHashMap().get(this.getResolutionsByCellAsCachedRowSet().getInt("joined_keytable_id") + "," + columnNumber.toString()) != null) {
-				        					  
-
-				        					  resolutionsByCellAsDecoratedXHTMLTable += "<td class=\"source_1_value-container\">" + this.getResolutionsByCellAsCachedRowSet().getString(i)  + "</td><td class=\"source_2_value-container conflicting-data\">" + this.getResolutionsByCellAsCachedRowSet().getString(columnIndexForSource2Column) + "</td>";
-				        			  	  
+				        			  } else {
+				        				
+				        				  // There is a conflict
 				        				  
-				        				  resolutionsByCellAsDecoratedXHTMLTable += "<td class=\"solution_by_cell_id-container\">";
-	        							
-			        							//because the cursor may have been moved to the end previously (we are in a loop).
-			        							 this.getSolutionsByCellAsCachedRowSet().beforeFirst();
-			        							
-			        							if (this.getSolutionsByCellAsCachedRowSet().next()) {
-			        								
-			        								if (this.getResolutionsByCellAsCachedRowSet().getInt("solution_by_cell_id") == 0) {
-			        									resolutionsByCellAsDecoratedXHTMLTable += "<select name=\"solution_by_cell_id-" + this.getResolutionsByCellAsCachedRowSet().getInt("joined_keytable_id") + "-" + columnNumber.toString() + "\" class=\"unresolved\">";
-			        								} else {
-			        									resolutionsByCellAsDecoratedXHTMLTable += "<select name=\"solution_by_cell_id-" + this.getResolutionsByCellAsCachedRowSet().getInt("joined_keytable_id") + "-" + columnNumber.toString() + "\">";
-			        								}
-		
-			        								//FIXME: Should the null option be in the table?
-			        								
-			        								resolutionsByCellAsDecoratedXHTMLTable += "<option value=\"\">";
-		
-			        								 resolutionsByCellAsDecoratedXHTMLTable += "Unresolved";
-			        								 
-			        								 resolutionsByCellAsDecoratedXHTMLTable += "</option>";				
-			        								 
-			        								//because next() skips the first row.
-			        								 this.getSolutionsByCellAsCachedRowSet().beforeFirst();
-		
-				        								while (this.getSolutionsByCellAsCachedRowSet().next()) {
-				        									
-				        									String selectedAttribute = "";
-				        									
-					        									if (this.getResolutionsByCellAsCachedRowSet().getInt("solution_by_cell_id") == this.getSolutionsByCellAsCachedRowSet().getInt("id")) {
-					        										selectedAttribute = " selected=\"selected\"";
-					        									}
-				        									
-				        									resolutionsByCellAsDecoratedXHTMLTable += "<option value=\"" + this.getSolutionsByCellAsCachedRowSet().getString("id") + "\"" + selectedAttribute + ">";
-			
-				        									 resolutionsByCellAsDecoratedXHTMLTable = resolutionsByCellAsDecoratedXHTMLTable.concat(this.getSolutionsByCellAsCachedRowSet().getString("description"));
-				        									 
-				        									 resolutionsByCellAsDecoratedXHTMLTable += "</option>";
+				        				  if (this.getUnresolvedByColumnOrRowStatusUsingCellCoordsAsHashMap().get(this.getResolutionsByCellAsCachedRowSet().getInt("joined_keytable_id") + "," + columnNumber.toString()) != null) {
+				        			  
+				        					  // This conflict hasn't been resolved by column or row.
+				        					  
+					        					  	resolutionsByCellAsDecoratedXHTMLTable += "<td class=\"source_1_value-container\">" + this.getResolutionsByCellAsCachedRowSet().getString(i)  + "</td><td class=\"source_2_value-container conflicting-data\">" + this.getResolutionsByCellAsCachedRowSet().getString(columnIndexForSource2Column) + "</td>";
+					        			  	  
+					        				  
+					        					  	resolutionsByCellAsDecoratedXHTMLTable += "<td class=\"solution_by_cell_id-container\">";
+		        							
+				        							//because the cursor may have been moved to the end previously (we are in a loop).
+				        							this.getSolutionsByCellAsCachedRowSet().beforeFirst();
+					        							
+				        							if (this.getSolutionsByCellAsCachedRowSet().next()) {
+				        								
+				        								if (this.getResolutionsByCellAsCachedRowSet().getInt("solution_by_cell_id") == 0) {
+				        									resolutionsByCellAsDecoratedXHTMLTable += "<select name=\"solution_by_cell_id-" + this.getResolutionsByCellAsCachedRowSet().getInt("joined_keytable_id") + "-" + columnNumber.toString() + "\" class=\"unresolved\">";
+				        								} else {
+				        									resolutionsByCellAsDecoratedXHTMLTable += "<select name=\"solution_by_cell_id-" + this.getResolutionsByCellAsCachedRowSet().getInt("joined_keytable_id") + "-" + columnNumber.toString() + "\">";
 				        								}
-			        									 
-			        								resolutionsByCellAsDecoratedXHTMLTable += "</select>";
-			        								
-			        								
-			        							} else {
-			        								
-			        								resolutionsByCellAsDecoratedXHTMLTable = "There are no solutions by cell.";
-			        								
-			        							}
-
-			        					 
-			        						if (this.getResolutionsByCellAsCachedRowSet().getString("constant") != null) {
-			        							resolutionsByCellAsDecoratedXHTMLTable += "<label for=\"constant-" + this.getResolutionsByCellAsCachedRowSet().getInt("joined_keytable_id") + "-" + columnNumber.toString() + "\">Constant:</label><input type=\"text\" name=\"constant-" + this.getResolutionsByCellAsCachedRowSet().getInt("joined_keytable_id") + "-" + columnNumber.toString() + "\" value=\"" + this.getResolutionsByCellAsCachedRowSet().getString("constant") + "\"/>";
-			        						} else {
-			        							resolutionsByCellAsDecoratedXHTMLTable += "<label for=\"constant-" + this.getResolutionsByCellAsCachedRowSet().getInt("joined_keytable_id") + "-" + columnNumber.toString() + "\" style=\"display:none;\">Constant:</label><input type=\"text\" name=\"constant-" + this.getResolutionsByCellAsCachedRowSet().getInt("joined_keytable_id") +  "-" + columnNumber.toString() + "\" value=\"\" style=\"display:none;\"/>";
-			        						}
-						        						
-				        					 resolutionsByCellAsDecoratedXHTMLTable += "</td>";
-				        				  
+			
+				        								//FIXME: Should the null option be in the table?
+				        								
+				        								resolutionsByCellAsDecoratedXHTMLTable += "<option value=\"\">";
+			
+				        								 resolutionsByCellAsDecoratedXHTMLTable += "Unresolved";
+				        								 
+				        								 resolutionsByCellAsDecoratedXHTMLTable += "</option>";				
+				        								 
+				        								//because next() skips the first row.
+				        								 this.getSolutionsByCellAsCachedRowSet().beforeFirst();
+			
+					        								while (this.getSolutionsByCellAsCachedRowSet().next()) {
+					        									
+					        									String selectedAttribute = "";
+					        									
+						        									if (this.getResolutionsByCellAsCachedRowSet().getInt("solution_by_cell_id") == this.getSolutionsByCellAsCachedRowSet().getInt("id")) {
+						        										selectedAttribute = " selected=\"selected\"";
+						        									}
+					        									
+					        									resolutionsByCellAsDecoratedXHTMLTable += "<option value=\"" + this.getSolutionsByCellAsCachedRowSet().getString("id") + "\"" + selectedAttribute + ">";
+				
+					        									 resolutionsByCellAsDecoratedXHTMLTable = resolutionsByCellAsDecoratedXHTMLTable.concat(this.getSolutionsByCellAsCachedRowSet().getString("description"));
+					        									 
+					        									 resolutionsByCellAsDecoratedXHTMLTable += "</option>";
+					        								}
+				        									 
+				        								resolutionsByCellAsDecoratedXHTMLTable += "</select>";
+				        								
+				        								
+				        							} else {
+				        								
+				        								resolutionsByCellAsDecoratedXHTMLTable = "There are no solutions by cell.";
+				        								
+				        							}
+	
+				        					 
+					        						if (this.getResolutionsByCellAsCachedRowSet().getString("constant") != null) {
+					        							resolutionsByCellAsDecoratedXHTMLTable += "<label for=\"constant-" + this.getResolutionsByCellAsCachedRowSet().getInt("joined_keytable_id") + "-" + columnNumber.toString() + "\">Constant:</label><input type=\"text\" name=\"constant-" + this.getResolutionsByCellAsCachedRowSet().getInt("joined_keytable_id") + "-" + columnNumber.toString() + "\" value=\"" + this.getResolutionsByCellAsCachedRowSet().getString("constant") + "\"/>";
+					        						} else {
+					        							resolutionsByCellAsDecoratedXHTMLTable += "<label for=\"constant-" + this.getResolutionsByCellAsCachedRowSet().getInt("joined_keytable_id") + "-" + columnNumber.toString() + "\" style=\"display:none;\">Constant:</label><input type=\"text\" name=\"constant-" + this.getResolutionsByCellAsCachedRowSet().getInt("joined_keytable_id") +  "-" + columnNumber.toString() + "\" value=\"\" style=\"display:none;\"/>";
+					        						}
+								        						
+						        					 resolutionsByCellAsDecoratedXHTMLTable += "</td>";
+					        				  
 				        					  
-				        				  } else {
-				        					  
-				        					  resolutionsByCellAsDecoratedXHTMLTable += "<td class=\"source_1_value-container conflicting-data\">" + this.getResolutionsByCellAsCachedRowSet().getString(i)  + "</td><td class=\"source_2_value-container conflicting-data\">" + this.getResolutionsByCellAsCachedRowSet().getString(columnIndexForSource2Column) + "</td>";
-							        		
-				        					  
+					        				  } else {
+					        					  
+					        					  // The conflict has been resolved by column or row.
+					        					  
+						        					 if (this.getUnresolvedByColumnOrRowConflictsCountUsingColumnNumberAsHashMap().get(columnNumber) != null && this.getUnresolvedByColumnOrRowConflictsCountUsingColumnNumberAsHashMap().get(columnNumber) > 0) {
+							        				
+						        						 // There are other conflicts to be resolved by cell
+						        						 
+						        						 resolutionsByCellAsDecoratedXHTMLTable += "<td class=\"source_1_value-container resolved-conflicting-data\">" + this.getResolutionsByCellAsCachedRowSet().getString(i)  + "</td><td class=\"source_2_value-container resolved-conflicting-data\">" + this.getResolutionsByCellAsCachedRowSet().getString(columnIndexForSource2Column) + "</td>";
+						        						 
+						        						 resolutionsByCellAsDecoratedXHTMLTable += "<td class=\"solution_by_cell_id-container\">Resolved</td>";
+						        					 
+						        					 } else {
+						        						 
+						        						 resolutionsByCellAsDecoratedXHTMLTable += "<td class=\"source_1_value-container resolved-conflicting-data\">" + this.getResolutionsByCellAsCachedRowSet().getString(i)  + "</td><td class=\"source_2_value-container conflicting-data\">" + this.getResolutionsByCellAsCachedRowSet().getString(columnIndexForSource2Column) + "</td>";
+						        					 }
+						        					 
+						        					 
+					        				  }	 
 				        			  }
 				        		  
 			        		  }
