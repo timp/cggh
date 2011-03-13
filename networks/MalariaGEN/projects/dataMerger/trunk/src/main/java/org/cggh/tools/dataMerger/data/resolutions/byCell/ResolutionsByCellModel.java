@@ -3,7 +3,10 @@ package org.cggh.tools.dataMerger.data.resolutions.byCell;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.Iterator;
 import java.util.logging.Logger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.sql.rowset.CachedRowSet;
 
@@ -62,8 +65,8 @@ public class ResolutionsByCellModel implements java.io.Serializable {
 			  	
 			  	ResolutionsModel resolutionsModel = new ResolutionsModel();
 			  	resolutionsModel.setDataModel(this.getDataModel());
-			  	resolutionsByCellFunctionsModel.setUnresolvedConflictsCountByColumnNumberAsHashMap(resolutionsModel.retrieveUnresolvedConflictsCountByColumnNumberAsHashMapUsingMergeModel(mergeModel));
-			  	resolutionsByCellFunctionsModel.setUnresolvedStatusByCellCoordsAsHashMap(resolutionsModel.retrieveUnresolvedStatusByCellCoordsAsHashMapUsingMergeModel(mergeModel));
+			  	resolutionsByCellFunctionsModel.setUnresolvedByColumnOrRowConflictsCountUsingColumnNumberAsHashMap(resolutionsModel.retrieveUnresolvedByColumnOrRowConflictsCountUsingColumnNumberAsHashMapUsingMergeModel(mergeModel));
+			  	resolutionsByCellFunctionsModel.setUnresolvedByColumnOrRowStatusUsingCellCoordsAsHashMap(resolutionsModel.retrieveUnresolvedByColumnOrRowStatusUsingCellCoordsAsHashMapUsingMergeModel(mergeModel));
 			  	
 			  	resolutionsByCellFunctionsModel.setResolutionsByCellAsDecoratedXHTMLTableUsingResolutionsByCellAsCachedRowSet();
 			  	resolutionsByCellAsDecoratedXHTMLTable = resolutionsByCellFunctionsModel.getResolutionsByCellAsDecoratedXHTMLTable();
@@ -143,6 +146,26 @@ public class ResolutionsByCellModel implements java.io.Serializable {
 					
 					//FIXME
 					//TODO
+					
+					//FIXME: This needs to return a solution_by_cell_id for each cell (not just each row!)
+					// solution_by_cell_id_
+					
+					
+					
+					
+					//Example of current SQL 
+//					SELECT resolution.merge_id, resolution.joined_keytable_id, resolution.solution_by_cell_id, resolution.constant , `joined_keytable_1`.`id`, `joined_keytable_1`.`key_column_2`, `joined_keytable_1`.`key_column_30`, `datatable_1`.`Row` AS `column_1_source_1`, `datatable_2`.`Row` AS `column_1_source_2` , `datatable_1`.`Admission Date` AS `column_3_source_1`, `datatable_2`.`Admission Date` AS `column_3_source_2` , `datatable_1`.`Admission Time` AS `column_4_source_1`, `datatable_2`.`Admission Time` AS `column_4_source_2` , `datatable_1`.`Blantyre Coma Score` AS `column_5_source_1`, `datatable_2`.`Blantyre Coma Score` AS `column_5_source_2` , `datatable_1`.`Blantyre Eye Score` AS `column_6_source_1`, `datatable_2`.`Blantyre Eye Score` AS `column_6_source_2` , `datatable_1`.`Blantyre Motor Score` AS `column_7_source_1`, `datatable_2`.`Blantyre Motor Score` AS `column_7_source_2` , `datatable_1`.`Blantyre Verbal Score` AS `column_8_source_1`, `datatable_2`.`Blantyre Verbal Score` AS `column_8_source_2` , `datatable_1`.`Blood Transfusion Received` AS `column_9_source_1`, `datatable_2`.`Blood Transfusion Received` AS `column_9_source_2` , `datatable_1`.`Case Or Control` AS `column_10_source_1`, `datatable_2`.`Case Or Control` AS `column_10_source_2` , `datatable_1`.`Consent Obtained` AS `column_11_source_1`, `datatable_2`.`Consent Obtained` AS `column_11_source_2` , `datatable_1`.`Convulsions Within24 Hours Prior To Admission` AS `column_12_source_1`, `datatable_2`.`Convulsions Within24 Hours Prior To Admission` AS `column_12_source_2` , `datatable_1`.`Date Death Discharge Absconded` AS `column_13_source_1`, `datatable_2`.`Date Death Discharge Absconded` AS `column_13_source_2` , `datatable_1`.`Dehydrated` AS `column_14_source_1`, `datatable_2`.`Dehydrated` AS `column_14_source_2` , `datatable_1`.`Estimated Age [months]` AS `column_15_source_1`, `datatable_2`.`Estimated Age [months]` AS `column_15_source_2` , `datatable_1`.`Ethnic Group Father` AS `column_16_source_1`, `datatable_2`.`Ethnic Group Father` AS `column_16_source_2` , `datatable_1`.`Fever Within Past48 Hours` AS `column_17_source_1`, `datatable_2`.`Fever Within Past48 Hours` AS `column_17_source_2` , `datatable_1`.`Glucose [mmol/L]` AS `column_18_source_1`, `datatable_2`.`Glucose [mmol/L]` AS `column_18_source_2` , `datatable_1`.`Hematocrit [%]` AS `column_19_source_1`, `datatable_2`.`Hematocrit [%]` AS `column_19_source_2` , `datatable_1`.`Jaundice Now` AS `column_20_source_1`, `datatable_2`.`Jaundice Now` AS `column_20_source_2` , `datatable_1`.`Location Region` AS `column_21_source_1`, `datatable_2`.`Location Region` AS `column_21_source_2` , `datatable_1`.`Location Village` AS `column_22_source_1`, `datatable_2`.`Location Village` AS `column_22_source_2` , `datatable_1`.`Other Diagnosis Gastroenteritis` AS `column_23_source_1`, `datatable_2`.`Other Diagnosis Gastroenteritis` AS `column_23_source_2` , `datatable_1`.`Other Diagnosis Other` AS `column_25_source_1`, `datatable_2`.`Other Diagnosis Other` AS `column_25_source_2` , `datatable_1`.`Other Diagnosis Sickle Cell` AS `column_26_source_1`, `datatable_2`.`Other Diagnosis Sickle Cell` AS `column_26_source_2` , `datatable_1`.`Outcome` AS `column_27_source_1`, `datatable_2`.`Outcome` AS `column_27_source_2` , `datatable_1`.`Parasitemia [parasites/µL]` AS `column_28_source_1`, `datatable_2`.`Parasitemia [parasites/µL]` AS `column_28_source_2` , `datatable_1`.`Respiratory Distress` AS `column_29_source_1`, `datatable_2`.`Respiratory Distress` AS `column_29_source_2` , `datatable_1`.`Sex` AS `column_31_source_1`, `datatable_2`.`Sex` AS `column_31_source_2` , `datatable_1`.`Temperature [°C]` AS `column_33_source_1`, `datatable_2`.`Temperature [°C]` AS `column_33_source_2` , `datatable_1`.`Weight [kg]` AS `column_34_source_1`, `datatable_2`.`Weight [kg]` AS `column_34_source_2` 
+//					FROM resolution 
+//					JOIN `joined_keytable_1` ON `joined_keytable_1`.id = resolution.joined_keytable_id 
+//					JOIN `datatable_1` ON `datatable_1`.`ID` = `joined_keytable_1`.`key_column_2` AND `datatable_1`.`Sample Label` = `joined_keytable_1`.`key_column_30` 
+//					JOIN `datatable_2` ON `datatable_2`.`ID` = `joined_keytable_1`.`key_column_2` AND `datatable_2`.`Sample Label` = `joined_keytable_1`.`key_column_30` 
+//					WHERE resolution.merge_id = 1 AND resolution.solution_by_column_id IS NULL AND resolution.solution_by_row_id IS NULL 
+//					GROUP BY resolution.joined_keytable_id 
+//					ORDER BY resolution.joined_keytable_id ;
+					
+					
+					
+					
 
 					
 					String keyColumnReferencesAsCSVForSelectSQL = "";
@@ -281,76 +304,68 @@ public class ResolutionsByCellModel implements java.io.Serializable {
 					
 		          //Insert all the joins from this JSON Object
 				
-		          JSONArray joinedKeytableIds = resolutionsByCellAsJsonObject.optJSONArray("joined_keytable_id");
-		          JSONArray columnNumbers = resolutionsByCellAsJsonObject.optJSONArray("column_number");
-		          JSONArray solutionByCellIds = resolutionsByCellAsJsonObject.optJSONArray("solution_by_cell_id");
-
-		          if (joinedKeytableIds == null) {
-		        	  joinedKeytableIds = new JSONArray();
-		        	  joinedKeytableIds.put(resolutionsByCellAsJsonObject.optInt("joined_keytable_id"));
-		          }
-		          if (columnNumbers == null) {
-		        	  columnNumbers = new JSONArray();
-		        	  columnNumbers.put(resolutionsByCellAsJsonObject.optInt("column_number"));
-		          }
-		          if (solutionByCellIds == null) {
-		        	  solutionByCellIds = new JSONArray();
-		        	  solutionByCellIds.put(resolutionsByCellAsJsonObject.optInt("solution_by_cell_id"));
-		          }
-		          
-		          for (int i = 0; i < joinedKeytableIds.length(); i++) {
-		        	  
-		        	  ResolutionByCellModel resolutionByCellModel = new ResolutionByCellModel();
-		        	  
-		        	  resolutionByCellModel.setMergeModel(mergeModel);
-		        	  resolutionByCellModel.getJoinedKeytableModel().setId(joinedKeytableIds.getInt(i));
-		        	  
-		        	  resolutionByCellModel.getJoinModel().setColumnNumber(columnNumbers.getInt(i));
-		        	  
-		        	  //TODO TODO TODO
-		        	  //FIXME FIXME FIXME
-		        	  
-		        	  
-		        	  
-		        	  
-		        	  
-		        	  //FIXME: Don't want to overwrite conflicts_count with null. Don't set to 0 if you have a solution (loses data).
-		        	  //Merge's total_conflicts_count will only count conflicts that have no solution.
-		        	  
-		        	  SolutionByCellModel solutionByCellModel = new SolutionByCellModel();
-		        	  
-		        	  //optInt returns 0 if not an Integer
-		        	  if (solutionByCellIds.optInt(i) != 0) {
-		        		  solutionByCellModel.setId(solutionByCellIds.getInt(i));
-		        	  } else {
-		        		  solutionByCellModel.setId(null);
-		        	  }
-		        	  
-		        	  
-		        	  resolutionByCellModel.setSolutionByCellModel(solutionByCellModel);
-
-		        	  if (resolutionsByCellAsJsonObject.has("constant-" + joinedKeytableIds.getInt(i))) {
+				JSONArray keys = resolutionsByCellAsJsonObject.names();
+				
+				 Pattern solutionByCellIdKeyPattern = Pattern.compile("^solution_by_cell_id-(\\d+)-(\\d+)$");
+				 
+					 
+				 
+				
+				for(int i = 0; i < keys.length(); i++) {
+					
+					this.logger.info("key " + keys.getString(i) + " = " + resolutionsByCellAsJsonObject.get(keys.getString(i)));
+					
+					Matcher solutionByCellIdKeyPatternMatcher = solutionByCellIdKeyPattern.matcher(keys.getString(i));
+					
+					 if (solutionByCellIdKeyPatternMatcher.find()) {
+						 
+						 
+						 ResolutionByCellModel resolutionByCellModel = new ResolutionByCellModel();
+						 
+						
+			        	  resolutionByCellModel.setMergeModel(mergeModel);
 			        	  
-		        		  resolutionByCellModel.setConstant(resolutionsByCellAsJsonObject.getString("constant-" + joinedKeytableIds.getInt(i)));
-		        		  
-		        	  } else {
-		        		  
-		        		  resolutionByCellModel.setConstant(null);
-		        	  }
-		        	  
-		        	  
-		        	  this.updateResolutionByCellUsingResolutionByCellModel(resolutionByCellModel, connection);
-		        	  
-		        	  
-		        	  //TODO: Recount the conflicts (take problems with solutions as 0, otherwise use the resolution conflict_count)
+			        	  this.logger.info("joinedKeytableID: " + solutionByCellIdKeyPatternMatcher.group(1));
+			        	  resolutionByCellModel.getJoinedKeytableModel().setId(Integer.parseInt(solutionByCellIdKeyPatternMatcher.group(1)));
+			        	  
+			        	  this.logger.info("columnNumber: " + solutionByCellIdKeyPatternMatcher.group(2));
+			        	  resolutionByCellModel.getJoinModel().setColumnNumber(Integer.parseInt(solutionByCellIdKeyPatternMatcher.group(2)));
 
-		        	  MergeScriptsModel mergeScriptsModel = new MergeScriptsModel();
-		        	  
-		        	  //FIXME: This breaks if don't have all the merge info in the model, e.g. Upload1Model.
-		        	  //TODO
-		        	  mergeModel = mergeScriptsModel.retrieveMergeAsMergeModelThroughDeterminingTotalConflictsCountUsingMergeModel(mergeModel, connection);
-		        	  
-		          }
+			        	//Note: Merge's total_conflicts_count will only count conflicts that have no solution.
+
+			        	  if (resolutionsByCellAsJsonObject.optInt(keys.getString(i)) != 0) {
+			        		  
+			        		  this.logger.info("solutionByCellId: " + resolutionsByCellAsJsonObject.getInt(keys.getString(i)));
+			        		  resolutionByCellModel.getSolutionByCellModel().setId(resolutionsByCellAsJsonObject.getInt(keys.getString(i)));
+			        	  } else {
+			        		  resolutionByCellModel.getSolutionByCellModel().setId(null);
+			        	  }
+			        	  
+			        	  
+			        	  
+			        	  if (resolutionsByCellAsJsonObject.has("constant-" + resolutionByCellModel.getJoinedKeytableModel().getId() + "-" + resolutionByCellModel.getJoinModel().getColumnNumber())) {
+			        	  
+			        		  this.logger.info("solutionByCellId: " + resolutionsByCellAsJsonObject.getString("constant-" + resolutionByCellModel.getJoinedKeytableModel().getId() + "-" + resolutionByCellModel.getJoinModel().getColumnNumber()));
+			        		  resolutionByCellModel.setConstant(resolutionsByCellAsJsonObject.getString("constant-" + resolutionByCellModel.getJoinedKeytableModel().getId() + "-" + resolutionByCellModel.getJoinModel().getColumnNumber()));
+		        		  
+			        	  } else {
+			        		  
+			        		  resolutionByCellModel.setConstant(null);
+			        	  }
+			        	  
+			        	  this.updateResolutionByCellUsingResolutionByCellModel(resolutionByCellModel, connection);
+			        	  
+			        	  
+					 }
+					
+					
+				}
+				
+	        	  //TODO: Recount the conflicts (take problems with solutions as 0, otherwise use the resolution conflict_count)
+
+	        	  MergeScriptsModel mergeScriptsModel = new MergeScriptsModel();
+	        	  mergeModel = mergeScriptsModel.retrieveMergeAsMergeModelThroughDeterminingTotalConflictsCountUsingMergeModel(mergeModel, connection);
+	        	  
 		          
 					
 				connection.close();
@@ -373,11 +388,15 @@ public class ResolutionsByCellModel implements java.io.Serializable {
 		
 	      try {
 
-	          PreparedStatement preparedStatement = connection.prepareStatement("UPDATE resolution_by_cell SET solution_by_cell_id = ?, constant = ? WHERE merge_id = ? AND joined_keytable_id = ? AND column_number = ?;");
+	          PreparedStatement preparedStatement = connection.prepareStatement(
+	        		  "UPDATE resolution SET solution_by_cell_id = ?, constant = ? " +
+	        		  "WHERE merge_id = ? AND joined_keytable_id = ? AND column_number = ? AND solution_by_column_id IS NULL AND solution_by_row_id IS NULL " +
+	        		  ";");
 	          
 	          
 	          if (resolutionByCellModel.getSolutionByCellModel().getId() != null) {
 	        	  preparedStatement.setInt(1, resolutionByCellModel.getSolutionByCellModel().getId());
+	        	  this.logger.info("1 solution_by_cell_id: " + resolutionByCellModel.getSolutionByCellModel().getId());
 	          } else {
 	        	  preparedStatement.setNull(1, java.sql.Types.INTEGER);
 	          }
@@ -390,6 +409,8 @@ public class ResolutionsByCellModel implements java.io.Serializable {
 		        	  //Allow blank string constants (for future-proofing against null/blank string distinctions, especially in export)
 		        	  preparedStatement.setString(2, resolutionByCellModel.getConstant());
 		        	  
+		        	  this.logger.info("2 constant: " + resolutionByCellModel.getConstant());
+		        	  
 		          } else {
 		        	  preparedStatement.setNull(2, java.sql.Types.VARCHAR);
 		          }
@@ -397,6 +418,10 @@ public class ResolutionsByCellModel implements java.io.Serializable {
 	          } else {
 	        	  preparedStatement.setNull(2, java.sql.Types.VARCHAR);
 	          }
+	          
+	          this.logger.info("3 mergeId: " + resolutionByCellModel.getMergeModel().getId());
+	          this.logger.info("4 joinedKeytableId: " + resolutionByCellModel.getJoinedKeytableModel().getId());
+	          this.logger.info("5 constant: " + resolutionByCellModel.getJoinModel().getColumnNumber());
 	          
 	          preparedStatement.setInt(3, resolutionByCellModel.getMergeModel().getId());
 	          preparedStatement.setInt(4, resolutionByCellModel.getJoinedKeytableModel().getId());

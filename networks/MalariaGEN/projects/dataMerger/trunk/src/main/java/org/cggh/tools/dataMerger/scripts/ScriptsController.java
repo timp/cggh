@@ -313,34 +313,7 @@ public class ScriptsController extends HttpServlet {
 				        }
 			        
 
-			        
-			        
-			        //FIXME: Fix foreign-key references
-				      try{
-				    	  
-				          Statement statement = connection.createStatement();
-				          statement.executeUpdate("CREATE TABLE `resolution_by_cell` (" + 
-				        		  "merge_id TINYINT(255) UNSIGNED NOT NULL, " +
-				        		  "joined_keytable_id BIGINT(255) UNSIGNED NOT NULL, " +
-				        		  "column_number INT(255) UNSIGNED NOT NULL, " +
-				        		  "solution_by_cell_id TINYINT(255) NULL, " +
-				        		  "constant VARCHAR(255) NULL, " +
-				        		  "PRIMARY KEY (merge_id, column_number, joined_keytable_id), " +
-				        		  "INDEX merge_id_index (merge_id), " +
-				        		  "INDEX joined_keytable_id_index (joined_keytable_id), " + 
-				        		  "INDEX column_number_index (column_number), " +
-				        		  "INDEX solution_by_cell_id_index (solution_by_cell_id), " + 
-				        		  "FOREIGN KEY (merge_id) REFERENCES merge(id) ON DELETE CASCADE ON UPDATE CASCADE " +
-				        		  ") ENGINE=InnoDB;");
-				          statement.close();
-
-				        }
-				        catch(SQLException sqlException){
-				        	out.println("<p>" + sqlException + "</p>");
-					    	sqlException.printStackTrace();
-				        } 
-			        
-
+			       
 				        
 				        
 				        

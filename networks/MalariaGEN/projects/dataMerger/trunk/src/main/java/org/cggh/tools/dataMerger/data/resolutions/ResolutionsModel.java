@@ -32,7 +32,7 @@ public class ResolutionsModel implements java.io.Serializable {
 		return this.dataModel;
 	}
 
-	public HashMap<Integer, Integer> retrieveUnresolvedConflictsCountByColumnNumberAsHashMapUsingMergeModel(
+	public HashMap<Integer, Integer> retrieveUnresolvedByColumnOrRowConflictsCountUsingColumnNumberAsHashMapUsingMergeModel(
 			MergeModel mergeModel) {
 
 		HashMap<Integer, Integer> unresolvedConflictsCountByColumnNumberAsHashMap = new HashMap<Integer, Integer>();
@@ -44,7 +44,7 @@ public class ResolutionsModel implements java.io.Serializable {
 			if (!connection.isClosed()) {		
 		
 			      try{
-			          PreparedStatement preparedStatement = connection.prepareStatement("SELECT column_number, COUNT(*) AS conflicts_count FROM `resolution` WHERE merge_id = ? AND solution_by_column_id IS NULL AND solution_by_row_id IS NULL AND solution_by_cell_id IS NULL GROUP BY column_number ORDER BY column_number;");
+			          PreparedStatement preparedStatement = connection.prepareStatement("SELECT column_number, COUNT(*) AS conflicts_count FROM `resolution` WHERE merge_id = ? AND solution_by_column_id IS NULL AND solution_by_row_id IS NULL GROUP BY column_number ORDER BY column_number;");
 			          preparedStatement.setInt(1, mergeModel.getId());
 			          preparedStatement.executeQuery();
 			          ResultSet resultSet = preparedStatement.getResultSet();
@@ -91,10 +91,10 @@ public class ResolutionsModel implements java.io.Serializable {
 		
 	}
 
-	public HashMap<String, Boolean> retrieveUnresolvedStatusByCellCoordsAsHashMapUsingMergeModel(
+	public HashMap<String, Boolean> retrieveUnresolvedByColumnOrRowStatusUsingCellCoordsAsHashMapUsingMergeModel(
 			MergeModel mergeModel) {
 		
-		HashMap<String, Boolean> unresolvedConflictsCountByCellCoordsAsHashMap = new HashMap<String, Boolean>();
+		HashMap<String, Boolean> unresolvedByColumnOrRowStatusUsingCellCoordsAsHashMap = new HashMap<String, Boolean>();
 
 		try {
 			
@@ -103,7 +103,7 @@ public class ResolutionsModel implements java.io.Serializable {
 			if (!connection.isClosed()) {		
 		
 			      try{
-			          PreparedStatement preparedStatement = connection.prepareStatement("SELECT joined_keytable_id, column_number FROM `resolution` WHERE merge_id = ? AND solution_by_column_id IS NULL AND solution_by_row_id IS NULL AND solution_by_cell_id IS NULL GROUP BY column_number ORDER BY joined_keytable_id, column_number;");
+			          PreparedStatement preparedStatement = connection.prepareStatement("SELECT joined_keytable_id, column_number FROM `resolution` WHERE merge_id = ? AND solution_by_column_id IS NULL AND solution_by_row_id IS NULL ORDER BY joined_keytable_id, column_number;");
 			          preparedStatement.setInt(1, mergeModel.getId());
 			          preparedStatement.executeQuery();
 			          ResultSet resultSet = preparedStatement.getResultSet();
@@ -119,7 +119,7 @@ public class ResolutionsModel implements java.io.Serializable {
 			        		  Integer columnNumber = resultSet.getInt("column_number");
 			        		  String cellCoords = joinedKeytableId.toString() + "," + columnNumber.toString();
 			        		  
-			        		  unresolvedConflictsCountByCellCoordsAsHashMap.put(cellCoords, true);
+			        		  unresolvedByColumnOrRowStatusUsingCellCoordsAsHashMap.put(cellCoords, true);
 			        	  
 			        	  }
 		
@@ -151,7 +151,7 @@ public class ResolutionsModel implements java.io.Serializable {
 			e.printStackTrace();
 		}
 		
-		return unresolvedConflictsCountByCellCoordsAsHashMap;		
+		return unresolvedByColumnOrRowStatusUsingCellCoordsAsHashMap;		
 	}
 
 }

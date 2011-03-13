@@ -137,6 +137,9 @@ public class DatatablesModel implements java.io.Serializable {
 	        	      
 	        	      for (int i = 0; i < columnNames.length; i++) {
 	        	    	  
+	        	    	  //Strip out quote marks from column names
+	        	    	  columnNames[i] = columnNames[i].replace("\"", "");
+	        	    	  
 	        	    	  columnNamesAsStringList.add(columnNames[i]);
 	        	    	  
 	        	    	  columnDefinitionsForCreateTableSQL = columnDefinitionsForCreateTableSQL.concat("`" + columnNames[i] + "` VARCHAR(255) NULL");
@@ -162,7 +165,7 @@ public class DatatablesModel implements java.io.Serializable {
 		    		      try {
 		    		    	  //TODO: OPTIONALLY ENCLOSED BY '"' ESCAPED BY '\'
 		    		    	  //ENCLOSED BY '\"' ESCAPED BY '\\\\'
-		    		          PreparedStatement preparedStatement2 = connection.prepareStatement("LOAD DATA INFILE ? IGNORE INTO TABLE `" + datatableModel.getName() + "` FIELDS TERMINATED BY ',' LINES TERMINATED BY '\n' IGNORE 1 LINES ;");
+		    		          PreparedStatement preparedStatement2 = connection.prepareStatement("LOAD DATA INFILE ? IGNORE INTO TABLE `" + datatableModel.getName() + "` FIELDS TERMINATED BY ',' OPTIONALLY ENCLOSED BY '\"' LINES TERMINATED BY '\n' IGNORE 1 LINES ;");
 		    		          preparedStatement2.setString(1, datatableModel.getUploadModel().getRepositoryFilepath());
 		    		          preparedStatement2.executeUpdate();
 		    		          preparedStatement2.close();

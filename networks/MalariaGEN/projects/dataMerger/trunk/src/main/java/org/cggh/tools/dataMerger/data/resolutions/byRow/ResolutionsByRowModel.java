@@ -317,14 +317,16 @@ public class ResolutionsByRowModel implements java.io.Serializable {
 		        	  this.updateResolutionByRowUsingResolutionByRowModel(resolutionByRowModel, connection);
 		        	  
 		        	  
-		        	  //TODO: Recount the conflicts (take problems with solutions as 0, otherwise use the resolution conflict_count)
-
-		        	  MergeScriptsModel mergeScriptsModel = new MergeScriptsModel();
-		        	  
-
-		        	  mergeModel = mergeScriptsModel.retrieveMergeAsMergeModelThroughDeterminingTotalConflictsCountUsingMergeModel(mergeModel, connection);
 		        	  
 		          }
+		          
+		        //TODO: Recount the conflicts (take problems with solutions as 0, otherwise use the resolution conflict_count)
+
+	        	  MergeScriptsModel mergeScriptsModel = new MergeScriptsModel();
+	        	  
+
+	        	  mergeModel = mergeScriptsModel.retrieveMergeAsMergeModelThroughDeterminingTotalConflictsCountUsingMergeModel(mergeModel, connection);
+	        	  
 		          
 					
 				connection.close();
@@ -347,7 +349,10 @@ public class ResolutionsByRowModel implements java.io.Serializable {
 		
 	      try {
 
-	    	  PreparedStatement preparedStatement = connection.prepareStatement("UPDATE resolution SET solution_by_row_id = ?, constant = ? WHERE merge_id = ? AND joined_keytable_id = ?;");
+	    	  PreparedStatement preparedStatement = connection.prepareStatement(
+	    			  "UPDATE resolution SET solution_by_row_id = ?, constant = ? " +
+	    			  "WHERE merge_id = ? AND joined_keytable_id = ? AND solution_by_column_id IS NULL AND solution_by_cell_id IS NULL " +
+	    			  ";");
 	          
 	          
 	          if (resolutionByRowModel.getSolutionByRowModel().getId() != null) {

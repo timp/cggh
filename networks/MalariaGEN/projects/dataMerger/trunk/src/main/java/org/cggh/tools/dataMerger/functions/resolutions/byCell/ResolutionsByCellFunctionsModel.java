@@ -28,8 +28,8 @@ public class ResolutionsByCellFunctionsModel implements java.io.Serializable {
 	private CachedRowSet solutionsByRowAsCachedRowSet;
 	private HashMap<Integer, String> joinColumnNamesByColumnNumberAsHashMap;
 	
-	private HashMap<Integer, Integer> unresolvedConflictsByColumnNumberAsHashMap;
-	private HashMap<String, Boolean> unresolvedStatusByCellCoordsAsHashMap;
+	private HashMap<Integer, Integer> unresolvedByColumnOrRowConflictsCountUsingColumnNumberAsHashMap;
+	private HashMap<String, Boolean> unresolvedByColumnOrRowStatusUsingCellCoordsAsHashMap;
 
 	public ResolutionsByCellFunctionsModel () {
 		
@@ -71,7 +71,7 @@ public class ResolutionsByCellFunctionsModel implements java.io.Serializable {
 		        			  
 			        		  Integer columnNumber = Integer.parseInt(joinedKeytableKeyColumnNamePatternMatcher.group(1));
 			        		  
-			        		  this.logger.info("Got columnNumber: " + columnNumber);
+			        		  //this.logger.info("Got columnNumber: " + columnNumber);
 			        		  
 			        		  resolutionsByCellAsDecoratedXHTMLTable += "<th class=\"key-heading\" rowspan=\"2\">" + this.getJoinColumnNamesByColumnNumberAsHashMap().get(columnNumber) + "</th>";
 			        		  
@@ -82,21 +82,21 @@ public class ResolutionsByCellFunctionsModel implements java.io.Serializable {
 				  
 				 Pattern resolutionsByCellAsCachedRowSetSource1ColumnNamePattern = Pattern.compile("^column_(\\d+)_source_1$");
 				 
-				 this.logger.info("Searching for non-key cross-datatable columns by label...");
+				 //this.logger.info("Searching for non-key cross-datatable columns by label...");
 				 
 		          for (int i = 1; i <= this.getResolutionsByCellAsCachedRowSet().getMetaData().getColumnCount(); i++) {
 
 		        		  Matcher resolutionsByCellAsCachedRowSetColumnNamePatternMatcher = resolutionsByCellAsCachedRowSetSource1ColumnNamePattern.matcher(this.getResolutionsByCellAsCachedRowSet().getMetaData().getColumnLabel(i));
 		        		  
-		        		  this.logger.info("Looking at column label: " +  this.getResolutionsByCellAsCachedRowSet().getMetaData().getColumnLabel(i));
+		        		  //this.logger.info("Looking at column label: " +  this.getResolutionsByCellAsCachedRowSet().getMetaData().getColumnLabel(i));
 		        		  
 		        		  if (resolutionsByCellAsCachedRowSetColumnNamePatternMatcher.find()) {
 		        		  
 			        		  Integer columnNumber = Integer.parseInt(resolutionsByCellAsCachedRowSetColumnNamePatternMatcher.group(1));
 			        		  
-			        		  this.logger.info("Got columnNumber: " + columnNumber);
+			        		  //this.logger.info("Got columnNumber: " + columnNumber);
 			        		  
-			        		  if (this.getUnresolvedConflictsByColumnNumberAsHashMap().get(columnNumber) != null && this.getUnresolvedConflictsByColumnNumberAsHashMap().get(columnNumber) > 0) {
+			        		  if (this.getUnresolvedByColumnOrRowConflictsCountUsingColumnNumberAsHashMap().get(columnNumber) != null && this.getUnresolvedByColumnOrRowConflictsCountUsingColumnNumberAsHashMap().get(columnNumber) > 0) {
 			        			  
 			        			  resolutionsByCellAsDecoratedXHTMLTable += "<th class=\"column-heading\" colspan=\"3\">" + this.getJoinColumnNamesByColumnNumberAsHashMap().get(columnNumber) + "</th>";
 			        			  
@@ -126,7 +126,7 @@ public class ResolutionsByCellFunctionsModel implements java.io.Serializable {
 		        		  
 		        		  Integer columnNumber = Integer.parseInt(resolutionsByCellAsCachedRowSetColumnNamePatternMatcher.group(1));
 		        		  
-		        		  if (this.getUnresolvedConflictsByColumnNumberAsHashMap().get(columnNumber) != null && this.getUnresolvedConflictsByColumnNumberAsHashMap().get(columnNumber) > 0) {
+		        		  if (this.getUnresolvedByColumnOrRowConflictsCountUsingColumnNumberAsHashMap().get(columnNumber) != null && this.getUnresolvedByColumnOrRowConflictsCountUsingColumnNumberAsHashMap().get(columnNumber) > 0) {
 		        			  resolutionsByCellAsDecoratedXHTMLTable += "<th class=\"solution-heading\">Solution</th>";
 		        		  }
 		        	  
@@ -163,9 +163,6 @@ public class ResolutionsByCellFunctionsModel implements java.io.Serializable {
 					resolutionsByCellAsDecoratedXHTMLTable += "<tr class=\"" + rowStripeClassName + rowFirstClassName + rowLastClassName + "\">";
 
 					
-					//TODO: Check this mark-up is OK
-					resolutionsByCellAsDecoratedXHTMLTable += "<input type=\"hidden\" name=\"joined_keytable_id\" value=\"" + this.getResolutionsByCellAsCachedRowSet().getString("joined_keytable_id") + "\" />";
-					
 			          for (int i = 1; i <= this.getResolutionsByCellAsCachedRowSet().getMetaData().getColumnCount(); i++) {
 			        	  
 			        	  if (this.getResolutionsByCellAsCachedRowSet().getMetaData().getColumnName(i).startsWith("key_column_")) {
@@ -179,20 +176,20 @@ public class ResolutionsByCellFunctionsModel implements java.io.Serializable {
 					 
 					 //TODO
 
-					 this.logger.info("Searching for non-key cross-datatable columns by label (to be used for getting data)...");
+					 //this.logger.info("Searching for non-key cross-datatable columns by label (to be used for getting data)...");
 					 
 			          for (int i = 1; i <= this.getResolutionsByCellAsCachedRowSet().getMetaData().getColumnCount(); i++) {
 			        	  
 
 			        		  Matcher resolutionsByCellAsCachedRowSetColumnNamePatternMatcher = resolutionsByCellAsCachedRowSetSource1ColumnNamePattern.matcher(this.getResolutionsByCellAsCachedRowSet().getMetaData().getColumnLabel(i));
 			        		  
-			        		  this.logger.info("Looking at column label: " +  this.getResolutionsByCellAsCachedRowSet().getMetaData().getColumnLabel(i));
+			        		  //this.logger.info("Looking at column label: " +  this.getResolutionsByCellAsCachedRowSet().getMetaData().getColumnLabel(i));
 			        		  
 			        		  if (resolutionsByCellAsCachedRowSetColumnNamePatternMatcher.find()) {
 			        		  
 				        		  Integer columnNumber = Integer.parseInt(resolutionsByCellAsCachedRowSetColumnNamePatternMatcher.group(1));
 				        		  
-				        		  this.logger.info("Got columnNumber: " + columnNumber);
+				        		  //this.logger.info("Got columnNumber: " + columnNumber);
 				        		  
 				        		  String columnLabelForSource2Column = "column_" + columnNumber.toString() + "_source_2";
 				        		  
@@ -211,10 +208,6 @@ public class ResolutionsByCellFunctionsModel implements java.io.Serializable {
 				        				  
 				        		  }
 				        		  
-					        	  //TODO: Check this markup is OK
-					        	  resolutionsByCellAsDecoratedXHTMLTable += "<input type=\"hidden\" name=\"column_number\" value=\"" + columnNumber.toString() + "\" />";
-					        	  
-				        		  
 				        		  // Concatenate both sources at the same time, to make sure they are displayed together
 
 				        		  
@@ -224,22 +217,16 @@ public class ResolutionsByCellFunctionsModel implements java.io.Serializable {
 
 				        					 resolutionsByCellAsDecoratedXHTMLTable += "<td class=\"source_1_value-container\">" + this.getResolutionsByCellAsCachedRowSet().getString(i)  + "</td><td class=\"source_2_value-container\">" + this.getResolutionsByCellAsCachedRowSet().getString(columnIndexForSource2Column) + "</td>";
 
-				        					 if (this.getUnresolvedConflictsByColumnNumberAsHashMap().get(columnNumber) != null && this.getUnresolvedConflictsByColumnNumberAsHashMap().get(columnNumber) > 0) {
+				        					 if (this.getUnresolvedByColumnOrRowConflictsCountUsingColumnNumberAsHashMap().get(columnNumber) != null && this.getUnresolvedByColumnOrRowConflictsCountUsingColumnNumberAsHashMap().get(columnNumber) > 0) {
 				        					 
 				        						 resolutionsByCellAsDecoratedXHTMLTable += "<td class=\"solution_by_cell_id-container\"><!-- No solution selector required here --></td>";
 				        					 
 				        					 }
 				        					 
 				        					 
-				        			  } else {
-				        				  
-				        				  if (this.getUnresolvedConflictsByColumnNumberAsHashMap().get(this.getResolutionsByCellAsCachedRowSet().getString("joined_keytable_id") + "," + columnNumber.toString()) != null) {
+				        			  } else if (this.getUnresolvedByColumnOrRowStatusUsingCellCoordsAsHashMap().get(this.getResolutionsByCellAsCachedRowSet().getInt("joined_keytable_id") + "," + columnNumber.toString()) != null) {
 				        					  
-				        					  resolutionsByCellAsDecoratedXHTMLTable += "<td class=\"source_1_value-container conflicting-data\">" + this.getResolutionsByCellAsCachedRowSet().getString(i)  + "</td><td class=\"source_2_value-container conflicting-data\">" + this.getResolutionsByCellAsCachedRowSet().getString(columnIndexForSource2Column) + "</td>";
-				        		
-				        					  
-				        				  } else
-				        					  
+
 				        					  resolutionsByCellAsDecoratedXHTMLTable += "<td class=\"source_1_value-container\">" + this.getResolutionsByCellAsCachedRowSet().getString(i)  + "</td><td class=\"source_2_value-container conflicting-data\">" + this.getResolutionsByCellAsCachedRowSet().getString(columnIndexForSource2Column) + "</td>";
 				        			  	  
 				        				  
@@ -251,9 +238,9 @@ public class ResolutionsByCellFunctionsModel implements java.io.Serializable {
 			        							if (this.getSolutionsByCellAsCachedRowSet().next()) {
 			        								
 			        								if (this.getResolutionsByCellAsCachedRowSet().getInt("solution_by_cell_id") == 0) {
-			        									resolutionsByCellAsDecoratedXHTMLTable += "<select name=\"solution_by_cell_id\" class=\"unresolved\">";
+			        									resolutionsByCellAsDecoratedXHTMLTable += "<select name=\"solution_by_cell_id-" + this.getResolutionsByCellAsCachedRowSet().getInt("joined_keytable_id") + "-" + columnNumber.toString() + "\" class=\"unresolved\">";
 			        								} else {
-			        									resolutionsByCellAsDecoratedXHTMLTable += "<select name=\"solution_by_cell_id\">";
+			        									resolutionsByCellAsDecoratedXHTMLTable += "<select name=\"solution_by_cell_id-" + this.getResolutionsByCellAsCachedRowSet().getInt("joined_keytable_id") + "-" + columnNumber.toString() + "\">";
 			        								}
 		
 			        								//FIXME: Should the null option be in the table?
@@ -300,6 +287,12 @@ public class ResolutionsByCellFunctionsModel implements java.io.Serializable {
 						        						
 				        					 resolutionsByCellAsDecoratedXHTMLTable += "</td>";
 				        				  
+				        					  
+				        				  } else {
+				        					  
+				        					  resolutionsByCellAsDecoratedXHTMLTable += "<td class=\"source_1_value-container conflicting-data\">" + this.getResolutionsByCellAsCachedRowSet().getString(i)  + "</td><td class=\"source_2_value-container conflicting-data\">" + this.getResolutionsByCellAsCachedRowSet().getString(columnIndexForSource2Column) + "</td>";
+							        		
+				        					  
 				        			  }
 				        		  
 			        		  }
@@ -361,22 +354,22 @@ public class ResolutionsByCellFunctionsModel implements java.io.Serializable {
 		return this.joinColumnNamesByColumnNumberAsHashMap;
 	}
 
-	public void setUnresolvedConflictsCountByColumnNumberAsHashMap(
-			HashMap<Integer, Integer> unresolvedConflictsByColumnNumberAsHashMap) {
-		this.unresolvedConflictsByColumnNumberAsHashMap = unresolvedConflictsByColumnNumberAsHashMap;
+	public void setUnresolvedByColumnOrRowConflictsCountUsingColumnNumberAsHashMap(
+			HashMap<Integer, Integer> unresolvedByColumnOrRowConflictsCountUsingColumnNumberAsHashMap) {
+		this.unresolvedByColumnOrRowConflictsCountUsingColumnNumberAsHashMap = unresolvedByColumnOrRowConflictsCountUsingColumnNumberAsHashMap;
 	}
 
-	public HashMap<Integer, Integer> getUnresolvedConflictsByColumnNumberAsHashMap() {
-		return unresolvedConflictsByColumnNumberAsHashMap;
+	public HashMap<Integer, Integer> getUnresolvedByColumnOrRowConflictsCountUsingColumnNumberAsHashMap() {
+		return unresolvedByColumnOrRowConflictsCountUsingColumnNumberAsHashMap;
 	}
 
-	public void setUnresolvedStatusByCellCoordsAsHashMap(
-			HashMap<String, Boolean> unresolvedStatusByCellCoordsAsHashMap) {
-		this.unresolvedStatusByCellCoordsAsHashMap = unresolvedStatusByCellCoordsAsHashMap;
+	public void setUnresolvedByColumnOrRowStatusUsingCellCoordsAsHashMap(
+			HashMap<String, Boolean> unresolvedByColumnOrRowStatusUsingCellCoordsAsHashMap) {
+		this.unresolvedByColumnOrRowStatusUsingCellCoordsAsHashMap = unresolvedByColumnOrRowStatusUsingCellCoordsAsHashMap;
 	}
 
-	public HashMap<String, Boolean> getUnresolvedStatusByCellCoordsAsHashMap() {
-		return unresolvedStatusByCellCoordsAsHashMap;
+	public HashMap<String, Boolean> getUnresolvedByColumnOrRowStatusUsingCellCoordsAsHashMap() {
+		return unresolvedByColumnOrRowStatusUsingCellCoordsAsHashMap;
 	}
 
 	
