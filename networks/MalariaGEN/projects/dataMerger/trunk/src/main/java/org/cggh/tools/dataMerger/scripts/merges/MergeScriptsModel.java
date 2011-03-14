@@ -516,16 +516,6 @@ public class MergeScriptsModel implements java.io.Serializable {
 		
 		if (mergeModel.getJoinsModel().getKeysCount() > 0 && mergeModel.getTotalDuplicateKeysCount() == 0) {
 
-			//TODO
-			// By Cell (also covers by column and row)
-			
-			this.logger.info("About to determine conflicts (generally)...");
-			//////////////////////////////////////////////
-			
-			//Use the cell-named method until it has developed into general solution.
-			
-			//Need this stuff (res-by-row currently does too)
-			
 			MergesModel mergesModel = new MergesModel();
 			
 			mergeModel = mergesModel.retrieveMergeAsMergeModelThroughRecreatingJoinedKeytableUsingMergeModel(mergeModel, connection);
@@ -582,11 +572,8 @@ public class MergeScriptsModel implements java.io.Serializable {
 		        
 		        
 
-		        //TODO
 		        String nonKeyCrossDatatableColumnAliasesAsCSVForSelectFromJoinSQL = "";	        
-		        
 		        String columnDefinitionsUsingNonKeyCrossDatatableColumnAndSourceNumbersSQL = "";
-
 		        String conflictUnionsSQL = "";
 		        
 		        CachedRowSet nonKeyCrossDatatableJoinsAsCachedRowSet = joinsModel.retrieveNonKeyCrossDatatableJoinsAsCachedRowsetByMergeId(mergeModel.getId(), connection);
@@ -674,20 +661,19 @@ public class MergeScriptsModel implements java.io.Serializable {
 															        			"ORDER BY `" + mergeModel.getJoinedKeytableModel().getName() + "`.id" +
 															        			";";
 
-						this.logger.info(createAndPopulateTemporaryJoinedDatatableSQL);
+						//this.logger.info(createAndPopulateTemporaryJoinedDatatableSQL);
 						
 				        PreparedStatement preparedStatement3 = connection.prepareStatement(createAndPopulateTemporaryJoinedDatatableSQL);
 				        preparedStatement3.executeUpdate();
 				        preparedStatement3.close();
 
-				        //TODO
 						String insertConflictsByCellSQL = "" +
 								"INSERT INTO resolution (merge_id, joined_keytable_id, column_number, conflict_id) " +
 									conflictUnionsSQL +
 									" ORDER BY joined_keytable_id, column_number, conflict_id " + 
 								";";
 
-						this.logger.info(insertConflictsByCellSQL);
+						//this.logger.info(insertConflictsByCellSQL);
 						
 						PreparedStatement preparedStatement4 = connection.prepareStatement(insertConflictsByCellSQL);
 						preparedStatement4.executeUpdate();
@@ -697,7 +683,7 @@ public class MergeScriptsModel implements java.io.Serializable {
 						
 						String dropTemporaryJoinedDatatableSQL2 = "DROP TABLE IF EXISTS `tmp_joined_datatable_" + mergeModel.getId() + "`;";
 
-						this.logger.info(dropTemporaryJoinedDatatableSQL2);
+						//this.logger.info(dropTemporaryJoinedDatatableSQL2);
 						
 						PreparedStatement preparedStatement5 = connection.prepareStatement(dropTemporaryJoinedDatatableSQL2);
 						preparedStatement5.executeUpdate();
@@ -718,13 +704,7 @@ public class MergeScriptsModel implements java.io.Serializable {
 		      
 				// Get an up-to-date count of the total conflicts.
 				mergeModel = this.retrieveMergeAsMergeModelThroughDeterminingTotalConflictsCountUsingMergeModel(mergeModel, connection);
-			
-			//////////////////////////////////////////////
-			this.logger.info("Done determining conflicts (generally).");
-			
-		
-			
-			
+	
 
 		}
 		return mergeModel;
