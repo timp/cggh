@@ -13,6 +13,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.sql.rowset.CachedRowSet;
 
+import org.cggh.tools.dataMerger.data.exports.ExportModel;
+import org.cggh.tools.dataMerger.data.exports.ExportsModel;
 import org.cggh.tools.dataMerger.data.joins.JoinModel;
 import org.cggh.tools.dataMerger.data.joins.JoinsModel;
 import org.cggh.tools.dataMerger.data.merges.MergeModel;
@@ -90,6 +92,9 @@ public class DataController extends HttpServlet {
 
 		 Pattern newJoinURLPattern = Pattern.compile("^/merges/(\\d+)/joins/join$");
 		 Matcher newJoinURLPatternMatcher = newJoinURLPattern.matcher(request.getPathInfo());
+		 
+		 Pattern exportURLPattern = Pattern.compile("^/merges/(\\d+)/exports$");
+		 Matcher exportURLPatternMatcher = newJoinURLPattern.matcher(request.getPathInfo());
 		 
 		  String[] headerAcceptsAsStringArray = request.getHeader("Accept").split(",");
 		  List<String> headerAcceptsAsStringList = Arrays.asList(headerAcceptsAsStringArray);		 
@@ -338,7 +343,9 @@ public class DataController extends HttpServlet {
 		this.getDataModel().setDataModelByServletContext(request.getSession().getServletContext());
 		this.getUserModel().setDataModel(this.getDataModel());
 		this.getUserModel().setUserModelByUsername(request.getRemoteUser());
-				
+		
+		 Pattern exportURLPattern = Pattern.compile("^/merges/(\\d+)/exports$");
+		 Matcher exportURLPatternMatcher = exportURLPattern.matcher(request.getPathInfo());
 		
 		 if (request.getPathInfo().equals("/merges")) {
 			 
@@ -415,7 +422,63 @@ public class DataController extends HttpServlet {
 				  
 			  }
 			  
-		  } else {
+		  
+		 
+		 }
+		 else if (exportURLPatternMatcher.find()) {
+			 
+			 
+			 String[] headerAcceptsAsStringArray = request.getHeader("Accept").split(",");
+			  List<String> headerAcceptsAsStringList = Arrays.asList(headerAcceptsAsStringArray);
+			 
+			  //TODO: Just testing
+			  if (headerAcceptsAsStringList.contains("application/json")) { 
+			 
+				  response.setContentType("application/json");
+				  String responseAsJSON = null;
+				  
+				  	// Get the mergeId for the new export
+				  
+				  	ExportModel exportModel = new ExportModel();
+				  	exportModel.getMergeModel().setId(Integer.parseInt(exportURLPatternMatcher.group(1)));
+				  
+
+					ExportsModel exportsModel = new ExportsModel();
+					
+					exportsModel.setDataModel(this.getDataModel());
+					exportsModel.setUserModel(this.getUserModel());
+					
+					exportModel = exportsModel.retrieveExportAsExportModelThroughCreatingExportUsingExportModel(exportModel);
+					
+					if (exportModel.getId() != null) {
+						
+				        responseAsJSON = "{\"id\": \"" + exportModel.getId() + "\"}";
+				        response.getWriter().print(responseAsJSON);
+			        
+					} else {
+						
+						 //FIXME: This will cause a parser error (Invalid JSON).
+						  
+						String logMessage = "Did not get an export ID after attempting to create an export using the merge ID.";
+						
+						this.log(logMessage);
+						
+						  response.setContentType("text/plain");
+						  response.getWriter().println(logMessage);
+						
+					}
+
+			  } else {
+				  
+				  //FIXME: This will cause a parser error (Invalid JSON).
+				  
+				  response.setContentType("text/plain");
+				  response.getWriter().println("Unhandled Header Accept: " + request.getHeader("Accept"));
+				  
+			  }	 
+			 
+		 
+		 } else {
 			  
 			  //FIXME: This will cause a parser error (Invalid JSON).
 			  

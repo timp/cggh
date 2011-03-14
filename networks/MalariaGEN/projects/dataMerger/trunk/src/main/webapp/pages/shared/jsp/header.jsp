@@ -7,8 +7,12 @@
 	<h1 class="title">MalariaGEN dataMerger</h1>
 
 	<p class="user-menu">
+		<% if (request.getRemoteUser() != null) { %>
 		<span class="user"><%=request.getRemoteUser() %></span>
 		<span class="logout"><a href="javascript:logout();">logout</a></span>
+		<% } else { %>
+		<span class="user">Anonymous</span>
+		<% } %>
 	</p>
 
 	<ul class="apps-menu">

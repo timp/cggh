@@ -100,9 +100,12 @@
                <http-method>GET</http-method>
 
    </web-resource-collection>
-   <auth-constraint>
+
+   <!-- <auth-constraint>
      <role-name>user</role-name>
    </auth-constraint>
+    -->
+
  </security-constraint>
 
  <security-constraint>
@@ -238,6 +241,10 @@
 	<context-param>
 		<param-name>uploadsFileRepositoryBasePath</param-name>
 		<param-value>C:\Lee\Work\dataMerger\files\uploads\</param-value>
+	</context-param>
+	<context-param>
+		<param-name>exportsFileRepositoryBasePath</param-name>
+		<param-value>C:\Lee\Work\dataMerger\files\exports\</param-value>
 	</context-param>
 
 </web-app>

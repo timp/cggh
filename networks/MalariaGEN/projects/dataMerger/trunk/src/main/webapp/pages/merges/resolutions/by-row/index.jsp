@@ -116,7 +116,7 @@ resolutionsByRowModel.setDataModel(dataModel);
 			
 			<!-- TODO: If there are no unsolved problems. -->
 			<% if (mergeModel.getTotalConflictsCount() == 0) { %>
-			<div class="item"><button>Export</button></div>
+			<div class="item"><img class="exporting-indicator" src="../../../shared/gif/loading.gif" style="display:none" title="Exporting..."/><button class="export-button">Export</button></div>
 			<% } %>
 			
 			

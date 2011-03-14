@@ -223,6 +223,72 @@ public class ResolutionsModel implements java.io.Serializable {
 		return solutionByColumnIdUsingCellCoordsAsHashMap;	
 	}
 
+	
+	public HashMap<String, Integer> retrieveSolutionByRowIdUsingCellCoordsAsHashMapUsingMergeModel(
+			MergeModel mergeModel) {
+		
+		HashMap<String, Integer> solutionByRowIdUsingCellCoordsAsHashMap = new HashMap<String, Integer>();
+
+		try {
+			
+			Connection connection = this.getDataModel().getNewConnection();
+			 
+			if (!connection.isClosed()) {		
+		
+			      try{
+			          PreparedStatement preparedStatement = connection.prepareStatement("SELECT joined_keytable_id, column_number, solution_by_row_id FROM `resolution` WHERE merge_id = ? ORDER BY joined_keytable_id, column_number;");
+			          preparedStatement.setInt(1, mergeModel.getId());
+			          preparedStatement.executeQuery();
+			          ResultSet resultSet = preparedStatement.getResultSet();
+			          
+			          if (resultSet.next()) {
+			        	  
+			        	  resultSet.beforeFirst();
+			        	  
+			        	  while(resultSet.next()){
+		
+			        		 
+			        		  Integer joinedKeytableId = resultSet.getInt("joined_keytable_id");
+			        		  Integer columnNumber = resultSet.getInt("column_number");
+			        		  String cellCoords = joinedKeytableId.toString() + "," + columnNumber.toString();
+			        		  
+			        		  solutionByRowIdUsingCellCoordsAsHashMap.put(cellCoords, resultSet.getInt("solution_by_row_id"));
+			        	  
+			        	  }
+		
+			      	  } else {
+			      		  
+			      		  //There may be no unresolved conflicts
+			      		  this.logger.info("Did not retrieve any solution_by_row_ids using the specified merge id: " + mergeModel.getId());
+			      		  
+			      	  }
+			          
+			          resultSet.close();
+			          
+			          preparedStatement.close();
+		
+			        }
+			        catch(SQLException sqlException){
+				    	sqlException.printStackTrace();
+			        } 		
+	        
+			} else {
+				
+				this.logger.severe("connection.isClosed");
+			}
+				
+		} 
+		catch (Exception e) {
+			
+			this.logger.severe(e.getMessage());
+			e.printStackTrace();
+		}
+		
+		return solutionByRowIdUsingCellCoordsAsHashMap;
+		
+	}
+	
+	
 	public HashMap<String, Integer> retrieveSolutionByCellIdUsingCellCoordsAsHashMapUsingMergeModel(
 			MergeModel mergeModel) {
 		
@@ -411,6 +477,7 @@ public class ResolutionsModel implements java.io.Serializable {
 		
 		return nullOrConstantSolutionUsingColumnNumberAsHashMap;
 	}
+
 
 	
 	

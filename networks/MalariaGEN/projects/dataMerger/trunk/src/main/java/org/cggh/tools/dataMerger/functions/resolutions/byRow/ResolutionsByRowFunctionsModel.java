@@ -386,7 +386,7 @@ public class ResolutionsByRowFunctionsModel implements java.io.Serializable {
 						        						  // Constant				        						  
 						        						  resolutionsByRowAsDecoratedXHTMLTable += "<td class=\"source_1_value-container resolved-conflicting-data\">" + this.getResolutionsByRowAsCachedRowSet().getString(i)  + "</td><td class=\"source_2_value-container resolved-conflicting-data\">" + this.getResolutionsByRowAsCachedRowSet().getString(columnIndexForSource2Column) + "</td><td class=\"constant-container\">" + constant + "</td>";
 						        					  } else if (solutionByRowId != null && solutionByRowId == 5) {
-						        						  // Constant				        						  
+						        						  // Remove entire row				        						  
 						        						  resolutionsByRowAsDecoratedXHTMLTable += "<td class=\"source_1_value-container resolved-conflicting-data\">" + this.getResolutionsByRowAsCachedRowSet().getString(i)  + "</td><td class=\"source_2_value-container resolved-conflicting-data\">" + this.getResolutionsByRowAsCachedRowSet().getString(columnIndexForSource2Column) + "</td>";
 						        					  } else {
 						        						  //TODO: Error, unexpected ID

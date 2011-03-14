@@ -52,10 +52,10 @@
 	color: red;	
 }
 .resolutions-by-cell-table td.resolved-conflicting-data {
-	color: #CCCCCC;	
+	color: #999999;	
 }
 .resolutions-by-cell-table td.preferred-source {
-	color: orange;	
+	color: #009900;	
 }
 
 .resolutions-by-cell-table .key-heading {
@@ -93,7 +93,9 @@
  {
 	border-left: 1px solid #cccccc;
 	
-	color: orange;
+	color: #009900;
+	
+	text-align: right;
 }
 .resolutions-by-cell-table td select {
 	clear: both;
@@ -101,7 +103,7 @@
 	
 }
 .resolutions-by-cell-table td select.unresolved {
-	color: red;	
+	border: 1px solid red;	
 }
 .resolutions-by-cell-table td label {
 	clear: both;

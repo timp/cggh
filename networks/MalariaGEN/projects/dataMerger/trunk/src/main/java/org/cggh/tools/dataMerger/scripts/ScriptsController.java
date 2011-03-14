@@ -315,18 +315,6 @@ public class ScriptsController extends HttpServlet {
 
 			       
 				        
-				        
-				        
-				        
-				        
-				        
-				        
-				        
-				        
-				        
-				        
-				        ///////////////////////////////////////////////////////////////////////////////
-
 					      try{
 					    	  
 					          Statement statement = connection.createStatement();
@@ -356,8 +344,7 @@ public class ScriptsController extends HttpServlet {
 						        	out.println("<p>" + sqlException + "</p>");
 							    	sqlException.printStackTrace();
 						        }				        
-				        
-				        //FIXME: Fix foreign-key references
+
 					      try{
 					    	  
 					          Statement statement = connection.createStatement();
@@ -384,8 +371,35 @@ public class ScriptsController extends HttpServlet {
 						    	sqlException.printStackTrace();
 					        } 				        
 				        
-				        ////////////////////////////////////////////////////////////////////
-			        
+					        
+						      try{
+						          Statement statement = connection.createStatement();
+						          statement.executeUpdate("CREATE TABLE export (" + 
+						        		  "id BIGINT(255) UNSIGNED NOT NULL AUTO_INCREMENT, " +
+						        		  "upload_1_id BIGINT(255) UNSIGNED NOT NULL, " +
+						        		  "upload_2_id BIGINT(255) UNSIGNED NOT NULL, " +
+						        		  "repository_filepath VARCHAR(255) NULL, " + 
+						        		  "successful BOOLEAN NULL, " + 
+						        		  "created_by_user_id TINYINT(255) UNSIGNED NOT NULL, " + 
+						        		  "created_datetime DATETIME NOT NULL, " +
+						        		  "PRIMARY KEY (id), " +
+						        		  "CONSTRAINT unique_path_constraint UNIQUE (repository_filepath), " +
+						        		  "INDEX created_by_user_id_index (created_by_user_id), " + 
+						        		  "FOREIGN KEY (created_by_user_id) REFERENCES user(id) ON DELETE CASCADE ON UPDATE CASCADE, " +
+						        		  "INDEX upload_1_id_index (upload_1_id), " + 
+						        		  "FOREIGN KEY (upload_1_id) REFERENCES upload(id) ON DELETE CASCADE ON UPDATE CASCADE, " +
+						        		  "INDEX upload_2_id_index (upload_2_id), " + 
+						        		  "FOREIGN KEY (upload_2_id) REFERENCES upload(id) ON DELETE CASCADE ON UPDATE CASCADE " + 
+						        		  ") ENGINE=InnoDB;");
+						          statement.close();
+			
+						        }
+						        catch(SQLException sqlException){
+						        	out.println("<p>" + sqlException + "</p>");
+							    	sqlException.printStackTrace();
+						        }
+					        
+					        
 					connection.close();
 					out.println("Done.");
 					

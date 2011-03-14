@@ -655,9 +655,8 @@ public class MergeScriptsModel implements java.io.Serializable {
 		        
 				try {
 
+						//TODO: Want to use a temporary table, but that will cause a SQLException "Can't reopen table" when insertConflictsByCellSQL.
 						
-						//FIXME: Change this to a TEMPORARY table after testing
-
 						String dropTemporaryJoinedDatatableSQL = "DROP TABLE IF EXISTS `tmp_joined_datatable_" + mergeModel.getId() + "`;";
 
 						this.logger.info(dropTemporaryJoinedDatatableSQL);
@@ -693,7 +692,17 @@ public class MergeScriptsModel implements java.io.Serializable {
 						PreparedStatement preparedStatement4 = connection.prepareStatement(insertConflictsByCellSQL);
 						preparedStatement4.executeUpdate();
 						preparedStatement4.close();				
-					
+
+						
+						
+						String dropTemporaryJoinedDatatableSQL2 = "DROP TABLE IF EXISTS `tmp_joined_datatable_" + mergeModel.getId() + "`;";
+
+						this.logger.info(dropTemporaryJoinedDatatableSQL2);
+						
+						PreparedStatement preparedStatement5 = connection.prepareStatement(dropTemporaryJoinedDatatableSQL2);
+						preparedStatement5.executeUpdate();
+						preparedStatement5.close();							
+						
 					
 				} catch (SQLException e) {
 					// TODO Auto-generated catch block
@@ -713,75 +722,7 @@ public class MergeScriptsModel implements java.io.Serializable {
 			//////////////////////////////////////////////
 			this.logger.info("Done determining conflicts (generally).");
 			
-			
-			
-			
-			
-			
-			//FIXME
-			//TODO: refactor this to use the general resolutions table.
-			
-			
-			//By Column
-
-			//Already got mergeModel.getDatatable1Model().getKeyColumnNamesAsStringList(), but also need the joined column_name
-
-//
-//			this.logger.info("about to determine conflicts by column");
-//
-//			
-//			//Note: This doesn't update the merge's total conflicts count. See separate script call below. 
-//			mergeModel = this.retrieveMergeAsMergeModelThroughDeterminingProblemsByColumnUsingMergeModel(mergeModel, connection);
-//
-//			this.logger.info("done determining conflicts by column");
-//
-//			
-//			// Get an up-to-date count of the total conflicts.
-//			mergeModel = this.retrieveMergeAsMergeModelThroughDeterminingTotalConflictsCountByColumnUsingMergeModel(mergeModel, connection);
-//			
-//
-//			// If there were no conflicts, no need to look for them again.
-//			if (mergeModel.getTotalConflictsCount() > 0) {
-//							
-//				
-//				//TODO: By Row
-//				this.logger.info("about to determine conflicts by row");
-//				
-//				// Create a joined_keytable for the merge data
-//				MergesModel mergesModel = new MergesModel();
-//				
-//				mergeModel = mergesModel.retrieveMergeAsMergeModelThroughRecreatingJoinedKeytableUsingMergeModel(mergeModel, connection);
-//				
-//				JoinsModel joinsModel = new JoinsModel();
-//				mergeModel.getJoinsModel().setKeyJoinsAsCachedRowSet(joinsModel.retrieveKeyJoinsAsCachedRowsetByMergeId(mergeModel.getId(),connection));
-//				mergeModel.getJoinsModel().setNonKeyCrossDatatableJoinsAsCachedRowSet(joinsModel.retrieveNonKeyCrossDatatableJoinsAsCachedRowsetByMergeId(mergeModel.getId(), connection));
-//
-//				
-//				
-//				//TODO:
-//				mergeModel = this.retrieveMergeAsMergeModelThroughDeterminingProblemsByRowUsingMergeModel(mergeModel, connection);
-//				
-//				
-//				// Get an up-to-date count of the total conflicts.
-//				mergeModel = this.retrieveMergeAsMergeModelThroughDeterminingTotalConflictsCountByRowUsingMergeModel(mergeModel, connection);
-//				
-//				
-//				this.logger.info("done determining conflicts by row");
-//				
-//				
-//				this.logger.info("about to determine conflicts by cell");
-//				
-//				//TODO
-//				//mergeModel = this.retrieveMergeAsMergeModelThroughDeterminingProblemsByCellUsingMergeModel(mergeModel, connection);
-//				
-//				this.logger.info("done determining conflicts by cell");
-//				
-//			} else {
-//				
-//				this.logger.info("Skipped determining conflicts by row because totalConflictsCount = " + mergeModel.getTotalConflictsCount());
-//			}
-			
-			
+		
 			
 			
 
@@ -844,36 +785,4 @@ public class MergeScriptsModel implements java.io.Serializable {
 	}
 
 
-
-
-
-
-	public MergeModel retrieveMergeAsMergeModelThroughDeterminingProblemsByCellUsingMergeModel(
-			MergeModel mergeModel, Connection connection) {
-
-
-		
-		
-		
-		
-		
-		return mergeModel;
-		
-	}
-
-
-
-
-
-
-
-
-	public MergeModel retrieveMergeAsMergeModelThroughDeterminingTotalConflictsCountByCellUsingMergeModel(
-			MergeModel mergeModel, Connection connection) {
-		// TODO Auto-generated method stub
-		return null;		
-	
-		
-	}	
-	
 }
