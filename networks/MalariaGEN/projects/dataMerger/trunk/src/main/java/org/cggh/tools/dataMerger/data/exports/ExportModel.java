@@ -1,8 +1,6 @@
 package org.cggh.tools.dataMerger.data.exports;
 
-import org.cggh.tools.dataMerger.data.DataModel;
 import org.cggh.tools.dataMerger.data.merges.MergeModel;
-import org.cggh.tools.dataMerger.data.users.UserModel;
 
 public class ExportModel implements java.io.Serializable {
 
@@ -15,6 +13,8 @@ public class ExportModel implements java.io.Serializable {
 
 	private Integer id;
 	private MergeModel mergeModel;
+
+	private String datatableName;
 
 	public ExportModel() {
 
@@ -42,6 +42,11 @@ public class ExportModel implements java.io.Serializable {
 
 	public Integer getId() {
 		return this.id;
+	}
+
+
+	public void setDatatableName(String datatableName) {
+		this.datatableName = datatableName;
 	}
 
 }

@@ -438,6 +438,8 @@ public class ScriptsController extends HttpServlet {
 			
 				      //TODO: Maybe factor this out into a separate script?
 				      
+				      //FIXME: This is really dangerous! What if the initParameter was set to a system folder?
+				      
 				      File directory = new File(getServletContext().getInitParameter("uploadsFileRepositoryBasePath"));
 
 					   // Get all files in directory
