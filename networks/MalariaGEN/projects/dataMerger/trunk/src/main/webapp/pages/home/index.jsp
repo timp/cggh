@@ -16,6 +16,9 @@
 			<%@ include file="../shared/jsp/header.jsp" %>
 			<h2 class="page-title">Welcome</h2>
 			
+			<p>This is the dataMerger application, designed to help MalariaGEN merge clinical data files downloaded from Topheno.
+			</p>
+			
 			<h3>Configuration:</h3>
 
 
@@ -47,6 +50,59 @@
 &lt;user username="lee" password="test" roles="user,uploader,merger,exporter" /&gt;
 						</pre>
 
+
+			<h3>Usage:</h3>
+			
+			<p>The file format for the source files ("uploads") is expected to be the same as the "calculated data" downloaded from Topheno.
+			</p>
+			
+			<p>Specifically:
+				<ul>
+					<li>ISO-8859-1 character-set encoding (a.k.a. Latin-1) 
+					</li>
+					<li>The Unix-style end-of-line character (i.e. \n, Line Feed, LF)
+					</li>
+					<li>Comma-separated values
+					</li>
+				</ul>
+			</p>
+			
+			<p>This also describes the file-type of the "export" files produced using this application. (So they too can be used in merges.)
+			</p>
+			
+			<p><em>Note:</em> Saving such as file in Microsoft Excel will result in a different (as yet unsupported file type) 
+			</p>
+			
+			<p>Not yet supported (when saved by Excel):
+				<ul>
+					<li>ANSI and UTF8 character sets. (Ideally, Topheno should export as UTF8.)
+					</li>
+					<li>Windows-style end-of-line character (i.e. \n\r, Carriage Return with Line Feed, CR+LF)
+					</li>
+				</ul>
+			</p>
+			<p>Symptoms:	
+				<ul>
+					<li>Unsupported character-encoding: Odd characters appearing in column headings. Application failures.
+					</li>
+					<li>Unsupported end-of-line character: Right-most cells contain an unexpected last character (i.e. \r).
+					</li>
+				</ul>
+			</p>
+			
+			<p>Current work-arounds:
+				<ul>
+					<li>Use Notepad++ to change the character encoding or end-of-line characters.
+					</li>
+				</ul>
+			</p>
+			
+			<p>Supported:
+				<ul>
+					<li>Values (and column headings) optionally enclosed by double-quotes.
+					</li>
+				</ul>
+			</p>
 
 					<h3>Start</h3>
 					<p><a href="../uploads">Uploads</a> [requires authentication]

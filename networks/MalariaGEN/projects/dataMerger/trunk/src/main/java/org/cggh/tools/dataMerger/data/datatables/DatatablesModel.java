@@ -122,7 +122,7 @@ public class DatatablesModel implements java.io.Serializable {
          			FileInputStream fileInputStream = new FileInputStream(datatableModel.getUploadModel().getRepositoryFilepath());
 
 	        	    DataInputStream dataInputStream = new DataInputStream(fileInputStream);
-	        	    BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(dataInputStream));
+	        	    BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(dataInputStream,"ISO-8859-1"));
 	        	    String strLine;
 
 	        	    if ((strLine = bufferedReader.readLine()) != null)   {
@@ -136,6 +136,8 @@ public class DatatablesModel implements java.io.Serializable {
 	        	      String columnDefinitionsForCreateTableSQL = "";
 	        	      
 	        	      for (int i = 0; i < columnNames.length; i++) {
+	        	    	  
+	        	    	  this.logger.info("Got column name: " + columnNames[i]);
 	        	    	  
 	        	    	  //Strip out quote marks from column names
 	        	    	  columnNames[i] = columnNames[i].replace("\"", "");

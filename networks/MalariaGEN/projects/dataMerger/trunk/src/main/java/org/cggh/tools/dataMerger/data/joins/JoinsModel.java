@@ -35,6 +35,7 @@ public class JoinsModel implements java.io.Serializable {
 
 	private CachedRowSet keyJoinsAsCachedRowset;
 	private CachedRowSet nonKeyCrossDatatableJoinsAsCachedRowset;
+	private CachedRowSet nonCrossDatatableJoinsAsCachedRowset;
 
 	//Must not have a joinModel, because joinModel has a mergeModel, which has a joinsModel, causes StackOverflowError
 	//private JoinModel joinModel;
@@ -833,36 +834,7 @@ public class JoinsModel implements java.io.Serializable {
 			 
 			if (!connection.isClosed()) {		
 		
-			      try{
-			          PreparedStatement preparedStatement = connection.prepareStatement("SELECT column_number, column_name FROM `join` WHERE merge_id = ? ORDER BY column_number;");
-			          preparedStatement.setInt(1, mergeModel.getId());
-			          preparedStatement.executeQuery();
-			          ResultSet resultSet = preparedStatement.getResultSet();
-			          
-			          if (resultSet.next()) {
-			        	  
-			        	  resultSet.beforeFirst();
-			        	  
-			        	  while(resultSet.next()){
-		
-			        		  joinColumnNamesByColumnNumberAsHashMap.put(resultSet.getInt("column_number"), resultSet.getString("column_name"));
-			        	  
-			        	  }
-		
-			      	  } else {
-			      		  
-			      		  this.logger.severe("Did not retrieve any column names for the specified merge id: " + mergeModel.getId());
-			      		  
-			      	  }
-			          
-			          resultSet.close();
-			          
-			          preparedStatement.close();
-		
-			        }
-			        catch(SQLException sqlException){
-				    	sqlException.printStackTrace();
-			        } 		
+				joinColumnNamesByColumnNumberAsHashMap = retrieveJoinColumnNamesByColumnNumberAsHashMapUsingMergeModel(mergeModel, connection);
 	        
 			} else {
 				
@@ -877,6 +849,99 @@ public class JoinsModel implements java.io.Serializable {
 		}
 		
 		return joinColumnNamesByColumnNumberAsHashMap;
+	}
+
+	public HashMap<Integer, String> retrieveJoinColumnNamesByColumnNumberAsHashMapUsingMergeModel(
+			MergeModel mergeModel, Connection connection) {
+		
+		HashMap<Integer, String> joinColumnNamesByColumnNumberAsHashMap = new HashMap<Integer, String>();
+
+	      try{
+	          PreparedStatement preparedStatement = connection.prepareStatement("SELECT column_number, column_name FROM `join` WHERE merge_id = ? ORDER BY column_number;");
+	          preparedStatement.setInt(1, mergeModel.getId());
+	          preparedStatement.executeQuery();
+	          ResultSet resultSet = preparedStatement.getResultSet();
+	          
+	          if (resultSet.next()) {
+	        	  
+	        	  resultSet.beforeFirst();
+	        	  
+	        	  while(resultSet.next()){
+
+	        		  joinColumnNamesByColumnNumberAsHashMap.put(resultSet.getInt("column_number"), resultSet.getString("column_name"));
+	        	  
+	        	  }
+
+	      	  } else {
+	      		  
+	      		  this.logger.severe("Did not retrieve any column names for the specified merge id: " + mergeModel.getId());
+	      		  
+	      	  }
+	          
+	          resultSet.close();
+	          
+	          preparedStatement.close();
+
+	        }
+	        catch(SQLException sqlException){
+		    	sqlException.printStackTrace();
+	        } 	
+		
+		return joinColumnNamesByColumnNumberAsHashMap;
+	}
+	
+
+	public CachedRowSet retrieveNonCrossDatatableJoinsAsCachedRowsetByMergeId(
+			Integer mergeId, Connection connection) {
+
+		MergeModel mergeModel = new MergeModel();
+		mergeModel.setId(mergeId);
+		
+        Class<?> cachedRowSetImplClass = null;
+		try {
+			cachedRowSetImplClass = Class.forName("com.sun.rowset.CachedRowSetImpl");
+		} catch (ClassNotFoundException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		
+		CachedRowSet nonCrossDatatableJoinsAsCachedRowSet = null;
+		try {
+			nonCrossDatatableJoinsAsCachedRowSet = (CachedRowSet) cachedRowSetImplClass.newInstance();
+		} catch (InstantiationException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		} catch (IllegalAccessException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		
+	      try{
+	          PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM `join` WHERE merge_id = ? AND (datatable_1_column_name IS NULL OR datatable_2_column_name IS NULL) ORDER BY column_number;");
+	          preparedStatement.setInt(1, mergeModel.getId());
+	          preparedStatement.executeQuery();
+	         
+	          nonCrossDatatableJoinsAsCachedRowSet.populate(preparedStatement.getResultSet());
+	          
+	          preparedStatement.close();
+
+	        }
+	        catch(SQLException sqlException){
+		    	sqlException.printStackTrace();
+	        } 
+		
+		return nonCrossDatatableJoinsAsCachedRowSet;
+	}
+
+
+	public void setNonCrossDatatableJoinsAsCachedRowSet(
+			CachedRowSet nonCrossDatatableJoinsAsCachedRowset) {
+		this.nonCrossDatatableJoinsAsCachedRowset = nonCrossDatatableJoinsAsCachedRowset;
+	}
+
+
+	public CachedRowSet getNonCrossDatatableJoinsAsCachedRowSet() {
+		return this.nonCrossDatatableJoinsAsCachedRowset;
 	}
 
 

@@ -57,3 +57,7 @@ input[name|=constant], input[name=constant_1], input[name=constant_2] {
 	color: red;
 }
 
+.exporting-indicator {
+	margin-left: 5px;
+	vertical-align: middle;
+}

@@ -173,7 +173,7 @@ public class ResolutionsByColumnFunctionsModel implements java.io.Serializable {
 				
 			} else {
 				
-				resolutionsByColumnAsDecoratedXHTMLTable = "There are no conflicts.";
+				resolutionsByColumnAsDecoratedXHTMLTable = "There are no unresolved conflicts.";
 				
 			}
 		} catch (SQLException e) {

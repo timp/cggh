@@ -49,4 +49,9 @@ public class ExportModel implements java.io.Serializable {
 		this.datatableName = datatableName;
 	}
 
+
+	public String getDatatableName() {
+		return this.datatableName;
+	}
+
 }

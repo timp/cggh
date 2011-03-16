@@ -105,7 +105,7 @@ public class ScriptsController extends HttpServlet {
 				
 				      try{
 				          Statement statement = connection.createStatement();
-				          statement.executeUpdate("CREATE TABLE user (id TINYINT(255) UNSIGNED NOT NULL AUTO_INCREMENT, username VARCHAR(255) NOT NULL, PRIMARY KEY (id), CONSTRAINT unique_username_constraint UNIQUE (username)) ENGINE=InnoDB;");
+				          statement.executeUpdate("CREATE TABLE user (id BIGINT(255) UNSIGNED NOT NULL AUTO_INCREMENT, username VARCHAR(255) NOT NULL, PRIMARY KEY (id), CONSTRAINT unique_username_constraint UNIQUE (username)) ENGINE=InnoDB;");
 				          statement.close();
 
 				        }
@@ -121,7 +121,7 @@ public class ScriptsController extends HttpServlet {
 				        		  "original_filename VARCHAR(255) NOT NULL, " + 
 				        		  "repository_filepath VARCHAR(255) NULL, " + 
 				        		  "successful BOOLEAN NULL, " + 
-				        		  "created_by_user_id TINYINT(255) UNSIGNED NOT NULL, " + 
+				        		  "created_by_user_id BIGINT(255) UNSIGNED NOT NULL, " + 
 				        		  "created_datetime DATETIME NOT NULL, " +
 				        		  "PRIMARY KEY (id), " +
 				        		  "CONSTRAINT unique_path_constraint UNIQUE (repository_filepath), " +
@@ -139,16 +139,16 @@ public class ScriptsController extends HttpServlet {
 				      try{
 				          Statement statement = connection.createStatement();
 				          statement.executeUpdate("CREATE TABLE merge (" + 
-				        		  "id TINYINT(255) UNSIGNED NOT NULL AUTO_INCREMENT, " +
+				        		  "id BIGINT(255) UNSIGNED NOT NULL AUTO_INCREMENT, " +
 				        		  "upload_1_id BIGINT(255) UNSIGNED NOT NULL, " + 
 				        		  "upload_2_id BIGINT(255) UNSIGNED NOT NULL, " + 
-				        		  "created_by_user_id TINYINT(255) UNSIGNED NOT NULL, " + 
+				        		  "created_by_user_id BIGINT(255) UNSIGNED NOT NULL, " + 
 				        		  "created_datetime DATETIME NOT NULL, " +
 				        		  "updated_datetime DATETIME NOT NULL, " +
-				        		  "datatable_1_duplicate_keys_count TINYINT(255) UNSIGNED NULL, " + 
-				        		  "datatable_2_duplicate_keys_count TINYINT(255) UNSIGNED NULL, " + 
-				        		  "total_duplicate_keys_count TINYINT(255) UNSIGNED NULL, " + 
-				        		  "total_conflicts_count TINYINT(255) UNSIGNED NULL, " +
+				        		  "datatable_1_duplicate_keys_count BIGINT(255) UNSIGNED NULL, " + 
+				        		  "datatable_2_duplicate_keys_count BIGINT(255) UNSIGNED NULL, " + 
+				        		  "total_duplicate_keys_count BIGINT(255) UNSIGNED NULL, " + 
+				        		  "total_conflicts_count BIGINT(255) UNSIGNED NULL, " +
 				        		  "joined_keytable_name VARCHAR(255) NULL, " + 
 				        		  "PRIMARY KEY (id), " +
 				        		  "CONSTRAINT unique_joined_keytable_name_constraint UNIQUE (joined_keytable_name), " +
@@ -172,7 +172,7 @@ public class ScriptsController extends HttpServlet {
 				      try{
 				          Statement statement = connection.createStatement();
 				          statement.executeUpdate("CREATE TABLE datatable (" + 
-				        		  "id TINYINT(255) UNSIGNED NOT NULL AUTO_INCREMENT, " +
+				        		  "id BIGINT(255) UNSIGNED NOT NULL AUTO_INCREMENT, " +
 				        		  "name VARCHAR(255) NOT NULL, " +
 				        		  "upload_id BIGINT(255) UNSIGNED NOT NULL, " + 
 				        		  "created_datetime DATETIME NOT NULL, " +
@@ -195,7 +195,7 @@ public class ScriptsController extends HttpServlet {
 				    	  
 				          Statement statement = connection.createStatement();
 				          statement.executeUpdate("CREATE TABLE `join` (" + 
-				        		  "merge_id TINYINT(255) UNSIGNED NOT NULL, " + 
+				        		  "merge_id BIGINT(255) UNSIGNED NOT NULL, " + 
 				        		  "column_number INT(255) UNSIGNED NOT NULL, " +
 				        		  "`key` BOOLEAN NULL, " + 
 				        		  "datatable_1_column_name VARCHAR(255) NULL, " +
@@ -220,7 +220,7 @@ public class ScriptsController extends HttpServlet {
 					    	  
 					          Statement statement = connection.createStatement();
 					          statement.executeUpdate("CREATE TABLE `solution_by_column` (" + 
-					        		  "id TINYINT(255) UNSIGNED NOT NULL AUTO_INCREMENT, " +
+					        		  "id BIGINT(255) UNSIGNED NOT NULL AUTO_INCREMENT, " +
 					        		  "description VARCHAR(255) NOT NULL, " +
 					        		  "PRIMARY KEY (id) " +
 					        		  ") ENGINE=InnoDB;");
@@ -252,7 +252,7 @@ public class ScriptsController extends HttpServlet {
 			    	  
 			          Statement statement = connection.createStatement();
 			          statement.executeUpdate("CREATE TABLE `solution_by_row` (" + 
-			        		  "id TINYINT(255) UNSIGNED NOT NULL AUTO_INCREMENT, " +
+			        		  "id BIGINT(255) UNSIGNED NOT NULL AUTO_INCREMENT, " +
 			        		  "description VARCHAR(255) NOT NULL, " +
 			        		  "PRIMARY KEY (id) " +
 			        		  ") ENGINE=InnoDB;");
@@ -286,7 +286,7 @@ public class ScriptsController extends HttpServlet {
 				    	  
 				          Statement statement = connection.createStatement();
 				          statement.executeUpdate("CREATE TABLE `solution_by_cell` (" + 
-				        		  "id TINYINT(255) UNSIGNED NOT NULL AUTO_INCREMENT, " +
+				        		  "id BIGINT(255) UNSIGNED NOT NULL AUTO_INCREMENT, " +
 				        		  "description VARCHAR(255) NOT NULL, " +
 				        		  "PRIMARY KEY (id) " +
 				        		  ") ENGINE=InnoDB;");
@@ -319,7 +319,7 @@ public class ScriptsController extends HttpServlet {
 					    	  
 					          Statement statement = connection.createStatement();
 					          statement.executeUpdate("CREATE TABLE `conflict` (" + 
-					        		  "id TINYINT(255) UNSIGNED NOT NULL AUTO_INCREMENT, " +
+					        		  "id BIGINT(255) UNSIGNED NOT NULL AUTO_INCREMENT, " +
 					        		  "description VARCHAR(255) NOT NULL, " +
 					        		  "PRIMARY KEY (id) " +
 					        		  ") ENGINE=InnoDB;");
@@ -349,13 +349,13 @@ public class ScriptsController extends HttpServlet {
 					    	  
 					          Statement statement = connection.createStatement();
 					          statement.executeUpdate("CREATE TABLE `resolution` (" + 
-					        		  "merge_id TINYINT(255) UNSIGNED NOT NULL, " +
+					        		  "merge_id BIGINT(255) UNSIGNED NOT NULL, " +
 					        		  "joined_keytable_id BIGINT(255) UNSIGNED NOT NULL, " +
 					        		  "column_number INT(255) UNSIGNED NOT NULL, " +
-					        		  "conflict_id TINYINT(255) NOT NULL, " +
-					        		  "solution_by_column_id TINYINT(255) NULL, " +
-					        		  "solution_by_row_id TINYINT(255) NULL, " +
-					        		  "solution_by_cell_id TINYINT(255) NULL, " +
+					        		  "conflict_id BIGINT(255) NOT NULL, " +
+					        		  "solution_by_column_id BIGINT(255) NULL, " +
+					        		  "solution_by_row_id BIGINT(255) NULL, " +
+					        		  "solution_by_cell_id BIGINT(255) NULL, " +
 					        		  "constant VARCHAR(255) NULL, " +
 					        		  "PRIMARY KEY (merge_id, joined_keytable_id, column_number), " +
 					        		  "INDEX merge_id_index (merge_id), " +
@@ -380,7 +380,7 @@ public class ScriptsController extends HttpServlet {
 						        		  "upload_2_id BIGINT(255) UNSIGNED NOT NULL, " +
 						        		  "repository_filepath VARCHAR(255) NULL, " + 
 						        		  "successful BOOLEAN NULL, " + 
-						        		  "created_by_user_id TINYINT(255) UNSIGNED NOT NULL, " + 
+						        		  "created_by_user_id BIGINT(255) UNSIGNED NOT NULL, " + 
 						        		  "created_datetime DATETIME NOT NULL, " +
 						        		  "PRIMARY KEY (id), " +
 						        		  "CONSTRAINT unique_path_constraint UNIQUE (repository_filepath), " +

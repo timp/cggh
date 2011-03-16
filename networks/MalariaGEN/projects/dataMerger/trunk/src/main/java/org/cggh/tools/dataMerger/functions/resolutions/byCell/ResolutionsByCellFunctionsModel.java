@@ -499,7 +499,7 @@ public class ResolutionsByCellFunctionsModel implements java.io.Serializable {
 				
 			} else {
 				
-				resolutionsByCellAsDecoratedXHTMLTable = "There are no conflicts.";
+				resolutionsByCellAsDecoratedXHTMLTable = "There are no unresolved conflicts.";
 				
 			}
 		} catch (SQLException e) {
