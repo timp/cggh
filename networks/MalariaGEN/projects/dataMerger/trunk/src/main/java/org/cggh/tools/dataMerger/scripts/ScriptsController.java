@@ -150,6 +150,7 @@ public class ScriptsController extends HttpServlet {
 				        		  "total_duplicate_keys_count BIGINT(255) UNSIGNED NULL, " + 
 				        		  "total_conflicts_count BIGINT(255) UNSIGNED NULL, " +
 				        		  "joined_keytable_name VARCHAR(255) NULL, " + 
+				        		  "joined_datatable_name VARCHAR(255) NULL, " + 
 				        		  "PRIMARY KEY (id), " +
 				        		  "CONSTRAINT unique_joined_keytable_name_constraint UNIQUE (joined_keytable_name), " +
 				        		  "INDEX created_by_user_id_index (created_by_user_id), " + 

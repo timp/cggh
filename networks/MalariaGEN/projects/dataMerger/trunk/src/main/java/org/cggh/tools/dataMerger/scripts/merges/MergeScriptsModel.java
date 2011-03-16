@@ -642,9 +642,7 @@ public class MergeScriptsModel implements java.io.Serializable {
 		        
 				try {
 
-						//TODO: Want to use a temporary table, but that will cause a SQLException "Can't reopen table" when insertConflictsByCellSQL.
-						
-						String dropTemporaryJoinedDatatableSQL = "DROP TABLE IF EXISTS `tmp_joined_datatable_" + mergeModel.getId() + "`;";
+						String dropTemporaryJoinedDatatableSQL = "DROP TABLE IF EXISTS `joined_datatable_" + mergeModel.getId() + "`;";
 
 						this.logger.info(dropTemporaryJoinedDatatableSQL);
 						
@@ -653,7 +651,7 @@ public class MergeScriptsModel implements java.io.Serializable {
 						preparedStatement2.close();				
 					
 					
-						String createAndPopulateTemporaryJoinedDatatableSQL = "CREATE TABLE `tmp_joined_datatable_" + mergeModel.getId() + "` (joined_keytable_id BIGINT(255), " + columnDefinitionsUsingKeyColumnNamesSQL + ", " + columnDefinitionsUsingNonKeyCrossDatatableColumnAndSourceNumbersSQL + ", PRIMARY KEY (joined_keytable_id)) ENGINE=InnoDB " +
+						String createAndPopulateTemporaryJoinedDatatableSQL = "CREATE TABLE `joined_datatable_" + mergeModel.getId() + "` (joined_keytable_id BIGINT(255), " + columnDefinitionsUsingKeyColumnNamesSQL + ", " + columnDefinitionsUsingNonKeyCrossDatatableColumnAndSourceNumbersSQL + ", PRIMARY KEY (joined_keytable_id)) ENGINE=InnoDB " +
 															        			"SELECT `" + mergeModel.getJoinedKeytableModel().getName() + "`.id AS joined_keytable_id, " + joinedKeytableColumnAliasesAsCSVForSelectFromJoinSQL + ", " + nonKeyCrossDatatableColumnAliasesAsCSVForSelectFromJoinSQL + 
 															        			"FROM `" + mergeModel.getJoinedKeytableModel().getName() + "` " + 
 															        			"JOIN `" + mergeModel.getDatatable1Model().getName() + "` ON " + datatable1JoinSQL + 
@@ -662,6 +660,12 @@ public class MergeScriptsModel implements java.io.Serializable {
 															        			";";
 
 						//this.logger.info(createAndPopulateTemporaryJoinedDatatableSQL);
+						
+						
+						// Record the joined datatable name for this merge.
+						mergeModel.getJoinedDatatableModel().setName("joined_datatable_" + mergeModel.getId());
+						
+						mergesModel.updateMergeJoinedDatatableUsingMergeModel(mergeModel, connection);
 						
 				        PreparedStatement preparedStatement3 = connection.prepareStatement(createAndPopulateTemporaryJoinedDatatableSQL);
 				        preparedStatement3.executeUpdate();
@@ -679,15 +683,7 @@ public class MergeScriptsModel implements java.io.Serializable {
 						preparedStatement4.executeUpdate();
 						preparedStatement4.close();				
 
-						
-						
-						String dropTemporaryJoinedDatatableSQL2 = "DROP TABLE IF EXISTS `tmp_joined_datatable_" + mergeModel.getId() + "`;";
-
-						//this.logger.info(dropTemporaryJoinedDatatableSQL2);
-						
-						PreparedStatement preparedStatement5 = connection.prepareStatement(dropTemporaryJoinedDatatableSQL2);
-						preparedStatement5.executeUpdate();
-						preparedStatement5.close();							
+						//Don't drop the joined datatable, it will be used again for the export.					
 						
 					
 				} catch (SQLException e) {

@@ -7,6 +7,7 @@ import javax.sql.rowset.CachedRowSet;
 
 import org.cggh.tools.dataMerger.data.DataModel;
 import org.cggh.tools.dataMerger.data.datatables.DatatableModel;
+import org.cggh.tools.dataMerger.data.joinedDatatables.JoinedDatatableModel;
 import org.cggh.tools.dataMerger.data.joinedKeytables.JoinedKeytableModel;
 import org.cggh.tools.dataMerger.data.joins.JoinsModel;
 import org.cggh.tools.dataMerger.data.uploads.UploadModel;
@@ -37,6 +38,7 @@ public class MergeModel implements java.io.Serializable {
 	private CachedRowSet joinsAsCachedRowSet;
 	private Integer totalConflictsCount;
 	private JoinedKeytableModel joinedKeytableModel;
+	private JoinedDatatableModel joinedDatatableModel;
 	
 	
 	public MergeModel() {
@@ -51,9 +53,20 @@ public class MergeModel implements java.io.Serializable {
 		this.setDatatable2Model(new DatatableModel());	
 		
 		this.setJoinedKeytableModel(new JoinedKeytableModel());
-		
+		this.setJoinedDatatableModel(new JoinedDatatableModel());
 	}
 	
+
+
+
+
+
+
+	public void setJoinedDatatableModel(
+			JoinedDatatableModel joinedDatatableModel) {
+		this.joinedDatatableModel = joinedDatatableModel; 
+	}
+
 
 
 
@@ -203,6 +216,17 @@ public class MergeModel implements java.io.Serializable {
 	public JoinedKeytableModel getJoinedKeytableModel() {
 
 		return this.joinedKeytableModel;
+	}
+
+
+
+
+
+
+
+	public JoinedDatatableModel getJoinedDatatableModel() {
+
+		return this.joinedDatatableModel;
 	}
 
 	

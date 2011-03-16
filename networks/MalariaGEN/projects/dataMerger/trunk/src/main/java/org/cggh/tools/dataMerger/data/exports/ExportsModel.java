@@ -14,6 +14,7 @@ import java.util.regex.Pattern;
 import javax.sql.rowset.CachedRowSet;
 
 import org.cggh.tools.dataMerger.data.DataModel;
+import org.cggh.tools.dataMerger.data.joinedDatatables.JoinedDatatablesModel;
 import org.cggh.tools.dataMerger.data.joins.JoinsModel;
 import org.cggh.tools.dataMerger.data.merges.MergesModel;
 import org.cggh.tools.dataMerger.data.users.UserModel;
@@ -220,121 +221,23 @@ public class ExportsModel {
 
 	public ExportModel retrieveExportAsExportModelThroughPopulatingExportDatatableWithResolvedCrossDatatableValuesUsingExportModel(
 			ExportModel exportModel, Connection connection) {
-		
-		try {		
 			
-			//TODO: This is mostly duplicated from MergeScriptsModel
+			
+			// Use the joined datatable created by the MergeScriptsModel
 			
 			//FIXME: Move to ExportScriptsModel
 			
-			JoinsModel joinsModel = new JoinsModel();
 			
-	        HashMap<Integer, String> datatable1ColumnNamesByColumnNumberAsHashMap = joinsModel.retrieveDatatable1ColumnNamesByColumnNumberAsHashMapUsingMergeId(exportModel.getMergeModel().getId(), connection); 
-	        HashMap<Integer, String> datatable2ColumnNamesByColumnNumberAsHashMap = joinsModel.retrieveDatatable2ColumnNamesByColumnNumberAsHashMapUsingMergeId(exportModel.getMergeModel().getId(), connection);
-	        
-	        String datatable1JoinSQL = "";
-	        String datatable2JoinSQL = "";
-
-	        String columnDefinitionsUsingKeyColumnNamesSQL = "";
-	        String joinedKeytableColumnAliasesAsCSVForSelectFromJoinSQL = "";
-	        
-	        CachedRowSet keyJoinsAsCachedRowSet = joinsModel.retrieveKeyJoinsAsCachedRowsetByMergeId(exportModel.getMergeModel().getId(), connection);
-	        
-	        keyJoinsAsCachedRowSet.beforeFirst();
-	        
-	        if (keyJoinsAsCachedRowSet.next()) {
-	        	
-	        	columnDefinitionsUsingKeyColumnNamesSQL += "`" + keyJoinsAsCachedRowSet.getString("column_name") + "` VARCHAR(255) ";
-	        	
-	        	datatable1JoinSQL += "`" + exportModel.getMergeModel().getDatatable1Model().getName() + "`.`" + datatable1ColumnNamesByColumnNumberAsHashMap.get(keyJoinsAsCachedRowSet.getInt("column_number")) + "` = `" + exportModel.getMergeModel().getJoinedKeytableModel().getName() + "`.`key_column_" + keyJoinsAsCachedRowSet.getInt("column_number") + "` ";
-	        	datatable2JoinSQL += "`" + exportModel.getMergeModel().getDatatable2Model().getName() + "`.`" + datatable2ColumnNamesByColumnNumberAsHashMap.get(keyJoinsAsCachedRowSet.getInt("column_number")) + "` = `" + exportModel.getMergeModel().getJoinedKeytableModel().getName() + "`.`key_column_" + keyJoinsAsCachedRowSet.getInt("column_number") + "` AND `" + exportModel.getMergeModel().getDatatable2Model().getName() + "`.`" + datatable2ColumnNamesByColumnNumberAsHashMap.get(keyJoinsAsCachedRowSet.getInt("column_number")) + "` = `" + exportModel.getMergeModel().getDatatable1Model().getName() + "`.`" + datatable1ColumnNamesByColumnNumberAsHashMap.get(keyJoinsAsCachedRowSet.getInt("column_number")) + "` ";
-	        	
-	        	joinedKeytableColumnAliasesAsCSVForSelectFromJoinSQL += "`"  + exportModel.getMergeModel().getJoinedKeytableModel().getName() + "`.`key_column_" + keyJoinsAsCachedRowSet.getInt("column_number") + "` AS `" + keyJoinsAsCachedRowSet.getString("column_name") + "` ";
-	        	
-		        while (keyJoinsAsCachedRowSet.next()) {
-		        
-		        	columnDefinitionsUsingKeyColumnNamesSQL += ", `" + keyJoinsAsCachedRowSet.getString("column_name") + "` VARCHAR(255) ";
-		        	
-		        	datatable1JoinSQL += "AND `" + exportModel.getMergeModel().getDatatable1Model().getName() + "`.`" + datatable1ColumnNamesByColumnNumberAsHashMap.get(keyJoinsAsCachedRowSet.getInt("column_number")) + "` = `" + exportModel.getMergeModel().getJoinedKeytableModel().getName() + "`.`key_column_" + keyJoinsAsCachedRowSet.getInt("column_number") + "` ";
-		        	datatable2JoinSQL += "AND `" + exportModel.getMergeModel().getDatatable2Model().getName() + "`.`" + datatable2ColumnNamesByColumnNumberAsHashMap.get(keyJoinsAsCachedRowSet.getInt("column_number")) + "` = `" + exportModel.getMergeModel().getJoinedKeytableModel().getName() + "`.`key_column_" + keyJoinsAsCachedRowSet.getInt("column_number") + "` AND `" + exportModel.getMergeModel().getDatatable2Model().getName() + "`.`" + datatable2ColumnNamesByColumnNumberAsHashMap.get(keyJoinsAsCachedRowSet.getInt("column_number")) + "` = `" + exportModel.getMergeModel().getDatatable1Model().getName() + "`.`" + datatable1ColumnNamesByColumnNumberAsHashMap.get(keyJoinsAsCachedRowSet.getInt("column_number")) + "` ";
-		        	
-		        	joinedKeytableColumnAliasesAsCSVForSelectFromJoinSQL += ", `"  + exportModel.getMergeModel().getJoinedKeytableModel().getName() + "`.`key_column_" + keyJoinsAsCachedRowSet.getInt("column_number") + "` AS `" + keyJoinsAsCachedRowSet.getString("column_name") + "` ";
-		        }
-		        
-	        } else {
-	        	this.logger.severe("Did not retrieve any key joins as a cached row set using merge Id: " + exportModel.getMergeModel().getId());
-	        }
-	        
-	        
-
-	        String nonKeyCrossDatatableColumnAliasesAsCSVForSelectFromJoinSQL = "";	        
-	        String columnDefinitionsUsingNonKeyCrossDatatableColumnAndSourceNumbersSQL = "";
-
-	        CachedRowSet nonKeyCrossDatatableJoinsAsCachedRowSet = joinsModel.retrieveNonKeyCrossDatatableJoinsAsCachedRowsetByMergeId(exportModel.getMergeModel().getId(), connection);
-
-	        nonKeyCrossDatatableJoinsAsCachedRowSet.beforeFirst();
-	        
-	        if (nonKeyCrossDatatableJoinsAsCachedRowSet.next()) {
-	        	
-	        	columnDefinitionsUsingNonKeyCrossDatatableColumnAndSourceNumbersSQL = columnDefinitionsUsingNonKeyCrossDatatableColumnAndSourceNumbersSQL.concat("`column_" + nonKeyCrossDatatableJoinsAsCachedRowSet.getString("column_number") + "_source_1` VARCHAR(255), `column_" + nonKeyCrossDatatableJoinsAsCachedRowSet.getString("column_number") + "_source_2` VARCHAR(255) ");
-	        	
-	        	nonKeyCrossDatatableColumnAliasesAsCSVForSelectFromJoinSQL = nonKeyCrossDatatableColumnAliasesAsCSVForSelectFromJoinSQL.concat("`" + exportModel.getMergeModel().getDatatable1Model().getName() + "`.`" + nonKeyCrossDatatableJoinsAsCachedRowSet.getString("datatable_1_column_name") + "` AS `column_" + nonKeyCrossDatatableJoinsAsCachedRowSet.getInt("column_number") + "_source_1`, `" + exportModel.getMergeModel().getDatatable2Model().getName() + "`.`" + nonKeyCrossDatatableJoinsAsCachedRowSet.getString("datatable_2_column_name") + "` AS `column_" + nonKeyCrossDatatableJoinsAsCachedRowSet.getInt("column_number") + "_source_2` ");
-
-		        while (nonKeyCrossDatatableJoinsAsCachedRowSet.next()) {
-		        
-		        	columnDefinitionsUsingNonKeyCrossDatatableColumnAndSourceNumbersSQL += ", `column_" + nonKeyCrossDatatableJoinsAsCachedRowSet.getString("column_number") + "_source_1` VARCHAR(255), `column_" + nonKeyCrossDatatableJoinsAsCachedRowSet.getString("column_number") + "_source_2` VARCHAR(255) ";
-
-		        	nonKeyCrossDatatableColumnAliasesAsCSVForSelectFromJoinSQL += ", `" + exportModel.getMergeModel().getDatatable1Model().getName() + "`.`" + nonKeyCrossDatatableJoinsAsCachedRowSet.getString("datatable_1_column_name") + "` AS `column_" + nonKeyCrossDatatableJoinsAsCachedRowSet.getInt("column_number") + "_source_1`, `" + exportModel.getMergeModel().getDatatable2Model().getName() + "`.`" + nonKeyCrossDatatableJoinsAsCachedRowSet.getString("datatable_2_column_name") + "` AS `column_" + nonKeyCrossDatatableJoinsAsCachedRowSet.getInt("column_number") + "_source_2` ";
-
-		        }
-		        
-	        } else {
-	        	this.logger.severe("Did not retrieve any non-key cross-datatable joins as a cached row set using merge Id: " + exportModel.getMergeModel().getId());
-	        }	
-			
-			
-			//TODO: Want to use a temporary table, but that will cause a SQLException "Can't reopen table" when insertConflictsByCellSQL.
-			
-			String dropTemporaryJoinedDatatableSQL = "DROP TABLE IF EXISTS `tmp_joined_datatable_" + exportModel.getMergeModel().getId() + "`;";
-
-			this.logger.info(dropTemporaryJoinedDatatableSQL);
-			
-			PreparedStatement preparedStatement2 = connection.prepareStatement(dropTemporaryJoinedDatatableSQL);
-			preparedStatement2.executeUpdate();
-			preparedStatement2.close();				
-		
-		
-			String createAndPopulateTemporaryJoinedDatatableSQL = "CREATE TABLE `tmp_joined_datatable_" + exportModel.getMergeModel().getId() + "` (joined_keytable_id BIGINT(255), " + columnDefinitionsUsingKeyColumnNamesSQL + ", " + columnDefinitionsUsingNonKeyCrossDatatableColumnAndSourceNumbersSQL + ", PRIMARY KEY (joined_keytable_id)) ENGINE=InnoDB " +
-												        			"SELECT `" + exportModel.getMergeModel().getJoinedKeytableModel().getName() + "`.id AS joined_keytable_id, " + joinedKeytableColumnAliasesAsCSVForSelectFromJoinSQL + ", " + nonKeyCrossDatatableColumnAliasesAsCSVForSelectFromJoinSQL + 
-												        			"FROM `" + exportModel.getMergeModel().getJoinedKeytableModel().getName() + "` " + 
-												        			"JOIN `" + exportModel.getMergeModel().getDatatable1Model().getName() + "` ON " + datatable1JoinSQL + 
-												        			"JOIN `" + exportModel.getMergeModel().getDatatable2Model().getName() + "` ON " + datatable2JoinSQL + 
-												        			"ORDER BY `" + exportModel.getMergeModel().getJoinedKeytableModel().getName() + "`.id" +
-												        			";";
-
-			this.logger.info(createAndPopulateTemporaryJoinedDatatableSQL);
-		
-	        PreparedStatement preparedStatement3 = connection.prepareStatement(createAndPopulateTemporaryJoinedDatatableSQL);
-	        preparedStatement3.executeUpdate();
-	        preparedStatement3.close();
-	        
-	        
+			this.logger.info("Got joined datatable data size: " + exportModel.getMergeModel().getJoinedDatatableModel().getDataAsCachedRowSet().size());
+		    
 	        /////////////////////////////////////////
 	        //TODO: Cycle through the results (just select rather than making a table) and detect conflicts.
 	        // Upon detection, find solution and update the export datatable. 
 	        // Upon non-conflict detection, update the export datatable.
 	        /////////////////////////////////////////
-	        
-	        
-	        
-	        
-	        
 			
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-							
+			
+	        			
 		
 		return exportModel;
 	}

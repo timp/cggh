@@ -10,6 +10,7 @@ import javax.sql.rowset.CachedRowSet;
 
 import org.cggh.tools.dataMerger.data.DataModel;
 import org.cggh.tools.dataMerger.data.datatables.DatatablesModel;
+import org.cggh.tools.dataMerger.data.joinedDatatables.JoinedDatatablesModel;
 import org.cggh.tools.dataMerger.data.joinedKeytables.JoinedKeytablesModel;
 import org.cggh.tools.dataMerger.data.joins.JoinModel;
 import org.cggh.tools.dataMerger.data.joins.JoinsModel;
@@ -149,6 +150,12 @@ public class MergesModel implements java.io.Serializable {
 	        	  //Retrieve the joined keytable data
 	        	  JoinedKeytablesModel joinedKeytablesModel = new JoinedKeytablesModel();
 	        	  mergeModel.setJoinedKeytableModel(joinedKeytablesModel.retrieveJoinedKeytableAsJoinedKeytableModelUsingMergeId(mergeModel.getId(), connection));
+	        	  
+	        	  //TODO: Retrieve joined datatable data?
+	        	  JoinedDatatablesModel joinedDatatablesModel = new JoinedDatatablesModel();
+	        	  mergeModel.setJoinedDatatableModel(joinedDatatablesModel.retrieveJoinedDatatableAsJoinedDatatableModelUsingMergeId(mergeModel.getId(), connection));
+	        	  
+	        	  
 	        	  
 	      	  } else {
 	      		  
@@ -567,5 +574,29 @@ public class MergesModel implements java.io.Serializable {
 		    	sqlException.printStackTrace();
 	        } 
 	        
+	}
+
+	public void updateMergeJoinedDatatableUsingMergeModel(
+			MergeModel mergeModel, Connection connection) {
+	      try {
+
+	          PreparedStatement preparedStatement = connection.prepareStatement("UPDATE `merge` SET joined_datatable_name = ?, updated_datetime = NOW() WHERE id = ?;");
+
+	          if (mergeModel.getTotalConflictsCount() != null) {
+	        	  preparedStatement.setString(1, mergeModel.getJoinedDatatableModel().getName());
+	          } else {
+	        	  preparedStatement.setNull(1, java.sql.Types.INTEGER);
+	          }
+
+	          preparedStatement.setInt(2, mergeModel.getId());
+	          
+	          preparedStatement.executeUpdate();
+	          preparedStatement.close();
+	          
+	
+	        }
+	        catch(SQLException sqlException){
+		    	sqlException.printStackTrace();
+	        } 
 	}
 }
