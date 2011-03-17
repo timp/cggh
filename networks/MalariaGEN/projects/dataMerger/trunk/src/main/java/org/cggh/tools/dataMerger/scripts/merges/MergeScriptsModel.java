@@ -521,7 +521,7 @@ public class MergeScriptsModel implements java.io.Serializable {
 			mergeModel = mergesModel.retrieveMergeAsMergeModelThroughRecreatingJoinedKeytableUsingMergeModel(mergeModel, connection);
 			
 			JoinsModel joinsModel = new JoinsModel();
-			mergeModel.getJoinsModel().setKeyJoinsAsCachedRowSet(joinsModel.retrieveKeyJoinsAsCachedRowsetByMergeId(mergeModel.getId(),connection));
+			mergeModel.getJoinsModel().setKeyJoinsAsCachedRowSet(joinsModel.retrieveKeyJoinsAsCachedRowSetByMergeId(mergeModel.getId(),connection));
 			mergeModel.getJoinsModel().setNonKeyCrossDatatableJoinsAsCachedRowSet(joinsModel.retrieveNonKeyCrossDatatableJoinsAsCachedRowsetByMergeId(mergeModel.getId(), connection));
 
 			
@@ -543,7 +543,7 @@ public class MergeScriptsModel implements java.io.Serializable {
 		        String columnDefinitionsUsingKeyColumnNamesSQL = "";
 		        String joinedKeytableColumnAliasesAsCSVForSelectFromJoinSQL = "";
 		        
-		        CachedRowSet keyJoinsAsCachedRowSet = joinsModel.retrieveKeyJoinsAsCachedRowsetByMergeId(mergeModel.getId(), connection);
+		        CachedRowSet keyJoinsAsCachedRowSet = joinsModel.retrieveKeyJoinsAsCachedRowSetByMergeId(mergeModel.getId(), connection);
 		        
 		        keyJoinsAsCachedRowSet.beforeFirst();
 		        

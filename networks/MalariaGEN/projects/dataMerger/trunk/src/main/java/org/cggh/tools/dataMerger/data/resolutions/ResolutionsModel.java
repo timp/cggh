@@ -7,6 +7,8 @@ import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.logging.Logger;
 
+import javax.sql.rowset.CachedRowSet;
+
 import org.cggh.tools.dataMerger.data.DataModel;
 import org.cggh.tools.dataMerger.data.merges.MergeModel;
 
@@ -476,6 +478,48 @@ public class ResolutionsModel implements java.io.Serializable {
 		}
 		
 		return nullOrConstantSolutionUsingColumnNumberAsHashMap;
+	}
+
+	public CachedRowSet retrieveResolutionsAsCachedRowSetUsingMergeId(Integer mergeId, Connection connection) {
+
+		MergeModel mergeModel = new MergeModel();
+		mergeModel.setId(mergeId);
+		
+        Class<?> cachedRowSetImplClass = null;
+		try {
+			cachedRowSetImplClass = Class.forName("com.sun.rowset.CachedRowSetImpl");
+		} catch (ClassNotFoundException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		
+		CachedRowSet resolutionsAsCachedRowSet = null;
+		try {
+			resolutionsAsCachedRowSet = (CachedRowSet) cachedRowSetImplClass.newInstance();
+		} catch (InstantiationException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		} catch (IllegalAccessException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		
+	      try{
+	          PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM `resolution` WHERE merge_id = ? ORDER BY joined_keytable_id, column_number;");
+	          preparedStatement.setInt(1, mergeModel.getId());
+	          preparedStatement.executeQuery();
+	         
+	          resolutionsAsCachedRowSet.populate(preparedStatement.getResultSet());
+	          
+	          preparedStatement.close();
+
+	        }
+	        catch(SQLException sqlException){
+		    	sqlException.printStackTrace();
+	        } 
+		
+		return resolutionsAsCachedRowSet;
+		
 	}
 
 

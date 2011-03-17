@@ -358,7 +358,7 @@ public class JoinsModel implements java.io.Serializable {
 			          //FIXME: I think the naming is causing some architectural non-sense here.
 			          
 			          joinsModel.setNonKeyCrossDatatableJoinsAsCachedRowSet(this.retrieveNonKeyCrossDatatableJoinsAsCachedRowsetByMergeId(mergeModel.getId(), connection));
-			          joinsModel.setKeyJoinsAsCachedRowSet(this.retrieveKeyJoinsAsCachedRowsetByMergeId(mergeModel.getId(), connection));
+			          joinsModel.setKeyJoinsAsCachedRowSet(this.retrieveKeyJoinsAsCachedRowSetByMergeId(mergeModel.getId(), connection));
 			          
 			          
 		          
@@ -538,7 +538,7 @@ public class JoinsModel implements java.io.Serializable {
 	}
 
 
-	public CachedRowSet retrieveKeyJoinsAsCachedRowsetByMergeId(
+	public CachedRowSet retrieveKeyJoinsAsCachedRowSetByMergeId(
 			Integer mergeId, Connection connection) {
 
 		MergeModel mergeModel = new MergeModel();
