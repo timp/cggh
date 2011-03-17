@@ -83,9 +83,9 @@
 			</p>
 			<p>Symptoms:	
 				<ul>
-					<li>Unsupported character-encoding: Odd characters appearing in column headings. Application failures.
+					<li>Unsupported character-encoding: Odd characters appearing in column headings. Potential application failures.
 					</li>
-					<li>Unsupported end-of-line character: Right-most cells contain an unexpected last character (i.e. \r).
+					<li>Unsupported end-of-line character: Right-most cells contain an unexpected last character (i.e. \r). Potential application failures, esp. conflict counting and resolution.
 					</li>
 				</ul>
 			</p>

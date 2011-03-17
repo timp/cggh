@@ -75,9 +75,10 @@ public class ExportsModel {
 						// Get all the unique keys and add to export table.
 						exportModel = this.retrieveExportAsExportModelThroughPopulatingExportDatatableWithKeysUsingExportModel(exportModel, connection);
 						
-						// Add all the non-cross-datatable join data to the export datatable, according to key
-						exportModel = this.retrieveExportAsExportModelThroughPopulatingExportDatatableWithNonCrossDatatableValuesUsingExportModel(exportModel, connection);
 						
+						
+						// Add all the non-cross-datatable join data to the export datatable, according to key (note this includes source-specific columns AND source-specific rows)
+						exportModel = this.retrieveExportAsExportModelThroughPopulatingExportDatatableWithNonCrossDatatableColumnsUsingExportModel(exportModel, connection);
 						
 						// Remove all rows from the export datatable that have been marked for removal by the resolutions
 						exportModel = this.retrieveExportAsExportModelThroughRemovingMarkedRowsFromExportDatatableUsingExportModel(exportModel, connection);
@@ -190,7 +191,7 @@ public class ExportsModel {
 	        		  
 	        		  // Remove from export datatable
 	  				String deleteRowFromExportDatatableSQL = 
-						"DELETE FROM `" + exportModel.getDatatableName() + "` WHERE " + deleteRowWhereConditionsSQL + 
+						"DELETE FROM `" + exportModel.getExportedDatatableModel().getName() + "` WHERE " + deleteRowWhereConditionsSQL + 
 						";";
 					
 					this.logger.info("deleteRowFromExportDatatableSQL: " + deleteRowFromExportDatatableSQL);
@@ -237,14 +238,19 @@ public class ExportsModel {
 	        /////////////////////////////////////////
 			
 			
+			
+			
 	        			
 		
 		return exportModel;
 	}
 
 
-	public ExportModel retrieveExportAsExportModelThroughPopulatingExportDatatableWithNonCrossDatatableValuesUsingExportModel(
+	public ExportModel retrieveExportAsExportModelThroughPopulatingExportDatatableWithNonCrossDatatableColumnsUsingExportModel(
 			ExportModel exportModel, Connection connection) {
+		
+		
+		//TODO: Include source-specific rows.
 		
 		try {		
 		
@@ -268,13 +274,13 @@ public class ExportsModel {
 					if (datatable1NonCrossDatatableExportColumnMappingsForUpdateSetSQL != "") {
 						datatable1NonCrossDatatableExportColumnMappingsForUpdateSetSQL += ", ";
 					}
-					datatable1NonCrossDatatableExportColumnMappingsForUpdateSetSQL += "`" + exportModel.getDatatableName() + "`.`" + exportModel.getMergeModel().getJoinsModel().getNonCrossDatatableJoinsAsCachedRowSet().getString("column_name") + "` = `" + exportModel.getMergeModel().getDatatable1Model().getName() + "`.`" + exportModel.getMergeModel().getJoinsModel().getNonCrossDatatableJoinsAsCachedRowSet().getString("datatable_1_column_name") + "` ";
+					datatable1NonCrossDatatableExportColumnMappingsForUpdateSetSQL += "`" + exportModel.getExportedDatatableModel().getName() + "`.`" + exportModel.getMergeModel().getJoinsModel().getNonCrossDatatableJoinsAsCachedRowSet().getString("column_name") + "` = `" + exportModel.getMergeModel().getDatatable1Model().getName() + "`.`" + exportModel.getMergeModel().getJoinsModel().getNonCrossDatatableJoinsAsCachedRowSet().getString("datatable_1_column_name") + "` ";
 				}
 				else if (exportModel.getMergeModel().getJoinsModel().getNonCrossDatatableJoinsAsCachedRowSet().getString("datatable_1_column_name") == null && exportModel.getMergeModel().getJoinsModel().getNonCrossDatatableJoinsAsCachedRowSet().getString("constant_1") != null) {
 					if (datatable1NonCrossDatatableExportColumnMappingsForUpdateSetSQL != "") {
 						datatable1NonCrossDatatableExportColumnMappingsForUpdateSetSQL += ", ";
 					}
-					datatable1NonCrossDatatableExportColumnMappingsForUpdateSetSQL += "`" + exportModel.getDatatableName() + "`.`" + exportModel.getMergeModel().getJoinsModel().getNonCrossDatatableJoinsAsCachedRowSet().getString("column_name") + "` = `" + exportModel.getMergeModel().getDatatable1Model().getName() + "`.`" + exportModel.getMergeModel().getJoinsModel().getNonCrossDatatableJoinsAsCachedRowSet().getString("constant_1") + "` ";
+					datatable1NonCrossDatatableExportColumnMappingsForUpdateSetSQL += "`" + exportModel.getExportedDatatableModel().getName() + "`.`" + exportModel.getMergeModel().getJoinsModel().getNonCrossDatatableJoinsAsCachedRowSet().getString("column_name") + "` = `" + exportModel.getMergeModel().getDatatable1Model().getName() + "`.`" + exportModel.getMergeModel().getJoinsModel().getNonCrossDatatableJoinsAsCachedRowSet().getString("constant_1") + "` ";
 				}
 				// Value will stay null by default
 				
@@ -282,13 +288,13 @@ public class ExportsModel {
 					if (datatable2NonCrossDatatableExportColumnMappingsForUpdateSetSQL != "") {
 						datatable2NonCrossDatatableExportColumnMappingsForUpdateSetSQL += ", ";
 					}
-					datatable2NonCrossDatatableExportColumnMappingsForUpdateSetSQL += "`" + exportModel.getDatatableName() + "`.`" + exportModel.getMergeModel().getJoinsModel().getNonCrossDatatableJoinsAsCachedRowSet().getString("column_name") + "` = `" + exportModel.getMergeModel().getDatatable2Model().getName() + "`.`" + exportModel.getMergeModel().getJoinsModel().getNonCrossDatatableJoinsAsCachedRowSet().getString("datatable_2_column_name") + "` ";
+					datatable2NonCrossDatatableExportColumnMappingsForUpdateSetSQL += "`" + exportModel.getExportedDatatableModel().getName() + "`.`" + exportModel.getMergeModel().getJoinsModel().getNonCrossDatatableJoinsAsCachedRowSet().getString("column_name") + "` = `" + exportModel.getMergeModel().getDatatable2Model().getName() + "`.`" + exportModel.getMergeModel().getJoinsModel().getNonCrossDatatableJoinsAsCachedRowSet().getString("datatable_2_column_name") + "` ";
 				}
 				else if (exportModel.getMergeModel().getJoinsModel().getNonCrossDatatableJoinsAsCachedRowSet().getString("datatable_2_column_name") == null && exportModel.getMergeModel().getJoinsModel().getNonCrossDatatableJoinsAsCachedRowSet().getString("constant_2") != null) {
 					if (datatable2NonCrossDatatableExportColumnMappingsForUpdateSetSQL != "") {
 						datatable2NonCrossDatatableExportColumnMappingsForUpdateSetSQL += ", ";
 					}
-					datatable2NonCrossDatatableExportColumnMappingsForUpdateSetSQL += "`" + exportModel.getDatatableName() + "`.`" + exportModel.getMergeModel().getJoinsModel().getNonCrossDatatableJoinsAsCachedRowSet().getString("column_name") + "` = `" + exportModel.getMergeModel().getDatatable2Model().getName() + "`.`" + exportModel.getMergeModel().getJoinsModel().getNonCrossDatatableJoinsAsCachedRowSet().getString("constant_2") + "` ";
+					datatable2NonCrossDatatableExportColumnMappingsForUpdateSetSQL += "`" + exportModel.getExportedDatatableModel().getName() + "`.`" + exportModel.getMergeModel().getJoinsModel().getNonCrossDatatableJoinsAsCachedRowSet().getString("column_name") + "` = `" + exportModel.getMergeModel().getDatatable2Model().getName() + "`.`" + exportModel.getMergeModel().getJoinsModel().getNonCrossDatatableJoinsAsCachedRowSet().getString("constant_2") + "` ";
 				}
 				
 			}
@@ -299,21 +305,21 @@ public class ExportsModel {
 			
 			exportModel.getMergeModel().getJoinsModel().getKeyJoinsAsCachedRowSet().first();
 			
-			datatable1KeyExportColumnMappingsForUpdateWhereSQL += "`" + exportModel.getDatatableName() + "`.`" + exportModel.getMergeModel().getJoinsModel().getKeyJoinsAsCachedRowSet().getString("column_name") + "` = `" + exportModel.getMergeModel().getDatatable1Model().getName() + "`.`" + exportModel.getMergeModel().getJoinsModel().getKeyJoinsAsCachedRowSet().getString("datatable_1_column_name") + "` ";
-			datatable2KeyExportColumnMappingsForUpdateWhereSQL += "`" + exportModel.getDatatableName() + "`.`" + exportModel.getMergeModel().getJoinsModel().getKeyJoinsAsCachedRowSet().getString("column_name") + "` = `" + exportModel.getMergeModel().getDatatable2Model().getName() + "`.`" + exportModel.getMergeModel().getJoinsModel().getKeyJoinsAsCachedRowSet().getString("datatable_2_column_name") + "` ";
+			datatable1KeyExportColumnMappingsForUpdateWhereSQL += "`" + exportModel.getExportedDatatableModel().getName() + "`.`" + exportModel.getMergeModel().getJoinsModel().getKeyJoinsAsCachedRowSet().getString("column_name") + "` = `" + exportModel.getMergeModel().getDatatable1Model().getName() + "`.`" + exportModel.getMergeModel().getJoinsModel().getKeyJoinsAsCachedRowSet().getString("datatable_1_column_name") + "` ";
+			datatable2KeyExportColumnMappingsForUpdateWhereSQL += "`" + exportModel.getExportedDatatableModel().getName() + "`.`" + exportModel.getMergeModel().getJoinsModel().getKeyJoinsAsCachedRowSet().getString("column_name") + "` = `" + exportModel.getMergeModel().getDatatable2Model().getName() + "`.`" + exportModel.getMergeModel().getJoinsModel().getKeyJoinsAsCachedRowSet().getString("datatable_2_column_name") + "` ";
 			
 			while (exportModel.getMergeModel().getJoinsModel().getKeyJoinsAsCachedRowSet().next()) {
 
 				
-				datatable1KeyExportColumnMappingsForUpdateWhereSQL += "AND `" + exportModel.getDatatableName() + "`.`" + exportModel.getMergeModel().getJoinsModel().getKeyJoinsAsCachedRowSet().getString("column_name") + "` = `" + exportModel.getMergeModel().getDatatable1Model().getName() + "`.`" + exportModel.getMergeModel().getJoinsModel().getKeyJoinsAsCachedRowSet().getString("datatable_1_column_name") + "` ";
-				datatable2KeyExportColumnMappingsForUpdateWhereSQL += "AND `" + exportModel.getDatatableName() + "`.`" + exportModel.getMergeModel().getJoinsModel().getKeyJoinsAsCachedRowSet().getString("column_name") + "` = `" + exportModel.getMergeModel().getDatatable2Model().getName() + "`.`" + exportModel.getMergeModel().getJoinsModel().getKeyJoinsAsCachedRowSet().getString("datatable_2_column_name") + "` ";
+				datatable1KeyExportColumnMappingsForUpdateWhereSQL += "AND `" + exportModel.getExportedDatatableModel().getName() + "`.`" + exportModel.getMergeModel().getJoinsModel().getKeyJoinsAsCachedRowSet().getString("column_name") + "` = `" + exportModel.getMergeModel().getDatatable1Model().getName() + "`.`" + exportModel.getMergeModel().getJoinsModel().getKeyJoinsAsCachedRowSet().getString("datatable_1_column_name") + "` ";
+				datatable2KeyExportColumnMappingsForUpdateWhereSQL += "AND `" + exportModel.getExportedDatatableModel().getName() + "`.`" + exportModel.getMergeModel().getJoinsModel().getKeyJoinsAsCachedRowSet().getString("column_name") + "` = `" + exportModel.getMergeModel().getDatatable2Model().getName() + "`.`" + exportModel.getMergeModel().getJoinsModel().getKeyJoinsAsCachedRowSet().getString("datatable_2_column_name") + "` ";
 								
 				
 			}		
 			
 			if (datatable1NonCrossDatatableExportColumnMappingsForUpdateSetSQL != "") {
 				String updateExportDatatableWithDatatable1Data = 
-					"UPDATE `" + exportModel.getDatatableName() + "`, `" + exportModel.getMergeModel().getDatatable1Model().getName() + "` " + 
+					"UPDATE `" + exportModel.getExportedDatatableModel().getName() + "`, `" + exportModel.getMergeModel().getDatatable1Model().getName() + "` " + 
 					"SET " + datatable1NonCrossDatatableExportColumnMappingsForUpdateSetSQL +
 					"WHERE " + datatable1KeyExportColumnMappingsForUpdateWhereSQL + 
 					";";
@@ -328,7 +334,7 @@ public class ExportsModel {
 			if (datatable2NonCrossDatatableExportColumnMappingsForUpdateSetSQL != "") {
 			
 				String updateExportDatatableWithDatatable2Data = 
-					"UPDATE `" + exportModel.getDatatableName() + "`, `" + exportModel.getMergeModel().getDatatable2Model().getName() + "` " + 
+					"UPDATE `" + exportModel.getExportedDatatableModel().getName() + "`, `" + exportModel.getMergeModel().getDatatable2Model().getName() + "` " + 
 					"SET " + datatable2NonCrossDatatableExportColumnMappingsForUpdateSetSQL +
 					"WHERE " + datatable2KeyExportColumnMappingsForUpdateWhereSQL + 
 					";";
@@ -340,6 +346,7 @@ public class ExportsModel {
 				preparedStatement2.close(); 
 			
 			}
+			
 			
 		
 		} catch (SQLException e) {
@@ -394,7 +401,7 @@ public class ExportsModel {
 					
 					//Populate the export datatable with all the keys
 					PreparedStatement preparedStatement = connection.prepareStatement(
-							"INSERT INTO `" + exportModel.getDatatableName() + "` (" + keyColumnNamesForInsertSQL + ") " +
+							"INSERT INTO `" + exportModel.getExportedDatatableModel().getName() + "` (" + keyColumnNamesForInsertSQL + ") " +
 								"(SELECT " + datatable1KeyColumnAliasesForSelectSQL + " FROM " + exportModel.getMergeModel().getDatatable1Model().getName() + ") " +
 								"UNION (SELECT " + datatable2KeyColumnAliasesForSelectSQL + " FROM " + exportModel.getMergeModel().getDatatable2Model().getName() + ") " +
 								"ORDER BY " + keyColumnNamesForInsertSQL + 
@@ -455,9 +462,15 @@ public class ExportsModel {
 		
 		//this.logger.info("columnDefinitionsForCreateSQL: " + columnDefinitionsForCreateSQL);
 		
+		exportModel.getExportedDatatableModel().setName("exported_datatable_" + exportModel.getId());
+		
+		ExportsModel exportsModel = new ExportsModel();
+		exportsModel.updateExportExportedDatatableNameUsingExportModel(exportModel, connection);
+		
+		
 		try {
 			//Drop the export_datatable
-			PreparedStatement preparedStatement = connection.prepareStatement("DROP TABLE IF EXISTS `export_datatable_" + exportModel.getId() + "`;");
+			PreparedStatement preparedStatement = connection.prepareStatement("DROP TABLE IF EXISTS `" + exportModel.getExportedDatatableModel().getName() + "`;");
 			preparedStatement.executeUpdate();
 			preparedStatement.close();  
 		} catch (SQLException e) {
@@ -467,7 +480,7 @@ public class ExportsModel {
 		
 		try {
 			//Create the export_datatable
-			PreparedStatement preparedStatement = connection.prepareStatement("CREATE TABLE `export_datatable_" + exportModel.getId() + "` (" + columnDefinitionsForCreateSQL + ") ENGINE=InnoDB;");
+			PreparedStatement preparedStatement = connection.prepareStatement("CREATE TABLE `" + exportModel.getExportedDatatableModel().getName() + "` (" + columnDefinitionsForCreateSQL + ") ENGINE=InnoDB;");
 			preparedStatement.executeUpdate();
 			preparedStatement.close();  
 		} catch (SQLException e) {
@@ -475,13 +488,29 @@ public class ExportsModel {
 			e.printStackTrace();
 		}
 		
-
-		//Record the export datatable name.
-		exportModel.setDatatableName("export_datatable_" + exportModel.getId());
 		
 		
 		
 		return exportModel;
+	}
+
+
+	public void updateExportExportedDatatableNameUsingExportModel(
+			ExportModel exportModel, Connection connection) {
+		
+		try {
+			//Update the export table
+			PreparedStatement preparedStatement = connection.prepareStatement("UPDATE `export` SET exported_datatable_name = ? WHERE id = ?;");
+			
+			preparedStatement.setString(1, exportModel.getExportedDatatableModel().getName());
+			preparedStatement.setInt(2, exportModel.getId());
+			
+			preparedStatement.executeUpdate();
+			preparedStatement.close();  
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 
