@@ -1,6 +1,6 @@
 package org.cggh.tools.dataMerger.data.exports;
 
-import org.cggh.tools.dataMerger.data.exportedDatatables.ExportedDatatableModel;
+import org.cggh.tools.dataMerger.data.mergedDatatables.MergedDatatableModel;
 import org.cggh.tools.dataMerger.data.joinedKeytables.JoinedKeytableModel;
 import org.cggh.tools.dataMerger.data.merges.MergeModel;
 
@@ -18,21 +18,21 @@ public class ExportModel implements java.io.Serializable {
 
 	private String datatableName;
 
-	private ExportedDatatableModel exportedDatatableModel;
+	private MergedDatatableModel mergedDatatableModel;
 
 	public ExportModel() {
 
 		//Construct a new vanilla one
 		this.setId(null);
 		this.setMergeModel(new MergeModel());		
-		this.setExportedDatatableModel(new ExportedDatatableModel());
+		this.setMergedDatatableModel(new MergedDatatableModel());
 		
 	}	
 
 
-	public void setExportedDatatableModel(
-			ExportedDatatableModel exportedDatatableModel) {
-		this.exportedDatatableModel = exportedDatatableModel;
+	public void setMergedDatatableModel(
+			MergedDatatableModel mergedDatatableModel) {
+		this.mergedDatatableModel = mergedDatatableModel;
 	}
 
 
@@ -54,8 +54,8 @@ public class ExportModel implements java.io.Serializable {
 		return this.id;
 	}
 
-	public ExportedDatatableModel getExportedDatatableModel() {		
-		return this.exportedDatatableModel;
+	public MergedDatatableModel getMergedDatatableModel() {		
+		return this.mergedDatatableModel;
 	}
 
 }

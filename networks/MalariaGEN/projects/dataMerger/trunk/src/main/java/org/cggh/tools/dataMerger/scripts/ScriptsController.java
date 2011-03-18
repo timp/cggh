@@ -114,6 +114,9 @@ public class ScriptsController extends HttpServlet {
 					    	sqlException.printStackTrace();
 				        }	
 				        
+				        
+				        
+				        //TODO: Refactor code to use datatable_name in upload table, rather than datatable table.
 				      try{
 				          Statement statement = connection.createStatement();
 				          statement.executeUpdate("CREATE TABLE upload (" + 
@@ -123,8 +126,10 @@ public class ScriptsController extends HttpServlet {
 				        		  "successful BOOLEAN NULL, " + 
 				        		  "created_by_user_id BIGINT(255) UNSIGNED NOT NULL, " + 
 				        		  "created_datetime DATETIME NOT NULL, " +
+				        		  "datatable_name VARCHAR(255) NULL, " + 
 				        		  "PRIMARY KEY (id), " +
 				        		  "CONSTRAINT unique_path_constraint UNIQUE (repository_filepath), " +
+				        		  "CONSTRAINT unique_datatable_name_constraint UNIQUE (datatable_name), " +
 				        		  "INDEX created_by_user_id_index (created_by_user_id), " + 
 				        		  "FOREIGN KEY (created_by_user_id) REFERENCES user(id) ON DELETE CASCADE ON UPDATE CASCADE " + 
 				        		  ") ENGINE=InnoDB;");
@@ -135,7 +140,13 @@ public class ScriptsController extends HttpServlet {
 				        	out.println("<p>" + sqlException + "</p>");
 					    	sqlException.printStackTrace();
 				        } 
-					        
+					      
+				        
+				        
+						File uploadsFileRepositoryBasPath = new File(getServletContext().getInitParameter("uploadsFileRepositoryBasePath"));
+						log("uploadsFileRepositoryBasPath created: " + uploadsFileRepositoryBasPath.mkdirs());
+				        
+				        
 				      try{
 				          Statement statement = connection.createStatement();
 				          statement.executeUpdate("CREATE TABLE merge (" + 
@@ -379,13 +390,19 @@ public class ScriptsController extends HttpServlet {
 						        		  "id BIGINT(255) UNSIGNED NOT NULL AUTO_INCREMENT, " +
 						        		  "upload_1_id BIGINT(255) UNSIGNED NOT NULL, " +
 						        		  "upload_2_id BIGINT(255) UNSIGNED NOT NULL, " +
-						        		  "repository_filepath VARCHAR(255) NULL, " + 
-						        		  "successful BOOLEAN NULL, " + 
 						        		  "created_by_user_id BIGINT(255) UNSIGNED NOT NULL, " + 
 						        		  "created_datetime DATETIME NOT NULL, " +
-						        		  "exported_datatable_name VARCHAR(255) NULL, " + 
+						        		  "merged_datatable_name VARCHAR(255) NULL, " + 
+						        		  "merged_datatable_export_repository_filepath VARCHAR(255) NULL, " +
+						        		  "joins_export_repository_filepath VARCHAR(255) NULL, " +
+						        		  "resolutions_export_repository_filepath VARCHAR(255) NULL, " +
+						        		  "merged_datatable_export_successful BOOLEAN NULL, " +
+						        		  "joins_export_successful BOOLEAN NULL, " +
+						        		  "resolutions_export_successful BOOLEAN NULL, " +
 						        		  "PRIMARY KEY (id), " +
-						        		  "CONSTRAINT unique_path_constraint UNIQUE (repository_filepath), " +
+						        		  "CONSTRAINT unique_merged_datatable_export_repository_filepath_constraint UNIQUE (merged_datatable_export_repository_filepath), " +
+						        		  "CONSTRAINT unique_joins_export_repository_filepath_constraint UNIQUE (joins_export_repository_filepath), " +
+						        		  "CONSTRAINT unique_resolutions_export_repository_filepath_constraint UNIQUE (resolutions_export_repository_filepath), " +
 						        		  "INDEX created_by_user_id_index (created_by_user_id), " + 
 						        		  "FOREIGN KEY (created_by_user_id) REFERENCES user(id) ON DELETE CASCADE ON UPDATE CASCADE, " +
 						        		  "INDEX upload_1_id_index (upload_1_id), " + 
@@ -401,7 +418,10 @@ public class ScriptsController extends HttpServlet {
 							    	sqlException.printStackTrace();
 						        }
 					        
-					        
+						        File exportsFileRepositoryBasPath = new File(getServletContext().getInitParameter("exportsFileRepositoryBasePath"));
+								log("exportsFileRepositoryBasPath created: " + exportsFileRepositoryBasPath.mkdirs());
+						        
+						        
 					connection.close();
 					out.println("Done.");
 					
@@ -442,23 +462,43 @@ public class ScriptsController extends HttpServlet {
 				      
 				      //FIXME: This is really dangerous! What if the initParameter was set to a system folder?
 				      
-				      File directory = new File(getServletContext().getInitParameter("uploadsFileRepositoryBasePath"));
+				      File uploadsFileRepositoryBasePath = new File(getServletContext().getInitParameter("uploadsFileRepositoryBasePath"));
 
 					   // Get all files in directory
 	
-					   File[] files = directory.listFiles();
-					   for (File file : files)
-					   {
-					      // Delete each file
-	
-					      if (!file.delete())
-					      {
-					          // Failed to delete file
-	
-					          System.out.println("Failed to delete " + file);
-					      }
+					   File[] uploads = uploadsFileRepositoryBasePath.listFiles();
+					   
+					   if (uploads != null) {
+						   for (File file : uploads) {
+						      // Delete each file
+		
+						      if (!file.delete())
+						      {
+						          // Failed to delete file
+		
+						          System.out.println("Failed to delete " + file);
+						      }
+						   }
 					   }
 				      
+					      File exportsFileRepositoryBasePath = new File(getServletContext().getInitParameter("exportsFileRepositoryBasePath"));
+
+						   // Get all files in directory
+		
+						   File[] exports = exportsFileRepositoryBasePath.listFiles();
+						   
+						   if (uploads != null) {
+							   for (File file : exports) {
+							      // Delete each file
+			
+							      if (!file.delete())
+							      {
+							          // Failed to delete file
+			
+							          System.out.println("Failed to delete " + file);
+							      }
+							   }
+						   }
 				      
 				      connection.close();
 				      out.println("Done.");

@@ -36,6 +36,8 @@ public class JoinsModel implements java.io.Serializable {
 	private CachedRowSet keyJoinsAsCachedRowset;
 	private CachedRowSet nonKeyCrossDatatableJoinsAsCachedRowset;
 	private CachedRowSet nonCrossDatatableJoinsAsCachedRowset;
+	private String exportRepositoryFilepath;
+	private boolean exportSuccessful;
 
 	//Must not have a joinModel, because joinModel has a mergeModel, which has a joinsModel, causes StackOverflowError
 	//private JoinModel joinModel;
@@ -942,6 +944,26 @@ public class JoinsModel implements java.io.Serializable {
 
 	public CachedRowSet getNonCrossDatatableJoinsAsCachedRowSet() {
 		return this.nonCrossDatatableJoinsAsCachedRowset;
+	}
+
+
+	public void setExportRepositoryFilepath(String exportRepositoryFilepath) {
+		this.exportRepositoryFilepath = exportRepositoryFilepath;
+	}
+
+
+	public void setExportSuccessful(boolean exportSuccessful) {
+		this.exportSuccessful = exportSuccessful;
+	}
+
+
+	public String getExportRepositoryFilepath() {
+		return this.exportRepositoryFilepath;
+	}
+
+
+	public boolean getExportSuccessful() {
+		return this.exportSuccessful;
 	}
 
 

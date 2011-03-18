@@ -63,6 +63,9 @@ public class FilesController extends HttpServlet {
 
 		Pattern uploadsURLPattern = Pattern.compile("^/uploads/(\\d+)$");
 		 Matcher uploadsURLPatternMatcher = uploadsURLPattern.matcher(request.getPathInfo());
+		 
+		 Pattern exportsURLPattern = Pattern.compile("^/exports/(\\d+)/(.+)$");
+		 Matcher exportsURLPatternMatcher = exportsURLPattern.matcher(request.getPathInfo());
 		
 		
 		if (uploadsURLPatternMatcher.find()) {
@@ -191,10 +194,204 @@ public class FilesController extends HttpServlet {
 					
 			} 
 			catch (Exception e) {
-				System.out.println("Exception from getUploadsAsCachedRowSet.");
+				System.out.println(e.getMessage().toString());
 				e.printStackTrace();
 			}		
 		
+			
+			
+		}
+		
+		else if (exportsURLPatternMatcher.find()) {
+			
+			
+			
+			
+			try {
+				
+				//FIXME: Use DataModel
+				
+				Class.forName("com.mysql.jdbc.Driver").newInstance();
+				
+				Connection connection = DriverManager.getConnection(getServletContext().getInitParameter("dbBasePath") + getServletContext().getInitParameter("dbName"), getServletContext().getInitParameter("dbUsername"), getServletContext().getInitParameter("dbPassword"));
+				 
+				if (!connection.isClosed()) {
+
+					// Get the user_id
+					//TODO: convert to UserModel.setId
+					Integer user_id = null;
+					
+				      try{
+				          PreparedStatement preparedStatement = connection.prepareStatement("SELECT id FROM user WHERE username = ?;");
+				          preparedStatement.setString(1, request.getRemoteUser());
+				          preparedStatement.executeQuery();
+				          ResultSet resultSet = preparedStatement.getResultSet();
+
+				          // There may be no user in the user table.
+				          if (resultSet.next()) {
+				        	  
+				        	  resultSet.first();
+				        	  
+				        	  user_id = resultSet.getInt("id");
+				        	  
+				        	  
+						      try{
+						    	  
+						    	//TODO: use Models
+						    	  
+						    	  Integer export_id = Integer.parseInt(exportsURLPatternMatcher.group(1));
+						    	  
+						    	  String resourceName = exportsURLPatternMatcher.group(2);
+							    
+						    	  String repository_filepath = null;
+						    	  
+						    	  if (resourceName.equals("joins")) {
+							    	  
+							          PreparedStatement preparedStatement2 = connection.prepareStatement("SELECT joins_export_repository_filepath FROM export WHERE id = ? AND created_by_user_id = ?;");
+							          preparedStatement2.setInt(1, export_id);
+							          preparedStatement2.setInt(2, user_id);
+							          preparedStatement2.executeQuery();
+							          ResultSet resultSet2 = preparedStatement2.getResultSet();
+				
+							          // There may be no such export.
+							          if (resultSet2.next()) {
+							        	  resultSet2.first();
+							        	  
+							        	  
+							        	  repository_filepath = resultSet2.getString("joins_export_repository_filepath");
+							        	  
+							          } else {
+							        	  System.out.println("Db query gives !resultSet.next()");
+							          }
+				
+							          resultSet2.close();
+							          preparedStatement2.close();
+				        	  
+						    	  } 
+						    	  else if (resourceName.equals("resolutions")) {
+						    		
+							          PreparedStatement preparedStatement2 = connection.prepareStatement("SELECT resolutions_export_repository_filepath FROM export WHERE id = ? AND created_by_user_id = ?;");
+							          preparedStatement2.setInt(1, export_id);
+							          preparedStatement2.setInt(2, user_id);
+							          preparedStatement2.executeQuery();
+							          ResultSet resultSet2 = preparedStatement2.getResultSet();
+				
+							          // There may be no such export.
+							          if (resultSet2.next()) {
+							        	  resultSet2.first();
+							        	  
+							        	  
+							        	  repository_filepath = resultSet2.getString("resolutions_export_repository_filepath");
+							        	  
+							          } else {
+							        	  System.out.println("Db query gives !resultSet.next()");
+							          }
+				
+							          resultSet2.close();
+							          preparedStatement2.close();
+						    	  } 
+						    	  else if (resourceName.equals("merged")) {
+						    		  
+							          PreparedStatement preparedStatement2 = connection.prepareStatement("SELECT merged_datatable_export_repository_filepath FROM export WHERE id = ? AND created_by_user_id = ?;");
+							          preparedStatement2.setInt(1, export_id);
+							          preparedStatement2.setInt(2, user_id);
+							          preparedStatement2.executeQuery();
+							          ResultSet resultSet2 = preparedStatement2.getResultSet();
+				
+							          // There may be no such export.
+							          if (resultSet2.next()) {
+							        	  resultSet2.first();
+							        	  
+							        	  
+							        	  repository_filepath = resultSet2.getString("merged_datatable_export_repository_filepath");
+							        	  
+							          } else {
+							        	  System.out.println("Db query gives !resultSet.next()");
+							          }
+				
+							          resultSet2.close();
+							          preparedStatement2.close(); 
+ 
+						    	  } else {
+							    	  //TODO
+							    	  this.log("Unrecognised resource name:" + resourceName);
+							      }
+							          
+							          
+						    	  if (repository_filepath != null) {
+						        	  
+						              File                f        = new File(repository_filepath);
+						              int                 length   = 0;
+						              ServletOutputStream op       = response.getOutputStream();
+						              ServletContext      context  = getServletConfig().getServletContext();
+						              String              mimetype = context.getMimeType( repository_filepath );
+		
+		
+						              response.setContentType( (mimetype != null) ? mimetype : "application/octet-stream" );
+						              response.setContentLength( (int)f.length() );
+						              response.setHeader( "Content-Disposition", "attachment; filename=\"" + f.getName() + "\"" );
+		
+						           
+						              //res.setContentType("application/x-download");
+						              //res.setHeader("Content-Disposition", "attachment; filename=" + filename);
+						              
+		
+						              byte[] bbuf = new byte[2048]; //8192
+						              DataInputStream in = new DataInputStream(new FileInputStream(f));
+		
+						              while ((in != null) && ((length = in.read(bbuf)) != -1))
+						              {
+						                  op.write(bbuf,0,length);
+						              }
+		
+						              in.close();
+						              op.flush();
+						              op.close();					        	  
+						        	  
+					        	  } else {
+					        		  this.log("Unexpected: repository_filepath is null");
+					        	  }
+
+						      
+						          
+						        }
+						        catch(SQLException sqlException){
+						        	System.out.println("<p>" + sqlException + "</p>");
+							    	sqlException.printStackTrace();
+						        } 					
+							
+				        //TODO: Bail out if user_id is null
+				      
+				          } else {
+				        	  System.out.println("Did not find user in user table. This user is not registered. Db query gives !resultSet.next()");
+				          }    
+					          
+				          resultSet.close();
+				          preparedStatement.close();
+				          
+				        }
+				        catch(SQLException sqlException){
+				        	System.out.println("<p>" + sqlException + "</p>");
+					    	sqlException.printStackTrace();
+				        } 				
+					
+				
+					connection.close();
+					
+				} else {
+					
+					System.out.println("connection.isClosed");
+				}
+					
+			} 
+			catch (Exception e) {
+				System.out.println(e.getMessage().toString());
+				e.printStackTrace();
+			}	
+			
+			
+			
+			
 		} else {
 			
 			System.out.println("Unhandled pathInfo.");

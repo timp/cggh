@@ -1,4 +1,4 @@
-package org.cggh.tools.dataMerger.data.exportedDatatables;
+package org.cggh.tools.dataMerger.data.mergedDatatables;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -8,24 +8,24 @@ import java.util.logging.Logger;
 
 import javax.sql.rowset.CachedRowSet;
 
-import org.cggh.tools.dataMerger.data.exportedDatatables.ExportedDatatableModel;
+import org.cggh.tools.dataMerger.data.mergedDatatables.MergedDatatableModel;
 import org.cggh.tools.dataMerger.data.exports.ExportModel;
 
-public class ExportedDatatablesModel {
+public class MergedDatatablesModel {
 
-	private final Logger logger = Logger.getLogger("org.cggh.tools.dataMerger.data.exportedDatatables");
+	private final Logger logger = Logger.getLogger("org.cggh.tools.dataMerger.data.mergedDatatables");
 	
 	
-	public ExportedDatatableModel retrieveExportedDatatableAsExportedDatatableModelUsingExportId(
+	public MergedDatatableModel retrieveMergedDatatableAsMergedDatatableModelUsingExportId(
 			Integer exportId, Connection connection) {
 		
 		ExportModel exportModel = new ExportModel();
 		exportModel.setId(exportId);
 		
-		ExportedDatatableModel exportedDatatableModel = new ExportedDatatableModel();
+		MergedDatatableModel mergedDatatableModel = new MergedDatatableModel();
 		
 	      try{
-	          PreparedStatement preparedStatement = connection.prepareStatement("SELECT exported_datatable_name FROM `export` WHERE id = ?;");
+	          PreparedStatement preparedStatement = connection.prepareStatement("SELECT merged_datatable_name FROM `export` WHERE id = ?;");
 	          preparedStatement.setInt(1, exportModel.getId());
 	          preparedStatement.executeQuery();
 	          ResultSet resultSet = preparedStatement.getResultSet();
@@ -35,11 +35,11 @@ public class ExportedDatatablesModel {
 	        	  resultSet.first();
 
 	        	  //Set the exportedKeytable properties
-	        	  exportedDatatableModel.setName(resultSet.getString("exported_datatable_name"));
+	        	  mergedDatatableModel.setName(resultSet.getString("merged_datatable_name"));
 	        	  
-	        	  if (exportedDatatableModel.getName() != null) {
+	        	  if (mergedDatatableModel.getName() != null) {
 	        		  //Retrieve the datatable data
-	        		  exportedDatatableModel.setDataAsCachedRowSet(this.retrieveDataAsCachedRowSetByExportedDatatableName(exportedDatatableModel.getName(), connection));
+	        		  mergedDatatableModel.setDataAsCachedRowSet(this.retrieveDataAsCachedRowSetByMergedDatatableName(mergedDatatableModel.getName(), connection));
 	        	  }
 	        	  
 	      	  } else {
@@ -60,15 +60,15 @@ public class ExportedDatatablesModel {
 	        } 
 		
 		
-		return exportedDatatableModel;
+		return mergedDatatableModel;
 	}
 
 	
-	public CachedRowSet retrieveDataAsCachedRowSetByExportedDatatableName(String exportedDatatableName,
+	public CachedRowSet retrieveDataAsCachedRowSetByMergedDatatableName(String mergedDatatableName,
 			Connection connection) {
 		
-		ExportedDatatableModel exportedDatatableModel = new ExportedDatatableModel();
-		exportedDatatableModel.setName(exportedDatatableName);
+		MergedDatatableModel mergedDatatableModel = new MergedDatatableModel();
+		mergedDatatableModel.setName(mergedDatatableName);
 		
         Class<?> cachedRowSetImplClass = null;
 		try {
@@ -90,7 +90,7 @@ public class ExportedDatatablesModel {
 		}
 		
 	      try{
-	          PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM `" + exportedDatatableModel.getName() + "`;");
+	          PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM `" + mergedDatatableModel.getName() + "`;");
 	          preparedStatement.executeQuery();
 	         
 	          dataAsCachedRowSet.populate(preparedStatement.getResultSet());

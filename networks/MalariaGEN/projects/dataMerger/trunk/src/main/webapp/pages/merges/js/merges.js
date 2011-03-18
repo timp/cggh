@@ -20,6 +20,8 @@ function initExportFunction () {
 			
 			//alert("Go Go Go!");
 			
+			var exportingIndicator = $(this).closest('tr').find('.exporting-indicator');
+			
 			$.ajax({
 				type: 'POST',
 				data: '',
@@ -41,8 +43,8 @@ function initExportFunction () {
 		            $('.error').html("errorThrown: " + errorThrown);
 		            $('.status').html("textStatus: " + textStatus);
 		        },
-				beforeSend: function() { $('.exporting-indicator').show(); },
-		        complete: function() { $('.exporting-indicator').hide(); }
+				beforeSend: function() { exportingIndicator.show(); },
+		        complete: function() { exportingIndicator.hide(); }
 			});
 			
 		} else {

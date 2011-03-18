@@ -21,6 +21,8 @@ public class ResolutionsModel implements java.io.Serializable {
 	private final Logger logger = Logger.getLogger("org.cggh.tools.dataMerger.data.resolutions");
 	
 	private DataModel dataModel;
+	private String exportRepositoryFilepath ;
+	private boolean exportSuccessful;
 
 	public ResolutionsModel() {
 
@@ -520,6 +522,22 @@ public class ResolutionsModel implements java.io.Serializable {
 		
 		return resolutionsAsCachedRowSet;
 		
+	}
+
+	public void setExportRepositoryFilepath(String exportRepositoryFilepath) {
+		this.exportRepositoryFilepath = exportRepositoryFilepath;
+	}
+
+	public void setExportSuccessful(boolean exportSuccessful) {
+		this.exportSuccessful = exportSuccessful;
+	}
+
+	public boolean getExportSuccessful() {
+		return this.exportSuccessful;
+	}
+
+	public String getExportRepositoryFilepath() {
+		return this.exportRepositoryFilepath;
 	}
 
 

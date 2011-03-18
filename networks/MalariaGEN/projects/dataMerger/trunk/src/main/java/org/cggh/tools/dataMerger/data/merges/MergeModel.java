@@ -10,6 +10,7 @@ import org.cggh.tools.dataMerger.data.datatables.DatatableModel;
 import org.cggh.tools.dataMerger.data.joinedDatatables.JoinedDatatableModel;
 import org.cggh.tools.dataMerger.data.joinedKeytables.JoinedKeytableModel;
 import org.cggh.tools.dataMerger.data.joins.JoinsModel;
+import org.cggh.tools.dataMerger.data.resolutions.ResolutionsModel;
 import org.cggh.tools.dataMerger.data.uploads.UploadModel;
 import org.cggh.tools.dataMerger.data.users.UserModel;
 
@@ -39,6 +40,7 @@ public class MergeModel implements java.io.Serializable {
 	private Integer totalConflictsCount;
 	private JoinedKeytableModel joinedKeytableModel;
 	private JoinedDatatableModel joinedDatatableModel;
+	private ResolutionsModel resolutionsModel;
 	
 	
 	public MergeModel() {
@@ -54,8 +56,20 @@ public class MergeModel implements java.io.Serializable {
 		
 		this.setJoinedKeytableModel(new JoinedKeytableModel());
 		this.setJoinedDatatableModel(new JoinedDatatableModel());
+		
+		this.setResolutionsModel(new ResolutionsModel());
 	}
 	
+
+
+
+
+
+
+	public void setResolutionsModel(ResolutionsModel resolutionsModel) {
+		this.resolutionsModel = resolutionsModel;
+	}
+
 
 
 
@@ -227,6 +241,17 @@ public class MergeModel implements java.io.Serializable {
 	public JoinedDatatableModel getJoinedDatatableModel() {
 
 		return this.joinedDatatableModel;
+	}
+
+
+
+
+
+
+
+	public ResolutionsModel getResolutionsModel() {
+
+		return this.resolutionsModel;
 	}
 
 	

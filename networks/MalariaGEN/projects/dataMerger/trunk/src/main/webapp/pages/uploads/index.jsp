@@ -4,7 +4,6 @@
 <%@ page import="java.util.*" %>
 <%@ page import="javax.sql.rowset.CachedRowSet" %>
 <%@ page import="org.cggh.tools.dataMerger.data.uploads.UploadsModel" %>
-<%@ page import="org.cggh.tools.dataMerger.functions.uploads.UploadsFunctionsModel" %>
 <%
 
 	UploadsModel uploadsModel = new UploadsModel();

@@ -98,7 +98,7 @@ public class MergesModel implements java.io.Serializable {
 		
 	      try{
 	          PreparedStatement preparedStatement = connection.prepareStatement("SELECT id, upload_1_id, upload_2_id, created_by_user_id, created_datetime, updated_datetime, datatable_1_duplicate_keys_count, datatable_2_duplicate_keys_count, total_duplicate_keys_count, total_conflicts_count, joined_keytable_name FROM `merge` " + 
-	        		  "WHERE id = ?;");
+	        		  "WHERE id = ? ORDER BY id;");
 	          preparedStatement.setInt(1, mergeModel.getId());
 	          preparedStatement.executeQuery();
 	          ResultSet resultSet = preparedStatement.getResultSet();
@@ -477,7 +477,7 @@ public class MergesModel implements java.io.Serializable {
 					 
 					
 				      try{
-				          PreparedStatement preparedStatement = connection.prepareStatement("SELECT merge.id, upload_1.id AS upload_1_id, upload_1.original_filename AS upload_1_original_filename, upload_2.id AS 'upload_2_id', upload_2.original_filename AS 'upload_2_original_filename', merge.created_datetime, merge.updated_datetime, merge.total_duplicate_keys_count, merge.total_conflicts_count FROM merge INNER JOIN upload AS upload_1 ON upload_1.id = merge.upload_1_id INNER JOIN upload AS upload_2 ON upload_2.id = merge.upload_2_id WHERE merge.created_by_user_id = ?;");
+				          PreparedStatement preparedStatement = connection.prepareStatement("SELECT merge.id, upload_1.id AS upload_1_id, upload_1.original_filename AS upload_1_original_filename, upload_2.id AS 'upload_2_id', upload_2.original_filename AS 'upload_2_original_filename', merge.created_datetime, merge.updated_datetime, merge.total_duplicate_keys_count, merge.total_conflicts_count FROM merge INNER JOIN upload AS upload_1 ON upload_1.id = merge.upload_1_id INNER JOIN upload AS upload_2 ON upload_2.id = merge.upload_2_id WHERE merge.created_by_user_id = ? ORDER BY merge.id;");
 				          preparedStatement.setInt(1, userModel.getId());
 				          preparedStatement.executeQuery();
 				          Class<?> cachedRowSetImplClass = Class.forName(CACHED_ROW_SET_IMPL_CLASS);

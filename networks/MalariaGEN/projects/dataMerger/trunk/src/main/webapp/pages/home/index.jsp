@@ -67,7 +67,7 @@
 				</ul>
 			</p>
 			
-			<p>This also describes the file-type of the "export" files produced using this application. (So they too can be used in merges.)
+			<p>This also describes the file-type of the "export" files produced using this application. (So they too can be used in merges.) Exported files may contain \N characters (NULL), whereas Topheno exports currently only use empty strings to represent NULL (both are treated as equivalent).
 			</p>
 			
 			<p><em>Note:</em> Saving such as file in Microsoft Excel will result in a different (as yet unsupported file type) 
