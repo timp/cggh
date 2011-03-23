@@ -1,13 +1,12 @@
 package org.cggh.tools.dataMerger.data.exports;
 
 import java.io.File;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Collection;
 import java.util.HashMap;
-import java.util.TreeMap;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -15,14 +14,12 @@ import java.util.regex.Pattern;
 import javax.sql.rowset.CachedRowSet;
 
 import org.cggh.tools.dataMerger.data.DataModel;
-import org.cggh.tools.dataMerger.data.joinedDatatables.JoinedDatatablesModel;
 import org.cggh.tools.dataMerger.data.joins.JoinsModel;
 import org.cggh.tools.dataMerger.data.mergedDatatables.MergedDatatablesModel;
 import org.cggh.tools.dataMerger.data.merges.MergesModel;
 import org.cggh.tools.dataMerger.data.resolutions.ResolutionsModel;
 import org.cggh.tools.dataMerger.data.users.UserModel;
 import org.cggh.tools.dataMerger.functions.exports.ExportsFunctionsModel;
-import org.cggh.tools.dataMerger.functions.merges.MergesFunctionsModel;
 
 public class ExportsModel {
 
@@ -138,6 +135,20 @@ public class ExportsModel {
 		
 		exportDirectory.mkdirs();
 		
+		//TODO: Make this writable for MySQL
+		//exportDirectory.setWritable(true); //This would only make it writable for tomcat
+		String pathSeparatorForSQL = "\\\\";
+		String pathSeparatorForRepositoryFilepath = "\\";
+		if(isUnix()){
+			pathSeparatorForSQL = "/";
+			pathSeparatorForRepositoryFilepath = "/";
+			try {
+				Runtime.getRuntime().exec("chmod g+w " + exportDirectory.getAbsolutePath());
+			} catch (IOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+		}
 		
 		MergedDatatablesModel mergedDatatablesModel = new MergedDatatablesModel();
 		
@@ -166,8 +177,8 @@ public class ExportsModel {
 			String createMergedDatatableAsFileSQL =
 				"(SELECT " + mergedDatatableColumnNamesForSelectSQL + ") " + 
 				"UNION " +
-				"(SELECT * FROM `" + exportModel.getMergedDatatableModel().getName() + "` INTO OUTFILE '" + exportDirectory.toString().replace("\\", "\\\\") +  
-				 "\\\\" + fileName + "' " +
+				"(SELECT * FROM `" + exportModel.getMergedDatatableModel().getName() + "` INTO OUTFILE '" + exportDirectory.getAbsolutePath().replace("\\", "\\\\") +  
+				pathSeparatorForSQL + fileName + "' " +
 						"FIELDS ESCAPED BY '\\\\' OPTIONALLY ENCLOSED BY '\"' TERMINATED BY ',' " +
 						"LINES TERMINATED BY '\\n' " +
 				")" +
@@ -181,7 +192,7 @@ public class ExportsModel {
 
 			
 			//FIXME: Check whether it was truly successful
-			exportModel.getMergedDatatableModel().setExportRepositoryFilepath(exportDirectory.toString() + "\\" + fileName);
+			exportModel.getMergedDatatableModel().setExportRepositoryFilepath(exportDirectory.toString() + pathSeparatorForRepositoryFilepath + fileName);
 			exportModel.getMergedDatatableModel().setExportSuccessful(true);
 			
 			this.updateExportMergedDatatableExportRepositoryFilepathUsingExportModel(exportModel, connection);
@@ -189,6 +200,7 @@ public class ExportsModel {
 			
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
+			this.logger.severe(e.getMessage());
 			e.printStackTrace();
 		}
 	}
@@ -242,7 +254,21 @@ public class ExportsModel {
 		//this.logger.info("exportDirectory created: " + exportDirectory.mkdirs());
 		
 		exportDirectory.mkdirs();
-
+		
+		//TODO: Make this writable for MySQL
+		//exportDirectory.setWritable(true); //This would only make it writable for tomcat
+		String pathSeparatorForSQL = "\\\\";
+		String pathSeparatorForRepositoryFilepath = "\\";
+		if(isUnix()){
+			pathSeparatorForSQL = "/";
+			pathSeparatorForRepositoryFilepath = "/";
+			try {
+				Runtime.getRuntime().exec("chmod g+w " + exportDirectory.getAbsolutePath());
+			} catch (IOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+		}
 		
 		try {
 			
@@ -255,8 +281,8 @@ public class ExportsModel {
 				"FROM `join` " +
 				"JOIN `merge` ON `merge`.id = `join`.merge_id " +
 				"WHERE merge_id = " + exportModel.getMergeModel().getId() + " " +
-				"INTO OUTFILE '" + exportDirectory.toString().replace("\\", "\\\\") +  
-				 "\\\\" + fileName + "' " +
+				"INTO OUTFILE '" + exportDirectory.getAbsolutePath().replace("\\", "\\\\") +  
+				pathSeparatorForSQL + fileName + "' " +
 						"FIELDS ESCAPED BY '\\\\' OPTIONALLY ENCLOSED BY '\"' TERMINATED BY ',' " +
 						"LINES TERMINATED BY '\\n' " +
 				")" +
@@ -270,7 +296,7 @@ public class ExportsModel {
 
 			
 			//FIXME: Check whether it was truly successful
-			exportModel.getMergeModel().getJoinsModel().setExportRepositoryFilepath(exportDirectory.toString() + "\\" + fileName);
+			exportModel.getMergeModel().getJoinsModel().setExportRepositoryFilepath(exportDirectory.toString() + pathSeparatorForRepositoryFilepath + fileName);
 			exportModel.getMergeModel().getJoinsModel().setExportSuccessful(true);
 			
 			this.updateExportJoinsExportRepositoryFilepathUsingExportModel(exportModel, connection);
@@ -337,7 +363,21 @@ public class ExportsModel {
 		//this.logger.info("exportDirectory created: " + exportDirectory.mkdirs());
 		
 		exportDirectory.mkdirs();
-
+		
+		//TODO: Make this writable for MySQL
+		//exportDirectory.setWritable(true); //This would only make it writable for tomcat
+		String pathSeparatorForSQL = "\\\\";
+		String pathSeparatorForRepositoryFilepath = "\\";
+		if(isUnix()){
+			pathSeparatorForSQL = "/";
+			pathSeparatorForRepositoryFilepath = "/";
+			try {
+				Runtime.getRuntime().exec("chmod g+w " + exportDirectory.getAbsolutePath());
+			} catch (IOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+		}
 		
 		try {
 			
@@ -371,8 +411,8 @@ public class ExportsModel {
 				"LEFT JOIN solution_by_row ON solution_by_row.id = resolution.solution_by_row_id " + 
 				"LEFT JOIN solution_by_cell ON solution_by_cell.id = resolution.solution_by_cell_id " + 
 				"WHERE merge_id = " + exportModel.getMergeModel().getId() + " " +
-				"INTO OUTFILE '" + exportDirectory.toString().replace("\\", "\\\\") +  
-				 "\\\\" + fileName + "' " +
+				"INTO OUTFILE '" + exportDirectory.getAbsolutePath().replace("\\", "\\\\") +  
+				pathSeparatorForSQL + fileName + "' " +
 						"FIELDS ESCAPED BY '\\\\' OPTIONALLY ENCLOSED BY '\"' TERMINATED BY ',' " +
 						"LINES TERMINATED BY '\\n' " +
 				")" +
@@ -386,7 +426,7 @@ public class ExportsModel {
 
 			
 			//FIXME: Check whether it was truly successful
-			exportModel.getMergeModel().getResolutionsModel().setExportRepositoryFilepath(exportDirectory.toString() + "\\" + fileName);
+			exportModel.getMergeModel().getResolutionsModel().setExportRepositoryFilepath(exportDirectory.toString() + pathSeparatorForRepositoryFilepath + fileName);
 			exportModel.getMergeModel().getResolutionsModel().setExportSuccessful(true);
 			
 			this.updateExportResolutionsExportRepositoryFilepathUsingExportModel(exportModel, connection);
@@ -1037,5 +1077,28 @@ public class ExportsModel {
 	     
 	}
 	
+	public static boolean isWindows(){
+		 
+		String os = System.getProperty("os.name").toLowerCase();
+		//windows
+	    return (os.indexOf( "win" ) >= 0); 
+ 
+	}
+ 
+	public static boolean isMac(){
+ 
+		String os = System.getProperty("os.name").toLowerCase();
+		//Mac
+	    return (os.indexOf( "mac" ) >= 0); 
+ 
+	}
+ 
+	public static boolean isUnix(){
+ 
+		String os = System.getProperty("os.name").toLowerCase();
+		//linux or unix
+	    return (os.indexOf( "nix") >=0 || os.indexOf( "nux") >=0);
+ 
+	}
 	
 }
