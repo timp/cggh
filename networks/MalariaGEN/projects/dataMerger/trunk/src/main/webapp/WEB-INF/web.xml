@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <web-app id="WebApp_ID" version="2.4" xmlns="http://java.sun.com/xml/ns/j2ee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd">
+	
+	
 	<display-name>dataMerger</display-name>
 	
 
@@ -101,10 +103,10 @@
 
    </web-resource-collection>
 
-   <!-- <auth-constraint>
+   <!-- Comment this out to allow "unregistered" users to access the welcome page. -->
+   <auth-constraint>
      <role-name>user</role-name>
    </auth-constraint>
-    -->
 
  </security-constraint>
 
@@ -125,11 +127,13 @@
      <role-name>uploader</role-name>
    </auth-constraint>
    
-  <!-- TODO: Ensure SSL
+   <!-- Comment this out to allow over "unsecure" HTTP. -->
+   <!-- 
   <user-data-constraint>
     <transport-guarantee>CONFIDENTIAL</transport-guarantee>
   </user-data-constraint>
-   -->   
+   -->
+
  </security-constraint>
 
  <security-constraint>
@@ -219,25 +223,24 @@
 
 
 	<!-- application init params -->
-	<!-- TODO: change from db to database -->
 	<context-param>
-		<param-name>dbBasePath</param-name>
+		<param-name>databaseBasePath</param-name>
 		<param-value>jdbc:mysql://localhost:3306/</param-value>
 	</context-param>	
 	<context-param>
-		<param-name>dbName</param-name>
+		<param-name>databaseName</param-name>
 		<param-value>datamerger</param-value>
 	</context-param>
 	<context-param>
-		<param-name>dbUsername</param-name>
+		<param-name>databaseUsername</param-name>
 		<param-value>root</param-value>
 	</context-param>
 	<context-param>
-		<param-name>dbPassword</param-name>
+		<param-name>databasePassword</param-name>
 		<param-value>root</param-value>
 	</context-param>
 	
-	<!-- TODO: Auto-generate this folder. Otherwise, it must already exist (be created manually). -->
+	<!-- These folders are automatically generated. Tomcat and MySQL must be able to read and write to these. -->
 	<context-param>
 		<param-name>uploadsFileRepositoryBasePath</param-name>
 		<param-value>C:\Lee\Work\dataMerger\files\uploads\</param-value>

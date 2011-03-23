@@ -30,9 +30,9 @@ public class DataModel implements java.io.Serializable {
 	public void setDataModelByServletContext (final ServletContext servletContext) {
 		
 		this.setServletContext(servletContext);
-		this.setURL(servletContext.getInitParameter("dbBasePath") + servletContext.getInitParameter("dbName"));
-		this.setUsername(servletContext.getInitParameter("dbUsername"));
-		this.setPassword(servletContext.getInitParameter("dbPassword"));
+		this.setURL(servletContext.getInitParameter("databaseBasePath") + servletContext.getInitParameter("databaseName"));
+		this.setUsername(servletContext.getInitParameter("databaseUsername"));
+		this.setPassword(servletContext.getInitParameter("databasePassword"));
 		
 	}
 

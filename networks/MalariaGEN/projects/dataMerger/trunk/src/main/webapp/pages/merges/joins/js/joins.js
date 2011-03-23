@@ -40,6 +40,8 @@ function initMoveJoinFunction() {
 	    		row.find('td input[name|="key"]').attr('name', "key-" + parseInt(column_number_being_moved_to).toString());
 	    		row.find('td input[name|="datatable_1_column_name"]').attr('name', "datatable_1_column_name-" + parseInt(column_number_being_moved_to).toString());
 	    		row.find('td input[name|="datatable_2_column_name"]').attr('name', "datatable_2_column_name-" + parseInt(column_number_being_moved_to).toString());
+	    		row.find('td input[name|="constant_1"]').attr('name', "constant_1-" + parseInt(column_number_being_moved_to).toString());
+	    		row.find('td input[name|="constant_2"]').attr('name', "constant_2-" + parseInt(column_number_being_moved_to).toString());
 	    		
 	    		if (column_number_being_moved_to % 2 == 0) {
 	    			row.removeClass("odd").addClass("even");
@@ -51,6 +53,8 @@ function initMoveJoinFunction() {
 	    		row.prev().find('td input[name|="key"]').attr('name', "key-" + (parseInt(column_number_being_moved_to) + 1).toString());
 	    		row.prev().find('td input[name|="datatable_1_column_name"]').attr('name', "datatable_1_column_name-" + (parseInt(column_number_being_moved_to) + 1).toString());
 	    		row.prev().find('td input[name|="datatable_2_column_name"]').attr('name', "datatable_2_column_name-" + (parseInt(column_number_being_moved_to) + 1).toString());
+	    		row.prev().find('td input[name|="constant_1"]').attr('name', "constant_1-" + (parseInt(column_number_being_moved_to) + 1).toString());
+	    		row.prev().find('td input[name|="constant_2"]').attr('name', "constant_2-" + (parseInt(column_number_being_moved_to) + 1).toString());
 
 	    		if (column_number_being_moved_to % 2 == 0) {
 	    			row.prev().removeClass("even").addClass("odd");
@@ -99,6 +103,8 @@ function initMoveJoinFunction() {
 	    		row.find('td input[name|="key"]').attr('name', "key-" + parseInt(column_number_being_moved_to).toString());
 	    		row.find('td input[name|="datatable_1_column_name"]').attr('name', "datatable_1_column_name-" + parseInt(column_number_being_moved_to).toString());
 	    		row.find('td input[name|="datatable_2_column_name"]').attr('name', "datatable_2_column_name-" + parseInt(column_number_being_moved_to).toString());
+	    		row.find('td input[name|="constant_1"]').attr('name', "constant_1-" + parseInt(column_number_being_moved_to).toString());
+	    		row.find('td input[name|="constant_2"]').attr('name', "constant_2-" + parseInt(column_number_being_moved_to).toString());
 
 	    		if (column_number_being_moved_to % 2 == 0) {
 	    			row.removeClass("odd").addClass("even");
@@ -110,6 +116,8 @@ function initMoveJoinFunction() {
 	    		row.next().find('td input[name|="key"]').attr('name', "key-" + (parseInt(column_number_being_moved_to) - 1).toString());
 	    		row.next().find('td input[name|="datatable_1_column_name"]').attr('name', "datatable_1_column_name-" + (parseInt(column_number_being_moved_to) - 1).toString());
 	    		row.next().find('td input[name|="datatable_2_column_name"]').attr('name', "datatable_2_column_name-" + (parseInt(column_number_being_moved_to) - 1).toString());
+	    		row.next().find('td input[name|="constant_1"]').attr('name', "constant_1-" + (parseInt(column_number_being_moved_to) - 1).toString());
+	    		row.next().find('td input[name|="constant_2"]').attr('name', "constant_2-" + (parseInt(column_number_being_moved_to) - 1).toString());
 
 	    		if (column_number_being_moved_to % 2 == 0) {
 	    			row.next().removeClass("even").addClass("odd");
@@ -177,6 +185,8 @@ function initRemoveJoinFunction () {
     		nextRow.find('td input[name|="key"]').attr('name', "key-" + column_number.toString());
     		nextRow.find('td input[name|="datatable_1_column_name"]').attr('name', "datatable_1_column_name-" + column_number.toString());
     		nextRow.find('td input[name|="datatable_2_column_name"]').attr('name', "datatable_2_column_name-" + column_number.toString());
+    		nextRow.find('td input[name|="constant_1"]').attr('name', "constant_1-" + column_number.toString());
+    		nextRow.find('td input[name|="constant_2"]').attr('name', "constant_2-" + column_number.toString());
     		
     		if (column_number % 2 == 0) {
     			nextRow.removeClass('odd').addClass('even');
@@ -514,6 +524,8 @@ function initAddJoinFunction () {
 	    		nextRow.find('td input[name|="key"]').attr('name', "key-" + nextRow_new_column_number.toString());
 	    		nextRow.find('td input[name|="datatable_1_column_name"]').attr('name', "datatable_1_column_name-" + nextRow_new_column_number.toString());
 	    		nextRow.find('td input[name|="datatable_2_column_name"]').attr('name', "datatable_2_column_name-" + nextRow_new_column_number.toString());
+	    		nextRow.find('td input[name|="constant_1"]').attr('name', "constant_1-" + nextRow_new_column_number.toString());
+	    		nextRow.find('td input[name|="constant_2"]').attr('name', "constant_2-" + nextRow_new_column_number.toString());
 	    		
 	    		if (nextRow_new_column_number % 2 == 0) {
 	    			nextRow.removeClass('odd').addClass('even');

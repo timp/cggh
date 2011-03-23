@@ -24,10 +24,10 @@
 
 						<h4>[dataMerger-webapp]/WEB-INF/web.xml:</h4>
 						<ul> 
-							<li>dbBasePath (e.g. jdbc:mysql://localhost:3306/)</li>
-							<li>dbName (e.g. datamerger)</li>
-							<li>dbUsername (e.g. root)</li>
-							<li>dbPassword (e.g. root)</li>
+							<li>databaseBasePath (e.g. jdbc:mysql://localhost:3306/)</li>
+							<li>databaseName (e.g. datamerger)</li>
+							<li>databaseUsername (e.g. root)</li>
+							<li>databasePassword (e.g. root)</li>
 							<li>uploadsFileRepositoryBasePath (e.g. C:\Lee\Work\dataMerger\files\uploads\)</li>
 							<li>exportsFileRepositoryBasePath (e.g. C:\Lee\Work\dataMerger\files\exports\)</li>
 						</ul>

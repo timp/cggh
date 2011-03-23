@@ -79,7 +79,7 @@ public class FilesController extends HttpServlet {
 				
 				Class.forName("com.mysql.jdbc.Driver").newInstance();
 				
-				Connection connection = DriverManager.getConnection(getServletContext().getInitParameter("dbBasePath") + getServletContext().getInitParameter("dbName"), getServletContext().getInitParameter("dbUsername"), getServletContext().getInitParameter("dbPassword"));
+				Connection connection = DriverManager.getConnection(getServletContext().getInitParameter("databaseBasePath") + getServletContext().getInitParameter("databaseName"), getServletContext().getInitParameter("databaseUsername"), getServletContext().getInitParameter("databasePassword"));
 				 
 				if (!connection.isClosed()) {
 
@@ -213,7 +213,7 @@ public class FilesController extends HttpServlet {
 				
 				Class.forName("com.mysql.jdbc.Driver").newInstance();
 				
-				Connection connection = DriverManager.getConnection(getServletContext().getInitParameter("dbBasePath") + getServletContext().getInitParameter("dbName"), getServletContext().getInitParameter("dbUsername"), getServletContext().getInitParameter("dbPassword"));
+				Connection connection = DriverManager.getConnection(getServletContext().getInitParameter("databaseBasePath") + getServletContext().getInitParameter("databaseName"), getServletContext().getInitParameter("databaseUsername"), getServletContext().getInitParameter("databasePassword"));
 				 
 				if (!connection.isClosed()) {
 
@@ -437,7 +437,7 @@ public class FilesController extends HttpServlet {
 			try {
 				
 				Class.forName("com.mysql.jdbc.Driver").newInstance(); 
-				Connection connection = DriverManager.getConnection(getServletContext().getInitParameter("dbBasePath") + getServletContext().getInitParameter("dbName"), getServletContext().getInitParameter("dbUsername"), getServletContext().getInitParameter("dbPassword"));
+				Connection connection = DriverManager.getConnection(getServletContext().getInitParameter("databaseBasePath") + getServletContext().getInitParameter("databaseName"), getServletContext().getInitParameter("databaseUsername"), getServletContext().getInitParameter("databasePassword"));
 				 
 				if (!connection.isClosed()) {
 	

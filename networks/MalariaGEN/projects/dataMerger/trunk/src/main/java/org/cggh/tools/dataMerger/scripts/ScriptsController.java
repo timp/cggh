@@ -70,7 +70,7 @@ public class ScriptsController extends HttpServlet {
 			try {
 				
 				Class.forName("com.mysql.jdbc.Driver").newInstance(); 
-				Connection connection = DriverManager.getConnection(getServletContext().getInitParameter("dbBasePath"), getServletContext().getInitParameter("dbUsername"), getServletContext().getInitParameter("dbPassword"));
+				Connection connection = DriverManager.getConnection(getServletContext().getInitParameter("databaseBasePath"), getServletContext().getInitParameter("databaseUsername"), getServletContext().getInitParameter("databasePassword"));
 				 
 				if (!connection.isClosed()) {
 			
@@ -82,7 +82,7 @@ public class ScriptsController extends HttpServlet {
 					  try {
 						  
 				        Statement statement = connection.createStatement();
-				        statement.executeUpdate("CREATE DATABASE `" + getServletContext().getInitParameter("dbName") +  "` CHARACTER SET UTF8 COLLATE utf8_bin;");
+				        statement.executeUpdate("CREATE DATABASE `" + getServletContext().getInitParameter("databaseName") +  "` CHARACTER SET UTF8 COLLATE utf8_bin;");
 				        statement.close();
 				       
 				      }
@@ -94,7 +94,7 @@ public class ScriptsController extends HttpServlet {
 					  try {
 						  
 					        Statement statement = connection.createStatement();
-					        statement.executeUpdate("USE `" + getServletContext().getInitParameter("dbName") +  "`;");
+					        statement.executeUpdate("USE `" + getServletContext().getInitParameter("databaseName") +  "`;");
 					        statement.close();
 					       
 					      }
@@ -443,14 +443,14 @@ public class ScriptsController extends HttpServlet {
 			try {
 				
 				Class.forName("com.mysql.jdbc.Driver").newInstance(); 
-				Connection connection = DriverManager.getConnection(getServletContext().getInitParameter("dbBasePath"), getServletContext().getInitParameter("dbUsername"), getServletContext().getInitParameter("dbPassword"));
+				Connection connection = DriverManager.getConnection(getServletContext().getInitParameter("databaseBasePath"), getServletContext().getInitParameter("databaseUsername"), getServletContext().getInitParameter("databasePassword"));
 				 
 				if (!connection.isClosed()) {
 					
 					  try {
 				        Statement statement = connection.createStatement();
 				        
-				        statement.executeUpdate("DROP DATABASE `" + getServletContext().getInitParameter("dbName") +  "`;");
+				        statement.executeUpdate("DROP DATABASE `" + getServletContext().getInitParameter("databaseName") +  "`;");
 				      }
 				      catch (SQLException sqlException){
 				    	  out.println("<p>" + sqlException + "</p>");
@@ -487,16 +487,36 @@ public class ScriptsController extends HttpServlet {
 		
 						   File[] exports = exportsFileRepositoryBasePath.listFiles();
 						   
-						   if (uploads != null) {
-							   for (File file : exports) {
-							      // Delete each file
-			
-							      if (!file.delete())
-							      {
-							          // Failed to delete file
-			
-							          System.out.println("Failed to delete " + file);
-							      }
+						   if (exports != null) {
+							   
+							   for (File folder : exports) {
+								   
+								   if (folder.isDirectory()) {
+									   
+									   this.log("Got folder");
+									   
+									    for (File file : folder.listFiles()) {
+									    	
+									    	// Delete each file
+											
+										      if (!file.delete()) {
+										    	  
+										          // Failed to delete file
+										          System.out.println("Failed to delete " + file);
+										          
+										      }
+									    
+									    }
+									    
+									    if (!folder.delete()) {
+									    	  
+									          // Failed to delete folder
+									          System.out.println("Failed to delete " + folder);
+									          
+									      }
+									      
+								   }
+								  
 							   }
 						   }
 				      

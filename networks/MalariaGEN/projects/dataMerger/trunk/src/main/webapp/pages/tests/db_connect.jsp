@@ -18,7 +18,7 @@ if (request.getMethod().equals("POST")) {
 	try {
 		
 		Class.forName("com.mysql.jdbc.Driver").newInstance(); 
-		Connection connection = DriverManager.getConnection(application.getInitParameter("dbPath"), application.getInitParameter("dbUsername"), application.getInitParameter("dbPassword"));
+		Connection connection = DriverManager.getConnection(application.getInitParameter("dbPath"), application.getInitParameter("databaseUsername"), application.getInitParameter("databasePassword"));
 		 
 		if(!connection.isClosed())
 	
@@ -28,7 +28,7 @@ if (request.getMethod().equals("POST")) {
 			
 	} 
 	catch (Exception e) {
-		System.out.println("Failed to connect to database server. Using path " + application.getInitParameter("dbPath") + ", user " + application.getInitParameter("dbUsername"));
+		System.out.println("Failed to connect to database server. Using path " + application.getInitParameter("dbPath") + ", user " + application.getInitParameter("databaseUsername"));
 		out.println("<p>" + e + "</p>");
 		e.printStackTrace();
 	}

@@ -688,7 +688,7 @@ public class ExportsModel {
 						if (datatable1NonCrossDatatableExportColumnMappingsForUpdateSetSQL != "") {
 							datatable1NonCrossDatatableExportColumnMappingsForUpdateSetSQL += ", ";
 						}
-						datatable1NonCrossDatatableExportColumnMappingsForUpdateSetSQL += "`" + exportModel.getMergedDatatableModel().getName() + "`.`" + exportModel.getMergeModel().getJoinsModel().getJoinsAsCachedRowSet().getString("column_name") + "` = `" + exportModel.getMergeModel().getDatatable1Model().getName() + "`.`" + exportModel.getMergeModel().getJoinsModel().getJoinsAsCachedRowSet().getString("constant_1") + "` ";
+						datatable1NonCrossDatatableExportColumnMappingsForUpdateSetSQL += "`" + exportModel.getMergedDatatableModel().getName() + "`.`" + exportModel.getMergeModel().getJoinsModel().getJoinsAsCachedRowSet().getString("column_name") + "` = '" + exportModel.getMergeModel().getJoinsModel().getJoinsAsCachedRowSet().getString("constant_1") + "' ";
 					}
 					// Value will stay null by default
 					
@@ -702,7 +702,7 @@ public class ExportsModel {
 						if (datatable2NonCrossDatatableExportColumnMappingsForUpdateSetSQL != "") {
 							datatable2NonCrossDatatableExportColumnMappingsForUpdateSetSQL += ", ";
 						}
-						datatable2NonCrossDatatableExportColumnMappingsForUpdateSetSQL += "`" + exportModel.getMergedDatatableModel().getName() + "`.`" + exportModel.getMergeModel().getJoinsModel().getJoinsAsCachedRowSet().getString("column_name") + "` = `" + exportModel.getMergeModel().getDatatable2Model().getName() + "`.`" + exportModel.getMergeModel().getJoinsModel().getJoinsAsCachedRowSet().getString("constant_2") + "` ";
+						datatable2NonCrossDatatableExportColumnMappingsForUpdateSetSQL += "`" + exportModel.getMergedDatatableModel().getName() + "`.`" + exportModel.getMergeModel().getJoinsModel().getJoinsAsCachedRowSet().getString("column_name") + "` = '" + exportModel.getMergeModel().getJoinsModel().getJoinsAsCachedRowSet().getString("constant_2") + "' ";
 					}
 				
 				}
