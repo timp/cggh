@@ -145,6 +145,8 @@ public class ScriptsController extends HttpServlet {
 				        
 						File uploadsFileRepositoryBasPath = new File(getServletContext().getInitParameter("uploadsFileRepositoryBasePath"));
 						//this.log("uploadsFileRepositoryBasPath created: " + uploadsFileRepositoryBasPath.mkdirs());
+						
+						uploadsFileRepositoryBasPath.mkdirs();
 				        
 				        
 				      try{
@@ -420,6 +422,8 @@ public class ScriptsController extends HttpServlet {
 					        
 						        File exportsFileRepositoryBasPath = new File(getServletContext().getInitParameter("exportsFileRepositoryBasePath"));
 								//this.log("exportsFileRepositoryBasPath created: " + exportsFileRepositoryBasPath.mkdirs());
+						        
+						        exportsFileRepositoryBasPath.mkdirs();
 						        
 						        
 					connection.close();
