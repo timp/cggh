@@ -167,12 +167,12 @@ public class ResolutionsByColumnModel implements java.io.Serializable {
 					
 				} else {
 					
-					System.out.println("connection.isClosed");
+					//System.out.println("connection.isClosed");
 				}
 					
 			} 
 			catch (Exception e) {
-				System.out.println("Exception from getMergesAsCachedRowSet.");
+				//System.out.println("Exception from getMergesAsCachedRowSet.");
 				e.printStackTrace();
 			}
 	

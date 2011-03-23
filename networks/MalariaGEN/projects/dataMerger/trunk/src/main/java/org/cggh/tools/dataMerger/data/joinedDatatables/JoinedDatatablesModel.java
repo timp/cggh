@@ -46,7 +46,7 @@ public class JoinedDatatablesModel {
 	      	  } else {
 	      		  
 	      		  //This is not necessarily an error, since might just be checking for existence.
-	      		  this.logger.info("Did not retrieve joined datatable with the specified merge Id.");
+	      		  //this.logger.info("Did not retrieve joined datatable with the specified merge Id.");
 	      		  
 	      		  
 	      	  }

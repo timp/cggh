@@ -66,7 +66,7 @@ public class ResolutionsModel implements java.io.Serializable {
 			      	  } else {
 			      		  
 			      		  //There may be no unresolved conflicts
-			      		  this.logger.info("Did not retrieve any unresolved conflicts for the specified merge id: " + mergeModel.getId());
+			      		  //this.logger.info("Did not retrieve any unresolved conflicts for the specified merge id: " + mergeModel.getId());
 			      		  
 			      	  }
 			          
@@ -130,7 +130,7 @@ public class ResolutionsModel implements java.io.Serializable {
 			      	  } else {
 			      		  
 			      		  //There may be no unresolved conflicts
-			      		  this.logger.info("Did not retrieve any unresolved conflicts the specified merge id: " + mergeModel.getId());
+			      		  //this.logger.info("Did not retrieve any unresolved conflicts the specified merge id: " + mergeModel.getId());
 			      		  
 			      	  }
 			          
@@ -199,7 +199,7 @@ public class ResolutionsModel implements java.io.Serializable {
 			      	  } else {
 			      		  
 			      		  //There may be no unresolved conflicts
-			      		  this.logger.info("Did not retrieve any solution_by_column_ids using the specified merge id: " + mergeModel.getId());
+			      		  //this.logger.info("Did not retrieve any solution_by_column_ids using the specified merge id: " + mergeModel.getId());
 			      		  
 			      	  }
 			          
@@ -263,7 +263,7 @@ public class ResolutionsModel implements java.io.Serializable {
 			      	  } else {
 			      		  
 			      		  //There may be no unresolved conflicts
-			      		  this.logger.info("Did not retrieve any solution_by_row_ids using the specified merge id: " + mergeModel.getId());
+			      		  //this.logger.info("Did not retrieve any solution_by_row_ids using the specified merge id: " + mergeModel.getId());
 			      		  
 			      	  }
 			          
@@ -328,7 +328,7 @@ public class ResolutionsModel implements java.io.Serializable {
 			      	  } else {
 			      		  
 			      		  //There may be no unresolved conflicts
-			      		  this.logger.info("Did not retrieve any solution_by_cell_ids using the specified merge id: " + mergeModel.getId());
+			      		  //this.logger.info("Did not retrieve any solution_by_cell_ids using the specified merge id: " + mergeModel.getId());
 			      		  
 			      	  }
 			          
@@ -391,7 +391,7 @@ public class ResolutionsModel implements java.io.Serializable {
 			      	  } else {
 			      		  
 			      		  //There may be no unresolved conflicts
-			      		  this.logger.info("Did not retrieve any constants using the specified merge id: " + mergeModel.getId());
+			      		  //this.logger.info("Did not retrieve any constants using the specified merge id: " + mergeModel.getId());
 			      		  
 			      	  }
 			          
@@ -454,7 +454,7 @@ public class ResolutionsModel implements java.io.Serializable {
 			      	  } else {
 			      		  
 			      		  //There may be no unresolved conflicts
-			      		  this.logger.info("Did not retrieve any null/constant counts using the specified merge id: " + mergeModel.getId());
+			      		  //this.logger.info("Did not retrieve any null/constant counts using the specified merge id: " + mergeModel.getId());
 			      		  
 			      	  }
 			          

@@ -75,14 +75,14 @@ public class ScriptsController extends HttpServlet {
 				if (!connection.isClosed()) {
 			
 					//TODO
-					log("Connected to database server.");
+					//this.log("Connected to database server.");
 				
 						//NB: Can't pass tablenames directly into a prepared statement, have to use the string.
 
 					  try {
 						  
 				        Statement statement = connection.createStatement();
-				        statement.executeUpdate("CREATE DATABASE `" + getServletContext().getInitParameter("databaseName") +  "` CHARACTER SET UTF8 COLLATE utf8_bin;");
+				        statement.executeUpdate("CREATE DATABASE IF NOT EXISTS `" + getServletContext().getInitParameter("databaseName") +  "` CHARACTER SET UTF8 COLLATE utf8_bin;");
 				        statement.close();
 				       
 				      }
@@ -144,7 +144,7 @@ public class ScriptsController extends HttpServlet {
 				        
 				        
 						File uploadsFileRepositoryBasPath = new File(getServletContext().getInitParameter("uploadsFileRepositoryBasePath"));
-						log("uploadsFileRepositoryBasPath created: " + uploadsFileRepositoryBasPath.mkdirs());
+						//this.log("uploadsFileRepositoryBasPath created: " + uploadsFileRepositoryBasPath.mkdirs());
 				        
 				        
 				      try{
@@ -419,7 +419,7 @@ public class ScriptsController extends HttpServlet {
 						        }
 					        
 						        File exportsFileRepositoryBasPath = new File(getServletContext().getInitParameter("exportsFileRepositoryBasePath"));
-								log("exportsFileRepositoryBasPath created: " + exportsFileRepositoryBasPath.mkdirs());
+								//this.log("exportsFileRepositoryBasPath created: " + exportsFileRepositoryBasPath.mkdirs());
 						        
 						        
 					connection.close();
@@ -431,7 +431,7 @@ public class ScriptsController extends HttpServlet {
 					
 			} 
 			catch (Exception exception) {
-				System.out.println("Failed to connect to database server.");
+				//System.out.println("Failed to connect to database server.");
 				out.println("<p>" + exception + "</p>");
 				exception.printStackTrace();
 			}
@@ -450,7 +450,7 @@ public class ScriptsController extends HttpServlet {
 					  try {
 				        Statement statement = connection.createStatement();
 				        
-				        statement.executeUpdate("DROP DATABASE `" + getServletContext().getInitParameter("databaseName") +  "`;");
+				        statement.executeUpdate("DROP DATABASE IF EXISTS `" + getServletContext().getInitParameter("databaseName") +  "`;");
 				      }
 				      catch (SQLException sqlException){
 				    	  out.println("<p>" + sqlException + "</p>");
@@ -476,7 +476,7 @@ public class ScriptsController extends HttpServlet {
 						      {
 						          // Failed to delete file
 		
-						          System.out.println("Failed to delete " + file);
+						          //System.out.println("Failed to delete " + file);
 						      }
 						   }
 					   }
@@ -493,7 +493,7 @@ public class ScriptsController extends HttpServlet {
 								   
 								   if (folder.isDirectory()) {
 									   
-									   this.log("Got folder");
+									   //this.log("Got folder");
 									   
 									    for (File file : folder.listFiles()) {
 									    	
@@ -502,7 +502,7 @@ public class ScriptsController extends HttpServlet {
 										      if (!file.delete()) {
 										    	  
 										          // Failed to delete file
-										          System.out.println("Failed to delete " + file);
+										          //System.out.println("Failed to delete " + file);
 										          
 										      }
 									    
@@ -511,7 +511,7 @@ public class ScriptsController extends HttpServlet {
 									    if (!folder.delete()) {
 									    	  
 									          // Failed to delete folder
-									          System.out.println("Failed to delete " + folder);
+									          //System.out.println("Failed to delete " + folder);
 									          
 									      }
 									      

@@ -461,7 +461,7 @@ public class DataController extends HttpServlet {
 						  
 						String logMessage = "Did not get an export ID after attempting to create an export using the merge ID.";
 						
-						this.log(logMessage);
+						//this.log(logMessage);
 						
 						  response.setContentType("text/plain");
 						  response.getWriter().println(logMessage);

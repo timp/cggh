@@ -149,7 +149,7 @@ public class ResolutionsByRowModel implements java.io.Serializable {
 					
 					if (mergeModel.getJoinedKeytableModel().getDataAsCachedRowSet().next()) {
 						
-						this.logger.info("Got joined keytable data as cached row set.");
+						//this.logger.info("Got joined keytable data as cached row set.");
 						
 
 					    for (int i = 1; i <= mergeModel.getJoinedKeytableModel().getDataAsCachedRowSet().getMetaData().getColumnCount(); i++) {
@@ -159,7 +159,8 @@ public class ResolutionsByRowModel implements java.io.Serializable {
 						
 						
 					} else {
-						this.logger.severe("Did not get joined keytable data as cached row set.");
+						//This is not necessarily a problem if there are no common keys.
+						//this.logger.severe("Did not get joined keytable data as cached row set.");
 					}
 					
 					
@@ -168,7 +169,7 @@ public class ResolutionsByRowModel implements java.io.Serializable {
 					
 					if (mergeModel.getJoinsModel().getNonKeyCrossDatatableJoinsAsCachedRowSet().next()) {
 						
-						this.logger.info("Got non-key cross-datatable joins data as cached row set.");
+						//this.logger.info("Got non-key cross-datatable joins data as cached row set.");
 						
 						mergeModel.getJoinsModel().getNonKeyCrossDatatableJoinsAsCachedRowSet().beforeFirst();
 						
@@ -191,7 +192,7 @@ public class ResolutionsByRowModel implements java.io.Serializable {
 					
 					if (mergeModel.getJoinsModel().getKeyJoinsAsCachedRowSet().next()) {
 						
-						this.logger.info("Got key joins data as cached row set.");
+						//this.logger.info("Got key joins data as cached row set.");
 						
 						mergeModel.getJoinsModel().getKeyJoinsAsCachedRowSet().first();
 						
@@ -224,7 +225,7 @@ public class ResolutionsByRowModel implements java.io.Serializable {
 		        		  "ORDER BY resolution.joined_keytable_id " +
 		        		  ";";				    	  
 				    	  
-				    	  this.logger.info("selectResolutionsByRowSQL = " + selectResolutionsByRowSQL);
+				    	  //this.logger.info("selectResolutionsByRowSQL = " + selectResolutionsByRowSQL);
 				    	  
 				          PreparedStatement preparedStatement = connection.prepareStatement(selectResolutionsByRowSQL);
 				          preparedStatement.setInt(1, mergeModel.getId());
@@ -245,12 +246,12 @@ public class ResolutionsByRowModel implements java.io.Serializable {
 					
 				} else {
 					
-					System.out.println("connection.isClosed");
+					//System.out.println("connection.isClosed");
 				}
 					
 			} 
 			catch (Exception e) {
-				System.out.println("Exception from getMergesAsCachedRowSet.");
+				//System.out.println("Exception from getMergesAsCachedRowSet.");
 				e.printStackTrace();
 			}
 	

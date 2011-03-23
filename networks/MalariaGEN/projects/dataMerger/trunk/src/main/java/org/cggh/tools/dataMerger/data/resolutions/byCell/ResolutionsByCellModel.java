@@ -159,7 +159,7 @@ public class ResolutionsByCellModel implements java.io.Serializable {
 					
 					if (mergeModel.getJoinedKeytableModel().getDataAsCachedRowSet().next()) {
 						
-						this.logger.info("Got joined keytable data as cached row set.");
+						//this.logger.info("Got joined keytable data as cached row set.");
 						
 
 					    for (int i = 1; i <= mergeModel.getJoinedKeytableModel().getDataAsCachedRowSet().getMetaData().getColumnCount(); i++) {
@@ -169,7 +169,8 @@ public class ResolutionsByCellModel implements java.io.Serializable {
 						
 						
 					} else {
-						this.logger.severe("Did not get joined keytable data as cached row set.");
+						//This is not necessarily a problem if there are no common keys.
+						//this.logger.severe("Did not get joined keytable data as cached row set.");
 					}
 					
 					
@@ -178,7 +179,7 @@ public class ResolutionsByCellModel implements java.io.Serializable {
 					
 					if (mergeModel.getJoinsModel().getNonKeyCrossDatatableJoinsAsCachedRowSet().next()) {
 						
-						this.logger.info("Got non-key cross-datatable joins data as cached row set.");
+						//this.logger.info("Got non-key cross-datatable joins data as cached row set.");
 						
 						mergeModel.getJoinsModel().getNonKeyCrossDatatableJoinsAsCachedRowSet().beforeFirst();
 						
@@ -199,7 +200,7 @@ public class ResolutionsByCellModel implements java.io.Serializable {
 					
 					if (mergeModel.getJoinsModel().getKeyJoinsAsCachedRowSet().next()) {
 						
-						this.logger.info("Got key joins data as cached row set.");
+						//this.logger.info("Got key joins data as cached row set.");
 						
 						mergeModel.getJoinsModel().getKeyJoinsAsCachedRowSet().first();
 						
@@ -231,7 +232,7 @@ public class ResolutionsByCellModel implements java.io.Serializable {
 											        		  "ORDER BY resolution.joined_keytable_id " +
 											        		  ";";
 				    	  
-				    	  this.logger.info("selectResolutionsByCellSQL = " + selectResolutionsByCellSQL);
+				    	  //this.logger.info("selectResolutionsByCellSQL = " + selectResolutionsByCellSQL);
 				    	  
 				          PreparedStatement preparedStatement = connection.prepareStatement(selectResolutionsByCellSQL);
 				          preparedStatement.setInt(1, mergeModel.getId());
@@ -252,12 +253,12 @@ public class ResolutionsByCellModel implements java.io.Serializable {
 					
 				} else {
 					
-					System.out.println("connection.isClosed");
+					//System.out.println("connection.isClosed");
 				}
 					
 			} 
 			catch (Exception e) {
-				System.out.println("Exception from getMergesAsCachedRowSet.");
+				//System.out.println("Exception from getMergesAsCachedRowSet.");
 				e.printStackTrace();
 			}
 	
@@ -290,7 +291,7 @@ public class ResolutionsByCellModel implements java.io.Serializable {
 				
 				for(int i = 0; i < keys.length(); i++) {
 					
-					//this.logger.info("key " + keys.getString(i) + " = " + resolutionsByCellAsJsonObject.get(keys.getString(i)));
+					////this.logger.info("key " + keys.getString(i) + " = " + resolutionsByCellAsJsonObject.get(keys.getString(i)));
 					
 					Matcher solutionByCellIdKeyPatternMatcher = solutionByCellIdKeyPattern.matcher(keys.getString(i));
 					
@@ -302,17 +303,17 @@ public class ResolutionsByCellModel implements java.io.Serializable {
 						
 			        	  resolutionByCellModel.setMergeModel(mergeModel);
 			        	  
-			        	  //this.logger.info("joinedKeytableID: " + solutionByCellIdKeyPatternMatcher.group(1));
+			        	  ////this.logger.info("joinedKeytableID: " + solutionByCellIdKeyPatternMatcher.group(1));
 			        	  resolutionByCellModel.getJoinedKeytableModel().setId(Integer.parseInt(solutionByCellIdKeyPatternMatcher.group(1)));
 			        	  
-			        	  //this.logger.info("columnNumber: " + solutionByCellIdKeyPatternMatcher.group(2));
+			        	  ////this.logger.info("columnNumber: " + solutionByCellIdKeyPatternMatcher.group(2));
 			        	  resolutionByCellModel.getJoinModel().setColumnNumber(Integer.parseInt(solutionByCellIdKeyPatternMatcher.group(2)));
 
 			        	//Note: Merge's total_conflicts_count will only count conflicts that have no solution.
 
 			        	  if (resolutionsByCellAsJsonObject.optInt(keys.getString(i)) != 0) {
 			        		  
-			        		  this.logger.info("solutionByCellId: " + resolutionsByCellAsJsonObject.getInt(keys.getString(i)));
+			        		  //this.logger.info("solutionByCellId: " + resolutionsByCellAsJsonObject.getInt(keys.getString(i)));
 			        		  resolutionByCellModel.getSolutionByCellModel().setId(resolutionsByCellAsJsonObject.getInt(keys.getString(i)));
 			        	  } else {
 			        		  resolutionByCellModel.getSolutionByCellModel().setId(null);
@@ -322,7 +323,7 @@ public class ResolutionsByCellModel implements java.io.Serializable {
 			        	  
 			        	  if (resolutionsByCellAsJsonObject.has("constant-" + resolutionByCellModel.getJoinedKeytableModel().getId() + "-" + resolutionByCellModel.getJoinModel().getColumnNumber())) {
 			        	  
-			        		  this.logger.info("solutionByCellId: " + resolutionsByCellAsJsonObject.getString("constant-" + resolutionByCellModel.getJoinedKeytableModel().getId() + "-" + resolutionByCellModel.getJoinModel().getColumnNumber()));
+			        		  //this.logger.info("solutionByCellId: " + resolutionsByCellAsJsonObject.getString("constant-" + resolutionByCellModel.getJoinedKeytableModel().getId() + "-" + resolutionByCellModel.getJoinModel().getColumnNumber()));
 			        		  resolutionByCellModel.setConstant(resolutionsByCellAsJsonObject.getString("constant-" + resolutionByCellModel.getJoinedKeytableModel().getId() + "-" + resolutionByCellModel.getJoinModel().getColumnNumber()));
 		        		  
 			        	  } else {
@@ -373,7 +374,7 @@ public class ResolutionsByCellModel implements java.io.Serializable {
 	          
 	          if (resolutionByCellModel.getSolutionByCellModel().getId() != null) {
 	        	  preparedStatement.setInt(1, resolutionByCellModel.getSolutionByCellModel().getId());
-	        	  //this.logger.info("1 solution_by_cell_id: " + resolutionByCellModel.getSolutionByCellModel().getId());
+	        	  ////this.logger.info("1 solution_by_cell_id: " + resolutionByCellModel.getSolutionByCellModel().getId());
 	          } else {
 	        	  preparedStatement.setNull(1, java.sql.Types.INTEGER);
 	          }
@@ -386,7 +387,7 @@ public class ResolutionsByCellModel implements java.io.Serializable {
 		        	  //Allow blank string constants (for future-proofing against null/blank string distinctions, especially in export)
 		        	  preparedStatement.setString(2, resolutionByCellModel.getConstant());
 		        	  
-		        	  //this.logger.info("2 constant: " + resolutionByCellModel.getConstant());
+		        	  ////this.logger.info("2 constant: " + resolutionByCellModel.getConstant());
 		        	  
 		          } else {
 		        	  preparedStatement.setNull(2, java.sql.Types.VARCHAR);
@@ -396,9 +397,9 @@ public class ResolutionsByCellModel implements java.io.Serializable {
 	        	  preparedStatement.setNull(2, java.sql.Types.VARCHAR);
 	          }
 	          
-	          //this.logger.info("3 mergeId: " + resolutionByCellModel.getMergeModel().getId());
-	          //this.logger.info("4 joinedKeytableId: " + resolutionByCellModel.getJoinedKeytableModel().getId());
-	          //this.logger.info("5 constant: " + resolutionByCellModel.getJoinModel().getColumnNumber());
+	          ////this.logger.info("3 mergeId: " + resolutionByCellModel.getMergeModel().getId());
+	          ////this.logger.info("4 joinedKeytableId: " + resolutionByCellModel.getJoinedKeytableModel().getId());
+	          ////this.logger.info("5 constant: " + resolutionByCellModel.getJoinModel().getColumnNumber());
 	          
 	          preparedStatement.setInt(3, resolutionByCellModel.getMergeModel().getId());
 	          preparedStatement.setInt(4, resolutionByCellModel.getJoinedKeytableModel().getId());

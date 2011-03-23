@@ -78,12 +78,12 @@ public class MergesModel implements java.io.Serializable {
 				
 			} else {
 				
-				System.out.println("connection.isClosed");
+				//System.out.println("connection.isClosed");
 			}
 				
 		} 
 		catch (Exception e) {
-			System.out.println("Exception from getMergesAsCachedRowSet.");
+			//System.out.println("Exception from getMergesAsCachedRowSet.");
 			e.printStackTrace();
 		}				
 				
@@ -160,7 +160,7 @@ public class MergesModel implements java.io.Serializable {
 	      	  } else {
 	      		  
 	      		  //TODO:
-	      		  System.out.println("No merge found with the specified id.");
+	      		  //System.out.println("No merge found with the specified id.");
 	      		  
 	      	  }
 	          
@@ -231,8 +231,8 @@ public class MergesModel implements java.io.Serializable {
 						mergeModel = this.retrieveMergeAsMergeModelThroughCountingDuplicateKeysUsingMergeModel(mergeModel, connection);
 						
 						
-						this.logger.info("keysCount=" + mergeModel.getJoinsModel().getKeysCount());
-						this.logger.info("totalDuplicateKeysCount=" + mergeModel.getTotalDuplicateKeysCount());
+						//this.logger.info("keysCount=" + mergeModel.getJoinsModel().getKeysCount());
+						//this.logger.info("totalDuplicateKeysCount=" + mergeModel.getTotalDuplicateKeysCount());
 						
 						// Count the data conflicts (if there are keys and no duplicates)
 						
@@ -269,12 +269,12 @@ public class MergesModel implements java.io.Serializable {
 				
 			} else {
 				
-				System.out.println("connection.isClosed");
+				//System.out.println("connection.isClosed");
 			}
 				
 		} 
 		catch (Exception e) {
-			System.out.println("Exception from createMerge.");
+			//System.out.println("Exception from createMerge.");
 			e.printStackTrace();
 		}
     	
@@ -354,11 +354,11 @@ public class MergesModel implements java.io.Serializable {
 		  JoinedKeytablesModel joinedKeytablesModel = new JoinedKeytablesModel();
 
 		  
-		  this.logger.info("1 Joined Keytable Name=" + mergeModel.getJoinedKeytableModel().getName());
+		  //this.logger.info("1 Joined Keytable Name=" + mergeModel.getJoinedKeytableModel().getName());
 		  
 		  mergeModel.setJoinedKeytableModel(joinedKeytablesModel.retrieveJoinedKeytableAsJoinedKeytableModelUsingMergeId(mergeModel.getId(), connection));
 
-		  this.logger.info("2 Joined Keytable Name=" + mergeModel.getJoinedKeytableModel().getName());
+		  //this.logger.info("2 Joined Keytable Name=" + mergeModel.getJoinedKeytableModel().getName());
 		  
 		  if (mergeModel.getJoinedKeytableModel().getName() != null) {
 
@@ -487,7 +487,7 @@ public class MergesModel implements java.io.Serializable {
 	
 				        }
 				        catch(SQLException sqlException){
-				        	System.out.println("<p>" + sqlException + "</p>");
+				        	//System.out.println("<p>" + sqlException + "</p>");
 					    	sqlException.printStackTrace();
 				        } 	
 				
@@ -495,12 +495,12 @@ public class MergesModel implements java.io.Serializable {
 					
 				} else {
 					
-					System.out.println("connection.isClosed");
+					//System.out.println("connection.isClosed");
 				}
 					
 			} 
 			catch (Exception e) {
-				System.out.println("Exception from getMergesAsCachedRowSet.");
+				//System.out.println("Exception from getMergesAsCachedRowSet.");
 				e.printStackTrace();
 			}
 	

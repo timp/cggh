@@ -98,7 +98,7 @@ public class FilesController extends HttpServlet {
 				        	  resultSet.first();
 				        	  user_id = resultSet.getInt("id");
 				          } else {
-				        	  System.out.println("Did not find user in user table. This user is not registered. Db query gives !resultSet.next()");
+				        	  //System.out.println("Did not find user in user table. This user is not registered. Db query gives !resultSet.next()");
 				          }
 
 				          resultSet.close();
@@ -106,7 +106,7 @@ public class FilesController extends HttpServlet {
 				          
 				        }
 				        catch(SQLException sqlException){
-				        	System.out.println("<p>" + sqlException + "</p>");
+				        	//System.out.println("<p>" + sqlException + "</p>");
 					    	sqlException.printStackTrace();
 				        } 					
 					
@@ -172,7 +172,7 @@ public class FilesController extends HttpServlet {
 				        	  
 				        	  
 				          } else {
-				        	  System.out.println("Db query gives !resultSet.next()");
+				        	  //System.out.println("Db query gives !resultSet.next()");
 				          }
 	
 				          resultSet.close();
@@ -180,7 +180,7 @@ public class FilesController extends HttpServlet {
 				          
 				        }
 				        catch(SQLException sqlException){
-				        	System.out.println("<p>" + sqlException + "</p>");
+				        	//System.out.println("<p>" + sqlException + "</p>");
 					    	sqlException.printStackTrace();
 				        } 				
 					
@@ -189,12 +189,12 @@ public class FilesController extends HttpServlet {
 					
 				} else {
 					
-					System.out.println("connection.isClosed");
+					//System.out.println("connection.isClosed");
 				}
 					
 			} 
 			catch (Exception e) {
-				System.out.println(e.getMessage().toString());
+				//System.out.println(e.getMessage().toString());
 				e.printStackTrace();
 			}		
 		
@@ -261,7 +261,7 @@ public class FilesController extends HttpServlet {
 							        	  repository_filepath = resultSet2.getString("joins_export_repository_filepath");
 							        	  
 							          } else {
-							        	  System.out.println("Db query gives !resultSet.next()");
+							        	  //System.out.println("Db query gives !resultSet.next()");
 							          }
 				
 							          resultSet2.close();
@@ -284,7 +284,7 @@ public class FilesController extends HttpServlet {
 							        	  repository_filepath = resultSet2.getString("resolutions_export_repository_filepath");
 							        	  
 							          } else {
-							        	  System.out.println("Db query gives !resultSet.next()");
+							        	  //System.out.println("Db query gives !resultSet.next()");
 							          }
 				
 							          resultSet2.close();
@@ -306,7 +306,7 @@ public class FilesController extends HttpServlet {
 							        	  repository_filepath = resultSet2.getString("merged_datatable_export_repository_filepath");
 							        	  
 							          } else {
-							        	  System.out.println("Db query gives !resultSet.next()");
+							        	  //System.out.println("Db query gives !resultSet.next()");
 							          }
 				
 							          resultSet2.close();
@@ -314,7 +314,7 @@ public class FilesController extends HttpServlet {
  
 						    	  } else {
 							    	  //TODO
-							    	  this.log("Unrecognised resource name:" + resourceName);
+							    	  //this.log("Unrecognised resource name:" + resourceName);
 							      }
 							          
 							          
@@ -349,21 +349,21 @@ public class FilesController extends HttpServlet {
 						              op.close();					        	  
 						        	  
 					        	  } else {
-					        		  this.log("Unexpected: repository_filepath is null");
+					        		  //this.log("Unexpected: repository_filepath is null");
 					        	  }
 
 						      
 						          
 						        }
 						        catch(SQLException sqlException){
-						        	System.out.println("<p>" + sqlException + "</p>");
+						        	//System.out.println("<p>" + sqlException + "</p>");
 							    	sqlException.printStackTrace();
 						        } 					
 							
 				        //TODO: Bail out if user_id is null
 				      
 				          } else {
-				        	  System.out.println("Did not find user in user table. This user is not registered. Db query gives !resultSet.next()");
+				        	  //System.out.println("Did not find user in user table. This user is not registered. Db query gives !resultSet.next()");
 				          }    
 					          
 				          resultSet.close();
@@ -371,7 +371,7 @@ public class FilesController extends HttpServlet {
 				          
 				        }
 				        catch(SQLException sqlException){
-				        	System.out.println("<p>" + sqlException + "</p>");
+				        	//System.out.println("<p>" + sqlException + "</p>");
 					    	sqlException.printStackTrace();
 				        } 				
 					
@@ -380,12 +380,12 @@ public class FilesController extends HttpServlet {
 					
 				} else {
 					
-					System.out.println("connection.isClosed");
+					//System.out.println("connection.isClosed");
 				}
 					
 			} 
 			catch (Exception e) {
-				System.out.println(e.getMessage().toString());
+				//System.out.println(e.getMessage().toString());
 				e.printStackTrace();
 			}	
 			
@@ -394,7 +394,7 @@ public class FilesController extends HttpServlet {
 			
 		} else {
 			
-			System.out.println("Unhandled pathInfo.");
+			//System.out.println("Unhandled pathInfo.");
 		}
 		
 
@@ -423,7 +423,7 @@ public class FilesController extends HttpServlet {
 	        try {
 	            writer = response.getWriter();
 	        } catch (IOException ex) {
-	            log(FilesController.class.getName() + "has thrown an exception: " + ex.getMessage());
+	            //this.log(FilesController.class.getName() + "has thrown an exception: " + ex.getMessage());
 	        }
 	
 	        String filename = request.getHeader("X-File-Name");
@@ -456,7 +456,7 @@ public class FilesController extends HttpServlet {
 				        	  resultSet.first();
 				        	  user_id = resultSet.getInt("id");
 				          } else {
-				        	  System.out.println("Did not find user in user table. This user is not registered. Db query gives !resultSet.next()");
+				        	  //System.out.println("Did not find user in user table. This user is not registered. Db query gives !resultSet.next()");
 				          }
 	
 				          resultSet.close();
@@ -496,7 +496,7 @@ public class FilesController extends HttpServlet {
 				          } else {
 				        	  
 				        	  
-				        	  System.out.println("Unexpected: !resultSet.next()");
+				        	  //System.out.println("Unexpected: !resultSet.next()");
 				          }
 				          
 				          preparedStatement.close();
@@ -531,12 +531,12 @@ public class FilesController extends HttpServlet {
 					        } catch (FileNotFoundException ex) {
 					            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 					            writer.print("{\"success\": \"false\"}");
-					            log(FilesController.class.getName() + "has thrown an exception: " + ex.getMessage());
+					            //this.log(FilesController.class.getName() + "has thrown an exception: " + ex.getMessage());
 					            successful = false;
 					        } catch (IOException ex) {
 					            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 					            writer.print("{\"success\": \"false\"}");
-					            log(FilesController.class.getName() + "has thrown an exception: " + ex.getMessage());
+					            //this.log(FilesController.class.getName() + "has thrown an exception: " + ex.getMessage());
 					            successful = false;
 					        } finally {
 					            try {
@@ -562,18 +562,18 @@ public class FilesController extends HttpServlet {
 					connection.close();
 					
 				} else {
-					System.out.println("connection.isClosed");
+					//System.out.println("connection.isClosed");
 				}
 					
 			} 
 			catch (Exception exception) {
-				System.out.println("Failed to connect to database server.");
+				//System.out.println("Failed to connect to database server.");
 				exception.printStackTrace();
 			}
 
         } else {
         	
-        	System.out.println("Unhandled pathInfo.");
+        	//System.out.println("Unhandled pathInfo.");
         }
         
         writer.flush();

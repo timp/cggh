@@ -49,7 +49,7 @@ public class JoinedKeytablesModel implements java.io.Serializable {
 	      	  } else {
 	      		  
 	      		  //This is not necessarily an error, since might just be checking for existence.
-	      		  this.logger.info("Did not retrieve joined datatable with the specified merge Id.");
+	      		  //this.logger.info("Did not retrieve joined datatable with the specified merge Id.");
 	      		  
 	      		  
 	      	  }
@@ -198,7 +198,7 @@ public class JoinedKeytablesModel implements java.io.Serializable {
 									        		  ", PRIMARY KEY (id) " + 
 									        		  ") ENGINE=InnoDB;";
 		    	  
-		    	  this.logger.info("createJoinedKeytableSQL=" + createJoinedKeytableSQL);
+		    	  //this.logger.info("createJoinedKeytableSQL=" + createJoinedKeytableSQL);
 		    	  
 		          Statement statement = connection.createStatement();
 		          statement.executeUpdate(createJoinedKeytableSQL);
@@ -220,7 +220,7 @@ public class JoinedKeytablesModel implements java.io.Serializable {
 									    		  		"ON " + joinForSelectIntoTableSQL + 
 									    		  		"ORDER BY " + orderForSelectIntoTableSQL + ";";
     		    	  
-    		    	  this.logger.info("selectIntoTableSQL=" + selectIntoTableSQL);
+    		    	  //this.logger.info("selectIntoTableSQL=" + selectIntoTableSQL);
     		    	  
     		          PreparedStatement preparedStatement2 = connection.prepareStatement(selectIntoTableSQL);
 
@@ -286,7 +286,7 @@ public class JoinedKeytablesModel implements java.io.Serializable {
 	        	  joinedKeytableModel = this.retrieveJoinedKeytableAsJoinedKeytableModelUsingMergeId(mergeModel.getId(), connection);
 
 	          } else {
-	        	  this.logger.info("Did not find a joined datatable with the name: " + joinedKeytableModel.getName());
+	        	  //this.logger.info("Did not find a joined datatable with the name: " + joinedKeytableModel.getName());
 	          }
 
 	          resultSet.close();

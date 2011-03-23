@@ -69,7 +69,7 @@ public class ResolutionsByRowFunctionsModel implements java.io.Serializable {
 		        			  
 			        		  Integer columnNumber = Integer.parseInt(joinedKeytableKeyColumnNamePatternMatcher.group(1));
 			        		  
-			        		  //this.logger.info("Got columnNumber: " + columnNumber);
+			        		  ////this.logger.info("Got columnNumber: " + columnNumber);
 			        		  
 			        		  resolutionsByRowAsDecoratedXHTMLTable += "<th class=\"key-heading\" rowspan=\"2\">" + this.getJoinColumnNamesByColumnNumberAsHashMap().get(columnNumber) + "</th>";
 			        		  
@@ -83,19 +83,19 @@ public class ResolutionsByRowFunctionsModel implements java.io.Serializable {
 				 
 				 Pattern resolutionsByRowAsCachedRowSetSource1ColumnNamePattern = Pattern.compile("^column_(\\d+)_source_1$");
 				 
-				 //this.logger.info("Searching for non-key cross-datatable columns by label...");
+				 ////this.logger.info("Searching for non-key cross-datatable columns by label...");
 				 
 		          for (int i = 1; i <= this.getResolutionsByRowAsCachedRowSet().getMetaData().getColumnCount(); i++) {
 
 		        		  Matcher resolutionsByRowAsCachedRowSetColumnNamePatternMatcher = resolutionsByRowAsCachedRowSetSource1ColumnNamePattern.matcher(this.getResolutionsByRowAsCachedRowSet().getMetaData().getColumnLabel(i));
 		        		  
-		        		  //this.logger.info("Looking at column label: " +  this.getResolutionsByRowAsCachedRowSet().getMetaData().getColumnLabel(i));
+		        		  ////this.logger.info("Looking at column label: " +  this.getResolutionsByRowAsCachedRowSet().getMetaData().getColumnLabel(i));
 		        		  
 		        		  if (resolutionsByRowAsCachedRowSetColumnNamePatternMatcher.find()) {
 		        		  
 			        		  Integer columnNumber = Integer.parseInt(resolutionsByRowAsCachedRowSetColumnNamePatternMatcher.group(1));
 			        		  
-			        		  //this.logger.info("Got columnNumber: " + columnNumber);
+			        		  ////this.logger.info("Got columnNumber: " + columnNumber);
 			        		  
 			        		  
 
@@ -237,19 +237,19 @@ public class ResolutionsByRowFunctionsModel implements java.io.Serializable {
 					 
 					 //TODO
 
-					 //this.logger.info("Searching for non-key cross-datatable columns by label (to be used for getting data)...");
+					 ////this.logger.info("Searching for non-key cross-datatable columns by label (to be used for getting data)...");
 					 
 			          for (int i = 1; i <= this.getResolutionsByRowAsCachedRowSet().getMetaData().getColumnCount(); i++) {
 			        	  
 			        		  Matcher resolutionsByRowAsCachedRowSetColumnNamePatternMatcher = resolutionsByRowAsCachedRowSetSource1ColumnNamePattern.matcher(this.getResolutionsByRowAsCachedRowSet().getMetaData().getColumnLabel(i));
 			        		  
-			        		  //this.logger.info("Looking at column label: " +  this.getResolutionsByRowAsCachedRowSet().getMetaData().getColumnLabel(i));
+			        		  ////this.logger.info("Looking at column label: " +  this.getResolutionsByRowAsCachedRowSet().getMetaData().getColumnLabel(i));
 			        		  
 			        		  if (resolutionsByRowAsCachedRowSetColumnNamePatternMatcher.find()) {
 			        		  
 				        		  Integer columnNumber = Integer.parseInt(resolutionsByRowAsCachedRowSetColumnNamePatternMatcher.group(1));
 				        		  
-				        		  //this.logger.info("Got columnNumber: " + columnNumber);
+				        		  ////this.logger.info("Got columnNumber: " + columnNumber);
 				        		  
 				        		  String columnLabelForSource2Column = "column_" + columnNumber.toString() + "_source_2";
 				        		  

@@ -51,7 +51,7 @@ public class UserModel implements java.io.Serializable {
 			        	  
 			          } else {
 			        	  //TODO: proper logging and error handling
-			        	  System.out.println("Did not find user in user table. This user is not registered. Db query gives !resultSet.next()");
+			        	  //System.out.println("Did not find user in user table. This user is not registered. Db query gives !resultSet.next()");
 			          }
 
 			          resultSet.close();
@@ -59,7 +59,7 @@ public class UserModel implements java.io.Serializable {
 			          
 			        }
 			        catch(SQLException sqlException){
-			        	System.out.println(sqlException);
+			        	//System.out.println(sqlException);
 				    	sqlException.printStackTrace();
 			        } 				
 				
@@ -68,12 +68,12 @@ public class UserModel implements java.io.Serializable {
 				
 			} else {
 				
-				System.out.println("connection.isClosed");
+				//System.out.println("connection.isClosed");
 			}
 				
 		} 
 		catch (Exception e) {
-			System.out.println("Exception from setUserModelByUsername.");
+			//System.out.println("Exception from setUserModelByUsername.");
 			e.printStackTrace();
 		}
 		

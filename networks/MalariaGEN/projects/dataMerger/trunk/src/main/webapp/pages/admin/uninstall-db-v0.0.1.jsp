@@ -11,6 +11,8 @@
 <body>
 	<p><a href="../admin/">Admin menu</a></p>
 	<h1>Uninstall database v0.0.1</h1>
+	<p>May not have permission to drop the database, in which case it should be droped manually first.</p>
+	<p>This script also removes files in the repository folders.</p>
 	<button class="uninstallButton">Uninstall</button>
 	<button onclick="location.reload(true);">Refresh</button>
 	<div class="response">

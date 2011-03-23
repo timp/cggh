@@ -115,12 +115,12 @@ public class ExportsModel {
 				
 			} else {
 				
-				System.out.println("connection.isClosed");
+				//System.out.println("connection.isClosed");
 			}
 				
 		} 
 		catch (Exception e) {
-			System.out.println("Exception from createMerge.");
+			//System.out.println("Exception from createMerge.");
 			e.printStackTrace();
 		}
   	
@@ -134,7 +134,10 @@ public class ExportsModel {
 		
 		File exportDirectory = new File(this.getDataModel().getServletContext().getInitParameter("exportsFileRepositoryBasePath") + exportModel.getId().toString());
 		
-		this.logger.info("exportDirectory created: " + exportDirectory.mkdirs());
+		//this.logger.info("exportDirectory created: " + exportDirectory.mkdirs());
+		
+		exportDirectory.mkdirs();
+		
 		
 		MergedDatatablesModel mergedDatatablesModel = new MergedDatatablesModel();
 		
@@ -170,7 +173,7 @@ public class ExportsModel {
 				")" +
 				";";		
 			
-			this.logger.info("createMergedDatatableAsFileSQL: " + createMergedDatatableAsFileSQL);
+			//this.logger.info("createMergedDatatableAsFileSQL: " + createMergedDatatableAsFileSQL);
 			
 			PreparedStatement preparedStatement = connection.prepareStatement(createMergedDatatableAsFileSQL);
 			preparedStatement.executeQuery();
@@ -236,7 +239,9 @@ public class ExportsModel {
 
 		File exportDirectory = new File(this.getDataModel().getServletContext().getInitParameter("exportsFileRepositoryBasePath") + exportModel.getId().toString());
 		
-		this.logger.info("exportDirectory created: " + exportDirectory.mkdirs());
+		//this.logger.info("exportDirectory created: " + exportDirectory.mkdirs());
+		
+		exportDirectory.mkdirs();
 
 		
 		try {
@@ -257,7 +262,7 @@ public class ExportsModel {
 				")" +
 				";";		
 			
-			this.logger.info("createJoinsAsFileSQL: " + createJoinsAsFileSQL);
+			//this.logger.info("createJoinsAsFileSQL: " + createJoinsAsFileSQL);
 			
 			PreparedStatement preparedStatement = connection.prepareStatement(createJoinsAsFileSQL);
 			preparedStatement.executeQuery();
@@ -329,7 +334,9 @@ public class ExportsModel {
 
 		File exportDirectory = new File(this.getDataModel().getServletContext().getInitParameter("exportsFileRepositoryBasePath") + exportModel.getId().toString());
 		
-		this.logger.info("exportDirectory created: " + exportDirectory.mkdirs());
+		//this.logger.info("exportDirectory created: " + exportDirectory.mkdirs());
+		
+		exportDirectory.mkdirs();
 
 		
 		try {
@@ -371,7 +378,7 @@ public class ExportsModel {
 				")" +
 				";";		
 			
-			this.logger.info("createResolutionsAsFileSQL: " + createResolutionsAsFileSQL);
+			//this.logger.info("createResolutionsAsFileSQL: " + createResolutionsAsFileSQL);
 			
 			PreparedStatement preparedStatement = connection.prepareStatement(createResolutionsAsFileSQL);
 			preparedStatement.executeQuery();
@@ -533,7 +540,7 @@ public class ExportsModel {
 	
 		        	if (updateMergedDatatableSQL != "") {
 		        		
-		        		this.logger.info("updateMergedDatatableSQL: " + updateMergedDatatableSQL);
+		        		//this.logger.info("updateMergedDatatableSQL: " + updateMergedDatatableSQL);
 		        		
 						PreparedStatement preparedStatement = connection.prepareStatement(updateMergedDatatableSQL);
 						preparedStatement.executeUpdate();
@@ -544,7 +551,7 @@ public class ExportsModel {
 		        
 	        } else {
 	        	//There may be no resolutions
-	        	this.logger.info("Did not retrieve any resolutions as a cached row set using merge Id: " + exportModel.getMergeModel().getId());
+	        	//this.logger.info("Did not retrieve any resolutions as a cached row set using merge Id: " + exportModel.getMergeModel().getId());
 	        }
 	        
 		} catch (SQLException e) {
@@ -573,7 +580,7 @@ public class ExportsModel {
 				"WHERE merge_id = 1 AND solution_by_row_id = 5;" +
 				";";
 			
-			this.logger.info("SelectRowKeysForRemovalSQL: " + SelectRowKeysForRemovalSQL);
+			//this.logger.info("SelectRowKeysForRemovalSQL: " + SelectRowKeysForRemovalSQL);
 			
 			PreparedStatement preparedStatement = connection.prepareStatement(SelectRowKeysForRemovalSQL);
 			preparedStatement.executeQuery();
@@ -626,7 +633,7 @@ public class ExportsModel {
 						"DELETE FROM `" + exportModel.getMergedDatatableModel().getName() + "` WHERE " + deleteRowWhereConditionsSQL + 
 						";";
 					
-					this.logger.info("deleteRowFromMergedDatatableSQL: " + deleteRowFromMergedDatatableSQL);
+					//this.logger.info("deleteRowFromMergedDatatableSQL: " + deleteRowFromMergedDatatableSQL);
 					
 					PreparedStatement preparedStatement2 = connection.prepareStatement(deleteRowFromMergedDatatableSQL);
 					preparedStatement2.executeUpdate();
@@ -636,7 +643,7 @@ public class ExportsModel {
 
 	          } else {
 	        	// There may be no rows for exclusion.
-	        	  this.logger.info("Did not retrieve any rows for removal.");
+	        	  //this.logger.info("Did not retrieve any rows for removal.");
 	          }
 
 	          resultSet.close();
@@ -734,7 +741,7 @@ public class ExportsModel {
 					"WHERE " + datatable1KeyExportColumnMappingsForUpdateWhereSQL + 
 					";";
 				
-				this.logger.info("updateMergedDatatableWithDatatable1Data: " + updateMergedDatatableWithDatatable1Data);
+				//this.logger.info("updateMergedDatatableWithDatatable1Data: " + updateMergedDatatableWithDatatable1Data);
 				
 				PreparedStatement preparedStatement = connection.prepareStatement(updateMergedDatatableWithDatatable1Data);
 				preparedStatement.executeUpdate();
@@ -749,7 +756,7 @@ public class ExportsModel {
 					"WHERE " + datatable2KeyExportColumnMappingsForUpdateWhereSQL + 
 					";";
 				
-				this.logger.info("updateMergedDatatableWithDatatable2Data: " + updateMergedDatatableWithDatatable2Data);
+				//this.logger.info("updateMergedDatatableWithDatatable2Data: " + updateMergedDatatableWithDatatable2Data);
 				
 				PreparedStatement preparedStatement2 = connection.prepareStatement(updateMergedDatatableWithDatatable2Data);
 				preparedStatement2.executeUpdate();
@@ -780,7 +787,7 @@ public class ExportsModel {
 
 			if (exportModel.getMergeModel().getJoinsModel().getKeyJoinsAsCachedRowSet().next()) {
 				
-				//this.logger.info("Got key joins data as cached row set.");
+				////this.logger.info("Got key joins data as cached row set.");
 				
 				
 				String keyColumnNamesForInsertSQL = "";
@@ -862,7 +869,7 @@ public class ExportsModel {
 		
 		for (Integer i = 1; i <= joinColumnNamesByColumnNumberAsHashMap.size(); i++) {
 			
-			//this.logger.info("Column Number: " + i + ", Column Name: " + joinColumnNamesByColumnNumberAsHashMap.get(i));
+			////this.logger.info("Column Number: " + i + ", Column Name: " + joinColumnNamesByColumnNumberAsHashMap.get(i));
 			
 			if (i != 1) {
 				columnDefinitionsForCreateSQL += ", ";
@@ -870,7 +877,7 @@ public class ExportsModel {
 			columnDefinitionsForCreateSQL += "`" + joinColumnNamesByColumnNumberAsHashMap.get(i) +  "` VARCHAR(255) NULL";
 		}
 		
-		//this.logger.info("columnDefinitionsForCreateSQL: " + columnDefinitionsForCreateSQL);
+		////this.logger.info("columnDefinitionsForCreateSQL: " + columnDefinitionsForCreateSQL);
 		
 		exportModel.getMergedDatatableModel().setName("merged_datatable_" + exportModel.getId());
 		
@@ -1007,7 +1014,7 @@ public class ExportsModel {
 	
 				        }
 				        catch(SQLException sqlException){
-				        	System.out.println("<p>" + sqlException + "</p>");
+				        	//System.out.println("<p>" + sqlException + "</p>");
 					    	sqlException.printStackTrace();
 				        } 	
 				
@@ -1015,7 +1022,7 @@ public class ExportsModel {
 					
 				} else {
 					
-					System.out.println("connection.isClosed");
+					//System.out.println("connection.isClosed");
 				}
 					
 			} 

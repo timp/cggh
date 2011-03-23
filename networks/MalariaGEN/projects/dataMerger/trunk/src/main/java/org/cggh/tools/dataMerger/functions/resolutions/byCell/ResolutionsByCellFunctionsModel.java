@@ -78,7 +78,7 @@ public class ResolutionsByCellFunctionsModel implements java.io.Serializable {
 		        			  
 			        		  Integer columnNumber = Integer.parseInt(joinedKeytableKeyColumnNamePatternMatcher.group(1));
 			        		  
-			        		  //this.logger.info("Got columnNumber: " + columnNumber);
+			        		  ////this.logger.info("Got columnNumber: " + columnNumber);
 			        		  
 			        		  resolutionsByCellAsDecoratedXHTMLTable += "<th class=\"key-heading\" rowspan=\"2\">" + this.getJoinColumnNamesByColumnNumberAsHashMap().get(columnNumber) + "</th>";
 			        		  
@@ -89,19 +89,19 @@ public class ResolutionsByCellFunctionsModel implements java.io.Serializable {
 				  
 				 Pattern resolutionsByCellAsCachedRowSetSource1ColumnNamePattern = Pattern.compile("^column_(\\d+)_source_1$");
 				 
-				 //this.logger.info("Searching for non-key cross-datatable columns by label...");
+				 ////this.logger.info("Searching for non-key cross-datatable columns by label...");
 				 
 		          for (int i = 1; i <= this.getResolutionsByCellAsCachedRowSet().getMetaData().getColumnCount(); i++) {
 
 		        		  Matcher resolutionsByCellAsCachedRowSetColumnNamePatternMatcher = resolutionsByCellAsCachedRowSetSource1ColumnNamePattern.matcher(this.getResolutionsByCellAsCachedRowSet().getMetaData().getColumnLabel(i));
 		        		  
-		        		  //this.logger.info("Looking at column label: " +  this.getResolutionsByCellAsCachedRowSet().getMetaData().getColumnLabel(i));
+		        		  ////this.logger.info("Looking at column label: " +  this.getResolutionsByCellAsCachedRowSet().getMetaData().getColumnLabel(i));
 		        		  
 		        		  if (resolutionsByCellAsCachedRowSetColumnNamePatternMatcher.find()) {
 		        		  
 			        		  Integer columnNumber = Integer.parseInt(resolutionsByCellAsCachedRowSetColumnNamePatternMatcher.group(1));
 			        		  
-			        		  //this.logger.info("Got columnNumber: " + columnNumber);
+			        		  ////this.logger.info("Got columnNumber: " + columnNumber);
 			        		  
 			        		  if (this.getUnresolvedByColumnOrRowConflictsCountUsingColumnNumberAsHashMap().get(columnNumber) != null && this.getUnresolvedByColumnOrRowConflictsCountUsingColumnNumberAsHashMap().get(columnNumber) > 0) {
 			        			  
@@ -200,20 +200,20 @@ public class ResolutionsByCellFunctionsModel implements java.io.Serializable {
 					 
 					 //TODO
 
-					 //this.logger.info("Searching for non-key cross-datatable columns by label (to be used for getting data)...");
+					 ////this.logger.info("Searching for non-key cross-datatable columns by label (to be used for getting data)...");
 					 
 			          for (int i = 1; i <= this.getResolutionsByCellAsCachedRowSet().getMetaData().getColumnCount(); i++) {
 			        	  
 
 			        		  Matcher resolutionsByCellAsCachedRowSetColumnNamePatternMatcher = resolutionsByCellAsCachedRowSetSource1ColumnNamePattern.matcher(this.getResolutionsByCellAsCachedRowSet().getMetaData().getColumnLabel(i));
 			        		  
-			        		  //this.logger.info("Looking at column label: " +  this.getResolutionsByCellAsCachedRowSet().getMetaData().getColumnLabel(i));
+			        		  ////this.logger.info("Looking at column label: " +  this.getResolutionsByCellAsCachedRowSet().getMetaData().getColumnLabel(i));
 			        		  
 			        		  if (resolutionsByCellAsCachedRowSetColumnNamePatternMatcher.find()) {
 			        		  
 				        		  Integer columnNumber = Integer.parseInt(resolutionsByCellAsCachedRowSetColumnNamePatternMatcher.group(1));
 				        		  
-				        		  //this.logger.info("Got columnNumber: " + columnNumber);
+				        		  ////this.logger.info("Got columnNumber: " + columnNumber);
 				        		  
 				        		  String columnLabelForSource2Column = "column_" + columnNumber.toString() + "_source_2";
 				        		  

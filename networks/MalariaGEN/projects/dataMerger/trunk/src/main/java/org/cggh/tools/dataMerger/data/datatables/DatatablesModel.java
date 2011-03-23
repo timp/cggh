@@ -137,7 +137,7 @@ public class DatatablesModel implements java.io.Serializable {
 	        	      
 	        	      for (int i = 0; i < columnNames.length; i++) {
 	        	    	  
-	        	    	  this.logger.info("Got column name: " + columnNames[i]);
+	        	    	  //this.logger.info("Got column name: " + columnNames[i]);
 	        	    	  
 	        	    	  //Strip out quote marks from column names
 	        	    	  columnNames[i] = columnNames[i].replace("\"", "");
@@ -188,7 +188,7 @@ public class DatatablesModel implements java.io.Serializable {
 	        	    } else {
 	        	    	
 	        	    	//TODO:
-	        	    	System.out.println("Error getting column headings.");
+	        	    	//System.out.println("Error getting column headings.");
 	        	    }
 
 	        	    dataInputStream.close();
@@ -241,7 +241,7 @@ public class DatatablesModel implements java.io.Serializable {
 
 	          } else {
 	        	  //TODO: proper logging and error handling
-	        	  System.out.println("Did not find datatable with this name. Db query gives !resultSet.next()");
+	        	  //System.out.println("Did not find datatable with this name. Db query gives !resultSet.next()");
 	          }
 
 	          resultSet.close();
@@ -283,7 +283,7 @@ public class DatatablesModel implements java.io.Serializable {
 	        	  
 	          } else {
 	        	  //TODO: proper logging and error handling
-	        	  System.out.println("Db query gives !resultSet.next()");
+	        	  //System.out.println("Db query gives !resultSet.next()");
 	          }
 
 	          resultSet.close();
@@ -379,7 +379,7 @@ public class DatatablesModel implements java.io.Serializable {
 	        	  
 	          } else {
 	        	  //TODO: proper logging and error handling
-	        	  System.out.println("Did not find datatable with this id. Db query gives !resultSet.next()");
+	        	  //System.out.println("Did not find datatable with this id. Db query gives !resultSet.next()");
 	          }
 
 	          resultSet.close();
@@ -439,7 +439,7 @@ public class DatatablesModel implements java.io.Serializable {
 	      	  } else {
 	      		  
 	      		  //This is not necessarily an error, since might just be checking for existence.
-	      		  this.logger.info("Did not retrieve datatable with the specified upload Id.");
+	      		  //this.logger.info("Did not retrieve datatable with the specified upload Id.");
 	      		  
 	      		  
 	      	  }

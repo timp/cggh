@@ -91,7 +91,7 @@ public class MergeScriptsModel implements java.io.Serializable {
 	          
 	          
 	          //TODO:
-	          //System.out.println("Setting dt1 duplicate keys count to: " + mergeModel.getDatatable1Model().getDuplicateKeysCount());
+	          ////System.out.println("Setting dt1 duplicate keys count to: " + mergeModel.getDatatable1Model().getDuplicateKeysCount());
 	          
 	          MergesModel mergesModel = new MergesModel();
 	          
@@ -131,7 +131,7 @@ public class MergeScriptsModel implements java.io.Serializable {
 	      Datatable2KeyColumnNamesAsSQLCSV = stringBuffer.toString();
 	      
 	      //TODO:
-	      //System.out.println("Datatable2KeyColumnNamesAsSQLCSV: " + Datatable2KeyColumnNamesAsSQLCSV);
+	      ////System.out.println("Datatable2KeyColumnNamesAsSQLCSV: " + Datatable2KeyColumnNamesAsSQLCSV);
 		
 	      try{
 	    	  //SELECT SUM(duplicateValuesCount) AS totalDuplicateValuesCount FROM (SELECT COUNT(CONCAT(`Row`,`ID`)) AS duplicateValuesCount FROM `datatable_3` GROUP BY CONCAT(`Row`,`ID`) HAVING duplicateValuesCount > 1) AS duplicateValuesCounts;
@@ -293,7 +293,7 @@ public class MergeScriptsModel implements java.io.Serializable {
 			    			  break;
 			    			  
 			    			  //TODO
-			    			  //System.out.println(datatable1ColumnNames[i] + " matches " + datatable2ColumnNames[j]);
+			    			  ////System.out.println(datatable1ColumnNames[i] + " matches " + datatable2ColumnNames[j]);
 
 			    		  }
 			    		  
@@ -304,7 +304,7 @@ public class MergeScriptsModel implements java.io.Serializable {
 		    	  } else {
 		    		  
 		    		  //TODO:
-			    	  System.out.println("datatable1ColumnNamesAsStringList is null");
+			    	  //System.out.println("datatable1ColumnNamesAsStringList is null");
 		    	  }
 		    	  
 		    	  if (!matchFound) {
@@ -340,7 +340,7 @@ public class MergeScriptsModel implements java.io.Serializable {
 		  } else {
 			  
 			  //TODO:
-			  System.out.println("datatable1ColumnNamesAsStringList is null");
+			  //System.out.println("datatable1ColumnNamesAsStringList is null");
 		  }
 		  
 		 //TODO: The columns in datatable_2 that don't match datatable_1
@@ -369,7 +369,7 @@ public class MergeScriptsModel implements java.io.Serializable {
 			    	  
 		    	  } else {
 		    		//TODO:
-			    	  System.out.println("datatable1ColumnNamesAsStringList is null");
+			    	  //System.out.println("datatable1ColumnNamesAsStringList is null");
 		    	  }
 		    	  
 		    	  if (!matchFound) {
@@ -399,7 +399,7 @@ public class MergeScriptsModel implements java.io.Serializable {
 		  } else {
 			  
 			  //TODO:
-			  System.out.println("datatable2ColumnNamesAsStringList is null");
+			  //System.out.println("datatable2ColumnNamesAsStringList is null");
 		  }
 		  
 		  
@@ -499,7 +499,7 @@ public class MergeScriptsModel implements java.io.Serializable {
 		} else {
 
 			//This is not necessarily an error, because the auto-join might not have found any columns with similar names. 
-			this.logger.info("Did not retrieve any rows in crossDatatableJoinsAsCachedRowSet for the specified merge.");
+			//this.logger.info("Did not retrieve any rows in crossDatatableJoinsAsCachedRowSet for the specified merge.");
 
 		}
 		
@@ -650,7 +650,7 @@ public class MergeScriptsModel implements java.io.Serializable {
 
 						String dropTemporaryJoinedDatatableSQL = "DROP TABLE IF EXISTS `" + mergeModel.getJoinedDatatableModel().getName() + "`;";
 
-						this.logger.info(dropTemporaryJoinedDatatableSQL);
+						//this.logger.info(dropTemporaryJoinedDatatableSQL);
 						
 						PreparedStatement preparedStatement2 = connection.prepareStatement(dropTemporaryJoinedDatatableSQL);
 						preparedStatement2.executeUpdate();
@@ -665,7 +665,7 @@ public class MergeScriptsModel implements java.io.Serializable {
 															        			"ORDER BY `" + mergeModel.getJoinedKeytableModel().getName() + "`.id" +
 															        			";";
 
-						//this.logger.info(createAndPopulateTemporaryJoinedDatatableSQL);
+						////this.logger.info(createAndPopulateTemporaryJoinedDatatableSQL);
 						
 						
 						
@@ -680,7 +680,7 @@ public class MergeScriptsModel implements java.io.Serializable {
 									" ORDER BY joined_keytable_id, column_number, conflict_id " + 
 								";";
 
-						//this.logger.info(insertConflictsByCellSQL);
+						////this.logger.info(insertConflictsByCellSQL);
 						
 						PreparedStatement preparedStatement4 = connection.prepareStatement(insertConflictsByCellSQL);
 						preparedStatement4.executeUpdate();

@@ -141,7 +141,7 @@ public class DatatableModel implements java.io.Serializable {
 
 	          } else {
 	        	  //TODO: proper logging and error handling
-	        	  System.out.println("Did not find datatable with this name. Db query gives !resultSet.next()");
+	        	  //System.out.println("Did not find datatable with this name. Db query gives !resultSet.next()");
 	          }
 
 	          resultSet.close();
@@ -214,7 +214,7 @@ public class DatatableModel implements java.io.Serializable {
 	        	  
 	          } else {
 	        	  //TODO: proper logging and error handling
-	        	  System.out.println("Did not find datatable with this upload_id. Db query gives !resultSet.next()");
+	        	  //System.out.println("Did not find datatable with this upload_id. Db query gives !resultSet.next()");
 	          }
 
 	          resultSet.close();
@@ -267,7 +267,7 @@ public class DatatableModel implements java.io.Serializable {
 	        	  
 	          } else {
 	        	  //TODO: proper logging and error handling
-	        	  System.out.println("Did not get totalDuplicateValuesCount for this columnName. Db query gives !resultSet.next()");
+	        	  //System.out.println("Did not get totalDuplicateValuesCount for this columnName. Db query gives !resultSet.next()");
 	          }
 
 	          resultSet.close();

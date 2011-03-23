@@ -76,7 +76,7 @@ public class UsersModel implements java.io.Serializable {
 		        	  } else {
 		        		  
 		        		  // Sanity check. Username found by query is not the same username.
-		        		  System.out.println("Unexpected: username parameter != username from query ");
+		        		  //System.out.println("Unexpected: username parameter != username from query ");
 		        		  
 		        	  }
 		        	  
@@ -93,14 +93,14 @@ public class UsersModel implements java.io.Serializable {
 	
 		        }
 		        catch(SQLException sqlException){
-		        	System.out.println(sqlException);
+		        	//System.out.println(sqlException);
 			    	sqlException.printStackTrace();
 		        } 
 
 		        connection.close();	        
 
 			} else {
-				System.out.println("Unexpected: connection.isClosed");
+				//System.out.println("Unexpected: connection.isClosed");
 			}
 				
 		} 
@@ -136,14 +136,14 @@ public class UsersModel implements java.io.Serializable {
 	
 		        }
 		        catch(SQLException sqlException){
-		        	System.out.println(sqlException);
+		        	//System.out.println(sqlException);
 			    	sqlException.printStackTrace();
 		        } 
 
 		        connection.close();	        
 
 			} else {
-				System.out.println("Unexpected: connection.isClosed");
+				//System.out.println("Unexpected: connection.isClosed");
 			}
 				
 		} 
@@ -177,7 +177,7 @@ public class UsersModel implements java.io.Serializable {
 	      	  } else {
 	      		  
 	      		  //TODO:
-	      		  System.out.println("No user found with the specified id.");
+	      		  //System.out.println("No user found with the specified id.");
 	      		  
 	      	  }
 	          

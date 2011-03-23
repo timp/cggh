@@ -10,6 +10,8 @@
 <body>
 	<p><a href="../admin/">Admin menu</a></p>
 	<h1>Install database v0.0.1</h1>
+	<p>May not have permission to create the database, in which case it should be created manually first, and then this script can add the tables.</p>
+	<p>This script also creates the repository folders.</p>
 	<button class="installButton">Install</button>
 	<button onclick="location.reload(true);">Refresh</button>
 	<div class="response">

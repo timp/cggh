@@ -96,7 +96,7 @@ public class UploadModel implements java.io.Serializable {
 	        	  
 	          } else {
 	        	  //TODO: proper logging and error handling
-	        	  System.out.println("Did not find upload in upload table. Db query gives !resultSet.next()");
+	        	  //System.out.println("Did not find upload in upload table. Db query gives !resultSet.next()");
 	          }
 
 	          resultSet.close();

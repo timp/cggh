@@ -378,7 +378,7 @@ public class JoinsModel implements java.io.Serializable {
 
 		        }
 		        catch(SQLException sqlException){
-		        	System.out.println("<p>" + sqlException + "</p>");
+		        	//System.out.println("<p>" + sqlException + "</p>");
 			    	sqlException.printStackTrace();
 		        } 
 	          
@@ -491,14 +491,14 @@ public class JoinsModel implements java.io.Serializable {
 				
 			} else {
 				
-				System.out.println("connection.isClosed");
+				//System.out.println("connection.isClosed");
 			}
 				
 		} 
 		catch (Exception e) {
 			
 			//TODO:
-			System.out.println("Exception in updateJoinsByMergeIdUsingJoinsAsJSONObject");
+			//System.out.println("Exception in updateJoinsByMergeIdUsingJoinsAsJSONObject");
 			e.printStackTrace();
 		}
 		
@@ -525,14 +525,14 @@ public class JoinsModel implements java.io.Serializable {
 				
 			} else {
 				
-				System.out.println("connection.isClosed");
+				//System.out.println("connection.isClosed");
 			}
 				
 		} 
 		catch (Exception e) {
 			
 			//TODO:
-			System.out.println("Exception in updateJoinsByMergeIdUsingJoinsAsJSONObject");
+			//System.out.println("Exception in updateJoinsByMergeIdUsingJoinsAsJSONObject");
 			e.printStackTrace();
 		}				
 				
@@ -677,7 +677,7 @@ public class JoinsModel implements java.io.Serializable {
 	      	  } else {
 	      		  
 	      		  //This is not necessarily an error, because there may be no keys specified in the join.
-	      		  this.logger.info("Did not retrieve any key datatable 1 column names for the specified merge.");
+	      		  //this.logger.info("Did not retrieve any key datatable 1 column names for the specified merge.");
 	      		  
 	      	  }
 	          
@@ -721,7 +721,7 @@ public class JoinsModel implements java.io.Serializable {
 	      	  } else {
 	      		  
 	      		  //This is not necessarily an error, because there may be no keys specified in the join.
-	      		  this.logger.info("Did not retrieve any key datatable 2 column names for the specified merge.");
+	      		  //this.logger.info("Did not retrieve any key datatable 2 column names for the specified merge.");
 	      		  
 	      	  }
 	          

@@ -71,7 +71,7 @@ public class UploadsModel implements java.io.Serializable {
 
 			        }
 			        catch(SQLException sqlException){
-			        	System.out.println("<p>" + sqlException + "</p>");
+			        	//System.out.println("<p>" + sqlException + "</p>");
 				    	sqlException.printStackTrace();
 			        } 	
 			
@@ -79,12 +79,12 @@ public class UploadsModel implements java.io.Serializable {
 				
 			} else {
 				
-				System.out.println("connection.isClosed");
+				//System.out.println("connection.isClosed");
 			}
 				
 		} 
 		catch (Exception e) {
-			System.out.println("Exception from getUploadsAsCachedRowSet.");
+			//System.out.println("Exception from getUploadsAsCachedRowSet.");
 			e.printStackTrace();
 		}
 
@@ -127,7 +127,7 @@ public class UploadsModel implements java.io.Serializable {
 	      	  } else {
 	      		  
 	      		  //TODO:
-	      		  System.out.println("No merge found with the specified id.");
+	      		  //System.out.println("No merge found with the specified id.");
 	      		  
 	      	  }
 	          

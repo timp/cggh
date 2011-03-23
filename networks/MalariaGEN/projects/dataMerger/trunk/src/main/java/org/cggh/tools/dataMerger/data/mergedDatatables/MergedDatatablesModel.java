@@ -45,7 +45,7 @@ public class MergedDatatablesModel {
 	      	  } else {
 	      		  
 	      		  //This is not necessarily an error, since might just be checking for existence.
-	      		  this.logger.info("Did not retrieve exported datatable with the specified merge Id.");
+	      		  //this.logger.info("Did not retrieve exported datatable with the specified merge Id.");
 	      		  
 	      		  
 	      	  }
