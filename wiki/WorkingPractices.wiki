@@ -76,3 +76,28 @@ If a repository contains multiple projects, people often index their layout by b
 
 
 Indexing by project makes sense if the projects are not closely related and each one is checked out individually. For related projects where you may want to check out all projects in one go, or where the projects are all tied together in a single distribution package, it is often better to index by branch. This way you have only one trunk to checkout, and the relationships between the sub-projects is more easily visible. 
+
+----
+
+From http://www.jmfeurprier.com/blog/2010/02/08/svn-trunk-branches-and-tags/ [accessed 08 Apr 11]
+
+
+An easy comparison
+
+Working with SVN is somewhat like growing a tree:
+
+* a tree has a trunk and some branches
+
+* branches grow from the trunk, and thinner branches grow from thicker branches
+
+* a tree can grow with a trunk and no branch (but not for long)
+
+va tree with branches but no trunk looks more like a bundle of twigs fallen on the floor
+
+* if the trunk is sick, so are the branches and eventually, the whole tree can die
+
+* if a branch is sick, you can cut it, and another one may grow
+
+* if a branch grows too much, it may become too heavy for the trunk, and the tree will fall down
+
+* when you feel your tree, your trunk, or a branch is nice looking, you can take a picture of it to remember how nice it was that day
