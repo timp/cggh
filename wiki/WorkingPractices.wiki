@@ -92,7 +92,7 @@ Working with SVN is somewhat like growing a tree:
 
 * a tree can grow with a trunk and no branch (but not for long)
 
-va tree with branches but no trunk looks more like a bundle of twigs fallen on the floor
+* a tree with branches but no trunk looks more like a bundle of twigs fallen on the floor
 
 * if the trunk is sick, so are the branches and eventually, the whole tree can die
 
