@@ -20,9 +20,9 @@
 		<!-- TODO: Adaptive interface (based on real ability to GET the page) rather than role-based. -->
 		
 		<% if (request.getServletPath().startsWith("/pages/home/")) { %>
-			<li class="item"><a class="link selected" href="<%= basePath %>pages/home/">Welcome</a></li>
+			<li class="item"><a class="link selected" href="<%= basePath %>pages/home/">Home</a></li>
 		<% } else { %>
-			<li class="item"><a class="link" href="<%= basePath %>pages/home/">Welcome</a></li>
+			<li class="item"><a class="link" href="<%= basePath %>pages/home/">Home</a></li>
 		<% } %>
 		
 		<% if (request.isUserInRole("uploader")) { %>

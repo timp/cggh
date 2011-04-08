@@ -6,6 +6,7 @@
 <%@ page import="java.text.SimpleDateFormat" %>
 <%@ page import="org.cggh.tools.dataMerger.data.merges.MergesModel" %>
 <%@ page import="org.cggh.tools.dataMerger.data.merges.MergeModel" %>
+<%@ page import="org.cggh.tools.dataMerger.functions.resolutions.ResolutionsFunctionsModel" %>
 <%@ page import="org.cggh.tools.dataMerger.data.resolutions.byRow.ResolutionsByRowModel" %>
 <%
 
@@ -20,6 +21,8 @@ DateFormat dateFormat = new SimpleDateFormat("dd MMM yyyy HH:mm");
 
 ResolutionsByRowModel resolutionsByRowModel = new ResolutionsByRowModel();
 resolutionsByRowModel.setDataModel(dataModel);
+
+ResolutionsFunctionsModel resolutionsFunctionsModel = new ResolutionsFunctionsModel();
 
 //FIXME
 //resolutionsByColumnModel.setUserModel(userModel);
@@ -125,25 +128,13 @@ resolutionsByRowModel.setDataModel(dataModel);
 
 		<div class="resolutions-container">
 			
-			<ul class="resolutions-menu">
-
-				<% if (request.getServletPath().startsWith("/pages/merges/resolutions/by-column")) { %>
-					<li class="item"><a class="link selected" href="<%= basePath %>pages/merges/resolutions/by-column?merge_id=<%=mergeModel.getId()%>">By Column</a></li>
-				<% } else { %>
-					<li class="item"><a class="link" href="<%= basePath %>pages/merges/resolutions/by-column?merge_id=<%=mergeModel.getId()%>">By Column</a></li>
-				<% } %>
-				<% if (request.getServletPath().startsWith("/pages/merges/resolutions/by-row")) { %>
-					<li class="item"><a class="link selected" href="<%= basePath %>pages/merges/resolutions/by-row?merge_id=<%=mergeModel.getId()%>">By Row</a></li>
-				<% } else { %>
-					<li class="item"><a class="link" href="<%= basePath %>pages/merges/resolutions/by-row?merge_id=<%=mergeModel.getId()%>">By Row</a></li>
-				<% } %>
-				<% if (request.getServletPath().startsWith("/pages/merges/resolutions/by-cell")) { %>
-					<li class="item"><a class="link selected" href="<%= basePath %>pages/merges/resolutions/by-cell?merge_id=<%=mergeModel.getId()%>">By Cell</a></li>
-				<% } else { %>
-					<li class="item"><a class="link" href="<%= basePath %>pages/merges/resolutions/by-cell?merge_id=<%=mergeModel.getId()%>">By Cell</a></li>
-				<% } %>
-				
-			</ul>
+			<% 
+			
+				resolutionsFunctionsModel.setHttpServletRequest(request);
+				resolutionsFunctionsModel.setURLBasePath(basePath);
+				resolutionsFunctionsModel.setMergeModel(mergeModel);
+				out.print(resolutionsFunctionsModel.getResolutionsMenuAsDecoratedXHTMLList()); 
+			%>
 			
 			<div class="resolutions-by-row">
 			<form class="resolutions-by-row-form" onsubmit="return false;" autocomplete="off">

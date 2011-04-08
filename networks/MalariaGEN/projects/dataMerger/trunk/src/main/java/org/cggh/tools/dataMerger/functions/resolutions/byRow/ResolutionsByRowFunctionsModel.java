@@ -17,7 +17,7 @@ public class ResolutionsByRowFunctionsModel implements java.io.Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = 2410465698437549757L;
-	private final Logger logger = Logger.getLogger("org.cggh.tools.dataMerger.functions.resolutionsByRow");
+	private final Logger logger = Logger.getLogger("org.cggh.tools.dataMerger.functions.resolutions.byRow");
 	
 	private CachedRowSet resolutionsByRowAsCachedRowSet;
 	private String resolutionsByRowAsDecoratedXHTMLTable;
