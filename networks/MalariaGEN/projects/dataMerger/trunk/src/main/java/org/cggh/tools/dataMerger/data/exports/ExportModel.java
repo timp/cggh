@@ -16,7 +16,6 @@ public class ExportModel implements java.io.Serializable {
 	private Integer id;
 	private MergeModel mergeModel;
 
-	private String datatableName;
 
 	private MergedDatatableModel mergedDatatableModel;
 

@@ -1,5 +1,4 @@
-<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
-    pageEncoding="ISO-8859-1"%>
+<%@ page language="java" contentType="text/html; charset=ISO-8859-1" pageEncoding="ISO-8859-1" %>
 <%@ include file="../shared/jsp/prepage.jsp" %>
 <%@ page import="java.util.*" %>
 <%@ page import="javax.sql.rowset.CachedRowSet" %>
@@ -16,20 +15,19 @@
 	
 	<script type="text/javascript" src="../shared/js/jquery.min.js"></script>
 	<script type="text/javascript" src="../shared/js/jquery.json.min.js"></script>
-	
 	<script type="text/javascript" src="../shared/js/shared.js"></script>
 	
 	<script type="text/javascript" src="js/merges.js"></script>
 	
 	<script type="text/javascript">
 	
-	$(document).ready(function(){
-		
-		initSharedFunctions();
-		initMergesFunctions();
-
-	});
+		$(document).ready(function(){
+			
+			initSharedFunctions();
+			initMergesFunctions();
 	
+		});
+		
 	</script>
 	
 </head>
@@ -48,16 +46,16 @@
 
 		<form class="merges-form" onsubmit="return false;">
 		<div class="merges">
-<%
-
-	MergesModel mergesModel = new MergesModel();
-
-	mergesModel.setDataModel(dataModel);
-	mergesModel.setUserModel(userModel);
-	
-	out.print(mergesModel.retrieveMergesAsDecoratedXHTMLTableUsingMergesModel(mergesModel));
-	
-%>		
+			<%
+			
+				MergesModel mergesModel = new MergesModel();
+			
+				mergesModel.setDataModel(dataModel);
+				mergesModel.setUserModel(userModel);
+				
+				out.print(mergesModel.retrieveMergesAsDecoratedXHTMLTableUsingMergesModel(mergesModel));
+				
+			%>		
 		</div>
 
 		</form>

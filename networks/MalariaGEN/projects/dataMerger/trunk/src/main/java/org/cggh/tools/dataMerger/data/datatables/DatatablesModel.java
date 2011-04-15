@@ -83,36 +83,15 @@ public class DatatablesModel implements java.io.Serializable {
 
 		UploadsModel uploadsModel = new UploadsModel();
 		datatableModel.setUploadModel(uploadsModel.retrieveUploadAsUploadModelByUploadId(uploadId, connection));
-				
-		// Determine a name for the new datatable.
-		// Try to get the nextUniqueInteger for the datatable table.
-		Integer nextUniqueInteger = this.retrieveMaxIdAsIntegerUsingConnection(connection) + 1;
-		
-		
-		
-		DatatableModel testDatatableModel = this.retrieveDatatableAsDatatableModelUsingName("datatable_" + nextUniqueInteger, connection);
-		
-		while (testDatatableModel.getId() != null) {
-			
-			nextUniqueInteger++;
-			
-			//TODO: Prevent runaway properly.
-			if (nextUniqueInteger == 100) {
-				break;
-			}
-			
-			testDatatableModel = this.retrieveDatatableAsDatatableModelUsingName("datatable_" + nextUniqueInteger, connection);
-		}
-		
 
-		datatableModel.setName("datatable_" + nextUniqueInteger);
+		datatableModel.setName("datatable_" + uploadId);
 
 		
-		// Create the datatable record.
+		// Update the upload record.
 	     try {
-	         PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO datatable (name, upload_id, created_datetime) VALUES (?, ?, NOW());");
+	         PreparedStatement preparedStatement = connection.prepareStatement("UPDATE upload SET datatable_name=? WHERE id=?;");
 	         preparedStatement.setString(1, datatableModel.getName());
-	         preparedStatement.setInt(2, datatableModel.getUploadModel().getId());	          
+	         preparedStatement.setInt(2, uploadId);
 	         preparedStatement.executeUpdate();
 	         preparedStatement.close();
 	         
@@ -121,6 +100,8 @@ public class DatatablesModel implements java.io.Serializable {
 
          			FileInputStream fileInputStream = new FileInputStream(datatableModel.getUploadModel().getRepositoryFilepath());
 
+         			//this.logger.info("Upload Model repository path: " + datatableModel.getUploadModel().getRepositoryFilepath());
+         			
 	        	    DataInputStream dataInputStream = new DataInputStream(fileInputStream);
 	        	    BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(dataInputStream,"ISO-8859-1"));
 	        	    String strLine;
@@ -167,10 +148,48 @@ public class DatatablesModel implements java.io.Serializable {
 		    		      try {
 		    		    	  //TODO: OPTIONALLY ENCLOSED BY '"' ESCAPED BY '\'
 		    		    	  //ENCLOSED BY '\"' ESCAPED BY '\\\\'
-		    		          PreparedStatement preparedStatement2 = connection.prepareStatement("LOAD DATA INFILE ? IGNORE INTO TABLE `" + datatableModel.getName() + "` FIELDS TERMINATED BY ',' OPTIONALLY ENCLOSED BY '\"' LINES TERMINATED BY '\n' IGNORE 1 LINES ;");
+		    		          PreparedStatement preparedStatement2 = connection.prepareStatement("LOAD DATA INFILE ? INTO TABLE `" + datatableModel.getName() + "` FIELDS TERMINATED BY ',' OPTIONALLY ENCLOSED BY '\"' LINES TERMINATED BY '\n' IGNORE 1 LINES ;");
 		    		          preparedStatement2.setString(1, datatableModel.getUploadModel().getRepositoryFilepath());
 		    		          preparedStatement2.executeUpdate();
 		    		          preparedStatement2.close();
+		    		          
+		    		          
+		    		          //TODO: Get a list of all the strings to nullify.
+		    		          
+		    		          
+		    		          if (this.getDataModel().getServletContext().getInitParameter("stringsToNullifyAsCSV") != null) {
+		    		        	  
+		    		        	  String[] stringsToNullifyAsStringArray = this.getDataModel().getServletContext().getInitParameter("stringsToNullifyAsCSV").split(",");
+			    		        	 
+		    		        	  for (int i = 0; i < columnNames.length; i++) {
+		    		        		
+		    		        		  String columnName = columnNames[i];
+		    		        		  
+			    		        	  String conditionForUpdateSQL = "";
+			    		        	  
+				    		          for (int j = 0; j < stringsToNullifyAsStringArray.length; j++) {
+				    		        	  
+				    		        	  String stringToNullify = stringsToNullifyAsStringArray[j];
+				    		        	  
+				    		        	  if (j > 0) {
+				    		        		  
+				    		        		  conditionForUpdateSQL += " OR ";
+				    		        	  }
+				    		        	  
+				    		        	  conditionForUpdateSQL += "`" + columnName + "` = '" + stringToNullify + "'";
+				    		          }
+				    		          
+				    		          PreparedStatement preparedStatement3 = connection.prepareStatement("UPDATE `" + datatableModel.getName() + "` SET `" + columnName + "` = NULL WHERE " + conditionForUpdateSQL + ";");
+				    		          preparedStatement3.executeUpdate();
+				    		          preparedStatement3.close();
+				    		          
+		    		        	  }
+		    		        	  
+		    		          } else {
+		    		        	  //When no NULLs are specified, the default behavior is to interpret these values as NULL: NULL, \N and "\N"
+		    		          }
+		    		          
+		    		          
 		    		          
 		    		        }
 		    		        catch(SQLException sqlException){
@@ -188,13 +207,13 @@ public class DatatablesModel implements java.io.Serializable {
 	        	    } else {
 	        	    	
 	        	    	//TODO:
-	        	    	//System.out.println("Error getting column headings.");
+	        	    	//(strLine = bufferedReader.readLine()) == null
 	        	    }
 
 	        	    dataInputStream.close();
         	    
         	    } catch (Exception e){
-        	      System.err.println("Error getting the column names: " + e.getMessage());
+        	    	e.printStackTrace();
         	    }
 	         
 	         
@@ -215,16 +234,20 @@ public class DatatablesModel implements java.io.Serializable {
 		
 	}
 
-	public DatatableModel retrieveDatatableAsDatatableModelUsingName(String name, Connection connection) {
+
+
+
+	public DatatableModel retrieveDatatableAsDatatableModelUsingDatatableName(String datatableName,
+			Connection connection) {
 
 		DatatableModel datatableModel = new DatatableModel();
 		
-		datatableModel.setName(name);
 
-		  //TODO: Data
-		
+		datatableModel.setName(datatableName);
+
+
 	      try {
-	          PreparedStatement preparedStatement = connection.prepareStatement("SELECT id FROM datatable WHERE name = ?;");
+	          PreparedStatement preparedStatement = connection.prepareStatement("SELECT id FROM upload WHERE datatable_name = ?;");
 	          preparedStatement.setString(1, datatableModel.getName());				          
 	          preparedStatement.executeQuery();
 
@@ -234,102 +257,8 @@ public class DatatablesModel implements java.io.Serializable {
 	          if (resultSet.next()) {
 	        	  
 	        	  resultSet.first();
-
-	        	  datatableModel.setId(resultSet.getInt("id"));
 	        	  
-	        	  datatableModel = this.retrieveDatatableAsDatatableModelUsingDatatableId(datatableModel.getId(), connection);
-
-	          } else {
-	        	  //TODO: proper logging and error handling
-	        	  //System.out.println("Did not find datatable with this name. Db query gives !resultSet.next()");
-	          }
-
-	          resultSet.close();
-	          preparedStatement.close();
-	          
-
-	        }
-	        catch(SQLException sqlException){
-		    	sqlException.printStackTrace();
-	        } 
-		
-		return datatableModel;
-	}
-
-
-	public Integer retrieveMaxIdAsIntegerUsingConnection(Connection connection) {
-
-		Integer maxId = null;
-		
-	      try {
-	          PreparedStatement preparedStatement = connection.prepareStatement("SELECT MAX(id) AS maxId FROM datatable;");  
-	          preparedStatement.executeQuery();
-
-	          ResultSet resultSet = preparedStatement.getResultSet();
-
-	          
-	          if (resultSet.next()) {
-	        	  
-	        	  resultSet.first();
-	        	  
-	        	  maxId = resultSet.getInt("maxId");
-	        	  
-	        	  if (maxId == null) {
-	        		  
-	        		  // There may be no datatables.
-	        		  maxId = 1;
-	        	  }
-	        	  
-	        	  
-	          } else {
-	        	  //TODO: proper logging and error handling
-	        	  //System.out.println("Db query gives !resultSet.next()");
-	          }
-
-	          resultSet.close();
-	          preparedStatement.close();
-	          
-
-	        }
-	        catch(SQLException sqlException){
-		    	sqlException.printStackTrace();
-	        } 
-		
-		return maxId;
-	}
-
-
-
-	public DatatableModel retrieveDatatableAsDatatableModelUsingDatatableId(Integer datatableId,
-			Connection connection) {
-
-		DatatableModel datatableModel = new DatatableModel();
-		
-
-		datatableModel.setId(datatableId);
-
-
-	      try {
-	          PreparedStatement preparedStatement = connection.prepareStatement(
-	        		  "SELECT id, " + 
-	        		  "name, " +
-	        		  "upload_id, " +  
-	        		  "created_datetime " + 
-	        		  "FROM datatable WHERE id = ?;");
-	          preparedStatement.setInt(1, datatableModel.getId());				          
-	          preparedStatement.executeQuery();
-
-	          ResultSet resultSet = preparedStatement.getResultSet();
-
-	          // There may be no such datatable.
-	          if (resultSet.next()) {
-	        	  
-	        	  resultSet.first();
-	        	  
-	        	  datatableModel.setId(resultSet.getInt("id"));
-	        	  datatableModel.setName(resultSet.getString("name"));
-	        	  datatableModel.getUploadModel().setId(resultSet.getInt("upload_id"));
-	        	  datatableModel.setCreatedDatetime(resultSet.getTimestamp("created_datetime"));
+	        	  datatableModel.getUploadModel().setId(resultSet.getInt("id"));
 	        	  
 	        	  //TODO: Data
 	        	  
@@ -405,7 +334,7 @@ public class DatatablesModel implements java.io.Serializable {
 		DatatableModel datatableModel = new DatatableModel();
 
 	      try{
-	          PreparedStatement preparedStatement = connection.prepareStatement("SELECT id, name, upload_id, created_datetime FROM `datatable` WHERE upload_id = ?;");
+	          PreparedStatement preparedStatement = connection.prepareStatement("SELECT id, datatable_name FROM `upload` WHERE id = ?;");
 	          preparedStatement.setInt(1, uploadModel.getId());
 	          preparedStatement.executeQuery();
 	          ResultSet resultSet = preparedStatement.getResultSet();
@@ -415,30 +344,34 @@ public class DatatablesModel implements java.io.Serializable {
 	        	  resultSet.first();
 
 	        	  //Set the datatable properties
-	        	  datatableModel.setId(resultSet.getInt("id"));
-	        	  datatableModel.setName(resultSet.getString("name"));
-	        	  datatableModel.getUploadModel().setId(resultSet.getInt("upload_id"));
-	        	  datatableModel.setCreatedDatetime(resultSet.getTimestamp("created_datetime"));
+	        	  datatableModel.setName(resultSet.getString("datatable_name"));
+	        	  datatableModel.getUploadModel().setId(resultSet.getInt("id"));
 	        	  
-	        	  //Retrieve the datatable data
-	        	  datatableModel.setDataAsCachedRowSet(this.retrieveDataAsCachedRowSetByDatatableName(datatableModel.getName(), connection));
-	        	  
-	        	  //Retrieve columnNamesAsStringList
-	        	  List<String> columnNamesAsStringList = new ArrayList<String>();
-	        	  for (int i = 1; i <= datatableModel.getDataAsCachedRowSet().getMetaData().getColumnCount(); i++) {
-	        		  columnNamesAsStringList.add(datatableModel.getDataAsCachedRowSet().getMetaData().getColumnName(i));
+	        	  if (datatableModel.getName() != null) {
+		        		  
+		        	  //Retrieve the datatable data
+		        	  datatableModel.setDataAsCachedRowSet(this.retrieveDataAsCachedRowSetByDatatableName(datatableModel.getName(), connection));
+		        	  
+		        	  //Retrieve columnNamesAsStringList
+		        	  List<String> columnNamesAsStringList = new ArrayList<String>();
+		        	  for (int i = 1; i <= datatableModel.getDataAsCachedRowSet().getMetaData().getColumnCount(); i++) {
+		        		  columnNamesAsStringList.add(datatableModel.getDataAsCachedRowSet().getMetaData().getColumnName(i));
+		        	  }
+		        	  datatableModel.setColumnNamesAsStringList(columnNamesAsStringList);
+		        	  
+		        	  //Retrieve the upload data
+		        	  UploadsModel uploadsModel = new UploadsModel();
+		        	  datatableModel.setUploadModel(uploadsModel.retrieveUploadAsUploadModelByUploadId(datatableModel.getUploadModel().getId(), connection));
+		        	  
+	        	  } else {
+	        		  
+	        		  //Not necessarily an error. Might just be checking for existence.
 	        	  }
-	        	  datatableModel.setColumnNamesAsStringList(columnNamesAsStringList);
-	        	  
-	        	  //Retrieve the upload data
-	        	  UploadsModel uploadsModel = new UploadsModel();
-	        	  datatableModel.setUploadModel(uploadsModel.retrieveUploadAsUploadModelByUploadId(datatableModel.getUploadModel().getId(), connection));
-	        	  
 	        	  
 	        	  
 	      	  } else {
 	      		  
-	      		  //This is not necessarily an error, since might just be checking for existence.
+	      		  //TODO: logging
 	      		  //this.logger.info("Did not retrieve datatable with the specified upload Id.");
 	      		  
 	      		  

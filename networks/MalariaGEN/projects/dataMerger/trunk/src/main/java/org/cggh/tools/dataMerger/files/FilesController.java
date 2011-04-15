@@ -77,11 +77,11 @@ public class FilesController extends HttpServlet {
 				
 				//FIXME: Use DataModel
 				
-				Class.forName("com.mysql.jdbc.Driver").newInstance();
+				Class.forName(getServletContext().getInitParameter("databaseDriverFullyQualifiedClassName")).newInstance();
 				
 				Connection connection = DriverManager.getConnection(getServletContext().getInitParameter("databaseBasePath") + getServletContext().getInitParameter("databaseName"), getServletContext().getInitParameter("databaseUsername"), getServletContext().getInitParameter("databasePassword"));
 				 
-				if (!connection.isClosed()) {
+				if (connection != null) {
 
 					// Get the user_id
 					//TODO: convert to UserModel.setId
@@ -211,11 +211,11 @@ public class FilesController extends HttpServlet {
 				
 				//FIXME: Use DataModel
 				
-				Class.forName("com.mysql.jdbc.Driver").newInstance();
+				Class.forName(getServletContext().getInitParameter("databaseDriverFullyQualifiedClassName")).newInstance();
 				
 				Connection connection = DriverManager.getConnection(getServletContext().getInitParameter("databaseBasePath") + getServletContext().getInitParameter("databaseName"), getServletContext().getInitParameter("databaseUsername"), getServletContext().getInitParameter("databasePassword"));
 				 
-				if (!connection.isClosed()) {
+				if (connection != null) {
 
 					// Get the user_id
 					//TODO: convert to UserModel.setId
@@ -436,10 +436,13 @@ public class FilesController extends HttpServlet {
 	        
 			try {
 				
-				Class.forName("com.mysql.jdbc.Driver").newInstance(); 
+				//FIXME: Use DataModel
+				
+				Class.forName(getServletContext().getInitParameter("databaseDriverFullyQualifiedClassName")).newInstance();
+				
 				Connection connection = DriverManager.getConnection(getServletContext().getInitParameter("databaseBasePath") + getServletContext().getInitParameter("databaseName"), getServletContext().getInitParameter("databaseUsername"), getServletContext().getInitParameter("databasePassword"));
 				 
-				if (!connection.isClosed()) {
+				if (connection != null) {
 	
 					// Get the user_id
 					

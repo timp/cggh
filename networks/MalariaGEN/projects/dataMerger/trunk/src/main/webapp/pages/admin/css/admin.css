@@ -1,0 +1,24 @@
+.ajaxResponse {
+	
+	margin-top: 5px;
+	margin-bottom: 10px;
+	
+	color: green;
+}
+
+.ajaxError {
+	
+	margin-top: 5px;
+	margin-bottom: 10px;
+	
+	font-weight: bold;
+	color: red;	
+}
+
+.systemCheckList .pass {
+	color: green;
+}
+.systemCheckList .fail {
+	color: red;
+	font-weight: bold;
+}

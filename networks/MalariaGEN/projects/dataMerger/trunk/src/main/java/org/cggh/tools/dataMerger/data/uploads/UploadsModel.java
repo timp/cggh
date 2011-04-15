@@ -10,7 +10,7 @@ import javax.sql.rowset.CachedRowSet;
 
 import org.cggh.tools.dataMerger.data.DataModel;
 import org.cggh.tools.dataMerger.data.users.UserModel;
-import org.cggh.tools.dataMerger.data.users.UsersModel;
+import org.cggh.tools.dataMerger.data.users.UsersCRUD;
 import org.cggh.tools.dataMerger.functions.uploads.UploadsFunctionsModel;
 
 public class UploadsModel implements java.io.Serializable {
@@ -56,9 +56,9 @@ public class UploadsModel implements java.io.Serializable {
 	   
 		try {
 
-			Connection connection = this.getDataModel().getNewConnection();
+			Connection connection = this.getDataModel().getNewDatabaseConnection();
 			
-			if (!connection.isClosed()) {
+			if (connection != null) {
 
 			      try{
 			          PreparedStatement preparedStatement = connection.prepareStatement("SELECT id, original_filename, created_by_user_id, created_datetime FROM upload WHERE created_by_user_id = ? AND successful = 1;");
@@ -118,8 +118,8 @@ public class UploadsModel implements java.io.Serializable {
 	        	  
 	        	  
 	        	  //Retrieve the user data
-	        	  UsersModel usersModel = new UsersModel();
-	        	  uploadModel.setCreatedByUserModel(usersModel.retrieveUserAsUserModelByUserId(uploadModel.getCreatedByUserModel().getId(), connection));
+	        	  UsersCRUD usersCRUD = new UsersCRUD();
+	        	  uploadModel.setCreatedByUserModel(usersCRUD.retrieveUserAsUserModelUsingId(uploadModel.getCreatedByUserModel().getId(), connection));
 	        	  
 	        	  
 	        	  //Note: Could potentially get datatable data relating to this upload too (if it exists) but this is handled by the a parent mergeModel.

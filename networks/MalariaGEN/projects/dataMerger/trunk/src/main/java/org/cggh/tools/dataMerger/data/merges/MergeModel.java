@@ -20,6 +20,8 @@ public class MergeModel implements java.io.Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = -5306097444255740574L;
+	private final Logger logger = Logger.getLogger("org.cggh.tools.dataMerger.data.merges");
+	
 	private DataModel dataModel;
 	private UserModel createdByUserModel;
 	private JoinsModel joinsModel;

@@ -4,7 +4,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,11 +18,9 @@ public class DatatableModel implements java.io.Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = 8176100759738568138L;
-	private Integer id;
 	private String name;
 	private UploadModel uploadModel;
 	private Integer duplicateKeysCount; //Only relevant in the context of a merge with joins with key(s)
-	private Timestamp createdDatetime;
 	private CachedRowSet dataAsCachedRowSet;
 	private List<String> columnNamesAsStringList;
 	private Integer duplicateValuesCount;
@@ -42,23 +39,11 @@ public class DatatableModel implements java.io.Serializable {
 	public void setDatatableModel(DatatableModel datatableModel) {
 		
 		//TODO: There must be a better way of doing this!? Pity we can't this = that.
-		this.setId(datatableModel.getId());
 		this.setName(datatableModel.getName());
 		this.setUploadModel(datatableModel.getUploadModel());
-		this.setCreatedDatetime(datatableModel.getCreatedDatetime());
 		this.setDuplicateKeysCount(datatableModel.getDuplicateKeysCount());
 	}	
 
-
-	public Integer getId() {
-		return this.id;
-	}
-
-
-
-	public void setId(final Integer id) {
-		this.id = id;
-	}
 
 
 
@@ -87,14 +72,6 @@ public class DatatableModel implements java.io.Serializable {
 		this.duplicateKeysCount = duplicateKeysCount;
 	}
 
-
-	public void setCreatedDatetime(Timestamp createdDatetime) {
-		this.createdDatetime = createdDatetime;
-	}
-	public Timestamp getCreatedDatetime() {
-		return this.createdDatetime;
-	}
-
 	
 	public List<String> getKeyColumnNamesAsStringList() {
 		return this.keyColumnNamesAsStringList;
@@ -105,56 +82,7 @@ public class DatatableModel implements java.io.Serializable {
 	}	
 	
 	
-	//TODO: Refactor references to use (copy query to) datatablesModel.retrieveDatatableAsDatatableModelUsingName(String name, Connection connection)
-	//TODO: With subsquent datatableModel.setDatatableModel(Datatable Model)
-	public void setDatatableModelByName(String name, Connection connection) {
 
-		this.setName(name);
-	
-		  //Init to prevent previous persistence
-	  	  this.setId(null);
-		  this.getUploadModel().setId(null);
-		  this.setCreatedDatetime(null);
-		
-		  //TODO: Data
-		
-	      try {
-	          PreparedStatement preparedStatement = connection.prepareStatement(
-	        		  "SELECT id, " + 
-	        		  "name, " +
-	        		  "upload_id, " +  
-	        		  "created_datetime " + 
-	        		  "FROM datatable WHERE name = ?;");
-	          preparedStatement.setString(1, this.getName());				          
-	          preparedStatement.executeQuery();
-
-	          ResultSet resultSet = preparedStatement.getResultSet();
-
-	          // There may be no such datatable.
-	          if (resultSet.next()) {
-	        	  
-	        	  resultSet.first();
-
-	        	  this.setId(resultSet.getInt("id"));
-	        	  
-	        	  this.setDatatableModelById(this.getId(), connection);
-
-	          } else {
-	        	  //TODO: proper logging and error handling
-	        	  //System.out.println("Did not find datatable with this name. Db query gives !resultSet.next()");
-	          }
-
-	          resultSet.close();
-	          preparedStatement.close();
-	          
-
-	        }
-	        catch(SQLException sqlException){
-		    	sqlException.printStackTrace();
-	        } 
-		
-		
-	}
 
 
 
@@ -186,58 +114,11 @@ public class DatatableModel implements java.io.Serializable {
 
 
 
-	public void setDatatableModelByUploadId(Integer uploadId, Connection connection) {
-
-		this.getUploadModel().setId(uploadId);
-		
-	      try {
-	          PreparedStatement preparedStatement = connection.prepareStatement(
-	        		  "SELECT id, " + 
-	        		  "name, " +
-	        		  "upload_id, " +  
-	        		  "created_datetime " + 
-	        		  "FROM datatable WHERE upload_id = ?;");
-	          preparedStatement.setInt(1, this.getUploadModel().getId());				          
-	          preparedStatement.executeQuery();
-
-	          ResultSet resultSet = preparedStatement.getResultSet();
-
-	          // There may be no such datatable.
-	          if (resultSet.next()) {
-	        	  
-	        	  resultSet.first();
-	        	  
-	        	  this.setId(resultSet.getInt("id"));
-	   		 
-	        	  // All roads lead to Rome.
-	        	  this.setDatatableModelById(this.getId(), connection);	        	  
-	        	  
-	          } else {
-	        	  //TODO: proper logging and error handling
-	        	  //System.out.println("Did not find datatable with this upload_id. Db query gives !resultSet.next()");
-	          }
-
-	          resultSet.close();
-	          preparedStatement.close();
-	          
-
-	        }
-	        catch(SQLException sqlException){
-		    	sqlException.printStackTrace();
-	        } 	        	  
-	        	  
-
-		
-		
-	}
-
-
-
-	public void setDatatableModelById(Integer id, Connection connection) {
+	public void setDatatableModelById(String name, Connection connection) {
 
 		DatatablesModel datatablesModel = new DatatablesModel();
 		
-		this.setDatatableModel(datatablesModel.retrieveDatatableAsDatatableModelUsingDatatableId(id, connection));
+		this.setDatatableModel(datatablesModel.retrieveDatatableAsDatatableModelUsingDatatableName(name, connection));
 
 		
 	}
@@ -301,7 +182,7 @@ public class DatatableModel implements java.io.Serializable {
 		
 		DatatablesModel datatablesModel = new DatatablesModel();
 		
-		this.setDuplicateKeysCount(datatablesModel.retrieveDatatableAsDatatableModelUsingDatatableId(this.getId(), connection).getDuplicateKeysCount());
+		this.setDuplicateKeysCount(datatablesModel.retrieveDatatableAsDatatableModelUsingDatatableName(this.getName(), connection).getDuplicateKeysCount());
 	}
 
 	public void setDatatableModelById(Connection connection) {
@@ -310,7 +191,7 @@ public class DatatableModel implements java.io.Serializable {
 		
 		//Get what is in the database.
 		//Set to what is in the database. Use other methods to process or update.
-		this.setDatatableModel(datatablesModel.retrieveDatatableAsDatatableModelUsingDatatableId(this.getId(), connection));
+		this.setDatatableModel(datatablesModel.retrieveDatatableAsDatatableModelUsingDatatableName(this.getName(), connection));
 		
 	}
 

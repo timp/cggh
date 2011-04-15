@@ -5,6 +5,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.logging.Logger;
 
 import javax.servlet.ServletContext;
 
@@ -14,11 +15,16 @@ public class DataModel implements java.io.Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = 6445378947804522984L;
+	private final Logger logger = Logger.getLogger("org.cggh.tools.dataMerger.data");
 	private ServletContext servletContext = null;
 	private String url = null;
 	private String username = null;
 	private String password = null;
 	private int lastInsertId;
+	private Boolean databaseConnectable = null;
+	private String databaseDriverFullyQualifiedClassName = null;
+	private String databaseServerPath = null;
+	private String databaseName = null;
 
 
 	public DataModel() {
@@ -26,15 +32,20 @@ public class DataModel implements java.io.Serializable {
 	}
 
 	//TODO: Add transaction support
+
 	
-	public void setDataModelByServletContext (final ServletContext servletContext) {
+	public void setDataModelUsingServletContext (final ServletContext servletContext) {
 		
 		this.setServletContext(servletContext);
-		this.setURL(servletContext.getInitParameter("databaseBasePath") + servletContext.getInitParameter("databaseName"));
+		this.setDatabaseDriverFullyQualifiedClassName(servletContext.getInitParameter("databaseDriverFullyQualifiedClassName"));
+		this.setDatabaseServerPath(servletContext.getInitParameter("databaseServerPath"));
+		this.setDatabaseName(servletContext.getInitParameter("databaseName"));
+		this.setURL(this.getDatabaseServerPath() + this.getDatabaseName());
 		this.setUsername(servletContext.getInitParameter("databaseUsername"));
 		this.setPassword(servletContext.getInitParameter("databasePassword"));
-		
+		this.setDatabaseConnectableUsingDataModel();
 	}
+	
 
 	public void setServletContext (final ServletContext servletContext) {
 		this.servletContext = servletContext;
@@ -71,12 +82,12 @@ public class DataModel implements java.io.Serializable {
 		return this.password;
 	}	
 	
-	public Connection getNewConnection() {
+	public Connection getNewDatabaseConnection() {
 		
 		Connection connection = null;
 
 		try {
-			Class.forName("com.mysql.jdbc.Driver").newInstance();
+			Class.forName(this.getDriverFullyQualifiedClassName()).newInstance();
 		} catch (InstantiationException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -93,12 +104,38 @@ public class DataModel implements java.io.Serializable {
 			connection = DriverManager.getConnection(this.getURL(), this.getUsername(), this.getPassword());
 			
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
-		
 		return connection;
+	}
+	
+	public Connection getNewDatabaseServerConnection() {
+		
+		Connection baseConnection = null;
+
+		try {
+			Class.forName(this.getDriverFullyQualifiedClassName()).newInstance();
+		} catch (InstantiationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		try {
+
+			baseConnection = DriverManager.getConnection(this.getDatabaseServerPath(), this.getUsername(), this.getPassword());
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		return baseConnection;
 	}
 
 	public Integer retrieveLastInsertIdAsIntegerUsingConnection(Connection connection) {
@@ -140,6 +177,82 @@ public class DataModel implements java.io.Serializable {
 	public void setLastInsertId(int lastInsertId) {
 		this.lastInsertId = lastInsertId;
 	}
+
 	
 	
+	public void setDatabaseConnectableUsingDataModel() {
+
+		try {
+			Class.forName(this.getDriverFullyQualifiedClassName()).newInstance();
+		} catch (InstantiationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		try {
+
+			Connection connection = DriverManager.getConnection(this.getURL(), this.getUsername(), this.getPassword());
+			connection.close();
+			
+			this.setDatabaseConnectable(true);
+			
+		} catch (SQLException e) {
+			
+			this.setDatabaseConnectable(false);
+		}
+
+	}
+
+	public void setDatabaseConnectable(Boolean databaseConnectable) {
+		this.databaseConnectable = databaseConnectable;
+	}
+
+	public Boolean isDatabaseConnectable() {
+		return this.databaseConnectable;
+	}
+
+	public void setDatabaseDriverFullyQualifiedClassName(
+			String driverFullyQualifiedClassName) {
+		this.databaseDriverFullyQualifiedClassName = driverFullyQualifiedClassName;
+	}
+
+	public String getDriverFullyQualifiedClassName() {
+		return this.databaseDriverFullyQualifiedClassName;
+	}
+
+	public Integer[] getVersionAsIntegerArray() {
+		
+		Integer[] versionAsIntegerArray = new Integer[3];
+		
+		if (this.isDatabaseConnectable()) {
+			
+			//look up application table current installation history (last installed) or version number 
+			versionAsIntegerArray = new Integer[] {1,0,0};
+		}
+		
+		return versionAsIntegerArray;
+	}
+
+	public void setDatabaseServerPath(String basePath) {
+		this.databaseServerPath = basePath;
+	}
+
+	public String getDatabaseServerPath() {
+		return databaseServerPath;
+	}
+
+	public void setDatabaseName(String databaseName) {
+		this.databaseName = databaseName;
+	}
+
+	public String getDatabaseName() {
+		return databaseName;
+	}
+
 }

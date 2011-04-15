@@ -87,12 +87,10 @@ public class ResolutionsByRowModel implements java.io.Serializable {
 		   String CACHED_ROW_SET_IMPL_CLASS = "com.sun.rowset.CachedRowSetImpl";
 		   
 			try {
-				
-				Class.forName("com.mysql.jdbc.Driver").newInstance();
-				
-				Connection connection = this.getDataModel().getNewConnection();
+
+				Connection connection = this.getDataModel().getNewDatabaseConnection();
 				 
-				if (!connection.isClosed()) {
+				if (connection != null) {
 
 					
 				      try{
@@ -134,12 +132,10 @@ public class ResolutionsByRowModel implements java.io.Serializable {
 		   String CACHED_ROW_SET_IMPL_CLASS = "com.sun.rowset.CachedRowSetImpl";
 		   
 			try {
-				
-				Class.forName("com.mysql.jdbc.Driver").newInstance();
-				
-				Connection connection = this.getDataModel().getNewConnection();
+
+				Connection connection = this.getDataModel().getNewDatabaseConnection();
 				 
-				if (!connection.isClosed()) {
+				if (connection != null) {
 
 					
 					String keyColumnReferencesAsCSVForSelectSQL = "";
@@ -274,9 +270,9 @@ public class ResolutionsByRowModel implements java.io.Serializable {
 
 		try {
 			
-			Connection connection = this.getDataModel().getNewConnection();
+			Connection connection = this.getDataModel().getNewDatabaseConnection();
 			 
-			if (!connection.isClosed()) {
+			if (connection != null) {
 					
 		          //Insert all the joins from this JSON Object
 				

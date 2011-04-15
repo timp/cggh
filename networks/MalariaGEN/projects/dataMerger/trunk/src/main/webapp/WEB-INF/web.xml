@@ -44,6 +44,19 @@
     <url-pattern>/data/*</url-pattern>
   </servlet-mapping>
 
+
+  <servlet>
+  	<description>
+  	</description>
+  	<display-name>DatabasesController</display-name>
+  	<servlet-name>DatabasesController</servlet-name>
+  	<servlet-class>org.cggh.tools.dataMerger.data.databases.DatabasesController</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>DatabasesController</servlet-name>
+    <url-pattern>/data/databases/*</url-pattern>
+  </servlet-mapping>
+
   <servlet>
   	<description>
   	</description>
@@ -98,6 +111,7 @@
 	 <url-pattern>/pages/index.jsp</url-pattern>
      <url-pattern>/pages/home/*</url-pattern>
      <url-pattern>/pages/shared/*</url-pattern>
+     <url-pattern>/pages/guides/*</url-pattern>
 
                <http-method>GET</http-method>
 
@@ -224,7 +238,11 @@
 
 	<!-- application init params -->
 	<context-param>
-		<param-name>databaseBasePath</param-name>
+		<param-name>databaseDriverFullyQualifiedClassName</param-name>
+		<param-value>com.mysql.jdbc.Driver</param-value>
+	</context-param>	
+	<context-param>
+		<param-name>databaseServerPath</param-name>
 		<param-value>jdbc:mysql://localhost:3306/</param-value>
 	</context-param>	
 	<context-param>
@@ -240,14 +258,35 @@
 		<param-value>root</param-value>
 	</context-param>
 	
-	<!-- These folders are automatically generated. Tomcat and MySQL must be able to read and write to these. -->
+	<!-- To be deprecated? Is useful to separate these concerns. -->
 	<context-param>
+		<!-- Tomcat must be able to write to and read from this folder. -->
+		<!-- MySQL must be able to read from this folder. -->
 		<param-name>uploadsFileRepositoryBasePath</param-name>
 		<param-value>C:\Lee\Work\dataMerger\files\uploads\</param-value>
 	</context-param>
 	<context-param>
+		<!-- Tomcat must be able to read from this folder. -->
+		<!-- MySQL must be able to write this folder. -->
 		<param-name>exportsFileRepositoryBasePath</param-name>
 		<param-value>C:\Lee\Work\dataMerger\files\exports\</param-value>
+	</context-param>
+	
+	<!-- Tomcat and MySQL must have read and write access to this directory. -->
+	<context-param>
+		<param-name>filebaseServerPath</param-name>
+		<param-value>C:\Lee\Work\dataMerger\files\</param-value>
+	</context-param>	
+
+	<context-param>
+		<param-name>stringsToNullifyAsCSV</param-name>
+		<param-value>,,NULL</param-value>
+	</context-param>
+	
+	<!-- Without this parameter the default behavior is to export NULLs as \N (unquoted) -->
+	<context-param>
+		<param-name>stringToExportInsteadOfNull</param-name>
+		<param-value>NULL</param-value>
 	</context-param>
 
 </web-app>

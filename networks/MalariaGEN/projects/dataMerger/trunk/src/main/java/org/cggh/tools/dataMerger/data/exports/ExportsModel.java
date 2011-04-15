@@ -21,9 +21,14 @@ import org.cggh.tools.dataMerger.data.resolutions.ResolutionsModel;
 import org.cggh.tools.dataMerger.data.users.UserModel;
 import org.cggh.tools.dataMerger.functions.exports.ExportsFunctionsModel;
 
-public class ExportsModel {
+public class ExportsModel implements java.io.Serializable  {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -2386709583926211005L;
 	private final Logger logger = Logger.getLogger("org.cggh.tools.dataMerger.data.exports");
+	
 	private DataModel dataModel;
 	private UserModel userModel;
 	
@@ -41,9 +46,9 @@ public class ExportsModel {
 
 		try {
 			
-			Connection connection = this.getDataModel().getNewConnection();
+			Connection connection = this.getDataModel().getNewDatabaseConnection();
 			
-			if (!connection.isClosed()) {
+			if (connection != null) {
 		
 			
 			      try {		
@@ -112,7 +117,9 @@ public class ExportsModel {
 				
 			} else {
 				
-				//System.out.println("connection.isClosed");
+				//Connection is null (should have handled an exception and redirected before now. 
+				this.logger.severe("connection is null");
+				
 			}
 				
 		} 
@@ -1027,12 +1034,10 @@ public class ExportsModel {
 		   String CACHED_ROW_SET_IMPL_CLASS = "com.sun.rowset.CachedRowSetImpl";
 		   
 			try {
-				
-				Class.forName("com.mysql.jdbc.Driver").newInstance();
-				
-				Connection connection = this.getDataModel().getNewConnection();
+
+				Connection connection = this.getDataModel().getNewDatabaseConnection();
 				 
-				if (!connection.isClosed()) {
+				if (connection != null) {
 				
 					 //FIXME: Apparently a bug in CachedRowSet using getX('columnAlias') aka columnLabel, which actually only works with getX('columnName'), so using getX('columnIndex').
 					 

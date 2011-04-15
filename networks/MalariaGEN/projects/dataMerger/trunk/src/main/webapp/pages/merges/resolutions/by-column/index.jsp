@@ -126,7 +126,7 @@ ResolutionsFunctionsModel resolutionsFunctionsModel = new ResolutionsFunctionsMo
 			<% } %>
 			
 			
-			<div class="item"><a href="<%= basePath %>pages/merges/">Cancel &amp; Return to Merges</a></div>
+			<div class="item"><a href="<%= headerBasePathURL %>pages/merges/">Cancel &amp; Return to Merges</a></div>
 		</div>
 		
 		<div class="resolutions-container">
@@ -134,7 +134,7 @@ ResolutionsFunctionsModel resolutionsFunctionsModel = new ResolutionsFunctionsMo
 			<% 
 			
 				resolutionsFunctionsModel.setHttpServletRequest(request);
-				resolutionsFunctionsModel.setURLBasePath(basePath);
+				resolutionsFunctionsModel.setURLBasePath(headerBasePathURL);
 				resolutionsFunctionsModel.setMergeModel(mergeModel);
 				out.print(resolutionsFunctionsModel.getResolutionsMenuAsDecoratedXHTMLList()); 
 			%>

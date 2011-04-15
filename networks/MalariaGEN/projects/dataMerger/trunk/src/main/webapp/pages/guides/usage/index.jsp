@@ -1,31 +1,30 @@
-<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
-    pageEncoding="ISO-8859-1"%>
-<%@ include file="../../../shared/jsp/prepage.jsp" %>
+<%-- Note: This file should not require any database interaction because it should stand alone as a document. --%>
+<%@ page language="java" contentType="text/html; charset=ISO-8859-1" pageEncoding="ISO-8859-1"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-		<title>dataMerger - Home - Welcome</title>
+		<title>dataMerger - Guides - Usage</title>
 		
-		<link rel="stylesheet" type="text/css" href="../../../shared/css/shared.css" />
-		<link rel="stylesheet" type="text/css" href="../../css/home.css" />
-		<script type="text/javascript" src="../../../shared/js/shared.js"></script>
+		<link rel="stylesheet" type="text/css" href="../../shared/css/shared.css" />
+		<link rel="stylesheet" type="text/css" href="../css/guides.css" />
+		<script type="text/javascript" src="../../shared/js/shared.js"></script>
 		
 	</head>
 	<body>
 		<div class="page">
-			<%@ include file="../../../shared/jsp/header.jsp" %>
-			<h2 class="page-title">Home</h2>
+			<%@ include file="../../shared/jsp/header.jsp" %>
+			<h2 class="page-title">Guides</h2>
 	
 			<div class="guides-container">
 			
-				<%@ include file="../../jsp/guides-menu.jsp" %>
+				<%@ include file="../jsp/guides-menu.jsp" %>
 				
 				<div class="guide">
 					
 	
 		
-					<h3>Usage:</h3>
+					<h3>Usage</h3>
 					
 					<p>The file format for the source files ("uploads") is expected to be the same as the "calculated data" downloaded from Topheno.
 					</p>
@@ -75,6 +74,32 @@
 						<ul>
 							<li>Values (and column headings) optionally enclosed by double-quotes.
 							</li>
+						</ul>
+					</p>
+		
+		
+					<p>Handling of NULL values:
+						<ul>
+							<li>In v1.0, the following values (as they appear in the uploaded CSV file) are interpreted as NULL:
+							
+								<ul>
+									<li>NULL</li>
+									<li>\N</li>
+									<li>"\N"</li>
+								</ul>
+							
+							</li>
+							<li>As of v1.1, the following values are also interpreted as NULL:
+							
+								<ul>
+									<li>"NULL"</li>
+									<li>Quoted and unquoted empty strings</li>
+								</ul>
+							
+							</li>
+							<li>In v1.0, all NULL values were exported as (and appear in the exported CSV file as) \N</li>
+							<li>As of v1.1, all NULL values are exported as (and appear in the exported CSV file as) "NULL"</li>
+							
 						</ul>
 					</p>
 		

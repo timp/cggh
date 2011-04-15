@@ -43,9 +43,9 @@ public class ResolutionsModel implements java.io.Serializable {
 
 		try {
 			
-			Connection connection = this.getDataModel().getNewConnection();
+			Connection connection = this.getDataModel().getNewDatabaseConnection();
 			 
-			if (!connection.isClosed()) {		
+			if (connection != null) {		
 		
 			      try{
 			          PreparedStatement preparedStatement = connection.prepareStatement("SELECT column_number, COUNT(*) AS conflicts_count FROM `resolution` WHERE merge_id = ? AND solution_by_column_id IS NULL AND solution_by_row_id IS NULL GROUP BY column_number ORDER BY column_number;");
@@ -102,9 +102,9 @@ public class ResolutionsModel implements java.io.Serializable {
 
 		try {
 			
-			Connection connection = this.getDataModel().getNewConnection();
+			Connection connection = this.getDataModel().getNewDatabaseConnection();
 			 
-			if (!connection.isClosed()) {		
+			if (connection != null) {		
 		
 			      try{
 			          PreparedStatement preparedStatement = connection.prepareStatement("SELECT joined_keytable_id, column_number FROM `resolution` WHERE merge_id = ? AND solution_by_column_id IS NULL AND solution_by_row_id IS NULL ORDER BY joined_keytable_id, column_number;");
@@ -171,9 +171,9 @@ public class ResolutionsModel implements java.io.Serializable {
 
 		try {
 			
-			Connection connection = this.getDataModel().getNewConnection();
+			Connection connection = this.getDataModel().getNewDatabaseConnection();
 			 
-			if (!connection.isClosed()) {		
+			if (connection != null) {		
 		
 			      try{
 			          PreparedStatement preparedStatement = connection.prepareStatement("SELECT joined_keytable_id, column_number, solution_by_column_id FROM `resolution` WHERE merge_id = ? ORDER BY joined_keytable_id, column_number;");
@@ -235,9 +235,9 @@ public class ResolutionsModel implements java.io.Serializable {
 
 		try {
 			
-			Connection connection = this.getDataModel().getNewConnection();
+			Connection connection = this.getDataModel().getNewDatabaseConnection();
 			 
-			if (!connection.isClosed()) {		
+			if (connection != null) {		
 		
 			      try{
 			          PreparedStatement preparedStatement = connection.prepareStatement("SELECT joined_keytable_id, column_number, solution_by_row_id FROM `resolution` WHERE merge_id = ? ORDER BY joined_keytable_id, column_number;");
@@ -300,9 +300,9 @@ public class ResolutionsModel implements java.io.Serializable {
 
 		try {
 			
-			Connection connection = this.getDataModel().getNewConnection();
+			Connection connection = this.getDataModel().getNewDatabaseConnection();
 			 
-			if (!connection.isClosed()) {		
+			if (connection != null) {		
 		
 			      try{
 			          PreparedStatement preparedStatement = connection.prepareStatement("SELECT joined_keytable_id, column_number, solution_by_cell_id FROM `resolution` WHERE merge_id = ? ORDER BY joined_keytable_id, column_number;");
@@ -363,9 +363,9 @@ public class ResolutionsModel implements java.io.Serializable {
 
 		try {
 			
-			Connection connection = this.getDataModel().getNewConnection();
+			Connection connection = this.getDataModel().getNewDatabaseConnection();
 			 
-			if (!connection.isClosed()) {		
+			if (connection != null) {		
 		
 			      try{
 			          PreparedStatement preparedStatement = connection.prepareStatement("SELECT joined_keytable_id, column_number, constant FROM `resolution` WHERE merge_id = ? ORDER BY joined_keytable_id, column_number;");
@@ -427,9 +427,9 @@ public class ResolutionsModel implements java.io.Serializable {
 		
 		try {
 			
-			Connection connection = this.getDataModel().getNewConnection();
+			Connection connection = this.getDataModel().getNewDatabaseConnection();
 			 
-			if (!connection.isClosed()) {		
+			if (connection != null) {		
 		
 			      try{
 			          PreparedStatement preparedStatement = connection.prepareStatement(

@@ -1,25 +1,20 @@
-<jsp:useBean id="dataModel" class="org.cggh.tools.dataMerger.data.DataModel" scope="session"/>
-<jsp:useBean id="userModel" class="org.cggh.tools.dataMerger.data.users.UserModel" scope="session"/>
-<jsp:useBean id="usersModel" class="org.cggh.tools.dataMerger.data.users.UsersModel" scope="session"/>
+<%@ page import="org.cggh.tools.dataMerger.data.databases.DatabasesCRUD" %>
+<%@ page import="org.cggh.tools.dataMerger.data.databases.DatabaseModel" %>
+<%@ page import="org.cggh.tools.dataMerger.data.users.UsersCRUD" %>
+<%@ page import="org.cggh.tools.dataMerger.data.users.UserModel" %>
 <%
 
-if (request.getRemoteUser() != null) {
+DatabasesCRUD databasesCRUD = new DatabasesCRUD();
+DatabaseModel databaseModel = databasesCRUD.retrieveDatabaseAsDatabaseModelUsingServletContext(request.getSession().getServletContext());
 
-	dataModel.setDataModelByServletContext(request.getSession().getServletContext());
-	userModel.setDataModel(dataModel);
-	userModel.setUserModelByUsername(request.getRemoteUser());
+UsersCRUD usersCRUD = new UsersCRUD();
+usersCRUD.setDatabaseModel(databaseModel);
+UserModel userModel = usersCRUD.retrieveUserAsUserModelUsingUsername(request.getRemoteUser());
 	
-	// Login/Register user early on.
-	
-	usersModel.setDataModel(dataModel);
-	usersModel.setUserModel(userModel);
-	
-	if (!usersModel.isUsernameCreated(usersModel.getUserModel().getUsername())) {
-		
-		usersModel.createUserByUsername(usersModel.getUserModel().getUsername());
-	
-		userModel.setUserModelByUsername(request.getRemoteUser());
-	}
+if (userModel.getId() == null) {
 
+	usersCRUD.createUserUsingUsername(userModel.getUsername());
+	userModel = usersCRUD.retrieveUserAsUserModelUsingUsername(userModel.getUsername());
+	
 }
 %>

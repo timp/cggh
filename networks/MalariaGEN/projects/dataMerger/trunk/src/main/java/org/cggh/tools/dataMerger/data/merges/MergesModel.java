@@ -65,12 +65,10 @@ public class MergesModel implements java.io.Serializable {
 		mergeModel.setId(mergeId);
 		
 		try {
-			
-			Class.forName("com.mysql.jdbc.Driver").newInstance();
-			
-			Connection connection = this.getDataModel().getNewConnection();
+
+			Connection connection = this.getDataModel().getNewDatabaseConnection();
 			 
-			if (!connection.isClosed()) {		
+			if (connection != null) {		
 
 				mergeModel = retrieveMergeAsMergeModelByMergeId(mergeModel.getId(), connection);
 				
@@ -185,9 +183,9 @@ public class MergesModel implements java.io.Serializable {
 
 		try {
 			
-			Connection connection = this.getDataModel().getNewConnection();
+			Connection connection = this.getDataModel().getNewDatabaseConnection();
 			
-			if (!connection.isClosed()) {
+			if (connection != null) {
 		
 			
 			      try {
@@ -333,15 +331,17 @@ public class MergesModel implements java.io.Serializable {
 			Connection connection) {
 
 		  DatatablesModel datatablesModel = new DatatablesModel();
+		  
+		  datatablesModel.setDataModel(this.getDataModel());
 
 		  mergeModel.setDatatable1Model(datatablesModel.retrieveDatatableAsDatatableModelUsingUploadId(mergeModel.getUpload1Model().getId(), connection));
 		  mergeModel.setDatatable2Model(datatablesModel.retrieveDatatableAsDatatableModelUsingUploadId(mergeModel.getUpload2Model().getId(), connection));
 		  
-		  if (mergeModel.getDatatable1Model().getId() == null) {
+		  if (mergeModel.getDatatable1Model().getName() == null) {
 			  mergeModel.setDatatable1Model(datatablesModel.retrieveDatatableAsDatatableModelThroughCreatingDatatableUsingUploadId(mergeModel.getUpload1Model().getId(), connection));
 		  }
 
-		  if (mergeModel.getDatatable2Model().getId() == null) {
+		  if (mergeModel.getDatatable2Model().getName() == null) {
 			  mergeModel.setDatatable2Model(datatablesModel.retrieveDatatableAsDatatableModelThroughCreatingDatatableUsingUploadId(mergeModel.getUpload2Model().getId(), connection));
 		  }
 		  
@@ -466,12 +466,10 @@ public class MergesModel implements java.io.Serializable {
 		   String CACHED_ROW_SET_IMPL_CLASS = "com.sun.rowset.CachedRowSetImpl";
 		   
 			try {
-				
-				Class.forName("com.mysql.jdbc.Driver").newInstance();
-				
-				Connection connection = this.getDataModel().getNewConnection();
+
+				Connection connection = this.getDataModel().getNewDatabaseConnection();
 				 
-				if (!connection.isClosed()) {
+				if (connection != null) {
 				
 					 //FIXME: Apparently a bug in CachedRowSet using getX('columnAlias') aka columnLabel, which actually only works with getX('columnName'), so using getX('columnIndex').
 					 

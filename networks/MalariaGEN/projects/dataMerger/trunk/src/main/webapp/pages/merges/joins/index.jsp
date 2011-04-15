@@ -101,7 +101,7 @@ DateFormat dateFormat = new SimpleDateFormat("dd MMM yyyy HH:mm");
 			<div class="item"><button class="edit-resolutions-by-column">Edit Resolutions</button></div>
 			<% } %>
 			
-			<div class="item"><a href="<%= basePath %>pages/merges/">Cancel &amp; Return to Merges</a></div>
+			<div class="item"><a href="<%= headerBasePathURL %>pages/merges/">Cancel &amp; Return to Merges</a></div>
 			
 		</div>
 		

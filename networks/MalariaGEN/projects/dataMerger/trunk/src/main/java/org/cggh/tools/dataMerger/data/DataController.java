@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -24,6 +25,7 @@ import org.cggh.tools.dataMerger.data.resolutions.byColumn.ResolutionsByColumnMo
 import org.cggh.tools.dataMerger.data.resolutions.byRow.ResolutionsByRowModel;
 import org.cggh.tools.dataMerger.data.uploads.UploadsModel;
 import org.cggh.tools.dataMerger.data.users.UserModel;
+import org.cggh.tools.dataMerger.data.users.UsersCRUD;
 import org.cggh.tools.dataMerger.functions.joins.JoinFunctionsModel;
 import org.cggh.tools.dataMerger.functions.merges.MergeFunctionsModel;
 import org.cggh.tools.dataMerger.functions.uploads.UploadsFunctionsModel;
@@ -43,41 +45,24 @@ public class DataController extends HttpServlet {
 	 * 
 	 */
 	private static final long serialVersionUID = 2142411300172699330L;
-	private DataModel dataModel = null;
-	private UserModel userModel;
+	private final Logger logger = Logger.getLogger("org.cggh.tools.dataMerger.data");
 
     public DataController() {
         super();
-        
-        //TODO: Set up a DataModel to store the connection details for each resource. Perhaps access by dataModel.getResource("uploads").getConnectionString()... dataModel.getResourcesAsList().
-        
-        this.setDataModel(new DataModel());
-    	this.setUserModel(new UserModel());
 
         
     }
 
-    public void setDataModel (final DataModel dataModel) {
-        this.dataModel  = dataModel;
-    }
-    public DataModel getDataModel () {
-        return this.dataModel;
-    }     
-
-    public void setUserModel (final UserModel userModel) {
-        this.userModel  = userModel;
-    }
-    public UserModel getUserModel () {
-        return this.userModel;
-    }     
-    
-    
     
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-		this.getDataModel().setDataModelByServletContext(request.getSession().getServletContext());
-		this.getUserModel().setDataModel(this.getDataModel());
-		this.getUserModel().setUserModelByUsername(request.getRemoteUser());
+		DataModel dataModel = new DataModel();
+		dataModel.setDataModelUsingServletContext(request.getSession().getServletContext());
+
+		UsersCRUD usersCRUD = new UsersCRUD();
+		usersCRUD.setDataModel(dataModel);
+		UserModel userModel = usersCRUD.retrieveUserAsUserModelUsingUsername(request.getRemoteUser());
+		userModel.setHttpServletRequest(request);
 
 		//TODO: centralize these
 		
@@ -111,10 +96,10 @@ public class DataController extends HttpServlet {
 				  String uploadsAsHTML = null;
 					
 				  UploadsModel uploadsModel = new UploadsModel();
-				  uploadsModel.setDataModel(this.getDataModel());
-				  uploadsModel.setUserModel(this.getUserModel());
+				  uploadsModel.setDataModel(dataModel);
+				  uploadsModel.setUserModel(userModel);
 
-				  CachedRowSet uploadsAsCachedRowSet = uploadsModel.retrieveUploadsAsCachedRowSetUsingUserId(this.getUserModel().getId());
+				  CachedRowSet uploadsAsCachedRowSet = uploadsModel.retrieveUploadsAsCachedRowSetUsingUserId(userModel.getId());
 			
 				  if (uploadsAsCachedRowSet != null) {
 			
@@ -149,7 +134,7 @@ public class DataController extends HttpServlet {
 				 mergeModel.setId(Integer.parseInt(joinsURLPatternMatcher.group(1)));  
 				 
 				 MergesModel mergesModel = new MergesModel();
-				 mergesModel.setDataModel(this.getDataModel());
+				 mergesModel.setDataModel(dataModel);
 				 mergeModel = mergesModel.retrieveMergeAsMergeModelByMergeId(mergeModel.getId());
 			  
 				  if (headerAcceptsAsStringList.contains("text/html")) { 
@@ -162,10 +147,10 @@ public class DataController extends HttpServlet {
 					  String joinsAsHTML = null;
 						
 					  JoinsModel joinsModel = new JoinsModel();
-					  joinsModel.setDataModel(this.getDataModel());
+					  joinsModel.setDataModel(dataModel);
 					  
 					  //FIXME
-					  //joinsModel.setUserModel(this.getUserModel());
+					  //joinsModel.setUserModel(userModel);
 
 					  CachedRowSet joinsAsCachedRowSet = joinsModel.retrieveJoinsAsCachedRowSetByMergeId(mergeModel.getId());
 				
@@ -201,7 +186,7 @@ public class DataController extends HttpServlet {
 				 mergeModel.setId(Integer.parseInt(resolutionsByColumnURLPatternMatcher.group(1)));  
 				 
 				 MergesModel mergesModel = new MergesModel();
-				 mergesModel.setDataModel(this.getDataModel());
+				 mergesModel.setDataModel(dataModel);
 				 mergeModel = mergesModel.retrieveMergeAsMergeModelByMergeId(mergeModel.getId());
 			  
 				  if (headerAcceptsAsStringList.contains("text/html")) { 
@@ -215,7 +200,7 @@ public class DataController extends HttpServlet {
 						
 
 						ResolutionsByColumnModel resolutionsByColumnModel = new ResolutionsByColumnModel();
-						resolutionsByColumnModel.setDataModel(this.getDataModel());
+						resolutionsByColumnModel.setDataModel(dataModel);
 						
 						//FIXME
 						//resolutionsByColumnModel.setUserModel(userModel);
@@ -240,7 +225,7 @@ public class DataController extends HttpServlet {
 				 mergeModel.setId(Integer.parseInt(resolutionsByRowURLPatternMatcher.group(1)));  
 				 
 				 MergesModel mergesModel = new MergesModel();
-				 mergesModel.setDataModel(this.getDataModel());
+				 mergesModel.setDataModel(dataModel);
 				 mergeModel = mergesModel.retrieveMergeAsMergeModelByMergeId(mergeModel.getId());
 			  
 				  if (headerAcceptsAsStringList.contains("text/html")) { 
@@ -254,7 +239,7 @@ public class DataController extends HttpServlet {
 						
 
 						ResolutionsByRowModel resolutionsByRowModel = new ResolutionsByRowModel();
-						resolutionsByRowModel.setDataModel(this.getDataModel());
+						resolutionsByRowModel.setDataModel(dataModel);
 						
 						//FIXME
 						//resolutionsByColumnModel.setUserModel(userModel);
@@ -293,7 +278,7 @@ public class DataController extends HttpServlet {
 						 mergeModel.setId(Integer.parseInt(newJoinURLPatternMatcher.group(1)));  
 						 
 						 MergesModel mergesModel = new MergesModel();
-						 mergesModel.setDataModel(this.getDataModel());
+						 mergesModel.setDataModel(dataModel);
 						 mergeModel = mergesModel.retrieveMergeAsMergeModelByMergeId(mergeModel.getId());
 					  
 					  String joinAsDecoratedXHTMLTable = null;
@@ -340,18 +325,41 @@ public class DataController extends HttpServlet {
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-		this.getDataModel().setDataModelByServletContext(request.getSession().getServletContext());
-		this.getUserModel().setDataModel(this.getDataModel());
-		this.getUserModel().setUserModelByUsername(request.getRemoteUser());
+		DataModel dataModel = new DataModel();
+		dataModel.setDataModelUsingServletContext(request.getSession().getServletContext());
+
+		dataModel.setDatabaseConnectableUsingDataModel();
+		
+		
+		UserModel userModel = new UserModel();
+		
+		if (dataModel.isDatabaseConnectable()) {
+		
+			UsersCRUD usersCRUD = new UsersCRUD();
+			usersCRUD.setDataModel(dataModel);
+			userModel = usersCRUD.retrieveUserAsUserModelUsingUsername(request.getRemoteUser());
+			userModel.setHttpServletRequest(request);
+			
+		}
 		
 		 Pattern exportURLPattern = Pattern.compile("^/merges/(\\d+)/exports$");
 		 Matcher exportURLPatternMatcher = exportURLPattern.matcher(request.getPathInfo());
 		
-		 if (request.getPathInfo().equals("/merges")) {
+		 String[] headerAcceptsAsStringArray = request.getHeader("Accept").split(",");
+		 List<String> headerAcceptsAsStringList = Arrays.asList(headerAcceptsAsStringArray);
+
+		   
+		 
+		 if (request.getPathInfo().equals("/databases")) {
+		 
+			 //TODO:tmp
+			 this.logger.info("Forwarding..");
+			 request.getRequestDispatcher("/databases").forward(request, response);
 			 
-			 String[] headerAcceptsAsStringArray = request.getHeader("Accept").split(",");
-			  List<String> headerAcceptsAsStringList = Arrays.asList(headerAcceptsAsStringArray);
-			  
+			 
+		 }
+		 else if (request.getPathInfo().equals("/merges")) {
+			 
 			  if (headerAcceptsAsStringList.contains("application/json")) { 
 			 
 				  response.setContentType("application/json");
@@ -384,8 +392,8 @@ public class DataController extends HttpServlet {
 								
 								MergesModel mergesModel = new MergesModel();
 								
-								mergesModel.setDataModel(this.getDataModel());
-								mergesModel.setUserModel(this.getUserModel());
+								mergesModel.setDataModel(dataModel);
+								mergesModel.setUserModel(userModel);
 								
 								mergeModel = mergesModel.retrieveMergeAsMergeModelThroughCreatingMergeUsingMergeModel(mergeModel);
 								
@@ -427,10 +435,6 @@ public class DataController extends HttpServlet {
 		 }
 		 else if (exportURLPatternMatcher.find()) {
 			 
-			 
-			 String[] headerAcceptsAsStringArray = request.getHeader("Accept").split(",");
-			  List<String> headerAcceptsAsStringList = Arrays.asList(headerAcceptsAsStringArray);
-			 
 			  //TODO: Just testing
 			  if (headerAcceptsAsStringList.contains("application/json")) { 
 			 
@@ -445,8 +449,8 @@ public class DataController extends HttpServlet {
 
 					ExportsModel exportsModel = new ExportsModel();
 					
-					exportsModel.setDataModel(this.getDataModel());
-					exportsModel.setUserModel(this.getUserModel());
+					exportsModel.setDataModel(dataModel);
+					exportsModel.setUserModel(userModel);
 					
 					exportModel = exportsModel.retrieveExportAsExportModelThroughCreatingExportUsingExportModel(exportModel);
 					
@@ -490,9 +494,13 @@ public class DataController extends HttpServlet {
 	
 	protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-		this.getDataModel().setDataModelByServletContext(request.getSession().getServletContext());
-		this.getUserModel().setDataModel(this.getDataModel());
-		this.getUserModel().setUserModelByUsername(request.getRemoteUser());
+		DataModel dataModel = new DataModel();
+		dataModel.setDataModelUsingServletContext(request.getSession().getServletContext());
+
+		UsersCRUD usersCRUD = new UsersCRUD();
+		usersCRUD.setDataModel(dataModel);
+		UserModel userModel = usersCRUD.retrieveUserAsUserModelUsingUsername(request.getRemoteUser());
+		userModel.setHttpServletRequest(request);
 		
 		//TODO: centralize these
 		
@@ -540,7 +548,7 @@ public class DataController extends HttpServlet {
 							
 							JoinsModel joinsModel = new JoinsModel();
 							
-							joinsModel.setDataModel(this.getDataModel());
+							joinsModel.setDataModel(dataModel);
 							
 							
 							//Consider: Instead of using JSONObject, use JoinsFunctionsModel to convert it to something else? 
@@ -610,7 +618,7 @@ public class DataController extends HttpServlet {
 							
 							ResolutionsByColumnModel resolutionsByColumnModel = new ResolutionsByColumnModel();
 							
-							resolutionsByColumnModel.setDataModel(this.getDataModel());
+							resolutionsByColumnModel.setDataModel(dataModel);
 							
 							//FIXME: This ultimately breaks because the mergeModel is incomplete and a full update is attempted.
 							resolutionsByColumnModel.updateResolutionsByColumnByMergeIdUsingResolutionsByColumnAsJSONObject(mergeModel.getId(), jsonObject);
@@ -677,7 +685,7 @@ public class DataController extends HttpServlet {
 								
 								ResolutionsByRowModel resolutionsByRowModel = new ResolutionsByRowModel();
 								
-								resolutionsByRowModel.setDataModel(this.getDataModel());
+								resolutionsByRowModel.setDataModel(dataModel);
 								
 								resolutionsByRowModel.updateResolutionsByRowByMergeIdUsingResolutionsByRowAsJSONObject(mergeModel.getId(), jsonObject);
 								
@@ -747,7 +755,7 @@ public class DataController extends HttpServlet {
 										
 										ResolutionsByCellModel resolutionsByCellModel = new ResolutionsByCellModel();
 										
-										resolutionsByCellModel.setDataModel(this.getDataModel());
+										resolutionsByCellModel.setDataModel(dataModel);
 										
 										resolutionsByCellModel.updateResolutionsByCellByMergeIdUsingResolutionsByCellAsJSONObject(mergeModel.getId(), jsonObject);
 										

@@ -412,9 +412,9 @@ public class JoinsModel implements java.io.Serializable {
 
 		try {
 			
-			Connection connection = this.getDataModel().getNewConnection();
+			Connection connection = this.getDataModel().getNewDatabaseConnection();
 			 
-			if (!connection.isClosed()) {
+			if (connection != null) {
 					
 				  //Remove all the joins for this mergeId
 		          PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM `join` WHERE merge_id = ?;");
@@ -515,9 +515,9 @@ public class JoinsModel implements java.io.Serializable {
 		
 		try {
 			
-			Connection connection = this.getDataModel().getNewConnection();
+			Connection connection = this.getDataModel().getNewDatabaseConnection();
 			 
-			if (!connection.isClosed()) {
+			if (connection != null) {
 		
 				joinsAsCachedRowSet = this.retrieveJoinsAsCachedRowSetByMergeId(mergeId, connection);
 				
@@ -832,9 +832,9 @@ public class JoinsModel implements java.io.Serializable {
 
 		try {
 			
-			Connection connection = this.getDataModel().getNewConnection();
+			Connection connection = this.getDataModel().getNewDatabaseConnection();
 			 
-			if (!connection.isClosed()) {		
+			if (connection != null) {		
 		
 				joinColumnNamesByColumnNumberAsHashMap = retrieveJoinColumnNamesByColumnNumberAsHashMapUsingMergeModel(mergeModel, connection);
 	        
