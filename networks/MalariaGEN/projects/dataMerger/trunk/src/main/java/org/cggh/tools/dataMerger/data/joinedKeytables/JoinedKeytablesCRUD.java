@@ -12,7 +12,7 @@ import javax.sql.rowset.CachedRowSet;
 
 import org.cggh.tools.dataMerger.data.merges.MergeModel;
 
-public class JoinedKeytablesModel implements java.io.Serializable {
+public class JoinedKeytablesCRUD implements java.io.Serializable {
 
 	/**
 	 * 

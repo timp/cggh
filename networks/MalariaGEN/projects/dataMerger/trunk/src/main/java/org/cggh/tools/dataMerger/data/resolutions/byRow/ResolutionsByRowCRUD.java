@@ -8,16 +8,16 @@ import java.util.logging.Logger;
 import javax.sql.rowset.CachedRowSet;
 
 import org.cggh.tools.dataMerger.data.DataModel;
-import org.cggh.tools.dataMerger.data.joins.JoinsModel;
+import org.cggh.tools.dataMerger.data.joins.JoinsCRUD;
 import org.cggh.tools.dataMerger.data.merges.MergeModel;
-import org.cggh.tools.dataMerger.data.resolutions.ResolutionsModel;
+import org.cggh.tools.dataMerger.data.resolutions.ResolutionsCRUD;
 import org.cggh.tools.dataMerger.functions.resolutions.byRow.ResolutionsByRowFunctionsModel;
 import org.cggh.tools.dataMerger.scripts.merges.MergeScriptsModel;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 
-public class ResolutionsByRowModel implements java.io.Serializable {
+public class ResolutionsByRowCRUD implements java.io.Serializable {
 
 	/**
 	 * 
@@ -28,7 +28,7 @@ public class ResolutionsByRowModel implements java.io.Serializable {
 
 	private DataModel dataModel;
 	
-	public ResolutionsByRowModel() {
+	public ResolutionsByRowCRUD() {
 
 		this.setDataModel(new DataModel());
 		
@@ -54,12 +54,12 @@ public class ResolutionsByRowModel implements java.io.Serializable {
 			  	resolutionsByRowFunctionsModel.setResolutionsByRowAsCachedRowSet(resolutionsByRowAsCachedRowSet);
 			  	resolutionsByRowFunctionsModel.setSolutionsByRowAsCachedRowSet(this.retrieveSolutionsByRowAsCachedRowSet());
 
-			  	JoinsModel joinsModel = new JoinsModel();
+			  	JoinsCRUD joinsModel = new JoinsCRUD();
 			  	joinsModel.setDataModel(this.getDataModel());
 			  	resolutionsByRowFunctionsModel.setJoinColumnNamesByColumnNumberAsHashMap(joinsModel.retrieveJoinColumnNamesByColumnNumberAsHashMapUsingMergeModel(mergeModel));
 			  	
 			  	/////////TODO:
-			  	ResolutionsModel resolutionsModel = new ResolutionsModel();
+			  	ResolutionsCRUD resolutionsModel = new ResolutionsCRUD();
 			  	resolutionsModel.setDataModel(this.getDataModel());
 			  	resolutionsByRowFunctionsModel.setSolutionByColumnIdUsingCellCoordsAsHashMap(resolutionsModel.retrieveSolutionByColumnIdUsingCellCoordsAsHashMapUsingMergeModel(mergeModel));
 			  	resolutionsByRowFunctionsModel.setSolutionByCellIdUsingCellCoordsAsHashMap(resolutionsModel.retrieveSolutionByCellIdUsingCellCoordsAsHashMapUsingMergeModel(mergeModel));

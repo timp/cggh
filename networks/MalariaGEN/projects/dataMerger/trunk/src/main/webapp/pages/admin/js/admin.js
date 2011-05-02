@@ -1,6 +1,7 @@
 function initAdminFunctions () {
 
 	initCreateDatabaseFunction();
+	initCreateFilebaseFunction();
 }
 
 function initCreateDatabaseFunction () {
@@ -22,6 +23,32 @@ function initCreateDatabaseFunction () {
 			          },
 						beforeSend: function() { $('.creating-database-indicator').show(); },
 				        complete: function() { $('.creating-database-indicator').hide(); }
+					});
+			}
+			
+		);
+	
+}
+
+function initCreateFilebaseFunction () {
+	
+	$('.create-filebase-button').click(
+			
+			function () {
+				
+				$.ajax({
+					  type: "POST",
+					  data: '',
+					  url: "/dataMerger/files/filebases",
+					  dataType: "text",
+					  success: function(data, textStatus, jqXHR) {
+							$('.ajaxResponse').html("Response: " + data);
+					  },
+					  error:function (jqXHR, textStatus, errorThrown){
+							$('.ajaxError').html("Error: " + errorThrown);
+			          },
+						beforeSend: function() { $('.creating-filebase-indicator').show(); },
+				        complete: function() { $('.creating-filebase-indicator').hide(); }
 					});
 			}
 			

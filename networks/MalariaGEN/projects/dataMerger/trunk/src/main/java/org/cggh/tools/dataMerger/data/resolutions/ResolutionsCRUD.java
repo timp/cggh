@@ -12,7 +12,7 @@ import javax.sql.rowset.CachedRowSet;
 import org.cggh.tools.dataMerger.data.DataModel;
 import org.cggh.tools.dataMerger.data.merges.MergeModel;
 
-public class ResolutionsModel implements java.io.Serializable {
+public class ResolutionsCRUD implements java.io.Serializable {
 
 	/**
 	 * 
@@ -24,7 +24,7 @@ public class ResolutionsModel implements java.io.Serializable {
 	private String exportRepositoryFilepath ;
 	private boolean exportSuccessful;
 
-	public ResolutionsModel() {
+	public ResolutionsCRUD() {
 
 		//this.setDataModel(new DataModel());
 	}	

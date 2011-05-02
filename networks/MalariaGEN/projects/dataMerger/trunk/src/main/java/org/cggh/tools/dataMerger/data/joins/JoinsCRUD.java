@@ -13,13 +13,13 @@ import javax.sql.rowset.CachedRowSet;
 
 import org.cggh.tools.dataMerger.data.DataModel;
 import org.cggh.tools.dataMerger.data.merges.MergeModel;
-import org.cggh.tools.dataMerger.data.merges.MergesModel;
+import org.cggh.tools.dataMerger.data.merges.MergesCRUD;
 import org.cggh.tools.dataMerger.scripts.merges.MergeScriptsModel;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 
-public class JoinsModel implements java.io.Serializable {
+public class JoinsCRUD implements java.io.Serializable {
 
 	/**
 	 * 
@@ -43,7 +43,7 @@ public class JoinsModel implements java.io.Serializable {
 	//private JoinModel joinModel;
 	
 	
-	public JoinsModel() {
+	public JoinsCRUD() {
 		
 		
 		//this.setDataModel(new DataModel());
@@ -275,10 +275,10 @@ public class JoinsModel implements java.io.Serializable {
 
 
 
-	public JoinsModel retrieveJoinsAsJoinsModelByMergeId(Integer mergeId,
+	public JoinsCRUD retrieveJoinsAsJoinsModelByMergeId(Integer mergeId,
 			Connection connection) {
 
-		JoinsModel joinsModel = new JoinsModel();
+		JoinsCRUD joinsModel = new JoinsCRUD();
 		
 		MergeModel mergeModel = new MergeModel();
 		mergeModel.setId(mergeId);
@@ -475,7 +475,7 @@ public class JoinsModel implements java.io.Serializable {
 		          
 		          
 		          //Need a complete, up-to-date mergeModel
-		          MergesModel mergesModel = new MergesModel();
+		          MergesCRUD mergesModel = new MergesCRUD();
 		          mergeModel = mergesModel.retrieveMergeAsMergeModelByMergeId(mergeModel.getId(), connection);
 		          
 		          //Recount the duplicate keys

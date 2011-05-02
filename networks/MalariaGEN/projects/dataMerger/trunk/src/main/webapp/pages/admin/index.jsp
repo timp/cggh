@@ -17,16 +17,12 @@
 		<title>dataMerger - Admin</title>
 		
 		<link rel="stylesheet" type="text/css" href="../shared/css/shared.css" />
-		
 		<link rel="stylesheet" type="text/css" href="css/admin.css" />
 		<link rel="stylesheet" type="text/css" href="../guides/css/guides.css" />
 		
-		<script type="text/javascript" src="../shared/js/jquery.min.js"></script>
-		
+		<script type="text/javascript" src="../shared/js/jquery.min.js"></script>		
 		<script type="text/javascript" src="../shared/js/shared.js"></script>
-		
 		<script type="text/javascript" src="js/admin.js"></script>
-		
 		<script type="text/javascript">
 		
 			$(document).ready(function(){
@@ -80,14 +76,20 @@
 			<div class="ajaxError">
 			</div>
 			
-			<%-- <button onclick="location.reload(true);">Refresh</button> --%>			
+			<div><button onclick="location.reload(true);">Refresh</button>
+			</div>			
 			
 			<% if (databaseModel.isServerConnectable() && !databaseModel.isConnectable()) { %>
 			<div><button class="create-database-button">Create database</button><img class="creating-database-indicator" src="../shared/gif/loading.gif" style="display:none" title="Processing..."/>
 			</div>
 			<% } %>
 
-
+			<%-- TODO: code --%>
+			<%-- If filebase some condition, show button to create filebase --%>
+			<% if (!filebaseModel.isExistent() && filebaseModel.isWritable()) { %>
+			<div><button class="create-filebase-button">Create filebase</button><img class="creating-filebase-indicator" src="../shared/gif/loading.gif" style="display:none" title="Processing..."/>
+			</div>
+			<% } %>
 
 			
 			<h3>System information:</h3>

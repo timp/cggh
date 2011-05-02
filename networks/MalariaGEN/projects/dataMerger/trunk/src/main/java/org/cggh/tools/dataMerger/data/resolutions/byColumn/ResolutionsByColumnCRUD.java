@@ -15,7 +15,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 
-public class ResolutionsByColumnModel implements java.io.Serializable {
+public class ResolutionsByColumnCRUD implements java.io.Serializable {
 
 	/**
 	 * 
@@ -25,7 +25,7 @@ public class ResolutionsByColumnModel implements java.io.Serializable {
 
 	private DataModel dataModel;
 	
-	public ResolutionsByColumnModel() {
+	public ResolutionsByColumnCRUD() {
 
 		this.setDataModel(new DataModel());
 		

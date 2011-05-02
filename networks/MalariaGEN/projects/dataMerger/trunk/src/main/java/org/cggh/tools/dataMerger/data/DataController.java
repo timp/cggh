@@ -15,15 +15,15 @@ import javax.servlet.http.HttpServletResponse;
 import javax.sql.rowset.CachedRowSet;
 
 import org.cggh.tools.dataMerger.data.exports.ExportModel;
-import org.cggh.tools.dataMerger.data.exports.ExportsModel;
+import org.cggh.tools.dataMerger.data.exports.ExportsCRUD;
 import org.cggh.tools.dataMerger.data.joins.JoinModel;
-import org.cggh.tools.dataMerger.data.joins.JoinsModel;
+import org.cggh.tools.dataMerger.data.joins.JoinsCRUD;
 import org.cggh.tools.dataMerger.data.merges.MergeModel;
-import org.cggh.tools.dataMerger.data.merges.MergesModel;
-import org.cggh.tools.dataMerger.data.resolutions.byCell.ResolutionsByCellModel;
-import org.cggh.tools.dataMerger.data.resolutions.byColumn.ResolutionsByColumnModel;
-import org.cggh.tools.dataMerger.data.resolutions.byRow.ResolutionsByRowModel;
-import org.cggh.tools.dataMerger.data.uploads.UploadsModel;
+import org.cggh.tools.dataMerger.data.merges.MergesCRUD;
+import org.cggh.tools.dataMerger.data.resolutions.byCell.ResolutionsByCellCRUD;
+import org.cggh.tools.dataMerger.data.resolutions.byColumn.ResolutionsByColumnCRUD;
+import org.cggh.tools.dataMerger.data.resolutions.byRow.ResolutionsByRowCRUD;
+import org.cggh.tools.dataMerger.data.uploads.UploadsCRUD;
 import org.cggh.tools.dataMerger.data.users.UserModel;
 import org.cggh.tools.dataMerger.data.users.UsersCRUD;
 import org.cggh.tools.dataMerger.functions.joins.JoinFunctionsModel;
@@ -95,7 +95,7 @@ public class DataController extends HttpServlet {
 				  
 				  String uploadsAsHTML = null;
 					
-				  UploadsModel uploadsModel = new UploadsModel();
+				  UploadsCRUD uploadsModel = new UploadsCRUD();
 				  uploadsModel.setDataModel(dataModel);
 				  uploadsModel.setUserModel(userModel);
 
@@ -133,7 +133,7 @@ public class DataController extends HttpServlet {
 				 MergeModel mergeModel = new MergeModel();
 				 mergeModel.setId(Integer.parseInt(joinsURLPatternMatcher.group(1)));  
 				 
-				 MergesModel mergesModel = new MergesModel();
+				 MergesCRUD mergesModel = new MergesCRUD();
 				 mergesModel.setDataModel(dataModel);
 				 mergeModel = mergesModel.retrieveMergeAsMergeModelByMergeId(mergeModel.getId());
 			  
@@ -146,7 +146,7 @@ public class DataController extends HttpServlet {
 					  
 					  String joinsAsHTML = null;
 						
-					  JoinsModel joinsModel = new JoinsModel();
+					  JoinsCRUD joinsModel = new JoinsCRUD();
 					  joinsModel.setDataModel(dataModel);
 					  
 					  //FIXME
@@ -185,7 +185,7 @@ public class DataController extends HttpServlet {
 				 MergeModel mergeModel = new MergeModel();
 				 mergeModel.setId(Integer.parseInt(resolutionsByColumnURLPatternMatcher.group(1)));  
 				 
-				 MergesModel mergesModel = new MergesModel();
+				 MergesCRUD mergesModel = new MergesCRUD();
 				 mergesModel.setDataModel(dataModel);
 				 mergeModel = mergesModel.retrieveMergeAsMergeModelByMergeId(mergeModel.getId());
 			  
@@ -199,7 +199,7 @@ public class DataController extends HttpServlet {
 					  String resolutionsByColumnAsHTML = null;
 						
 
-						ResolutionsByColumnModel resolutionsByColumnModel = new ResolutionsByColumnModel();
+						ResolutionsByColumnCRUD resolutionsByColumnModel = new ResolutionsByColumnCRUD();
 						resolutionsByColumnModel.setDataModel(dataModel);
 						
 						//FIXME
@@ -224,7 +224,7 @@ public class DataController extends HttpServlet {
 				 MergeModel mergeModel = new MergeModel();
 				 mergeModel.setId(Integer.parseInt(resolutionsByRowURLPatternMatcher.group(1)));  
 				 
-				 MergesModel mergesModel = new MergesModel();
+				 MergesCRUD mergesModel = new MergesCRUD();
 				 mergesModel.setDataModel(dataModel);
 				 mergeModel = mergesModel.retrieveMergeAsMergeModelByMergeId(mergeModel.getId());
 			  
@@ -238,7 +238,7 @@ public class DataController extends HttpServlet {
 					  String resolutionsByRowAsHTML = null;
 						
 
-						ResolutionsByRowModel resolutionsByRowModel = new ResolutionsByRowModel();
+						ResolutionsByRowCRUD resolutionsByRowModel = new ResolutionsByRowCRUD();
 						resolutionsByRowModel.setDataModel(dataModel);
 						
 						//FIXME
@@ -277,7 +277,7 @@ public class DataController extends HttpServlet {
 						 MergeModel mergeModel = new MergeModel();
 						 mergeModel.setId(Integer.parseInt(newJoinURLPatternMatcher.group(1)));  
 						 
-						 MergesModel mergesModel = new MergesModel();
+						 MergesCRUD mergesModel = new MergesCRUD();
 						 mergesModel.setDataModel(dataModel);
 						 mergeModel = mergesModel.retrieveMergeAsMergeModelByMergeId(mergeModel.getId());
 					  
@@ -390,7 +390,7 @@ public class DataController extends HttpServlet {
 								
 								
 								
-								MergesModel mergesModel = new MergesModel();
+								MergesCRUD mergesModel = new MergesCRUD();
 								
 								mergesModel.setDataModel(dataModel);
 								mergesModel.setUserModel(userModel);
@@ -447,7 +447,7 @@ public class DataController extends HttpServlet {
 				  	exportModel.getMergeModel().setId(Integer.parseInt(exportURLPatternMatcher.group(1)));
 				  
 
-					ExportsModel exportsModel = new ExportsModel();
+					ExportsCRUD exportsModel = new ExportsCRUD();
 					
 					exportsModel.setDataModel(dataModel);
 					exportsModel.setUserModel(userModel);
@@ -546,7 +546,7 @@ public class DataController extends HttpServlet {
 							
 							JSONObject jsonObject = new JSONObject(stringBuffer.toString());
 							
-							JoinsModel joinsModel = new JoinsModel();
+							JoinsCRUD joinsModel = new JoinsCRUD();
 							
 							joinsModel.setDataModel(dataModel);
 							
@@ -616,7 +616,7 @@ public class DataController extends HttpServlet {
 							
 							JSONObject jsonObject = new JSONObject(stringBuffer.toString());
 							
-							ResolutionsByColumnModel resolutionsByColumnModel = new ResolutionsByColumnModel();
+							ResolutionsByColumnCRUD resolutionsByColumnModel = new ResolutionsByColumnCRUD();
 							
 							resolutionsByColumnModel.setDataModel(dataModel);
 							
@@ -683,7 +683,7 @@ public class DataController extends HttpServlet {
 								
 								JSONObject jsonObject = new JSONObject(stringBuffer.toString());
 								
-								ResolutionsByRowModel resolutionsByRowModel = new ResolutionsByRowModel();
+								ResolutionsByRowCRUD resolutionsByRowModel = new ResolutionsByRowCRUD();
 								
 								resolutionsByRowModel.setDataModel(dataModel);
 								
@@ -753,7 +753,7 @@ public class DataController extends HttpServlet {
 										
 										JSONObject jsonObject = new JSONObject(stringBuffer.toString());
 										
-										ResolutionsByCellModel resolutionsByCellModel = new ResolutionsByCellModel();
+										ResolutionsByCellCRUD resolutionsByCellModel = new ResolutionsByCellCRUD();
 										
 										resolutionsByCellModel.setDataModel(dataModel);
 										

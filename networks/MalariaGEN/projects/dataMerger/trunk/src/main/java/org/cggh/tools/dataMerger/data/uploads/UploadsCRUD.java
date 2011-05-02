@@ -13,7 +13,7 @@ import org.cggh.tools.dataMerger.data.users.UserModel;
 import org.cggh.tools.dataMerger.data.users.UsersCRUD;
 import org.cggh.tools.dataMerger.functions.uploads.UploadsFunctionsModel;
 
-public class UploadsModel implements java.io.Serializable {
+public class UploadsCRUD implements java.io.Serializable {
 
 	/**
 	 * 
@@ -24,7 +24,7 @@ public class UploadsModel implements java.io.Serializable {
 	private UserModel userModel;
 	
 	
-	public UploadsModel() {
+	public UploadsCRUD() {
 
         this.setDataModel(new DataModel());
     	this.setUserModel(new UserModel());		
@@ -145,7 +145,7 @@ public class UploadsModel implements java.io.Serializable {
 	}
 	
 	
-	public String retrieveUploadsAsDecoratedXHTMLTableUsingUploadsModel (UploadsModel uploadsModel) {
+	public String retrieveUploadsAsDecoratedXHTMLTableUsingUploadsModel (UploadsCRUD uploadsModel) {
 		
 		String uploadsAsDecoratedXHTMLTableUsingUploadsModel = "";
 		

@@ -9,12 +9,12 @@ import java.util.logging.Logger;
 import javax.sql.rowset.CachedRowSet;
 
 import org.cggh.tools.dataMerger.data.DataModel;
-import org.cggh.tools.dataMerger.data.datatables.DatatablesModel;
-import org.cggh.tools.dataMerger.data.joinedDatatables.JoinedDatatablesModel;
-import org.cggh.tools.dataMerger.data.joinedKeytables.JoinedKeytablesModel;
+import org.cggh.tools.dataMerger.data.datatables.DatatablesCRUD;
+import org.cggh.tools.dataMerger.data.joinedDatatables.JoinedDatatablesCRUD;
+import org.cggh.tools.dataMerger.data.joinedKeytables.JoinedKeytablesCRUD;
 import org.cggh.tools.dataMerger.data.joins.JoinModel;
-import org.cggh.tools.dataMerger.data.joins.JoinsModel;
-import org.cggh.tools.dataMerger.data.uploads.UploadsModel;
+import org.cggh.tools.dataMerger.data.joins.JoinsCRUD;
+import org.cggh.tools.dataMerger.data.uploads.UploadsCRUD;
 import org.cggh.tools.dataMerger.data.users.UserModel;
 import org.cggh.tools.dataMerger.functions.joins.JoinFunctionsModel;
 import org.cggh.tools.dataMerger.functions.merges.MergeFunctionsModel;
@@ -22,7 +22,7 @@ import org.cggh.tools.dataMerger.functions.merges.MergesFunctionsModel;
 import org.cggh.tools.dataMerger.scripts.merges.MergeScriptsModel;
 
 
-public class MergesModel implements java.io.Serializable {
+public class MergesCRUD implements java.io.Serializable {
 
 	/**
 	 * 
@@ -35,7 +35,7 @@ public class MergesModel implements java.io.Serializable {
 	private UserModel userModel;
 	
 	
-	public MergesModel() {
+	public MergesCRUD() {
 
 		this.setDataModel(new DataModel());
 		this.setUserModel(new UserModel());			
@@ -118,13 +118,13 @@ public class MergesModel implements java.io.Serializable {
 	        	  //mergeModel.getJoinedKeytableModel().setName(resultSet.getString("joined_keytable_name"));
 	        	  
 	        	  //Retrieve the upload data
-	        	  UploadsModel uploadsModel = new UploadsModel();
+	        	  UploadsCRUD uploadsModel = new UploadsCRUD();
 	        	  uploadsModel.setDataModel(this.getDataModel());
 	        	  mergeModel.setUpload1Model(uploadsModel.retrieveUploadAsUploadModelByUploadId(mergeModel.getUpload1Model().getId(), connection));
 	        	  mergeModel.setUpload2Model(uploadsModel.retrieveUploadAsUploadModelByUploadId(mergeModel.getUpload2Model().getId(), connection));
 	        	  
 	        	  //Retrieve the datatable data
-	        	  DatatablesModel datatablesModel = new DatatablesModel();
+	        	  DatatablesCRUD datatablesModel = new DatatablesCRUD();
 	        	  datatablesModel.setDataModel(this.getDataModel());
 	        	  mergeModel.setDatatable1Model(datatablesModel.retrieveDatatableAsDatatableModelUsingUploadId(mergeModel.getUpload1Model().getId(), connection));
 	        	  mergeModel.setDatatable2Model(datatablesModel.retrieveDatatableAsDatatableModelUsingUploadId(mergeModel.getUpload2Model().getId(), connection));
@@ -134,7 +134,7 @@ public class MergesModel implements java.io.Serializable {
 	        	  mergeModel.getDatatable2Model().setDuplicateKeysCount(resultSet.getInt("datatable_2_duplicate_keys_count"));
 	        	  
 	        	  ////Retrieve the joins data
-	        	  JoinsModel joinsModel = new JoinsModel();
+	        	  JoinsCRUD joinsModel = new JoinsCRUD();
 	        	  joinsModel.setDataModel(this.getDataModel());
 	        	  mergeModel.setJoinsModel(joinsModel.retrieveJoinsAsJoinsModelByMergeId(mergeModel.getId(), connection));
 	        	  
@@ -146,11 +146,11 @@ public class MergesModel implements java.io.Serializable {
 	        	  mergeModel.getDatatable2Model().setKeyColumnNamesAsStringList(joinsModel.retrieveDatatable2KeyColumnNamesAsStringListByMergeId(mergeModel.getId(), connection));
 	        	  
 	        	  //Retrieve the joined keytable data
-	        	  JoinedKeytablesModel joinedKeytablesModel = new JoinedKeytablesModel();
+	        	  JoinedKeytablesCRUD joinedKeytablesModel = new JoinedKeytablesCRUD();
 	        	  mergeModel.setJoinedKeytableModel(joinedKeytablesModel.retrieveJoinedKeytableAsJoinedKeytableModelUsingMergeId(mergeModel.getId(), connection));
 	        	  
 	        	  //TODO: Retrieve joined datatable data?
-	        	  JoinedDatatablesModel joinedDatatablesModel = new JoinedDatatablesModel();
+	        	  JoinedDatatablesCRUD joinedDatatablesModel = new JoinedDatatablesCRUD();
 	        	  mergeModel.setJoinedDatatableModel(joinedDatatablesModel.retrieveJoinedDatatableAsJoinedDatatableModelUsingMergeId(mergeModel.getId(), connection));
 	        	  
 	        	  
@@ -192,7 +192,7 @@ public class MergesModel implements java.io.Serializable {
 			    	  
 
 			  		  // Retrieve the merge's upload models from the db.
-					  UploadsModel uploadsModel = new UploadsModel();
+					  UploadsCRUD uploadsModel = new UploadsCRUD();
 					  mergeModel.setUpload1Model(uploadsModel.retrieveUploadAsUploadModelByUploadId(mergeModel.getUpload1Model().getId(), connection));
 					  mergeModel.setUpload2Model(uploadsModel.retrieveUploadAsUploadModelByUploadId(mergeModel.getUpload2Model().getId(), connection));
 
@@ -315,7 +315,7 @@ public class MergesModel implements java.io.Serializable {
 		
 		
 		//Save the result back to the database
-		MergesModel mergesModel = new MergesModel();
+		MergesCRUD mergesModel = new MergesCRUD();
 		mergesModel.updateMergeUsingMergeModel(mergeModel,connection);
 		
 		// Unnecessary if model is already retrieved and set above.
@@ -330,7 +330,7 @@ public class MergesModel implements java.io.Serializable {
 	public MergeModel retrieveMergeAsMergeModelThroughCreatingUncreatedDatatablesUsingMergeModel(MergeModel mergeModel,
 			Connection connection) {
 
-		  DatatablesModel datatablesModel = new DatatablesModel();
+		  DatatablesCRUD datatablesModel = new DatatablesCRUD();
 		  
 		  datatablesModel.setDataModel(this.getDataModel());
 
@@ -351,7 +351,7 @@ public class MergesModel implements java.io.Serializable {
 	public MergeModel retrieveMergeAsMergeModelThroughRecreatingJoinedKeytableUsingMergeModel(MergeModel mergeModel,
 			Connection connection) {
 
-		  JoinedKeytablesModel joinedKeytablesModel = new JoinedKeytablesModel();
+		  JoinedKeytablesCRUD joinedKeytablesModel = new JoinedKeytablesCRUD();
 
 		  
 		  //this.logger.info("1 Joined Keytable Name=" + mergeModel.getJoinedKeytableModel().getName());
@@ -367,7 +367,7 @@ public class MergesModel implements java.io.Serializable {
 			  
 			  mergeModel.getJoinedKeytableModel().setName(null);
 			  
-			  MergesModel mergesModel = new MergesModel();
+			  MergesCRUD mergesModel = new MergesCRUD();
 			  mergesModel.updateMergeUsingMergeModel(mergeModel, connection);
 			  
 		  }
@@ -432,7 +432,7 @@ public class MergesModel implements java.io.Serializable {
 	}
 	
 
-		public String retrieveMergesAsDecoratedXHTMLTableUsingMergesModel (MergesModel mergesModel) {
+		public String retrieveMergesAsDecoratedXHTMLTableUsingMergesModel (MergesCRUD mergesModel) {
 			
 			String mergesAsDecoratedXHTMLTableUsingMergesModel = null;
 			

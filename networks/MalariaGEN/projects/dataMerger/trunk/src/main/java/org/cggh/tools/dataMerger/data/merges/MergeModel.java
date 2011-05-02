@@ -9,8 +9,8 @@ import org.cggh.tools.dataMerger.data.DataModel;
 import org.cggh.tools.dataMerger.data.datatables.DatatableModel;
 import org.cggh.tools.dataMerger.data.joinedDatatables.JoinedDatatableModel;
 import org.cggh.tools.dataMerger.data.joinedKeytables.JoinedKeytableModel;
-import org.cggh.tools.dataMerger.data.joins.JoinsModel;
-import org.cggh.tools.dataMerger.data.resolutions.ResolutionsModel;
+import org.cggh.tools.dataMerger.data.joins.JoinsCRUD;
+import org.cggh.tools.dataMerger.data.resolutions.ResolutionsCRUD;
 import org.cggh.tools.dataMerger.data.uploads.UploadModel;
 import org.cggh.tools.dataMerger.data.users.UserModel;
 
@@ -24,7 +24,7 @@ public class MergeModel implements java.io.Serializable {
 	
 	private DataModel dataModel;
 	private UserModel createdByUserModel;
-	private JoinsModel joinsModel;
+	private JoinsCRUD joinsModel;
 	
 	private Integer id = null;
 	private Timestamp createdDatetime = null;
@@ -42,14 +42,14 @@ public class MergeModel implements java.io.Serializable {
 	private Integer totalConflictsCount;
 	private JoinedKeytableModel joinedKeytableModel;
 	private JoinedDatatableModel joinedDatatableModel;
-	private ResolutionsModel resolutionsModel;
+	private ResolutionsCRUD resolutionsModel;
 	
 	
 	public MergeModel() {
 		
 		this.setDataModel(new DataModel());
 		this.setCreatedByUserModel(new UserModel());		
-		this.setJoinsModel(new JoinsModel());	
+		this.setJoinsModel(new JoinsCRUD());	
 		
 		this.setUpload1Model(new UploadModel());
 		this.setUpload2Model(new UploadModel());
@@ -59,7 +59,7 @@ public class MergeModel implements java.io.Serializable {
 		this.setJoinedKeytableModel(new JoinedKeytableModel());
 		this.setJoinedDatatableModel(new JoinedDatatableModel());
 		
-		this.setResolutionsModel(new ResolutionsModel());
+		this.setResolutionsModel(new ResolutionsCRUD());
 	}
 	
 
@@ -68,7 +68,7 @@ public class MergeModel implements java.io.Serializable {
 
 
 
-	public void setResolutionsModel(ResolutionsModel resolutionsModel) {
+	public void setResolutionsModel(ResolutionsCRUD resolutionsModel) {
 		this.resolutionsModel = resolutionsModel;
 	}
 
@@ -103,10 +103,10 @@ public class MergeModel implements java.io.Serializable {
         return this.createdByUserModel;
     }     
     
-    public void setJoinsModel (final JoinsModel joinsModel) {
+    public void setJoinsModel (final JoinsCRUD joinsModel) {
         this.joinsModel  = joinsModel;
     }
-    public JoinsModel getJoinsModel () {
+    public JoinsCRUD getJoinsModel () {
         return this.joinsModel;
     } 
     
@@ -251,7 +251,7 @@ public class MergeModel implements java.io.Serializable {
 
 
 
-	public ResolutionsModel getResolutionsModel() {
+	public ResolutionsCRUD getResolutionsModel() {
 
 		return this.resolutionsModel;
 	}

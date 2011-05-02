@@ -11,7 +11,7 @@ import javax.sql.rowset.CachedRowSet;
 import org.cggh.tools.dataMerger.data.mergedDatatables.MergedDatatableModel;
 import org.cggh.tools.dataMerger.data.exports.ExportModel;
 
-public class MergedDatatablesModel {
+public class MergedDatatablesCRUD {
 
 	private final Logger logger = Logger.getLogger("org.cggh.tools.dataMerger.data.mergedDatatables");
 	

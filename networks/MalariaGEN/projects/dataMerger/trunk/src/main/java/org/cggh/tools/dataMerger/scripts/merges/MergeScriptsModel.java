@@ -11,9 +11,9 @@ import java.util.logging.Logger;
 import javax.sql.rowset.CachedRowSet;
 
 import org.cggh.tools.dataMerger.data.joins.JoinModel;
-import org.cggh.tools.dataMerger.data.joins.JoinsModel;
+import org.cggh.tools.dataMerger.data.joins.JoinsCRUD;
 import org.cggh.tools.dataMerger.data.merges.MergeModel;
-import org.cggh.tools.dataMerger.data.merges.MergesModel;
+import org.cggh.tools.dataMerger.data.merges.MergesCRUD;
 
 
 
@@ -93,7 +93,7 @@ public class MergeScriptsModel implements java.io.Serializable {
 	          //TODO:
 	          ////System.out.println("Setting dt1 duplicate keys count to: " + mergeModel.getDatatable1Model().getDuplicateKeysCount());
 	          
-	          MergesModel mergesModel = new MergesModel();
+	          MergesCRUD mergesModel = new MergesCRUD();
 	          
 	          mergesModel.updateMergeUsingMergeModel(mergeModel, connection);
 	          
@@ -169,7 +169,7 @@ public class MergeScriptsModel implements java.io.Serializable {
 	          preparedStatement.close();
 	          
 	          
-	          MergesModel mergesModel = new MergesModel();
+	          MergesCRUD mergesModel = new MergesCRUD();
 	          
 	          mergesModel.updateMergeUsingMergeModel(mergeModel, connection);
 	          
@@ -224,7 +224,7 @@ public class MergeScriptsModel implements java.io.Serializable {
 	          preparedStatement.close();
 	          
 	          // Update the db with the new info
-	          MergesModel mergesModel = new MergesModel();
+	          MergesCRUD mergesModel = new MergesCRUD();
 	          
 	          //FIXME: This breaks if it doesn't have the full data, e.g. Upload1Model, Upload2Model.
 	          //mergesModel.updateMergeUsingMergeModel(mergeModel, connection);
@@ -503,7 +503,7 @@ public class MergeScriptsModel implements java.io.Serializable {
 
 		}
 		
-		MergesModel mergesModel = new MergesModel();
+		MergesCRUD mergesModel = new MergesCRUD();
 		mergeModel = mergesModel.retrieveMergeAsMergeModelByMergeId(mergeModel.getId(), connection);
 		
 		return mergeModel;
@@ -516,11 +516,11 @@ public class MergeScriptsModel implements java.io.Serializable {
 		
 		if (mergeModel.getJoinsModel().getKeysCount() > 0 && mergeModel.getTotalDuplicateKeysCount() == 0) {
 
-			MergesModel mergesModel = new MergesModel();
+			MergesCRUD mergesModel = new MergesCRUD();
 			
 			mergeModel = mergesModel.retrieveMergeAsMergeModelThroughRecreatingJoinedKeytableUsingMergeModel(mergeModel, connection);
 			
-			JoinsModel joinsModel = new JoinsModel();
+			JoinsCRUD joinsModel = new JoinsCRUD();
 			mergeModel.getJoinsModel().setKeyJoinsAsCachedRowSet(joinsModel.retrieveKeyJoinsAsCachedRowSetByMergeId(mergeModel.getId(),connection));
 			mergeModel.getJoinsModel().setNonKeyCrossDatatableJoinsAsCachedRowSet(joinsModel.retrieveNonKeyCrossDatatableJoinsAsCachedRowsetByMergeId(mergeModel.getId(), connection));
 
@@ -748,7 +748,7 @@ public class MergeScriptsModel implements java.io.Serializable {
 	          preparedStatement.close();
 	          
 	          // Update the db with the new info
-	          MergesModel mergesModel = new MergesModel();
+	          MergesCRUD mergesModel = new MergesCRUD();
 	          mergesModel.updateTotalConflictsCountUsingMergeModel(mergeModel, connection);
 	          
 

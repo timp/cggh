@@ -57,6 +57,19 @@
     <url-pattern>/data/databases/*</url-pattern>
   </servlet-mapping>
 
+
+  <servlet>
+  	<description>
+  	</description>
+  	<display-name>FilebasesController</display-name>
+  	<servlet-name>FilebasesController</servlet-name>
+  	<servlet-class>org.cggh.tools.dataMerger.files.filebases.FilebasesController</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>FilebasesController</servlet-name>
+    <url-pattern>/files/filebases/*</url-pattern>
+  </servlet-mapping>
+
   <servlet>
   	<description>
   	</description>
@@ -258,25 +271,16 @@
 		<param-value>root</param-value>
 	</context-param>
 	
-	<!-- To be deprecated? Is useful to separate these concerns. -->
-	<context-param>
-		<!-- Tomcat must be able to write to and read from this folder. -->
-		<!-- MySQL must be able to read from this folder. -->
-		<param-name>uploadsFileRepositoryBasePath</param-name>
-		<param-value>C:\Lee\Work\dataMerger\files\uploads\</param-value>
-	</context-param>
-	<context-param>
-		<!-- Tomcat must be able to read from this folder. -->
-		<!-- MySQL must be able to write this folder. -->
-		<param-name>exportsFileRepositoryBasePath</param-name>
-		<param-value>C:\Lee\Work\dataMerger\files\exports\</param-value>
-	</context-param>
-	
 	<!-- Tomcat and MySQL must have read and write access to this directory. -->
 	<context-param>
 		<param-name>filebaseServerPath</param-name>
 		<param-value>C:\Lee\Work\dataMerger\files\</param-value>
 	</context-param>	
+
+	<context-param>
+		<param-name>filebaseInstallationLogAsCSVFilePathRelativeToFilebaseServerPath</param-name>
+		<param-value>installation\log.csv</param-value>
+	</context-param>
 
 	<context-param>
 		<param-name>stringsToNullifyAsCSV</param-name>

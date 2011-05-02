@@ -14,14 +14,14 @@ import java.util.regex.Pattern;
 import javax.sql.rowset.CachedRowSet;
 
 import org.cggh.tools.dataMerger.data.DataModel;
-import org.cggh.tools.dataMerger.data.joins.JoinsModel;
-import org.cggh.tools.dataMerger.data.mergedDatatables.MergedDatatablesModel;
-import org.cggh.tools.dataMerger.data.merges.MergesModel;
-import org.cggh.tools.dataMerger.data.resolutions.ResolutionsModel;
+import org.cggh.tools.dataMerger.data.joins.JoinsCRUD;
+import org.cggh.tools.dataMerger.data.mergedDatatables.MergedDatatablesCRUD;
+import org.cggh.tools.dataMerger.data.merges.MergesCRUD;
+import org.cggh.tools.dataMerger.data.resolutions.ResolutionsCRUD;
 import org.cggh.tools.dataMerger.data.users.UserModel;
 import org.cggh.tools.dataMerger.functions.exports.ExportsFunctionsModel;
 
-public class ExportsModel implements java.io.Serializable  {
+public class ExportsCRUD implements java.io.Serializable  {
 
 	/**
 	 * 
@@ -32,7 +32,7 @@ public class ExportsModel implements java.io.Serializable  {
 	private DataModel dataModel;
 	private UserModel userModel;
 	
-	public ExportsModel() {
+	public ExportsCRUD() {
 
 		this.setDataModel(new DataModel());
 		this.setUserModel(new UserModel());			
@@ -55,7 +55,7 @@ public class ExportsModel implements java.io.Serializable  {
 					
 			    	  
 						// Get the merge model for the export.
-						MergesModel mergesModel = new MergesModel();
+						MergesCRUD mergesModel = new MergesCRUD();
 						mergesModel.setDataModel(this.getDataModel());
 						exportModel.setMergeModel(mergesModel.retrieveMergeAsMergeModelByMergeId(exportModel.getMergeModel().getId()));
 						
@@ -157,7 +157,7 @@ public class ExportsModel implements java.io.Serializable  {
 			}
 		}
 		
-		MergedDatatablesModel mergedDatatablesModel = new MergedDatatablesModel();
+		MergedDatatablesCRUD mergedDatatablesModel = new MergedDatatablesCRUD();
 		
 		exportModel.getMergedDatatableModel().setDataAsCachedRowSet(mergedDatatablesModel.retrieveDataAsCachedRowSetByMergedDatatableName(exportModel.getMergedDatatableModel().getName(), connection));
 		
@@ -489,7 +489,7 @@ public class ExportsModel implements java.io.Serializable  {
 			ExportModel exportModel, Connection connection) {
 
 
-		ResolutionsModel resolutionsModel = new ResolutionsModel();
+		ResolutionsCRUD resolutionsModel = new ResolutionsCRUD();
 		
 		CachedRowSet resolutionsAsCachedRowSet = resolutionsModel.retrieveResolutionsAsCachedRowSetUsingMergeId(exportModel.getMergeModel().getId(), connection);
 		
@@ -499,7 +499,7 @@ public class ExportsModel implements java.io.Serializable  {
 	        
 	        if (resolutionsAsCachedRowSet.next()) {
 	
-	        	JoinsModel joinsModel = new JoinsModel();
+	        	JoinsCRUD joinsModel = new JoinsCRUD();
 	        	
 	        	HashMap<Integer, String> joinColumnNamesByColumnNumberAsHashMap = joinsModel.retrieveJoinColumnNamesByColumnNumberAsHashMapUsingMergeModel(exportModel.getMergeModel(), connection);
 	        	
@@ -640,7 +640,7 @@ public class ExportsModel implements java.io.Serializable  {
 	          if (resultSet.next()) {
 
 	      		//FIXME: detach joins CRUD from joins Set
-	      		JoinsModel joinsModel = new JoinsModel();
+	      		JoinsCRUD joinsModel = new JoinsCRUD();
 	      		HashMap<Integer, String> joinColumnNamesByColumnNumberAsHashMap = joinsModel.retrieveJoinColumnNamesByColumnNumberAsHashMapUsingMergeModel(exportModel.getMergeModel(), connection);
 	      		
 	      		Pattern joinedKeytableKeyColumnNamePattern = Pattern.compile("^key_column_(\\d+)$");
@@ -903,7 +903,7 @@ public class ExportsModel implements java.io.Serializable  {
 		// Get the column names as a String List
 		
 		//FIXME: Detach JoinsCRUD from JoinColumnsModel
-		JoinsModel joinsModel = new JoinsModel();
+		JoinsCRUD joinsModel = new JoinsCRUD();
 		joinsModel.setDataModel(this.getDataModel());
 	
 		HashMap<Integer, String> joinColumnNamesByColumnNumberAsHashMap = joinsModel.retrieveJoinColumnNamesByColumnNumberAsHashMapUsingMergeModel(exportModel.getMergeModel());
@@ -928,7 +928,7 @@ public class ExportsModel implements java.io.Serializable  {
 		
 		exportModel.getMergedDatatableModel().setName("merged_datatable_" + exportModel.getId());
 		
-		ExportsModel exportsModel = new ExportsModel();
+		ExportsCRUD exportsModel = new ExportsCRUD();
 		exportsModel.updateExportMergedDatatableNameUsingExportModel(exportModel, connection);
 		
 		
@@ -998,7 +998,7 @@ public class ExportsModel implements java.io.Serializable  {
 	}
 
 	
-	public String retrieveExportsAsDecoratedXHTMLTableUsingExportsModel (ExportsModel exportsModel) {
+	public String retrieveExportsAsDecoratedXHTMLTableUsingExportsModel (ExportsCRUD exportsModel) {
 		
 		String exportsAsDecoratedXHTMLTable = "";
 		

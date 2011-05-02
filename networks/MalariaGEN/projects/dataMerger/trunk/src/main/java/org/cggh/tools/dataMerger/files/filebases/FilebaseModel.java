@@ -1,15 +1,14 @@
 package org.cggh.tools.dataMerger.files.filebases;
 
-import java.util.List;
-
 public class FilebaseModel {
 
-	
+	private Boolean existent = null;
 	private Boolean readable = null;
 	private Boolean writable = null;
 	private String serverPath = null;
 	private String versionAsString = null;
-	private List<String> filesAsStringList = null;
+	private String[] filesAsStringArray = null;
+	private String filebaseInstallationLogAsCSVFilePathRelativeToFilebaseServerPath = null;
 
 	public void setReadable(Boolean readable) {
 		this.readable = readable;
@@ -43,13 +42,31 @@ public class FilebaseModel {
 		return versionAsString;
 	}
 
-	public void setFilesAsStringList(List<String> filesAsStringList) {
-		this.filesAsStringList = filesAsStringList;
+	public void setFilesAsStringArray(String[] filesAsStringArray) {
+		this.filesAsStringArray = filesAsStringArray;
 	}
 
-	public List<String> getFilesAsStringList() {
-		return filesAsStringList;
+	public String[] getFilesAsStringArray() {
+		return filesAsStringArray;
 	}
+
+	public void setExistent(Boolean existent) {
+		this.existent = existent;
+	}
+
+	public Boolean isExistent() {
+		return existent;
+	}
+
+	public void setFilebaseInstallationLogAsCSVFilePathRelativeToFilebaseServerPath(
+			String filebaseInstallationLogAsCSVFilePathRelativeToFilebaseServerPath) {
+		this.filebaseInstallationLogAsCSVFilePathRelativeToFilebaseServerPath = filebaseInstallationLogAsCSVFilePathRelativeToFilebaseServerPath;
+	}
+
+	public String getFilebaseInstallationLogAsCSVFilePathRelativeToFilebaseServerPath() {
+		return filebaseInstallationLogAsCSVFilePathRelativeToFilebaseServerPath;
+	}
+
 
 
 }

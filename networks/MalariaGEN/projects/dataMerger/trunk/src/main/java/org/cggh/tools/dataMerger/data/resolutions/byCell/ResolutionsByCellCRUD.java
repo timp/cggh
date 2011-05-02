@@ -10,16 +10,16 @@ import java.util.regex.Pattern;
 import javax.sql.rowset.CachedRowSet;
 
 import org.cggh.tools.dataMerger.data.DataModel;
-import org.cggh.tools.dataMerger.data.joins.JoinsModel;
+import org.cggh.tools.dataMerger.data.joins.JoinsCRUD;
 import org.cggh.tools.dataMerger.data.merges.MergeModel;
-import org.cggh.tools.dataMerger.data.resolutions.ResolutionsModel;
+import org.cggh.tools.dataMerger.data.resolutions.ResolutionsCRUD;
 import org.cggh.tools.dataMerger.functions.resolutions.byCell.ResolutionsByCellFunctionsModel;
 import org.cggh.tools.dataMerger.scripts.merges.MergeScriptsModel;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 
-public class ResolutionsByCellModel implements java.io.Serializable {
+public class ResolutionsByCellCRUD implements java.io.Serializable {
 
 
 	/**
@@ -31,7 +31,7 @@ public class ResolutionsByCellModel implements java.io.Serializable {
 
 	private DataModel dataModel;
 	
-	public ResolutionsByCellModel() {
+	public ResolutionsByCellCRUD() {
 
 		this.setDataModel(new DataModel());
 		
@@ -57,11 +57,11 @@ public class ResolutionsByCellModel implements java.io.Serializable {
 			  	resolutionsByCellFunctionsModel.setResolutionsByCellAsCachedRowSet(resolutionsByCellAsCachedRowSet);
 			  	resolutionsByCellFunctionsModel.setSolutionsByCellAsCachedRowSet(this.retrieveSolutionsByCellAsCachedRowSet());
 
-			  	JoinsModel joinsModel = new JoinsModel();
+			  	JoinsCRUD joinsModel = new JoinsCRUD();
 			  	joinsModel.setDataModel(this.getDataModel());
 			  	resolutionsByCellFunctionsModel.setJoinColumnNamesByColumnNumberAsHashMap(joinsModel.retrieveJoinColumnNamesByColumnNumberAsHashMapUsingMergeModel(mergeModel));
 			  	
-			  	ResolutionsModel resolutionsModel = new ResolutionsModel();
+			  	ResolutionsCRUD resolutionsModel = new ResolutionsCRUD();
 			  	resolutionsModel.setDataModel(this.getDataModel());
 			  	resolutionsByCellFunctionsModel.setUnresolvedByColumnOrRowConflictsCountUsingColumnNumberAsHashMap(resolutionsModel.retrieveUnresolvedByColumnOrRowConflictsCountUsingColumnNumberAsHashMapUsingMergeModel(mergeModel));
 			  	resolutionsByCellFunctionsModel.setUnresolvedByColumnOrRowStatusUsingCellCoordsAsHashMap(resolutionsModel.retrieveUnresolvedByColumnOrRowStatusUsingCellCoordsAsHashMapUsingMergeModel(mergeModel));

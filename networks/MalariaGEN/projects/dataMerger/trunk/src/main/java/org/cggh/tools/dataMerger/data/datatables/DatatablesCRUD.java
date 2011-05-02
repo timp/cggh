@@ -17,11 +17,11 @@ import javax.sql.rowset.CachedRowSet;
 
 import org.cggh.tools.dataMerger.data.DataModel;
 import org.cggh.tools.dataMerger.data.uploads.UploadModel;
-import org.cggh.tools.dataMerger.data.uploads.UploadsModel;
+import org.cggh.tools.dataMerger.data.uploads.UploadsCRUD;
 import org.cggh.tools.dataMerger.data.users.UserModel;
 
 
-public class DatatablesModel implements java.io.Serializable {
+public class DatatablesCRUD implements java.io.Serializable {
 
 	/**
 	 * 
@@ -37,7 +37,7 @@ public class DatatablesModel implements java.io.Serializable {
 	private UploadModel uploadModel;
 
 	
-	public DatatablesModel() {
+	public DatatablesCRUD() {
 
 		this.setDataModel(new DataModel());
 		this.setUserModel(new UserModel());		
@@ -81,7 +81,7 @@ public class DatatablesModel implements java.io.Serializable {
 
 		DatatableModel datatableModel = new DatatableModel();
 
-		UploadsModel uploadsModel = new UploadsModel();
+		UploadsCRUD uploadsModel = new UploadsCRUD();
 		datatableModel.setUploadModel(uploadsModel.retrieveUploadAsUploadModelByUploadId(uploadId, connection));
 
 		datatableModel.setName("datatable_" + uploadId);
@@ -360,7 +360,7 @@ public class DatatablesModel implements java.io.Serializable {
 		        	  datatableModel.setColumnNamesAsStringList(columnNamesAsStringList);
 		        	  
 		        	  //Retrieve the upload data
-		        	  UploadsModel uploadsModel = new UploadsModel();
+		        	  UploadsCRUD uploadsModel = new UploadsCRUD();
 		        	  datatableModel.setUploadModel(uploadsModel.retrieveUploadAsUploadModelByUploadId(datatableModel.getUploadModel().getId(), connection));
 		        	  
 	        	  } else {
