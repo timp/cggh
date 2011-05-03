@@ -14,6 +14,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.sql.rowset.CachedRowSet;
 
+import org.cggh.tools.dataMerger.data.databases.DatabaseModel;
+import org.cggh.tools.dataMerger.data.databases.DatabasesCRUD;
 import org.cggh.tools.dataMerger.data.exports.ExportModel;
 import org.cggh.tools.dataMerger.data.exports.ExportsCRUD;
 import org.cggh.tools.dataMerger.data.joins.JoinModel;
@@ -56,11 +58,11 @@ public class DataController extends HttpServlet {
     
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-		DataModel dataModel = new DataModel();
-		dataModel.setDataModelUsingServletContext(request.getSession().getServletContext());
+		DatabasesCRUD databasesCRUD = new DatabasesCRUD();
+		DatabaseModel databaseModel = databasesCRUD.retrieveDatabaseAsDatabaseModelUsingServletContext(request.getSession().getServletContext());
 
 		UsersCRUD usersCRUD = new UsersCRUD();
-		usersCRUD.setDataModel(dataModel);
+		usersCRUD.setDatabaseModel(databaseModel);
 		UserModel userModel = usersCRUD.retrieveUserAsUserModelUsingUsername(request.getRemoteUser());
 		userModel.setHttpServletRequest(request);
 
@@ -95,11 +97,11 @@ public class DataController extends HttpServlet {
 				  
 				  String uploadsAsHTML = null;
 					
-				  UploadsCRUD uploadsModel = new UploadsCRUD();
-				  uploadsModel.setDataModel(dataModel);
-				  uploadsModel.setUserModel(userModel);
+				  UploadsCRUD uploadsCRUD = new UploadsCRUD();
+				  uploadsCRUD.setDatabaseModel(databaseModel);
+				  uploadsCRUD.setUserModel(userModel);
 
-				  CachedRowSet uploadsAsCachedRowSet = uploadsModel.retrieveUploadsAsCachedRowSetUsingUserId(userModel.getId());
+				  CachedRowSet uploadsAsCachedRowSet = uploadsCRUD.retrieveUploadsAsCachedRowSetUsingUserId(userModel.getId());
 			
 				  if (uploadsAsCachedRowSet != null) {
 			
@@ -133,9 +135,9 @@ public class DataController extends HttpServlet {
 				 MergeModel mergeModel = new MergeModel();
 				 mergeModel.setId(Integer.parseInt(joinsURLPatternMatcher.group(1)));  
 				 
-				 MergesCRUD mergesModel = new MergesCRUD();
-				 mergesModel.setDataModel(dataModel);
-				 mergeModel = mergesModel.retrieveMergeAsMergeModelByMergeId(mergeModel.getId());
+				 MergesCRUD mergesCRUD = new MergesCRUD();
+				 mergesCRUD.setDatabaseModel(databaseModel);
+				 mergeModel = mergesCRUD.retrieveMergeAsMergeModelByMergeId(mergeModel.getId());
 			  
 				  if (headerAcceptsAsStringList.contains("text/html")) { 
 					  

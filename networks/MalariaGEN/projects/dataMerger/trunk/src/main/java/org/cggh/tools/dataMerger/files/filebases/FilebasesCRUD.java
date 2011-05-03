@@ -8,7 +8,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.logging.Logger;
 
 import javax.servlet.ServletContext;
@@ -70,10 +69,11 @@ public class FilebasesCRUD {
 			    if (headingsAsCSV != null) {
 			    	
 			    	String[] headingsAsStringArray = headingsAsCSV.split(",");
-				    	
+				    
 			    	HashMap<String, String> entryAsHashMap = new HashMap<String, String>();
 			    	
 				    String entryAsCSV = null;
+				    
 				    while ((entryAsCSV = bufferedReader.readLine()) != null)   {
 				    	
 				      String[] entryAsStringArray = entryAsCSV.split(",");
@@ -86,10 +86,10 @@ public class FilebasesCRUD {
 				      
 				    }
 				    
-				    //TODO: Array of hashmaps, get the last entry, get the version as a string.
+				    
+				    versionAsString = entryAsHashMap.get("major_version_number") + "." + entryAsHashMap.get("minor_version_number") + "." + entryAsHashMap.get("revision_version_number");
 			    
 			    } else {
-			    	//TODO: error
 			    	this.logger.severe("headingsAsCSV is null");
 			    }
 			    

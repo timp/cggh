@@ -8,7 +8,7 @@ import java.util.logging.Logger;
 
 import javax.sql.rowset.CachedRowSet;
 
-import org.cggh.tools.dataMerger.data.DataModel;
+import org.cggh.tools.dataMerger.data.databases.DatabaseModel;
 import org.cggh.tools.dataMerger.data.users.UserModel;
 import org.cggh.tools.dataMerger.data.users.UsersCRUD;
 import org.cggh.tools.dataMerger.functions.uploads.UploadsFunctionsModel;
@@ -20,22 +20,22 @@ public class UploadsCRUD implements java.io.Serializable {
 	 */
 	private static final long serialVersionUID = 4112178863119955390L;
 	private final Logger logger = Logger.getLogger("org.cggh.tools.dataMerger.data.uploads");
-	private DataModel dataModel = null;
+	private DatabaseModel databaseModel = null;
 	private UserModel userModel;
 	
 	
 	public UploadsCRUD() {
 
-        this.setDataModel(new DataModel());
+        this.setDatabaseModel(new DatabaseModel());
     	this.setUserModel(new UserModel());		
 		
 	}
 
-    public void setDataModel (final DataModel dataModel) {
-        this.dataModel  = dataModel;
+    public void setDatabaseModel (final DatabaseModel databaseModel) {
+        this.databaseModel  = databaseModel;
     }
-    public DataModel getDataModel () {
-        return this.dataModel;
+    public DatabaseModel getDatabaseModel () {
+        return this.databaseModel;
     }     
 
     public void setUserModel (final UserModel userModel) {
@@ -56,7 +56,7 @@ public class UploadsCRUD implements java.io.Serializable {
 	   
 		try {
 
-			Connection connection = this.getDataModel().getNewDatabaseConnection();
+			Connection connection = this.getDatabaseModel().getNewConnection();
 			
 			if (connection != null) {
 

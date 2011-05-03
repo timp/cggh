@@ -9,6 +9,7 @@ import java.util.logging.Logger;
 import javax.sql.rowset.CachedRowSet;
 
 import org.cggh.tools.dataMerger.data.DataModel;
+import org.cggh.tools.dataMerger.data.databases.DatabaseModel;
 import org.cggh.tools.dataMerger.data.datatables.DatatablesCRUD;
 import org.cggh.tools.dataMerger.data.joinedDatatables.JoinedDatatablesCRUD;
 import org.cggh.tools.dataMerger.data.joinedKeytables.JoinedKeytablesCRUD;
@@ -31,23 +32,23 @@ public class MergesCRUD implements java.io.Serializable {
 	private final Logger logger = Logger.getLogger("org.cggh.tools.dataMerger.data.merges");
 	
 	
-	private DataModel dataModel;
+	private DatabaseModel databaseModel;
 	private UserModel userModel;
 	
 	
 	public MergesCRUD() {
 
-		this.setDataModel(new DataModel());
+		this.setDatabaseModel(new DatabaseModel());
 		this.setUserModel(new UserModel());			
 	
 		
 	}
 
-    public void setDataModel (final DataModel dataModel) {
-        this.dataModel  = dataModel;
+    public void setDatabaseModel (final DatabaseModel databaseModel) {
+        this.databaseModel  = databaseModel;
     }
-    public DataModel getDataModel () {
-        return this.dataModel;
+    public DatabaseModel getDataModel () {
+        return this.databaseModel;
     } 
 	
     public void setUserModel (final UserModel userModel) {
