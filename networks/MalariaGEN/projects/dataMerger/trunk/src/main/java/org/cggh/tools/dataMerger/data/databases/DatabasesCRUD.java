@@ -254,4 +254,36 @@ public class DatabasesCRUD {
 	}
 
 	
+	public Integer retrieveLastInsertIdAsIntegerUsingConnection(Connection connection) {
+
+		Integer lastInsertId = null;
+		
+        	try{
+	    	  //TODO: Is this cross-db compatible? ref: @@IDENTITY
+	          PreparedStatement preparedStatement = connection.prepareStatement("SELECT LAST_INSERT_ID() AS lastInsertId;");
+	          preparedStatement.executeQuery();
+	          
+	          ResultSet resultSet = preparedStatement.getResultSet();
+	          if (resultSet.next()) {
+	        	  
+	        	  resultSet.first();
+	        	  
+	        	  lastInsertId =  resultSet.getInt("lastInsertId");
+	        	  
+	          } else {
+	        	  
+	        	  
+	        	  //System.out.println("Unexpected: !resultSet.next()");
+	          }
+	          
+	          preparedStatement.close();
+
+	        }
+	        catch(SQLException sqlException){
+		    	sqlException.printStackTrace();
+	        }
+
+	    return lastInsertId;   
+	}
+	
 }

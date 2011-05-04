@@ -148,13 +148,13 @@ public class DataController extends HttpServlet {
 					  
 					  String joinsAsHTML = null;
 						
-					  JoinsCRUD joinsModel = new JoinsCRUD();
-					  joinsModel.setDataModel(dataModel);
+					  JoinsCRUD joinsCRUD = new JoinsCRUD();
+					  joinsCRUD.setDatabaseModel(databaseModel);
 					  
 					  //FIXME
-					  //joinsModel.setUserModel(userModel);
+					  //joinsCRUD.setUserModel(userModel);
 
-					  CachedRowSet joinsAsCachedRowSet = joinsModel.retrieveJoinsAsCachedRowSetByMergeId(mergeModel.getId());
+					  CachedRowSet joinsAsCachedRowSet = joinsCRUD.retrieveJoinsAsCachedRowSetByMergeId(mergeModel.getId());
 				
 					  if (joinsAsCachedRowSet != null) {
 				
@@ -188,7 +188,7 @@ public class DataController extends HttpServlet {
 				 mergeModel.setId(Integer.parseInt(resolutionsByColumnURLPatternMatcher.group(1)));  
 				 
 				 MergesCRUD mergesModel = new MergesCRUD();
-				 mergesModel.setDataModel(dataModel);
+				 mergesModel.setDatabaseModel(databaseModel);
 				 mergeModel = mergesModel.retrieveMergeAsMergeModelByMergeId(mergeModel.getId());
 			  
 				  if (headerAcceptsAsStringList.contains("text/html")) { 
@@ -202,7 +202,7 @@ public class DataController extends HttpServlet {
 						
 
 						ResolutionsByColumnCRUD resolutionsByColumnModel = new ResolutionsByColumnCRUD();
-						resolutionsByColumnModel.setDataModel(dataModel);
+						resolutionsByColumnModel.setDatabaseModel(databaseModel);
 						
 						//FIXME
 						//resolutionsByColumnModel.setUserModel(userModel);
@@ -227,7 +227,7 @@ public class DataController extends HttpServlet {
 				 mergeModel.setId(Integer.parseInt(resolutionsByRowURLPatternMatcher.group(1)));  
 				 
 				 MergesCRUD mergesModel = new MergesCRUD();
-				 mergesModel.setDataModel(dataModel);
+				 mergesModel.setDatabaseModel(databaseModel);
 				 mergeModel = mergesModel.retrieveMergeAsMergeModelByMergeId(mergeModel.getId());
 			  
 				  if (headerAcceptsAsStringList.contains("text/html")) { 
@@ -241,7 +241,7 @@ public class DataController extends HttpServlet {
 						
 
 						ResolutionsByRowCRUD resolutionsByRowModel = new ResolutionsByRowCRUD();
-						resolutionsByRowModel.setDataModel(dataModel);
+						resolutionsByRowModel.setDatabaseModel(databaseModel);
 						
 						//FIXME
 						//resolutionsByColumnModel.setUserModel(userModel);
@@ -280,7 +280,7 @@ public class DataController extends HttpServlet {
 						 mergeModel.setId(Integer.parseInt(newJoinURLPatternMatcher.group(1)));  
 						 
 						 MergesCRUD mergesModel = new MergesCRUD();
-						 mergesModel.setDataModel(dataModel);
+						 mergesModel.setDatabaseModel(databaseModel);
 						 mergeModel = mergesModel.retrieveMergeAsMergeModelByMergeId(mergeModel.getId());
 					  
 					  String joinAsDecoratedXHTMLTable = null;
@@ -327,18 +327,18 @@ public class DataController extends HttpServlet {
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-		DataModel dataModel = new DataModel();
-		dataModel.setDataModelUsingServletContext(request.getSession().getServletContext());
+		DatabaseModel databaseModel = new DatabaseModel();
+		databaseModel.setDatabaseModelUsingServletContext(request.getSession().getServletContext());
 
-		dataModel.setDatabaseConnectableUsingDataModel();
+		databaseModel.setDatabaseConnectableUsingDatabaseModel();
 		
 		
 		UserModel userModel = new UserModel();
 		
-		if (dataModel.isDatabaseConnectable()) {
+		if (databaseModel.isDatabaseConnectable()) {
 		
 			UsersCRUD usersCRUD = new UsersCRUD();
-			usersCRUD.setDataModel(dataModel);
+			usersCRUD.setDatabaseModel(databaseModel);
 			userModel = usersCRUD.retrieveUserAsUserModelUsingUsername(request.getRemoteUser());
 			userModel.setHttpServletRequest(request);
 			
@@ -394,7 +394,7 @@ public class DataController extends HttpServlet {
 								
 								MergesCRUD mergesModel = new MergesCRUD();
 								
-								mergesModel.setDataModel(dataModel);
+								mergesModel.setDatabaseModel(databaseModel);
 								mergesModel.setUserModel(userModel);
 								
 								mergeModel = mergesModel.retrieveMergeAsMergeModelThroughCreatingMergeUsingMergeModel(mergeModel);
@@ -451,7 +451,7 @@ public class DataController extends HttpServlet {
 
 					ExportsCRUD exportsModel = new ExportsCRUD();
 					
-					exportsModel.setDataModel(dataModel);
+					exportsModel.setDatabaseModel(databaseModel);
 					exportsModel.setUserModel(userModel);
 					
 					exportModel = exportsModel.retrieveExportAsExportModelThroughCreatingExportUsingExportModel(exportModel);
@@ -496,11 +496,11 @@ public class DataController extends HttpServlet {
 	
 	protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-		DataModel dataModel = new DataModel();
-		dataModel.setDataModelUsingServletContext(request.getSession().getServletContext());
+		DatabaseModel databaseModel = new DatabaseModel();
+		databaseModel.setDatabaseModelUsingServletContext(request.getSession().getServletContext());
 
 		UsersCRUD usersCRUD = new UsersCRUD();
-		usersCRUD.setDataModel(dataModel);
+		usersCRUD.setDatabaseModel(databaseModel);
 		UserModel userModel = usersCRUD.retrieveUserAsUserModelUsingUsername(request.getRemoteUser());
 		userModel.setHttpServletRequest(request);
 		
@@ -548,16 +548,16 @@ public class DataController extends HttpServlet {
 							
 							JSONObject jsonObject = new JSONObject(stringBuffer.toString());
 							
-							JoinsCRUD joinsModel = new JoinsCRUD();
+							JoinsCRUD joinsCRUD = new JoinsCRUD();
 							
-							joinsModel.setDataModel(dataModel);
+							joinsCRUD.setDatabaseModel(databaseModel);
 							
 							
 							//Consider: Instead of using JSONObject, use JoinsFunctionsModel to convert it to something else? 
 							// Maybe a list of JoinModel objects, joinsAsJoinModelList
 							
 							// This update should also recalculate conflicts and destroy old resolutions
-							joinsModel.updateJoinsByMergeIdUsingJoinsAsJSONObject(mergeModel.getId(), jsonObject);
+							joinsCRUD.updateJoinsByMergeIdUsingJoinsAsJSONObject(mergeModel.getId(), jsonObject);
 							
 							
 							
@@ -620,7 +620,7 @@ public class DataController extends HttpServlet {
 							
 							ResolutionsByColumnCRUD resolutionsByColumnModel = new ResolutionsByColumnCRUD();
 							
-							resolutionsByColumnModel.setDataModel(dataModel);
+							resolutionsByColumnModel.setDatabaseModel(databaseModel);
 							
 							//FIXME: This ultimately breaks because the mergeModel is incomplete and a full update is attempted.
 							resolutionsByColumnModel.updateResolutionsByColumnByMergeIdUsingResolutionsByColumnAsJSONObject(mergeModel.getId(), jsonObject);
@@ -687,7 +687,7 @@ public class DataController extends HttpServlet {
 								
 								ResolutionsByRowCRUD resolutionsByRowModel = new ResolutionsByRowCRUD();
 								
-								resolutionsByRowModel.setDataModel(dataModel);
+								resolutionsByRowModel.setDatabaseModel(databaseModel);
 								
 								resolutionsByRowModel.updateResolutionsByRowByMergeIdUsingResolutionsByRowAsJSONObject(mergeModel.getId(), jsonObject);
 								
@@ -757,7 +757,7 @@ public class DataController extends HttpServlet {
 										
 										ResolutionsByCellCRUD resolutionsByCellModel = new ResolutionsByCellCRUD();
 										
-										resolutionsByCellModel.setDataModel(dataModel);
+										resolutionsByCellModel.setDatabaseModel(databaseModel);
 										
 										resolutionsByCellModel.updateResolutionsByCellByMergeIdUsingResolutionsByCellAsJSONObject(mergeModel.getId(), jsonObject);
 										

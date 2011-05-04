@@ -13,7 +13,8 @@ import java.util.regex.Pattern;
 
 import javax.sql.rowset.CachedRowSet;
 
-import org.cggh.tools.dataMerger.data.DataModel;
+import org.cggh.tools.dataMerger.data.databases.DatabaseModel;
+import org.cggh.tools.dataMerger.data.databases.DatabasesCRUD;
 import org.cggh.tools.dataMerger.data.joins.JoinsCRUD;
 import org.cggh.tools.dataMerger.data.mergedDatatables.MergedDatatablesCRUD;
 import org.cggh.tools.dataMerger.data.merges.MergesCRUD;
@@ -29,12 +30,12 @@ public class ExportsCRUD implements java.io.Serializable  {
 	private static final long serialVersionUID = -2386709583926211005L;
 	private final Logger logger = Logger.getLogger("org.cggh.tools.dataMerger.data.exports");
 	
-	private DataModel dataModel;
+	private DatabaseModel dataModel;
 	private UserModel userModel;
 	
 	public ExportsCRUD() {
 
-		this.setDataModel(new DataModel());
+		this.setDatabaseModel(new DatabaseModel());
 		this.setUserModel(new UserModel());			
 	
 		
@@ -46,7 +47,7 @@ public class ExportsCRUD implements java.io.Serializable  {
 
 		try {
 			
-			Connection connection = this.getDataModel().getNewDatabaseConnection();
+			Connection connection = this.getDatabaseModel().getNewConnection();
 			
 			if (connection != null) {
 		
@@ -56,7 +57,7 @@ public class ExportsCRUD implements java.io.Serializable  {
 			    	  
 						// Get the merge model for the export.
 						MergesCRUD mergesModel = new MergesCRUD();
-						mergesModel.setDataModel(this.getDataModel());
+						mergesModel.setDatabaseModel(this.getDatabaseModel());
 						exportModel.setMergeModel(mergesModel.retrieveMergeAsMergeModelByMergeId(exportModel.getMergeModel().getId()));
 						
 					
@@ -69,7 +70,8 @@ public class ExportsCRUD implements java.io.Serializable  {
 						preparedStatement.close();  
 			    	  
 						// Get the export Id (the last insert id)
-						exportModel.setId(this.getDataModel().retrieveLastInsertIdAsIntegerUsingConnection(connection));
+						DatabasesCRUD databasesCRUD = new DatabasesCRUD();
+						exportModel.setId(databasesCRUD.retrieveLastInsertIdAsIntegerUsingConnection(connection));
 						
 						
 						// Create the export datatable
@@ -136,7 +138,7 @@ public class ExportsCRUD implements java.io.Serializable  {
 			ExportModel exportModel, Connection connection) {
 		
 		
-		File exportDirectory = new File(this.getDataModel().getServletContext().getInitParameter("exportsFileRepositoryBasePath") + exportModel.getId().toString());
+		File exportDirectory = new File(this.getDatabaseModel().getServletContext().getInitParameter("exportsFileRepositoryBasePath") + exportModel.getId().toString());
 		
 		//this.logger.info("exportDirectory created: " + exportDirectory.mkdirs());
 		
@@ -256,7 +258,7 @@ public class ExportsCRUD implements java.io.Serializable  {
 			Connection connection) {
 
 
-		File exportDirectory = new File(this.getDataModel().getServletContext().getInitParameter("exportsFileRepositoryBasePath") + exportModel.getId().toString());
+		File exportDirectory = new File(this.getDatabaseModel().getServletContext().getInitParameter("exportsFileRepositoryBasePath") + exportModel.getId().toString());
 		
 		//this.logger.info("exportDirectory created: " + exportDirectory.mkdirs());
 		
@@ -365,7 +367,7 @@ public class ExportsCRUD implements java.io.Serializable  {
 	public void createResolutionsAsFileUsingExportModel(
 			ExportModel exportModel, Connection connection) {
 
-		File exportDirectory = new File(this.getDataModel().getServletContext().getInitParameter("exportsFileRepositoryBasePath") + exportModel.getId().toString());
+		File exportDirectory = new File(this.getDatabaseModel().getServletContext().getInitParameter("exportsFileRepositoryBasePath") + exportModel.getId().toString());
 		
 		//this.logger.info("exportDirectory created: " + exportDirectory.mkdirs());
 		
@@ -904,7 +906,7 @@ public class ExportsCRUD implements java.io.Serializable  {
 		
 		//FIXME: Detach JoinsCRUD from JoinColumnsModel
 		JoinsCRUD joinsModel = new JoinsCRUD();
-		joinsModel.setDataModel(this.getDataModel());
+		joinsModel.setDatabaseModel(this.getDatabaseModel());
 	
 		HashMap<Integer, String> joinColumnNamesByColumnNumberAsHashMap = joinsModel.retrieveJoinColumnNamesByColumnNumberAsHashMapUsingMergeModel(exportModel.getMergeModel());
 		
@@ -978,12 +980,12 @@ public class ExportsCRUD implements java.io.Serializable  {
 	}
 
 
-	public void setDataModel(DataModel dataModel) {
+	public void setDatabaseModel(DatabaseModel dataModel) {
 		this.dataModel = dataModel;
 	}
 
 
-	public DataModel getDataModel() {
+	public DatabaseModel getDatabaseModel() {
 		return this.dataModel;
 	}
 
@@ -1035,7 +1037,7 @@ public class ExportsCRUD implements java.io.Serializable  {
 		   
 			try {
 
-				Connection connection = this.getDataModel().getNewDatabaseConnection();
+				Connection connection = this.getDatabaseModel().getNewConnection();
 				 
 				if (connection != null) {
 				
