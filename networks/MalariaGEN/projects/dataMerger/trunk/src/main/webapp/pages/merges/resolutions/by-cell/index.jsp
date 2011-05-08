@@ -4,23 +4,23 @@
 <%@ page import="javax.sql.rowset.CachedRowSet" %>
 <%@ page import="java.text.DateFormat" %>
 <%@ page import="java.text.SimpleDateFormat" %>
-<%@ page import="org.cggh.tools.dataMerger.data.merges.MergesModel" %>
+<%@ page import="org.cggh.tools.dataMerger.data.merges.MergesCRUD" %>
 <%@ page import="org.cggh.tools.dataMerger.data.merges.MergeModel" %>
 <%@ page import="org.cggh.tools.dataMerger.functions.resolutions.ResolutionsFunctionsModel" %>
-<%@ page import="org.cggh.tools.dataMerger.data.resolutions.byCell.ResolutionsByCellModel" %>
+<%@ page import="org.cggh.tools.dataMerger.data.resolutions.byCell.ResolutionsByCellCRUD" %>
 <%
 
-MergesModel mergesModel = new MergesModel();
-mergesModel.setDataModel(dataModel);
-mergesModel.setUserModel(userModel);
+MergesCRUD mergesCRUD = new MergesCRUD();
+mergesCRUD.setDatabaseModel(databaseModel);
+mergesCRUD.setUserModel(userModel);
 
 MergeModel mergeModel = new MergeModel();
-mergeModel = mergesModel.retrieveMergeAsMergeModelByMergeId(Integer.parseInt(request.getParameter("merge_id")));
+mergeModel = mergesCRUD.retrieveMergeAsMergeModelByMergeId(Integer.parseInt(request.getParameter("merge_id")));
 
 DateFormat dateFormat = new SimpleDateFormat("dd MMM yyyy HH:mm");
 
-ResolutionsByCellModel resolutionsByCellModel = new ResolutionsByCellModel();
-resolutionsByCellModel.setDataModel(dataModel);
+ResolutionsByCellCRUD resolutionsByCellCRUD = new ResolutionsByCellCRUD();
+resolutionsByCellCRUD.setDatabaseModel(databaseModel);
 
 ResolutionsFunctionsModel resolutionsFunctionsModel = new ResolutionsFunctionsModel();
 
@@ -140,7 +140,7 @@ ResolutionsFunctionsModel resolutionsFunctionsModel = new ResolutionsFunctionsMo
 			
 			<div class="resolutions-by-cell">
 			<form class="resolutions-by-cell-form" onsubmit="return false;" autocomplete="off">
-				<%=resolutionsByCellModel.retrieveResolutionsByCellAsDecoratedXHTMLTableUsingMergeModel(mergeModel) %>	
+				<%=resolutionsByCellCRUD.retrieveResolutionsByCellAsDecoratedXHTMLTableUsingMergeModel(mergeModel) %>	
 			</form>
 			</div>
 		

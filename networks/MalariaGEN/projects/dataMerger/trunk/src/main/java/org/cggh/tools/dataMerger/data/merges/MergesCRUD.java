@@ -8,8 +8,8 @@ import java.util.logging.Logger;
 
 import javax.sql.rowset.CachedRowSet;
 
-import org.cggh.tools.dataMerger.data.DataModel;
 import org.cggh.tools.dataMerger.data.databases.DatabaseModel;
+import org.cggh.tools.dataMerger.data.databases.DatabasesCRUD;
 import org.cggh.tools.dataMerger.data.datatables.DatatablesCRUD;
 import org.cggh.tools.dataMerger.data.joinedDatatables.JoinedDatatablesCRUD;
 import org.cggh.tools.dataMerger.data.joinedKeytables.JoinedKeytablesCRUD;
@@ -47,7 +47,7 @@ public class MergesCRUD implements java.io.Serializable {
     public void setDatabaseModel (final DatabaseModel databaseModel) {
         this.databaseModel  = databaseModel;
     }
-    public DatabaseModel getDataModel () {
+    public DatabaseModel getDatabaseModel () {
         return this.databaseModel;
     } 
 	
@@ -67,7 +67,7 @@ public class MergesCRUD implements java.io.Serializable {
 		
 		try {
 
-			Connection connection = this.getDataModel().getNewDatabaseConnection();
+			Connection connection = this.getDatabaseModel().getNewConnection();
 			 
 			if (connection != null) {		
 
@@ -120,15 +120,14 @@ public class MergesCRUD implements java.io.Serializable {
 	        	  
 	        	  //Retrieve the upload data
 	        	  UploadsCRUD uploadsModel = new UploadsCRUD();
-	        	  uploadsModel.setDataModel(this.getDataModel());
+	        	  uploadsModel.setDatabaseModel(this.getDatabaseModel());
 	        	  mergeModel.setUpload1Model(uploadsModel.retrieveUploadAsUploadModelByUploadId(mergeModel.getUpload1Model().getId(), connection));
 	        	  mergeModel.setUpload2Model(uploadsModel.retrieveUploadAsUploadModelByUploadId(mergeModel.getUpload2Model().getId(), connection));
 	        	  
 	        	  //Retrieve the datatable data
-	        	  DatatablesCRUD datatablesModel = new DatatablesCRUD();
-	        	  datatablesModel.setDataModel(this.getDataModel());
-	        	  mergeModel.setDatatable1Model(datatablesModel.retrieveDatatableAsDatatableModelUsingUploadId(mergeModel.getUpload1Model().getId(), connection));
-	        	  mergeModel.setDatatable2Model(datatablesModel.retrieveDatatableAsDatatableModelUsingUploadId(mergeModel.getUpload2Model().getId(), connection));
+	        	  DatatablesCRUD datatablesCRUD = new DatatablesCRUD();
+	        	  mergeModel.setDatatable1Model(datatablesCRUD.retrieveDatatableAsDatatableModelUsingUploadId(mergeModel.getUpload1Model().getId(), connection));
+	        	  mergeModel.setDatatable2Model(datatablesCRUD.retrieveDatatableAsDatatableModelUsingUploadId(mergeModel.getUpload2Model().getId(), connection));
 	        	  
 	        	  //Add the merge-specific datatable data from the merge data to the datatable models
 	        	  mergeModel.getDatatable1Model().setDuplicateKeysCount(resultSet.getInt("datatable_1_duplicate_keys_count"));
@@ -136,7 +135,7 @@ public class MergesCRUD implements java.io.Serializable {
 	        	  
 	        	  ////Retrieve the joins data
 	        	  JoinsCRUD joinsModel = new JoinsCRUD();
-	        	  joinsModel.setDataModel(this.getDataModel());
+	        	  joinsModel.setDatabaseModel(this.getDatabaseModel());
 	        	  mergeModel.setJoinsModel(joinsModel.retrieveJoinsAsJoinsModelByMergeId(mergeModel.getId(), connection));
 	        	  
 	        	  //FIXME: This seems wrong. Refactor to joinsModel.setDataAsCachedRowSet or review naming.
@@ -184,7 +183,7 @@ public class MergesCRUD implements java.io.Serializable {
 
 		try {
 			
-			Connection connection = this.getDataModel().getNewDatabaseConnection();
+			Connection connection = this.getDatabaseModel().getNewConnection();
 			
 			if (connection != null) {
 		
@@ -210,7 +209,8 @@ public class MergesCRUD implements java.io.Serializable {
 						
 						
 						// Get the model Id (the last insert id)
-						mergeModel.setId(this.getDataModel().retrieveLastInsertIdAsIntegerUsingConnection(connection));
+						DatabasesCRUD databasesCRUD = new DatabasesCRUD();
+						mergeModel.setId(databasesCRUD.retrieveLastInsertIdAsIntegerUsingConnection(connection));
 						
 						
 						// Create datatables if necessary.
@@ -331,19 +331,19 @@ public class MergesCRUD implements java.io.Serializable {
 	public MergeModel retrieveMergeAsMergeModelThroughCreatingUncreatedDatatablesUsingMergeModel(MergeModel mergeModel,
 			Connection connection) {
 
-		  DatatablesCRUD datatablesModel = new DatatablesCRUD();
+		  DatatablesCRUD datatablesCRUD = new DatatablesCRUD();
 		  
-		  datatablesModel.setDataModel(this.getDataModel());
+		  datatablesCRUD.setDatabaseModel(this.getDatabaseModel());
 
-		  mergeModel.setDatatable1Model(datatablesModel.retrieveDatatableAsDatatableModelUsingUploadId(mergeModel.getUpload1Model().getId(), connection));
-		  mergeModel.setDatatable2Model(datatablesModel.retrieveDatatableAsDatatableModelUsingUploadId(mergeModel.getUpload2Model().getId(), connection));
+		  mergeModel.setDatatable1Model(datatablesCRUD.retrieveDatatableAsDatatableModelUsingUploadId(mergeModel.getUpload1Model().getId(), connection));
+		  mergeModel.setDatatable2Model(datatablesCRUD.retrieveDatatableAsDatatableModelUsingUploadId(mergeModel.getUpload2Model().getId(), connection));
 		  
 		  if (mergeModel.getDatatable1Model().getName() == null) {
-			  mergeModel.setDatatable1Model(datatablesModel.retrieveDatatableAsDatatableModelThroughCreatingDatatableUsingUploadId(mergeModel.getUpload1Model().getId(), connection));
+			  mergeModel.setDatatable1Model(datatablesCRUD.retrieveDatatableAsDatatableModelThroughCreatingDatatableUsingUploadId(mergeModel.getUpload1Model().getId(), connection));
 		  }
 
 		  if (mergeModel.getDatatable2Model().getName() == null) {
-			  mergeModel.setDatatable2Model(datatablesModel.retrieveDatatableAsDatatableModelThroughCreatingDatatableUsingUploadId(mergeModel.getUpload2Model().getId(), connection));
+			  mergeModel.setDatatable2Model(datatablesCRUD.retrieveDatatableAsDatatableModelThroughCreatingDatatableUsingUploadId(mergeModel.getUpload2Model().getId(), connection));
 		  }
 		  
 		  return mergeModel;
@@ -433,11 +433,11 @@ public class MergesCRUD implements java.io.Serializable {
 	}
 	
 
-		public String retrieveMergesAsDecoratedXHTMLTableUsingMergesModel (MergesCRUD mergesModel) {
+		public String retrieveMergesAsDecoratedXHTMLTableUsingUserId (Integer userId) {
 			
 			String mergesAsDecoratedXHTMLTableUsingMergesModel = null;
 			
-			  CachedRowSet mergesAsCachedRowSet = this.retrieveMergesAsCachedRowSetUsingUserId(mergesModel.getUserModel().getId());
+			  CachedRowSet mergesAsCachedRowSet = this.retrieveMergesAsCachedRowSetUsingUserId(userId);
 
 			  if (mergesAsCachedRowSet != null) {
 
@@ -468,7 +468,7 @@ public class MergesCRUD implements java.io.Serializable {
 		   
 			try {
 
-				Connection connection = this.getDataModel().getNewDatabaseConnection();
+				Connection connection = this.getDatabaseModel().getNewConnection();
 				 
 				if (connection != null) {
 				

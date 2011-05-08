@@ -5,8 +5,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.logging.Logger;
 
-import org.cggh.tools.dataMerger.data.DataModel;
-import org.cggh.tools.dataMerger.data.databases.DatabasesCRUD;
+import org.cggh.tools.dataMerger.data.databases.DatabaseModel;
 import org.cggh.tools.dataMerger.data.tables.TablesCRUD;
 import org.cggh.tools.dataMerger.data.users.UserModel;
 
@@ -14,45 +13,25 @@ public class Database1_0CRUD {
 	
 	private final Logger logger = Logger.getLogger("org.cggh.tools.dataMerger.scripts.data");
 	
-	private DataModel dataModel = null;
+	private DatabaseModel databaseModel = null;
 	private UserModel userModel = null;
 	
 	public Database1_0CRUD () {
 		
-		this.setDataModel(new DataModel());
+		this.setDatabaseModel(new DatabaseModel());
 		this.setUserModel(new UserModel());
 		
 	}
 	
 	public Boolean create () {
 		
-		//TODO: No longer create database here (done by POST to databasesController)
-		
-		Connection databaseServerConnection = this.getDataModel().getNewDatabaseServerConnection();
-		
-		if (databaseServerConnection != null) {
-			
-			DatabasesCRUD databasesCRUD = new DatabasesCRUD();
-			databasesCRUD.setDataModel(this.getDataModel());
-			databasesCRUD.setUserModel(this.getUserModel());
-			
-			databasesCRUD.createDatabase(databaseServerConnection);
-			
-			try {
-				databaseServerConnection.close();
-			} catch (SQLException e) {
-				e.printStackTrace();
-				return false;
-			}
-			
-			this.getDataModel().setDatabaseConnectableUsingDataModel();
-			
-			if (this.getDataModel().isDatabaseConnectable()) {
+
+			if (this.getDatabaseModel().isConnectable()) {
 				
-				Connection connection = this.getDataModel().getNewDatabaseConnection();
+				Connection connection = this.getDatabaseModel().getNewConnection();
 				
 				TablesCRUD tablesCRUD = new TablesCRUD();
-				tablesCRUD.setDataModel(this.getDataModel());
+				tablesCRUD.setDatabaseModel(this.getDatabaseModel());
 				tablesCRUD.setUserModel(this.getUserModel());
 				
 				//TODO: Objectify table creation. Perhaps in v2.
@@ -442,13 +421,9 @@ public class Database1_0CRUD {
 				this.logger.severe("database is not connectable");
 				return false;
 			}
+
 			
-		} else {
 			
-			this.logger.severe("databaseServerConnection is null");
-			return false;
-		}
-		
 		return true;
 		
 	}
@@ -459,12 +434,12 @@ public class Database1_0CRUD {
 		
 	}
 
-	public void setDataModel(DataModel dataModel) {
-		this.dataModel = dataModel;
+	public void setDatabaseModel(DatabaseModel databaseModel) {
+		this.databaseModel = databaseModel;
 	}
 
-	public DataModel getDataModel() {
-		return dataModel;
+	public DatabaseModel getDatabaseModel() {
+		return databaseModel;
 	}
 
 	public void setUserModel(UserModel userModel) {

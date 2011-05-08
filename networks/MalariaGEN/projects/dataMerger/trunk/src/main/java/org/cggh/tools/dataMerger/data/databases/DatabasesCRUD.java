@@ -62,6 +62,9 @@ public class DatabasesCRUD {
 		
 		DatabaseModel databaseModel = new DatabaseModel();
 		
+		//TODO: refactor
+		databaseModel.setServletContext(servletContext);
+		
 		databaseModel.setDriverFullyQualifiedClassName(servletContext.getInitParameter("databaseDriverFullyQualifiedClassName"));
 		databaseModel.setServerPath(servletContext.getInitParameter("databaseServerPath"));
 		databaseModel.setName(servletContext.getInitParameter("databaseName"));

@@ -9,6 +9,10 @@ public class FilebaseModel {
 	private String versionAsString = null;
 	private String[] filesAsStringArray = null;
 	private String filebaseInstallationLogAsCSVFilePathRelativeToFilebaseServerPath = null;
+	private Boolean unix = null;
+	private Boolean mac = null;
+	private Boolean windows = null;
+	private String filepathSeparator = null;
 
 	public void setReadable(Boolean readable) {
 		this.readable = readable;
@@ -65,6 +69,38 @@ public class FilebaseModel {
 
 	public String getFilebaseInstallationLogAsCSVFilePathRelativeToFilebaseServerPath() {
 		return filebaseInstallationLogAsCSVFilePathRelativeToFilebaseServerPath;
+	}
+
+	public void setUnix(Boolean unix) {
+		this.unix = unix;
+	}
+
+	public Boolean isUnix() {
+		return unix;
+	}
+
+	public void setMac(Boolean mac) {
+		this.mac = mac;
+	}
+
+	public Boolean isMac() {
+		return mac;
+	}
+
+	public void setWindows(Boolean windows) {
+		this.windows = windows;
+	}
+
+	public Boolean isWindows() {
+		return windows;
+	}
+
+	public void setFilepathSeparator(String filepathSeparator) {
+		this.filepathSeparator = filepathSeparator;
+	}
+
+	public String getFilepathSeparator() {
+		return filepathSeparator;
 	}
 
 

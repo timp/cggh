@@ -287,7 +287,7 @@
 		<param-value>,,NULL</param-value>
 	</context-param>
 	
-	<!-- Without this parameter the default behavior is to export NULLs as \N (unquoted) -->
+	<!-- Without this parameter the default behaviour is to export NULLs as \N (unquoted) -->
 	<context-param>
 		<param-name>stringToExportInsteadOfNull</param-name>
 		<param-value>NULL</param-value>

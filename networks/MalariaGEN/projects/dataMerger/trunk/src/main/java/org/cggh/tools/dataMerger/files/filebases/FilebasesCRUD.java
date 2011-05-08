@@ -105,7 +105,24 @@ public class FilebasesCRUD {
 			filebaseModel.setVersionAsString(versionAsString);
 		}
 		
+		String os = System.getProperty("os.name").toLowerCase();
 		
+		if (os.indexOf( "nix") >=0 || os.indexOf( "nux") >=0) {
+			
+			filebaseModel.setUnix(true);
+			filebaseModel.setFilepathSeparator("/");
+		}
+		else if (os.indexOf( "mac" ) >= 0) {
+			
+			filebaseModel.setMac(true);
+			filebaseModel.setFilepathSeparator("/");
+		}
+		else if (os.indexOf( "win" ) >= 0) {
+			
+			filebaseModel.setWindows(true);
+			filebaseModel.setFilepathSeparator("\\");
+		}
+
 	
 		return filebaseModel;
 	}	

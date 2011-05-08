@@ -14,11 +14,11 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.cggh.tools.dataMerger.data.DataModel;
+import org.cggh.tools.dataMerger.data.databases.DatabaseModel;
+import org.cggh.tools.dataMerger.data.databases.DatabasesCRUD;
 import org.cggh.tools.dataMerger.data.users.UserModel;
 import org.cggh.tools.dataMerger.data.users.UsersCRUD;
 import org.cggh.tools.dataMerger.scripts.data.Database1_0CRUD;
-import org.cggh.tools.dataMerger.scripts.files.Filebase1_0CRUD;
 
 
 /**
@@ -64,31 +64,32 @@ public class ScriptsController extends HttpServlet {
 			
 			//TODO: If install fails (note, cannot use transactions for table creations, etc.) then run the uninstall for the same version.
 
-			DataModel dataModel = new DataModel();
-			UsersCRUD usersCRUD = new UsersCRUD();
+        	
+        	DatabasesCRUD databasesCRUD = new DatabasesCRUD();
+			DatabaseModel databaseModel = databasesCRUD.retrieveDatabaseAsDatabaseModelUsingServletContext(request.getSession().getServletContext());
 			
-			dataModel.setDataModelUsingServletContext(request.getSession().getServletContext());
+			UsersCRUD usersCRUD = new UsersCRUD();
 			UserModel userModel = usersCRUD.retrieveUserAsUserModelUsingUsername(request.getRemoteUser());
 			
 			Database1_0CRUD database1_0CRUD = new Database1_0CRUD();
-			database1_0CRUD.setDataModel(dataModel);
+			database1_0CRUD.setDatabaseModel(databaseModel);
 			database1_0CRUD.setUserModel(userModel);
 			
 					
-			if (database1_0CRUD.getDataModel().getVersionAsIntegerArray()[1] == null || database1_0CRUD.getDataModel().getVersionAsIntegerArray()[1] == 0 ) {
+			if (database1_0CRUD.getDatabaseModel().getVersionAsString() == null || database1_0CRUD.getDatabaseModel().getVersionAsString() == "") {
 				
 				if (database1_0CRUD.create()) {
 				
-					Filebase1_0CRUD filebase1_0CRUD = new Filebase1_0CRUD();
-					filebase1_0CRUD.setUserModel(userModel);
-					
-					if (filebase1_0CRUD.create()) {
-						
-						//success
-						
-					} else {
-						response.sendRedirect(scriptsControllerBasePathURL + "pages/guides/installation/errors/filebase-creation");
-					}
+//					Filebase1_0CRUD filebase1_0CRUD = new Filebase1_0CRUD();
+//					filebase1_0CRUD.setUserModel(userModel);
+//					
+//					if (filebase1_0CRUD.create()) {
+//						
+//						//success
+//						
+//					} else {
+//						response.sendRedirect(scriptsControllerBasePathURL + "pages/guides/installation/errors/filebase-creation");
+//					}
 					
 				
 				} else {
@@ -99,7 +100,7 @@ public class ScriptsController extends HttpServlet {
 				
 			} else {
 
-				//String currentVersionAsString = database1_0.getDataModel().getVersionAsIntegerArray()[1] + "." + database1_0.getDataModel().getVersionAsIntegerArray()[2] + "." + database1_0.getDataModel().getVersionAsIntegerArray()[3];
+				//String currentVersionAsString = database1_0.getDatabaseModel().getVersionAsIntegerArray()[1] + "." + database1_0.getDatabaseModel().getVersionAsIntegerArray()[2] + "." + database1_0.getDatabaseModel().getVersionAsIntegerArray()[3];
 				
 				
 				response.sendRedirect(scriptsControllerBasePathURL + "pages/guides/installation/errors/database-version");	
@@ -112,7 +113,7 @@ public class ScriptsController extends HttpServlet {
 
 			try {
 				
-				//FIXME: Use DataModel
+				//FIXME: Use DatabaseModel
 				
 				Class.forName(getServletContext().getInitParameter("databaseDriverFullyQualifiedClassName")).newInstance(); 
 				

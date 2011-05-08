@@ -7,7 +7,7 @@ import java.util.logging.Logger;
 
 import javax.sql.rowset.CachedRowSet;
 
-import org.cggh.tools.dataMerger.data.DataModel;
+import org.cggh.tools.dataMerger.data.databases.DatabaseModel;
 import org.cggh.tools.dataMerger.data.joins.JoinsCRUD;
 import org.cggh.tools.dataMerger.data.merges.MergeModel;
 import org.cggh.tools.dataMerger.data.resolutions.ResolutionsCRUD;
@@ -26,19 +26,19 @@ public class ResolutionsByRowCRUD implements java.io.Serializable {
 
 	private final Logger logger = Logger.getLogger("org.cggh.tools.dataMerger.data.resolutionsByRow");
 
-	private DataModel dataModel;
+	private DatabaseModel databaseModel;
 	
 	public ResolutionsByRowCRUD() {
 
-		this.setDataModel(new DataModel());
+		this.setDatabaseModel(new DatabaseModel());
 		
 	}
 
-    public void setDataModel (final DataModel dataModel) {
-        this.dataModel  = dataModel;
+    public void setDatabaseModel (final DatabaseModel databaseModel) {
+        this.databaseModel  = databaseModel;
     }
-    public DataModel getDataModel () {
-        return this.dataModel;
+    public DatabaseModel getDatabaseModel () {
+        return this.databaseModel;
     } 
 
 	public String retrieveResolutionsByRowAsDecoratedXHTMLTableUsingMergeModel (MergeModel mergeModel) {
@@ -55,16 +55,16 @@ public class ResolutionsByRowCRUD implements java.io.Serializable {
 			  	resolutionsByRowFunctionsModel.setSolutionsByRowAsCachedRowSet(this.retrieveSolutionsByRowAsCachedRowSet());
 
 			  	JoinsCRUD joinsModel = new JoinsCRUD();
-			  	joinsModel.setDataModel(this.getDataModel());
+			  	joinsModel.setDatabaseModel(this.getDatabaseModel());
 			  	resolutionsByRowFunctionsModel.setJoinColumnNamesByColumnNumberAsHashMap(joinsModel.retrieveJoinColumnNamesByColumnNumberAsHashMapUsingMergeModel(mergeModel));
 			  	
 			  	/////////TODO:
-			  	ResolutionsCRUD resolutionsModel = new ResolutionsCRUD();
-			  	resolutionsModel.setDataModel(this.getDataModel());
-			  	resolutionsByRowFunctionsModel.setSolutionByColumnIdUsingCellCoordsAsHashMap(resolutionsModel.retrieveSolutionByColumnIdUsingCellCoordsAsHashMapUsingMergeModel(mergeModel));
-			  	resolutionsByRowFunctionsModel.setSolutionByCellIdUsingCellCoordsAsHashMap(resolutionsModel.retrieveSolutionByCellIdUsingCellCoordsAsHashMapUsingMergeModel(mergeModel));
-			  	resolutionsByRowFunctionsModel.setConstantUsingCellCoordsAsHashMap(resolutionsModel.retrieveConstantUsingCellCoordsAsHashMapUsingMergeModel(mergeModel));
-			  	resolutionsByRowFunctionsModel.setNullOrConstantSolutionUsingColumnNumberAsHashMap(resolutionsModel.retrieveNullOrConstantSolutionUsingColumnNumberAsHashMapUsingMergeModel(mergeModel));
+			  	ResolutionsCRUD resolutionsCRUD = new ResolutionsCRUD();
+			  	resolutionsCRUD.setDatabaseModel(this.getDatabaseModel());
+			  	resolutionsByRowFunctionsModel.setSolutionByColumnIdUsingCellCoordsAsHashMap(resolutionsCRUD.retrieveSolutionByColumnIdUsingCellCoordsAsHashMapUsingMergeModel(mergeModel));
+			  	resolutionsByRowFunctionsModel.setSolutionByCellIdUsingCellCoordsAsHashMap(resolutionsCRUD.retrieveSolutionByCellIdUsingCellCoordsAsHashMapUsingMergeModel(mergeModel));
+			  	resolutionsByRowFunctionsModel.setConstantUsingCellCoordsAsHashMap(resolutionsCRUD.retrieveConstantUsingCellCoordsAsHashMapUsingMergeModel(mergeModel));
+			  	resolutionsByRowFunctionsModel.setNullOrConstantSolutionUsingColumnNumberAsHashMap(resolutionsCRUD.retrieveNullOrConstantSolutionUsingColumnNumberAsHashMapUsingMergeModel(mergeModel));
 			  	
 			  	resolutionsByRowFunctionsModel.setResolutionsByRowAsDecoratedXHTMLTableUsingResolutionsByRowAsCachedRowSet();
 			  	resolutionsByRowAsDecoratedXHTMLTable = resolutionsByRowFunctionsModel.getResolutionsByRowAsDecoratedXHTMLTable();
@@ -88,7 +88,7 @@ public class ResolutionsByRowCRUD implements java.io.Serializable {
 		   
 			try {
 
-				Connection connection = this.getDataModel().getNewDatabaseConnection();
+				Connection connection = this.getDatabaseModel().getNewConnection();
 				 
 				if (connection != null) {
 
@@ -133,7 +133,7 @@ public class ResolutionsByRowCRUD implements java.io.Serializable {
 		   
 			try {
 
-				Connection connection = this.getDataModel().getNewDatabaseConnection();
+				Connection connection = this.getDatabaseModel().getNewConnection();
 				 
 				if (connection != null) {
 
@@ -270,7 +270,7 @@ public class ResolutionsByRowCRUD implements java.io.Serializable {
 
 		try {
 			
-			Connection connection = this.getDataModel().getNewDatabaseConnection();
+			Connection connection = this.getDatabaseModel().getNewConnection();
 			 
 			if (connection != null) {
 					

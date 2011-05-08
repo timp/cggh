@@ -114,18 +114,6 @@ public class DatatableModel implements java.io.Serializable {
 
 
 
-	public void setDatatableModelById(String name, Connection connection) {
-
-		DatatablesCRUD datatablesModel = new DatatablesCRUD();
-		
-		this.setDatatableModel(datatablesModel.retrieveDatatableAsDatatableModelUsingDatatableName(name, connection));
-
-		
-	}
-
-
-
-
 	//TODO: Perhaps one value per columnName
 	public Integer getDuplicateValuesCountByColumnName(String columnName, Connection connection) {
 
@@ -174,25 +162,6 @@ public class DatatableModel implements java.io.Serializable {
 	public void setDuplicateValuesCount(final Integer duplicateValuesCount) {
 		
 		this.duplicateValuesCount = duplicateValuesCount;
-	}
-
-
-
-	public void setDuplicateKeysCountByRetrievingById(Connection connection) {
-		
-		DatatablesCRUD datatablesModel = new DatatablesCRUD();
-		
-		this.setDuplicateKeysCount(datatablesModel.retrieveDatatableAsDatatableModelUsingDatatableName(this.getName(), connection).getDuplicateKeysCount());
-	}
-
-	public void setDatatableModelById(Connection connection) {
-		
-		DatatablesCRUD datatablesModel = new DatatablesCRUD();
-		
-		//Get what is in the database.
-		//Set to what is in the database. Use other methods to process or update.
-		this.setDatatableModel(datatablesModel.retrieveDatatableAsDatatableModelUsingDatatableName(this.getName(), connection));
-		
 	}
 
 

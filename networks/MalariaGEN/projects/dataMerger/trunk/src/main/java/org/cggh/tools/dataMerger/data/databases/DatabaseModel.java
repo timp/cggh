@@ -4,22 +4,24 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
+import javax.servlet.ServletContext;
 import javax.sql.rowset.CachedRowSet;
 
 import org.cggh.tools.dataMerger.data.installation.InstallationModel;
 
 public class DatabaseModel {
 
-	private String driverFullyQualifiedClassName = null;
-	private String name = null;
-	private String username = null;
-	private String password = null;
-	private Boolean connectable = null;
-	private String serverPath = null;
-	private Boolean serverConnectable = null;
-	private String versionAsString = null;
-	private CachedRowSet tablesAsCachedRowSet = null;
-	private InstallationModel currentInstallationModel = null;
+	private String driverFullyQualifiedClassName;
+	private String name;
+	private String username;
+	private String password;
+	private Boolean connectable;
+	private String serverPath;
+	private Boolean serverConnectable;
+	private String versionAsString;
+	private CachedRowSet tablesAsCachedRowSet;
+	private InstallationModel currentInstallationModel;
+	private ServletContext servletContext;
 
 	public DatabaseModel () {
 
@@ -160,6 +162,14 @@ public class DatabaseModel {
 
 	public InstallationModel getCurrentInstallationModel() {
 		return currentInstallationModel;
+	}
+
+	public void setServletContext(ServletContext servletContext) {
+		this.servletContext = servletContext;
+	}
+
+	public ServletContext getServletContext() {
+		return servletContext;
 	}
 
 	

@@ -2,9 +2,6 @@ package org.cggh.tools.dataMerger.data.users;
 
 import java.util.logging.Logger;
 
-import javax.servlet.http.HttpServletRequest;
-
-import org.cggh.tools.dataMerger.data.DataModel;
 
 public class UserModel implements java.io.Serializable {
 
@@ -17,7 +14,6 @@ public class UserModel implements java.io.Serializable {
 	private Integer id = null;
 	private String username = null;
 	private Boolean registered = null;
-	private HttpServletRequest httpServletRequest = null;
 	
 	public UserModel() {
 
@@ -45,18 +41,6 @@ public class UserModel implements java.io.Serializable {
 	public void setRegistered (final Boolean registered) {
 		
 		this.registered = registered;
-	}
-
-
-
-	public void setHttpServletRequest(HttpServletRequest httpServletRequest) {
-		this.httpServletRequest = httpServletRequest;
-	}
-
-
-
-	public HttpServletRequest getHttpServletRequest() {
-		return httpServletRequest;
 	}
 
 	

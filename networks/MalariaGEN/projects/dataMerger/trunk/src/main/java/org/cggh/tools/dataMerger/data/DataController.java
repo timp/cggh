@@ -28,6 +28,8 @@ import org.cggh.tools.dataMerger.data.resolutions.byRow.ResolutionsByRowCRUD;
 import org.cggh.tools.dataMerger.data.uploads.UploadsCRUD;
 import org.cggh.tools.dataMerger.data.users.UserModel;
 import org.cggh.tools.dataMerger.data.users.UsersCRUD;
+import org.cggh.tools.dataMerger.files.filebases.FilebaseModel;
+import org.cggh.tools.dataMerger.files.filebases.FilebasesCRUD;
 import org.cggh.tools.dataMerger.functions.joins.JoinFunctionsModel;
 import org.cggh.tools.dataMerger.functions.merges.MergeFunctionsModel;
 import org.cggh.tools.dataMerger.functions.uploads.UploadsFunctionsModel;
@@ -64,7 +66,6 @@ public class DataController extends HttpServlet {
 		UsersCRUD usersCRUD = new UsersCRUD();
 		usersCRUD.setDatabaseModel(databaseModel);
 		UserModel userModel = usersCRUD.retrieveUserAsUserModelUsingUsername(request.getRemoteUser());
-		userModel.setHttpServletRequest(request);
 
 		//TODO: centralize these
 		
@@ -201,13 +202,13 @@ public class DataController extends HttpServlet {
 					  String resolutionsByColumnAsHTML = null;
 						
 
-						ResolutionsByColumnCRUD resolutionsByColumnModel = new ResolutionsByColumnCRUD();
-						resolutionsByColumnModel.setDatabaseModel(databaseModel);
+						ResolutionsByColumnCRUD resolutionsByColumnCRUD = new ResolutionsByColumnCRUD();
+						resolutionsByColumnCRUD.setDatabaseModel(databaseModel);
 						
 						//FIXME
 						//resolutionsByColumnModel.setUserModel(userModel);
 
-						resolutionsByColumnAsHTML = resolutionsByColumnModel.retrieveResolutionsByColumnAsDecoratedXHTMLTableUsingMergeModel(mergeModel);
+						resolutionsByColumnAsHTML = resolutionsByColumnCRUD.retrieveResolutionsByColumnAsDecoratedXHTMLTableUsingMergeModel(mergeModel);
 					  
 					  
 					  response.getWriter().print(resolutionsByColumnAsHTML);
@@ -240,13 +241,13 @@ public class DataController extends HttpServlet {
 					  String resolutionsByRowAsHTML = null;
 						
 
-						ResolutionsByRowCRUD resolutionsByRowModel = new ResolutionsByRowCRUD();
-						resolutionsByRowModel.setDatabaseModel(databaseModel);
+						ResolutionsByRowCRUD resolutionsByRowCRUD = new ResolutionsByRowCRUD();
+						resolutionsByRowCRUD.setDatabaseModel(databaseModel);
 						
 						//FIXME
 						//resolutionsByColumnModel.setUserModel(userModel);
 
-						resolutionsByRowAsHTML = resolutionsByRowModel.retrieveResolutionsByRowAsDecoratedXHTMLTableUsingMergeModel(mergeModel);
+						resolutionsByRowAsHTML = resolutionsByRowCRUD.retrieveResolutionsByRowAsDecoratedXHTMLTableUsingMergeModel(mergeModel);
 					  
 					  
 					  response.getWriter().print(resolutionsByRowAsHTML);
@@ -327,20 +328,19 @@ public class DataController extends HttpServlet {
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-		DatabaseModel databaseModel = new DatabaseModel();
-		databaseModel.setDatabaseModelUsingServletContext(request.getSession().getServletContext());
+		DatabasesCRUD databasesCRUD = new DatabasesCRUD();
+		DatabaseModel databaseModel = databasesCRUD.retrieveDatabaseAsDatabaseModelUsingServletContext(request.getSession().getServletContext());
 
-		databaseModel.setDatabaseConnectableUsingDatabaseModel();
-		
+		FilebasesCRUD filebasesCRUD = new FilebasesCRUD();
+		FilebaseModel filebaseModel = filebasesCRUD.retrieveFilebaseAsFilebaseModelUsingServletContext(request.getSession().getServletContext());
 		
 		UserModel userModel = new UserModel();
 		
-		if (databaseModel.isDatabaseConnectable()) {
+		if (databaseModel.isConnectable()) {
 		
 			UsersCRUD usersCRUD = new UsersCRUD();
 			usersCRUD.setDatabaseModel(databaseModel);
 			userModel = usersCRUD.retrieveUserAsUserModelUsingUsername(request.getRemoteUser());
-			userModel.setHttpServletRequest(request);
 			
 		}
 		
@@ -453,6 +453,7 @@ public class DataController extends HttpServlet {
 					
 					exportsModel.setDatabaseModel(databaseModel);
 					exportsModel.setUserModel(userModel);
+					exportsModel.setFilebaseModel(filebaseModel);
 					
 					exportModel = exportsModel.retrieveExportAsExportModelThroughCreatingExportUsingExportModel(exportModel);
 					
@@ -496,13 +497,14 @@ public class DataController extends HttpServlet {
 	
 	protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-		DatabaseModel databaseModel = new DatabaseModel();
-		databaseModel.setDatabaseModelUsingServletContext(request.getSession().getServletContext());
+
+		DatabasesCRUD databasesCRUD = new DatabasesCRUD();
+		DatabaseModel databaseModel = databasesCRUD.retrieveDatabaseAsDatabaseModelUsingServletContext(request.getSession().getServletContext());
 
 		UsersCRUD usersCRUD = new UsersCRUD();
 		usersCRUD.setDatabaseModel(databaseModel);
 		UserModel userModel = usersCRUD.retrieveUserAsUserModelUsingUsername(request.getRemoteUser());
-		userModel.setHttpServletRequest(request);
+
 		
 		//TODO: centralize these
 		
@@ -755,11 +757,11 @@ public class DataController extends HttpServlet {
 										
 										JSONObject jsonObject = new JSONObject(stringBuffer.toString());
 										
-										ResolutionsByCellCRUD resolutionsByCellModel = new ResolutionsByCellCRUD();
+										ResolutionsByCellCRUD resolutionsByCellCRUD = new ResolutionsByCellCRUD();
 										
-										resolutionsByCellModel.setDatabaseModel(databaseModel);
+										resolutionsByCellCRUD.setDatabaseModel(databaseModel);
 										
-										resolutionsByCellModel.updateResolutionsByCellByMergeIdUsingResolutionsByCellAsJSONObject(mergeModel.getId(), jsonObject);
+										resolutionsByCellCRUD.updateResolutionsByCellByMergeIdUsingResolutionsByCellAsJSONObject(mergeModel.getId(), jsonObject);
 										
 										//Note: Total conflicts for the merge is updated as a side-effect of updating the resolutions.
 										

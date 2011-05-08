@@ -2,29 +2,29 @@ package org.cggh.tools.dataMerger.data.tables;
 
 import java.util.logging.Logger;
 
-import org.cggh.tools.dataMerger.data.DataModel;
+import org.cggh.tools.dataMerger.data.databases.DatabaseModel;
 import org.cggh.tools.dataMerger.data.users.UserModel;
 
 public class TablesCRUD {
 
 	private final Logger logger = Logger.getLogger("org.cggh.tools.dataMerger.data.databases");
 	
-	private DataModel dataModel = null;
+	private DatabaseModel databaseModel = null;
 	private UserModel userModel = null;
 
 	public TablesCRUD () {
 		
-		this.setDataModel(new DataModel());
+		this.setDatabaseModel(new DatabaseModel());
 		this.setUserModel(new UserModel());
 		
 	}
 
-	public void setDataModel(DataModel dataModel) {
-		this.dataModel = dataModel;
+	public void setDatabaseModel(DatabaseModel databaseModel) {
+		this.databaseModel = databaseModel;
 	}
 
-	public DataModel getDataModel() {
-		return dataModel;
+	public DatabaseModel getDatabaseModel() {
+		return databaseModel;
 	}
 
 	public void setUserModel(UserModel userModel) {

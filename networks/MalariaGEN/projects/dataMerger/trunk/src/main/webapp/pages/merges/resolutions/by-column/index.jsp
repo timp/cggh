@@ -4,28 +4,28 @@
 <%@ page import="javax.sql.rowset.CachedRowSet" %>
 <%@ page import="java.text.DateFormat" %>
 <%@ page import="java.text.SimpleDateFormat" %>
-<%@ page import="org.cggh.tools.dataMerger.data.merges.MergesModel" %>
+<%@ page import="org.cggh.tools.dataMerger.data.merges.MergesCRUD" %>
 <%@ page import="org.cggh.tools.dataMerger.data.merges.MergeModel" %>
 <%@ page import="org.cggh.tools.dataMerger.functions.resolutions.ResolutionsFunctionsModel" %>
-<%@ page import="org.cggh.tools.dataMerger.data.resolutions.byColumn.ResolutionsByColumnModel" %>
+<%@ page import="org.cggh.tools.dataMerger.data.resolutions.byColumn.ResolutionsByColumnCRUD" %>
 <%
 
-MergesModel mergesModel = new MergesModel();
-mergesModel.setDataModel(dataModel);
-mergesModel.setUserModel(userModel);
+MergesCRUD mergesCRUD = new MergesCRUD();
+mergesCRUD.setDatabaseModel(databaseModel);
+mergesCRUD.setUserModel(userModel);
 
 MergeModel mergeModel = new MergeModel();
-mergeModel = mergesModel.retrieveMergeAsMergeModelByMergeId(Integer.parseInt(request.getParameter("merge_id")));
+mergeModel = mergesCRUD.retrieveMergeAsMergeModelByMergeId(Integer.parseInt(request.getParameter("merge_id")));
 
 DateFormat dateFormat = new SimpleDateFormat("dd MMM yyyy HH:mm");
 
-ResolutionsByColumnModel resolutionsByColumnModel = new ResolutionsByColumnModel();
-resolutionsByColumnModel.setDataModel(dataModel);
+ResolutionsByColumnCRUD resolutionsByColumnCRUD = new ResolutionsByColumnCRUD();
+resolutionsByColumnCRUD.setDatabaseModel(databaseModel);
 
 ResolutionsFunctionsModel resolutionsFunctionsModel = new ResolutionsFunctionsModel();
 
 //FIXME
-//resolutionsByColumnModel.setUserModel(userModel);
+//resolutionsByColumnCRUD.setUserModel(userModel);
 %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
@@ -141,7 +141,7 @@ ResolutionsFunctionsModel resolutionsFunctionsModel = new ResolutionsFunctionsMo
 			
 			<div class="resolutions-by-column">
 			<form class="resolutions-by-column-form" onsubmit="return false;" autocomplete="off">
-				<%=resolutionsByColumnModel.retrieveResolutionsByColumnAsDecoratedXHTMLTableUsingMergeModel(mergeModel) %>		
+				<%=resolutionsByColumnCRUD.retrieveResolutionsByColumnAsDecoratedXHTMLTableUsingMergeModel(mergeModel) %>		
 			</form>
 			</div>
 			

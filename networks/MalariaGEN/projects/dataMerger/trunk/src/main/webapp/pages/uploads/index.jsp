@@ -3,13 +3,13 @@
 <%@ include file="../shared/jsp/prepage.jsp" %>
 <%@ page import="java.util.*" %>
 <%@ page import="javax.sql.rowset.CachedRowSet" %>
-<%@ page import="org.cggh.tools.dataMerger.data.uploads.UploadsModel" %>
+<%@ page import="org.cggh.tools.dataMerger.data.uploads.UploadsCRUD" %>
 <%
 
-	UploadsModel uploadsModel = new UploadsModel();
+	UploadsCRUD uploadsCRUD = new UploadsCRUD();
 
-	uploadsModel.setDataModel(dataModel);
-	uploadsModel.setUserModel(userModel);
+	uploadsCRUD.setDatabaseModel(databaseModel);
+	uploadsCRUD.setUserModel(userModel);
 
 %>	
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
@@ -59,7 +59,7 @@
 		<form class="uploads-form" onsubmit="return false;">
 		
 		<div class="uploads">
-			<%=uploadsModel.retrieveUploadsAsDecoratedXHTMLTableUsingUploadsModel(uploadsModel) %>		
+			<%=uploadsCRUD.retrieveUploadsAsDecoratedXHTMLTableUsingUserId(userModel.getId()) %>		
 		</div>
 
 		</form>

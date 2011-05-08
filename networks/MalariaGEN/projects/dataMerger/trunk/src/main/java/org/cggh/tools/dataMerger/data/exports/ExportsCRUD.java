@@ -20,6 +20,7 @@ import org.cggh.tools.dataMerger.data.mergedDatatables.MergedDatatablesCRUD;
 import org.cggh.tools.dataMerger.data.merges.MergesCRUD;
 import org.cggh.tools.dataMerger.data.resolutions.ResolutionsCRUD;
 import org.cggh.tools.dataMerger.data.users.UserModel;
+import org.cggh.tools.dataMerger.files.filebases.FilebaseModel;
 import org.cggh.tools.dataMerger.functions.exports.ExportsFunctionsModel;
 
 public class ExportsCRUD implements java.io.Serializable  {
@@ -30,13 +31,16 @@ public class ExportsCRUD implements java.io.Serializable  {
 	private static final long serialVersionUID = -2386709583926211005L;
 	private final Logger logger = Logger.getLogger("org.cggh.tools.dataMerger.data.exports");
 	
-	private DatabaseModel dataModel;
+	private DatabaseModel databaseModel;
 	private UserModel userModel;
+	private FilebaseModel filebaseModel;
+	private String exportsFilebaseDirectoryPathRelativeToFilebaseServerPath = "exports";
 	
 	public ExportsCRUD() {
 
 		this.setDatabaseModel(new DatabaseModel());
-		this.setUserModel(new UserModel());			
+		this.setUserModel(new UserModel());	
+		this.setFilebaseModel(new FilebaseModel());
 	
 		
 	}
@@ -136,9 +140,9 @@ public class ExportsCRUD implements java.io.Serializable  {
 
 	public void createMergedDatatableAsFileUsingExportModel(
 			ExportModel exportModel, Connection connection) {
+
 		
-		
-		File exportDirectory = new File(this.getDatabaseModel().getServletContext().getInitParameter("exportsFileRepositoryBasePath") + exportModel.getId().toString());
+		File exportDirectory = new File(this.getFilebaseModel().getServerPath() + this.getExportsFilebaseDirectoryPathRelativeToFilebaseServerPath() + exportModel.getId().toString());
 		
 		//this.logger.info("exportDirectory created: " + exportDirectory.mkdirs());
 		
@@ -148,7 +152,7 @@ public class ExportsCRUD implements java.io.Serializable  {
 		//exportDirectory.setWritable(true); //This would only make it writable for tomcat
 		String pathSeparatorForSQL = "\\\\";
 		String pathSeparatorForRepositoryFilepath = "\\";
-		if(isUnix()){
+		if(filebaseModel.isUnix()){
 			pathSeparatorForSQL = "/";
 			pathSeparatorForRepositoryFilepath = "/";
 			try {
@@ -257,8 +261,7 @@ public class ExportsCRUD implements java.io.Serializable  {
 	public void createJoinsAsFileUsingExportModel(ExportModel exportModel,
 			Connection connection) {
 
-
-		File exportDirectory = new File(this.getDatabaseModel().getServletContext().getInitParameter("exportsFileRepositoryBasePath") + exportModel.getId().toString());
+		File exportDirectory = new File(this.getFilebaseModel().getServerPath() + this.getExportsFilebaseDirectoryPathRelativeToFilebaseServerPath() + this.getFilebaseModel().getFilepathSeparator() + exportModel.getId().toString());
 		
 		//this.logger.info("exportDirectory created: " + exportDirectory.mkdirs());
 		
@@ -267,10 +270,8 @@ public class ExportsCRUD implements java.io.Serializable  {
 		//TODO: Make this writable for MySQL
 		//exportDirectory.setWritable(true); //This would only make it writable for tomcat
 		String pathSeparatorForSQL = "\\\\";
-		String pathSeparatorForRepositoryFilepath = "\\";
-		if(isUnix()){
+		if(this.getFilebaseModel().isUnix()){
 			pathSeparatorForSQL = "/";
-			pathSeparatorForRepositoryFilepath = "/";
 			try {
 				Runtime.getRuntime().exec("chmod g+w " + exportDirectory.getAbsolutePath());
 			} catch (IOException e1) {
@@ -305,7 +306,7 @@ public class ExportsCRUD implements java.io.Serializable  {
 
 			
 			//FIXME: Check whether it was truly successful
-			exportModel.getMergeModel().getJoinsModel().setExportRepositoryFilepath(exportDirectory.toString() + pathSeparatorForRepositoryFilepath + fileName);
+			exportModel.getMergeModel().getJoinsModel().setExportRepositoryFilepath(exportDirectory.toString() + this.getFilebaseModel().getFilepathSeparator() + fileName);
 			exportModel.getMergeModel().getJoinsModel().setExportSuccessful(true);
 			
 			this.updateExportJoinsExportRepositoryFilepathUsingExportModel(exportModel, connection);
@@ -367,7 +368,7 @@ public class ExportsCRUD implements java.io.Serializable  {
 	public void createResolutionsAsFileUsingExportModel(
 			ExportModel exportModel, Connection connection) {
 
-		File exportDirectory = new File(this.getDatabaseModel().getServletContext().getInitParameter("exportsFileRepositoryBasePath") + exportModel.getId().toString());
+		File exportDirectory = new File(this.getFilebaseModel().getServerPath() + this.getExportsFilebaseDirectoryPathRelativeToFilebaseServerPath() + this.getFilebaseModel().getFilepathSeparator() + exportModel.getId().toString());
 		
 		//this.logger.info("exportDirectory created: " + exportDirectory.mkdirs());
 		
@@ -377,7 +378,7 @@ public class ExportsCRUD implements java.io.Serializable  {
 		//exportDirectory.setWritable(true); //This would only make it writable for tomcat
 		String pathSeparatorForSQL = "\\\\";
 		String pathSeparatorForRepositoryFilepath = "\\";
-		if(isUnix()){
+		if(this.getFilebaseModel().isUnix()){
 			pathSeparatorForSQL = "/";
 			pathSeparatorForRepositoryFilepath = "/";
 			try {
@@ -930,8 +931,7 @@ public class ExportsCRUD implements java.io.Serializable  {
 		
 		exportModel.getMergedDatatableModel().setName("merged_datatable_" + exportModel.getId());
 		
-		ExportsCRUD exportsModel = new ExportsCRUD();
-		exportsModel.updateExportMergedDatatableNameUsingExportModel(exportModel, connection);
+		this.updateExportMergedDatatableNameUsingExportModel(exportModel, connection);
 		
 		
 		try {
@@ -980,13 +980,13 @@ public class ExportsCRUD implements java.io.Serializable  {
 	}
 
 
-	public void setDatabaseModel(DatabaseModel dataModel) {
-		this.dataModel = dataModel;
+	public void setDatabaseModel(DatabaseModel databaseModel) {
+		this.databaseModel = databaseModel;
 	}
 
 
 	public DatabaseModel getDatabaseModel() {
-		return this.dataModel;
+		return this.databaseModel;
 	}
 
 
@@ -1000,12 +1000,12 @@ public class ExportsCRUD implements java.io.Serializable  {
 	}
 
 	
-	public String retrieveExportsAsDecoratedXHTMLTableUsingExportsModel (ExportsCRUD exportsModel) {
+	public String retrieveExportsAsDecoratedXHTMLTableUsingUserId (Integer userId) {
 		
 		String exportsAsDecoratedXHTMLTable = "";
 		
 		
-		  CachedRowSet exportsAsCachedRowSet = this.retrieveExportsAsCachedRowSetUsingUserId(exportsModel.getUserModel().getId());
+		  CachedRowSet exportsAsCachedRowSet = this.retrieveExportsAsCachedRowSetUsingUserId(userId);
 
 		  if (exportsAsCachedRowSet != null) {
 
@@ -1084,28 +1084,27 @@ public class ExportsCRUD implements java.io.Serializable  {
 	     
 	}
 	
-	public static boolean isWindows(){
-		 
-		String os = System.getProperty("os.name").toLowerCase();
-		//windows
-	    return (os.indexOf( "win" ) >= 0); 
- 
+
+
+
+	public void setExportsFilebaseDirectoryPathRelativeToFilebaseServerPath(
+			String exportsFilebaseDirectoryPathRelativeToFilebaseServerPath) {
+		this.exportsFilebaseDirectoryPathRelativeToFilebaseServerPath = exportsFilebaseDirectoryPathRelativeToFilebaseServerPath;
 	}
- 
-	public static boolean isMac(){
- 
-		String os = System.getProperty("os.name").toLowerCase();
-		//Mac
-	    return (os.indexOf( "mac" ) >= 0); 
- 
+
+
+	public String getExportsFilebaseDirectoryPathRelativeToFilebaseServerPath() {
+		return exportsFilebaseDirectoryPathRelativeToFilebaseServerPath;
 	}
- 
-	public static boolean isUnix(){
- 
-		String os = System.getProperty("os.name").toLowerCase();
-		//linux or unix
-	    return (os.indexOf( "nix") >=0 || os.indexOf( "nux") >=0);
- 
+
+
+	public void setFilebaseModel(FilebaseModel filebaseModel) {
+		this.filebaseModel = filebaseModel;
+	}
+
+
+	public FilebaseModel getFilebaseModel() {
+		return filebaseModel;
 	}
 	
 }

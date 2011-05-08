@@ -7,7 +7,7 @@ import java.util.logging.Logger;
 
 import javax.sql.rowset.CachedRowSet;
 
-import org.cggh.tools.dataMerger.data.DataModel;
+import org.cggh.tools.dataMerger.data.databases.DatabaseModel;
 import org.cggh.tools.dataMerger.data.merges.MergeModel;
 import org.cggh.tools.dataMerger.functions.resolutions.byColumn.ResolutionsByColumnFunctionsModel;
 import org.cggh.tools.dataMerger.scripts.merges.MergeScriptsModel;
@@ -23,19 +23,19 @@ public class ResolutionsByColumnCRUD implements java.io.Serializable {
 	private static final long serialVersionUID = 2346858760723955545L;
 	private final Logger logger = Logger.getLogger("org.cggh.tools.dataMerger.data.resolutionsByColumn");
 
-	private DataModel dataModel;
+	private DatabaseModel databaseModel;
 	
 	public ResolutionsByColumnCRUD() {
 
-		this.setDataModel(new DataModel());
+		this.setDatabaseModel(new DatabaseModel());
 		
 	}
 
-    public void setDataModel (final DataModel dataModel) {
-        this.dataModel  = dataModel;
+    public void setDatabaseModel (final DatabaseModel databaseModel) {
+        this.databaseModel  = databaseModel;
     }
-    public DataModel getDataModel () {
-        return this.dataModel;
+    public DatabaseModel getDatabaseModel () {
+        return this.databaseModel;
     } 
 
 
@@ -76,7 +76,7 @@ public class ResolutionsByColumnCRUD implements java.io.Serializable {
 		   
 			try {
 
-				Connection connection = this.getDataModel().getNewDatabaseConnection();
+				Connection connection = this.getDatabaseModel().getNewConnection();
 				 
 				if (connection != null) {
 				
@@ -124,7 +124,7 @@ public class ResolutionsByColumnCRUD implements java.io.Serializable {
 		   
 			try {
 
-				Connection connection = this.getDataModel().getNewDatabaseConnection();
+				Connection connection = this.getDatabaseModel().getNewConnection();
 				 
 				if (connection != null) {
 				
@@ -189,7 +189,7 @@ public class ResolutionsByColumnCRUD implements java.io.Serializable {
 
 		try {
 			
-			Connection connection = this.getDataModel().getNewDatabaseConnection();
+			Connection connection = this.getDatabaseModel().getNewConnection();
 			 
 			if (connection != null) {
 					

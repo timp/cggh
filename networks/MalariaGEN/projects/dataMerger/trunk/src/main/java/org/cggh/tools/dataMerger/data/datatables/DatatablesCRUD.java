@@ -15,7 +15,7 @@ import java.util.logging.Logger;
 
 import javax.sql.rowset.CachedRowSet;
 
-import org.cggh.tools.dataMerger.data.DataModel;
+import org.cggh.tools.dataMerger.data.databases.DatabaseModel;
 import org.cggh.tools.dataMerger.data.uploads.UploadModel;
 import org.cggh.tools.dataMerger.data.uploads.UploadsCRUD;
 import org.cggh.tools.dataMerger.data.users.UserModel;
@@ -29,17 +29,17 @@ public class DatatablesCRUD implements java.io.Serializable {
 	private static final long serialVersionUID = 3509510173706652464L;
 	private final Logger logger = Logger.getLogger("org.cggh.tools.dataMerger.data.datatables");
 
-	private DataModel dataModel;
+	private DatabaseModel databaseModel;
 	private UserModel userModel;
-
-	private DatatableModel datatableModel;
-	
+	private DatatableModel datatableModel;	
 	private UploadModel uploadModel;
 
 	
+	private String stringsToNullifyAsCSV;
+	
 	public DatatablesCRUD() {
 
-		this.setDataModel(new DataModel());
+		this.setDatabaseModel(new DatabaseModel());
 		this.setUserModel(new UserModel());		
 		
 		this.setDatatableModel(new DatatableModel());
@@ -47,11 +47,11 @@ public class DatatablesCRUD implements java.io.Serializable {
 	}
 
 
-	public void setDataModel (final DataModel dataModel) {
-        this.dataModel  = dataModel;
+	public void setDatabaseModel (final DatabaseModel databaseModel) {
+        this.databaseModel  = databaseModel;
     }
-    public DataModel getDataModel () {
-        return this.dataModel;
+    public DatabaseModel getDatabaseModel () {
+        return this.databaseModel;
     } 
 	
     public void setUserModel (final UserModel userModel) {
@@ -157,9 +157,9 @@ public class DatatablesCRUD implements java.io.Serializable {
 		    		          //TODO: Get a list of all the strings to nullify.
 		    		          
 		    		          
-		    		          if (this.getDataModel().getServletContext().getInitParameter("stringsToNullifyAsCSV") != null) {
+		    		          if (this.getDatabaseModel().getServletContext().getInitParameter("stringsToNullifyAsCSV") != null) {
 		    		        	  
-		    		        	  String[] stringsToNullifyAsStringArray = this.getDataModel().getServletContext().getInitParameter("stringsToNullifyAsCSV").split(",");
+		    		        	  String[] stringsToNullifyAsStringArray = this.getDatabaseModel().getServletContext().getInitParameter("stringsToNullifyAsCSV").split(",");
 			    		        	 
 		    		        	  for (int i = 0; i < columnNames.length; i++) {
 		    		        		
@@ -430,6 +430,16 @@ public class DatatablesCRUD implements java.io.Serializable {
 	        } 
 		
 		return dataAsCachedRowSet;
+	}
+
+
+	public void setStringsToNullifyAsCSV(String stringsToNullifyAsCSV) {
+		this.stringsToNullifyAsCSV = stringsToNullifyAsCSV;
+	}
+
+
+	public String getStringsToNullifyAsCSV() {
+		return stringsToNullifyAsCSV;
 	}
 
 

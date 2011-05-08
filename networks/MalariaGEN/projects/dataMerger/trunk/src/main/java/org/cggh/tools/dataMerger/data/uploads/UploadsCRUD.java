@@ -145,11 +145,11 @@ public class UploadsCRUD implements java.io.Serializable {
 	}
 	
 	
-	public String retrieveUploadsAsDecoratedXHTMLTableUsingUploadsModel (UploadsCRUD uploadsModel) {
+	public String retrieveUploadsAsDecoratedXHTMLTableUsingUserId (Integer userId) {
 		
 		String uploadsAsDecoratedXHTMLTableUsingUploadsModel = "";
 		
-		  CachedRowSet uploadsAsCachedRowSet = uploadsModel.retrieveUploadsAsCachedRowSetUsingUserId(uploadsModel.getUserModel().getId());
+		  CachedRowSet uploadsAsCachedRowSet = this.retrieveUploadsAsCachedRowSetUsingUserId(userId);
 
 		  if (uploadsAsCachedRowSet != null) {
 

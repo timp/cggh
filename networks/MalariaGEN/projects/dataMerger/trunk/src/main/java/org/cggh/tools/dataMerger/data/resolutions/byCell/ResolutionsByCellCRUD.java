@@ -9,7 +9,7 @@ import java.util.regex.Pattern;
 
 import javax.sql.rowset.CachedRowSet;
 
-import org.cggh.tools.dataMerger.data.DataModel;
+import org.cggh.tools.dataMerger.data.databases.DatabaseModel;
 import org.cggh.tools.dataMerger.data.joins.JoinsCRUD;
 import org.cggh.tools.dataMerger.data.merges.MergeModel;
 import org.cggh.tools.dataMerger.data.resolutions.ResolutionsCRUD;
@@ -29,19 +29,19 @@ public class ResolutionsByCellCRUD implements java.io.Serializable {
 
 	private final Logger logger = Logger.getLogger("org.cggh.tools.dataMerger.data.resolutionsByCell");
 
-	private DataModel dataModel;
+	private DatabaseModel databaseModel;
 	
 	public ResolutionsByCellCRUD() {
 
-		this.setDataModel(new DataModel());
+		this.setDatabaseModel(new DatabaseModel());
 		
 	}
 
-    public void setDataModel (final DataModel dataModel) {
-        this.dataModel  = dataModel;
+    public void setDatabaseModel (final DatabaseModel databaseModel) {
+        this.databaseModel  = databaseModel;
     }
-    public DataModel getDataModel () {
-        return this.dataModel;
+    public DatabaseModel getDatabaseModel () {
+        return this.databaseModel;
     } 
 
 	public String retrieveResolutionsByCellAsDecoratedXHTMLTableUsingMergeModel (MergeModel mergeModel) {
@@ -58,11 +58,11 @@ public class ResolutionsByCellCRUD implements java.io.Serializable {
 			  	resolutionsByCellFunctionsModel.setSolutionsByCellAsCachedRowSet(this.retrieveSolutionsByCellAsCachedRowSet());
 
 			  	JoinsCRUD joinsModel = new JoinsCRUD();
-			  	joinsModel.setDataModel(this.getDataModel());
+			  	joinsModel.setDatabaseModel(this.getDatabaseModel());
 			  	resolutionsByCellFunctionsModel.setJoinColumnNamesByColumnNumberAsHashMap(joinsModel.retrieveJoinColumnNamesByColumnNumberAsHashMapUsingMergeModel(mergeModel));
 			  	
 			  	ResolutionsCRUD resolutionsModel = new ResolutionsCRUD();
-			  	resolutionsModel.setDataModel(this.getDataModel());
+			  	resolutionsModel.setDatabaseModel(this.getDatabaseModel());
 			  	resolutionsByCellFunctionsModel.setUnresolvedByColumnOrRowConflictsCountUsingColumnNumberAsHashMap(resolutionsModel.retrieveUnresolvedByColumnOrRowConflictsCountUsingColumnNumberAsHashMapUsingMergeModel(mergeModel));
 			  	resolutionsByCellFunctionsModel.setUnresolvedByColumnOrRowStatusUsingCellCoordsAsHashMap(resolutionsModel.retrieveUnresolvedByColumnOrRowStatusUsingCellCoordsAsHashMapUsingMergeModel(mergeModel));
 
@@ -97,7 +97,7 @@ public class ResolutionsByCellCRUD implements java.io.Serializable {
 		   
 			try {
 
-				Connection connection = this.getDataModel().getNewDatabaseConnection();
+				Connection connection = this.getDatabaseModel().getNewConnection();
 				 
 				if (connection != null) {
 
@@ -142,7 +142,7 @@ public class ResolutionsByCellCRUD implements java.io.Serializable {
 		   
 			try {
 
-				Connection connection = this.getDataModel().getNewDatabaseConnection();
+				Connection connection = this.getDatabaseModel().getNewConnection();
 				 
 				if (connection != null) {
 
@@ -275,7 +275,7 @@ public class ResolutionsByCellCRUD implements java.io.Serializable {
 		
 		try {
 			
-			Connection connection = this.getDataModel().getNewDatabaseConnection();
+			Connection connection = this.getDatabaseModel().getNewConnection();
 			 
 			if (connection != null) {
 					
