@@ -172,6 +172,24 @@ public class DatatablesModel implements java.io.Serializable {
 		    		          preparedStatement2.executeUpdate();
 		    		          preparedStatement2.close();
 		    		          
+		    		          //Replace (Temporary amend for 1.0.1, adapted from 1.1 codebase)
+                              for (int i = 0; i < columnNames.length; i++) {
+                                  
+                                  String columnName = columnNames[i];
+                                  
+                                  String conditionForUpdateSQL = "";
+                                  
+                                  String stringToNullify = "";
+   
+                                  conditionForUpdateSQL += "`" + columnName + "` = '" + stringToNullify + "'";
+                              
+                                  
+                                  PreparedStatement preparedStatement3 = connection.prepareStatement("UPDATE `" + datatableModel.getName() + "` SET `" + columnName + "` = NULL WHERE " + conditionForUpdateSQL + ";");
+                                  preparedStatement3.executeUpdate();
+                                  preparedStatement3.close();
+                                  
+                              }
+		    		          
 		    		        }
 		    		        catch(SQLException sqlException){
 		    			    	sqlException.printStackTrace();

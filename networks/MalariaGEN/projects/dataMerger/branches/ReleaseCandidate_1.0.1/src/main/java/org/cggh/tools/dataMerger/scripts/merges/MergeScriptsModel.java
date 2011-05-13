@@ -599,13 +599,13 @@ public class MergeScriptsModel implements java.io.Serializable {
 		        	conflictUnionsSQL += 	"UNION " +
 		        							"(" +
 											"SELECT " + mergeModel.getId() + " AS merge_id, joined_keytable_id, " + nonKeyCrossDatatableJoinsAsCachedRowSet.getInt("column_number") + " AS column_number, 2 AS conflict_id FROM `" + mergeModel.getJoinedDatatableModel().getName() + "` " +
-											"WHERE `column_" + nonKeyCrossDatatableJoinsAsCachedRowSet.getInt("column_number") + "_source_1` != `column_" + nonKeyCrossDatatableJoinsAsCachedRowSet.getInt("column_number") + "_source_2` AND (`column_" + nonKeyCrossDatatableJoinsAsCachedRowSet.getInt("column_number") + "_source_1` IS NULL OR `column_" + nonKeyCrossDatatableJoinsAsCachedRowSet.getInt("column_number") + "_source_1` = '') AND `column_" + nonKeyCrossDatatableJoinsAsCachedRowSet.getInt("column_number") + "_source_2` IS NOT NULL AND `column_" + nonKeyCrossDatatableJoinsAsCachedRowSet.getInt("column_number") + "_source_2` != ''" +
+											"WHERE (`column_" + nonKeyCrossDatatableJoinsAsCachedRowSet.getInt("column_number") + "_source_1` IS NULL OR `column_" + nonKeyCrossDatatableJoinsAsCachedRowSet.getInt("column_number") + "_source_1` = '') AND `column_" + nonKeyCrossDatatableJoinsAsCachedRowSet.getInt("column_number") + "_source_2` IS NOT NULL AND `column_" + nonKeyCrossDatatableJoinsAsCachedRowSet.getInt("column_number") + "_source_2` != ''" +
 											") ";
 		        	
 		        	conflictUnionsSQL += 	"UNION " +
 		        							"(" +
 											"SELECT " + mergeModel.getId() + " AS merge_id, joined_keytable_id, " + nonKeyCrossDatatableJoinsAsCachedRowSet.getInt("column_number") + " AS column_number, 3 AS conflict_id FROM `" + mergeModel.getJoinedDatatableModel().getName() + "` " +
-											"WHERE `column_" + nonKeyCrossDatatableJoinsAsCachedRowSet.getInt("column_number") + "_source_1` != `column_" + nonKeyCrossDatatableJoinsAsCachedRowSet.getInt("column_number") + "_source_2` AND (`column_" + nonKeyCrossDatatableJoinsAsCachedRowSet.getInt("column_number") + "_source_2` IS NULL OR `column_" + nonKeyCrossDatatableJoinsAsCachedRowSet.getInt("column_number") + "_source_2` = '') AND `column_" + nonKeyCrossDatatableJoinsAsCachedRowSet.getInt("column_number") + "_source_1` IS NOT NULL AND `column_" + nonKeyCrossDatatableJoinsAsCachedRowSet.getInt("column_number") + "_source_1` != ''" +
+											"WHERE (`column_" + nonKeyCrossDatatableJoinsAsCachedRowSet.getInt("column_number") + "_source_2` IS NULL OR `column_" + nonKeyCrossDatatableJoinsAsCachedRowSet.getInt("column_number") + "_source_2` = '') AND `column_" + nonKeyCrossDatatableJoinsAsCachedRowSet.getInt("column_number") + "_source_1` IS NOT NULL AND `column_" + nonKeyCrossDatatableJoinsAsCachedRowSet.getInt("column_number") + "_source_1` != ''" +
 											") ";
 		        	
 			        while (nonKeyCrossDatatableJoinsAsCachedRowSet.next()) {
@@ -623,13 +623,13 @@ public class MergeScriptsModel implements java.io.Serializable {
 			        	conflictUnionsSQL += 	"UNION " +
 												"(" +
 												"SELECT " + mergeModel.getId() + " AS merge_id, joined_keytable_id, " + nonKeyCrossDatatableJoinsAsCachedRowSet.getInt("column_number") + " AS column_number, 2 AS conflict_id FROM `" + mergeModel.getJoinedDatatableModel().getName() + "` " +
-												"WHERE `column_" + nonKeyCrossDatatableJoinsAsCachedRowSet.getInt("column_number") + "_source_1` != `column_" + nonKeyCrossDatatableJoinsAsCachedRowSet.getInt("column_number") + "_source_2` AND (`column_" + nonKeyCrossDatatableJoinsAsCachedRowSet.getInt("column_number") + "_source_1` IS NULL OR `column_" + nonKeyCrossDatatableJoinsAsCachedRowSet.getInt("column_number") + "_source_1` = '') AND `column_" + nonKeyCrossDatatableJoinsAsCachedRowSet.getInt("column_number") + "_source_2` IS NOT NULL AND `column_" + nonKeyCrossDatatableJoinsAsCachedRowSet.getInt("column_number") + "_source_2` != ''" +
+												"WHERE (`column_" + nonKeyCrossDatatableJoinsAsCachedRowSet.getInt("column_number") + "_source_1` IS NULL OR `column_" + nonKeyCrossDatatableJoinsAsCachedRowSet.getInt("column_number") + "_source_1` = '') AND `column_" + nonKeyCrossDatatableJoinsAsCachedRowSet.getInt("column_number") + "_source_2` IS NOT NULL AND `column_" + nonKeyCrossDatatableJoinsAsCachedRowSet.getInt("column_number") + "_source_2` != ''" +
 												") ";
 
 						conflictUnionsSQL += 	"UNION " +
 												"(" +
 												"SELECT " + mergeModel.getId() + " AS merge_id, joined_keytable_id, " + nonKeyCrossDatatableJoinsAsCachedRowSet.getInt("column_number") + " AS column_number, 3 AS conflict_id FROM `" + mergeModel.getJoinedDatatableModel().getName() + "` " +
-												"WHERE `column_" + nonKeyCrossDatatableJoinsAsCachedRowSet.getInt("column_number") + "_source_1` != `column_" + nonKeyCrossDatatableJoinsAsCachedRowSet.getInt("column_number") + "_source_2` AND (`column_" + nonKeyCrossDatatableJoinsAsCachedRowSet.getInt("column_number") + "_source_2` IS NULL OR `column_" + nonKeyCrossDatatableJoinsAsCachedRowSet.getInt("column_number") + "_source_2` = '') AND `column_" + nonKeyCrossDatatableJoinsAsCachedRowSet.getInt("column_number") + "_source_1` IS NOT NULL AND `column_" + nonKeyCrossDatatableJoinsAsCachedRowSet.getInt("column_number") + "_source_1` != ''" +
+												"WHERE (`column_" + nonKeyCrossDatatableJoinsAsCachedRowSet.getInt("column_number") + "_source_2` IS NULL OR `column_" + nonKeyCrossDatatableJoinsAsCachedRowSet.getInt("column_number") + "_source_2` = '') AND `column_" + nonKeyCrossDatatableJoinsAsCachedRowSet.getInt("column_number") + "_source_1` IS NOT NULL AND `column_" + nonKeyCrossDatatableJoinsAsCachedRowSet.getInt("column_number") + "_source_1` != ''" +
 												") ";
 									        	
 			        }
