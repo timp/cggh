@@ -11,9 +11,7 @@ import java.util.logging.Logger;
 import javax.servlet.ServletContext;
 import javax.sql.rowset.CachedRowSet;
 
-import org.cggh.tools.dataMerger.data.DataModel;
 import org.cggh.tools.dataMerger.data.installation.InstallationModel;
-import org.cggh.tools.dataMerger.data.users.UserModel;
 import org.cggh.tools.dataMerger.data.users.UsersCRUD;
 import org.cggh.tools.dataMerger.functions.installations.InstallationFunctions;
 

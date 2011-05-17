@@ -81,9 +81,6 @@ public class DataController extends HttpServlet {
 		 Pattern newJoinURLPattern = Pattern.compile("^/merges/(\\d+)/joins/join$");
 		 Matcher newJoinURLPatternMatcher = newJoinURLPattern.matcher(request.getPathInfo());
 		 
-		 Pattern exportURLPattern = Pattern.compile("^/merges/(\\d+)/exports$");
-		 Matcher exportURLPatternMatcher = newJoinURLPattern.matcher(request.getPathInfo());
-		 
 		  String[] headerAcceptsAsStringArray = request.getHeader("Accept").split(",");
 		  List<String> headerAcceptsAsStringList = Arrays.asList(headerAcceptsAsStringArray);		 
 		 
@@ -500,10 +497,6 @@ public class DataController extends HttpServlet {
 
 		DatabasesCRUD databasesCRUD = new DatabasesCRUD();
 		DatabaseModel databaseModel = databasesCRUD.retrieveDatabaseAsDatabaseModelUsingServletContext(request.getSession().getServletContext());
-
-		UsersCRUD usersCRUD = new UsersCRUD();
-		usersCRUD.setDatabaseModel(databaseModel);
-		UserModel userModel = usersCRUD.retrieveUserAsUserModelUsingUsername(request.getRemoteUser());
 
 		
 		//TODO: centralize these

@@ -2,7 +2,7 @@ package org.cggh.tools.dataMerger.code.codebases;
 
 public class CodebaseModel {
 
-	private String versionAsString = "1.0.0";
+	private String versionAsString = "1.1.0";
 
 	public void setVersionAsString(String versionAsString) {
 		this.versionAsString = versionAsString;

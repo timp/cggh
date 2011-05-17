@@ -9,7 +9,6 @@ import java.util.logging.Logger;
 import javax.sql.rowset.CachedRowSet;
 
 import org.cggh.tools.dataMerger.data.joinedDatatables.JoinedDatatableModel;
-import org.cggh.tools.dataMerger.data.joinedKeytables.JoinedKeytableModel;
 import org.cggh.tools.dataMerger.data.merges.MergeModel;
 
 public class JoinedDatatablesCRUD {

@@ -1,7 +1,6 @@
 package org.cggh.tools.dataMerger.data.exports;
 
 import org.cggh.tools.dataMerger.data.mergedDatatables.MergedDatatableModel;
-import org.cggh.tools.dataMerger.data.joinedKeytables.JoinedKeytableModel;
 import org.cggh.tools.dataMerger.data.merges.MergeModel;
 
 public class ExportModel implements java.io.Serializable {
