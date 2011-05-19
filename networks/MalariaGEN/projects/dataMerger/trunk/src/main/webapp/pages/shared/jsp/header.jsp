@@ -25,6 +25,12 @@
 		<% } else { %>
 			<li class="item"><a class="link" href="<%= headerBasePathURL %>pages/home/">Home</a></li>
 		<% } %>
+
+		<% if (request.getServletPath().startsWith("/pages/guides/")) { %>
+			<li class="item"><a class="link selected" href="<%= headerBasePathURL %>pages/guides/">Guides</a></li>
+		<% } else { %>
+			<li class="item"><a class="link" href="<%= headerBasePathURL %>pages/guides/">Guides</a></li>
+		<% } %>
 		
 		<% if (request.isUserInRole("uploader")) { %>
 			<% if (request.getServletPath().startsWith("/pages/uploads/")) { %>
@@ -41,14 +47,14 @@
 				<li class="item"><a class="link" href="<%= headerBasePathURL %>pages/merges/">Merges</a></li>
 			<% } %>
 		<% } %>
-	
+		
 		<% if (request.isUserInRole("exporter")) { %>
 			<% if (request.getServletPath().startsWith("/pages/exports/")) { %>
 				<li class="item"><a class="link selected" href="<%= headerBasePathURL %>pages/exports/">Exports</a></li>
 			<% } else { %>
 				<li class="item"><a class="link" href="<%= headerBasePathURL %>pages/exports/">Exports</a></li>
 			<% } %>
-		<% } %>
+		<% } %>		
 	
 		<% if (request.isUserInRole("non-specific")) { %>
 			<% if (request.getServletPath().startsWith("/pages/admin/")) { %>

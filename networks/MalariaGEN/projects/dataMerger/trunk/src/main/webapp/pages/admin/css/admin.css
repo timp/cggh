@@ -22,3 +22,11 @@
 	color: red;
 	font-weight: bold;
 }
+.systemInformationTable th {
+	text-align: left;
+}
+.systemInformationTable td {
+	text-align: right;
+	padding-left: 20px; 
+}
+

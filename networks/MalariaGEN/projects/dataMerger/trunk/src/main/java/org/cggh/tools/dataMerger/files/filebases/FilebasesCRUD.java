@@ -96,7 +96,10 @@ public class FilebasesCRUD {
 			    inputStreamReader.close();
 			    
 			} catch (FileNotFoundException e) {
-				e.printStackTrace();
+				
+				//The filebase installation log file was introduced in version 1.1.0
+				versionAsString = "1.0.x";
+				
 			} catch (IOException e) {
 				e.printStackTrace();
 			}

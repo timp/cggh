@@ -74,10 +74,7 @@
 			</div>
 			
 			<div class="ajaxError">
-			</div>
-			
-			<div><button onclick="location.reload(true);">Refresh</button>
-			</div>			
+			</div>		
 			
 			<% if (databaseModel.isServerConnectable() && !databaseModel.isConnectable()) { %>
 			<div><button class="create-database-button">Create database</button><img class="creating-database-indicator" src="../shared/gif/loading.gif" style="display:none" title="Processing..."/>
@@ -93,56 +90,47 @@
 
 			
 			<h3>System information:</h3>
-			<dl>
-				<dt>Codebase version:</dt>
-					<dd><%=codebaseModel.getVersionAsString() %><dd>
-				<dt>Database version:</dt>
-					<dd><%=databaseModel.getVersionAsString() %><dd>
-				<dt>Database tables count:</dt>
-					<dd><%=databaseModel.getTablesAsCachedRowSet().size() %><dd>
-				<dt>Filebase version:</dt>
-					<dd><%=filebaseModel.getVersionAsString() %><dd>
-				<dt>Filebase file count:</dt>
-					<dd><%=filebaseModel.getFilesAsStringArray() %><dd>
-			</dl>
+			<table class="systemInformationTable">
+				<tr>
+					<th>Codebase version:</th>
+					<td><%=codebaseModel.getVersionAsString() %><td>
+				</tr>
+				<tr>	
+					<th>Database version:</th>
+					<td><%=databaseModel.getVersionAsString() %><td>
+				</tr>
+				<tr>
+					<th>Database tables count:</th>
+					<td><%=databaseModel.getTablesAsCachedRowSet().size() %><td>
+				</tr>
+				<tr>
+					<th>Filebase version:</th>
+					<td><%=filebaseModel.getVersionAsString() %><td>
+				</tr>
+				<tr>
+					<th>Filebase file count:</th>
+					<td><%=filebaseModel.getFilesAsStringArray().length %><td>
+				</tr>
+			</table>
+			
+			<div class="clearBoth"></div>
+			
+			<h3>Version management:</h3>
 			
 			<h4>v1.0</h4>
-			<ul>
-				<li>
-					<button class="install-1_0-button">Install</button>
-				</li>
-				<li>
-					<button class="uninstall-1_0-button">Uninstall</button>
-				</li>
-			</ul>
+			<p>
+				<button class="install-1_0-button">Install</button>
+				<button class="uninstall-1_0-button">Uninstall</button>
+				
+			</p>
 			
 			<h4>v1.1</h4>
-			<ul>
-				<li><button class="upgrade-1_0-to-1_1-button">Upgrade from v1.0</button>
-				</li>
-				<li><button class="install-1_1-button">Install</button>
-				</li>
-				<li><button class="uninstall-1_1-button">Uninstall</button>
-				</li>
-			</ul>
-
-
-
-			<div class="divider-space"></div>
-
-			<h3>Guides:</h3>
-
-			<div class="guides-container">
-			
-				<%@ include file="../guides/jsp/guides-menu.jsp" %>
-				
-				<div class="guide">
-					
-					<p>To view a guide, click on one of the tabs above.</p>  
-
-				</div>
-				
-			</div>			
+			<p>
+				<button class="upgrade-1_0-to-1_1-button">Upgrade from v1.0</button>
+				<button class="install-1_1-button">Install</button>
+				<button class="uninstall-1_1-button">Uninstall</button>
+			</p>
+		
 			
 		</div>
 

@@ -24,7 +24,7 @@
 					
 					<h3>Installation</h3>
 		
-					<p>This application is available from the Google Code repository as a WAR file, which can be deployed as a web application to Apache Tomcat. 
+					<p>This application is available from the Google Code repository as a WAR file, which can be deployed as a web application onto Apache Tomcat. 
 					</p>
 					
 		
@@ -32,8 +32,8 @@
 					<h4>Requirements</h4>
 					
 					<ul>
-						<li>MySQL needs to be able to write to the configured export file path.</li>
-						<li>The configured database user needs the FILE permission, which is not database-specific.</li>
+						<li>Tomcat and MySQL need read and write access to the file repository path, which can be set in the web.xml.</li>
+						<li>The MySQL database user needs the FILE permission, which is not database-specific.</li>
 					</ul>
 				
 				

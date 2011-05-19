@@ -13,6 +13,7 @@ import javax.sql.rowset.CachedRowSet;
 
 import org.cggh.tools.dataMerger.data.installation.InstallationModel;
 import org.cggh.tools.dataMerger.data.users.UsersCRUD;
+import org.cggh.tools.dataMerger.functions.databases.DatabaseFunctions;
 import org.cggh.tools.dataMerger.functions.installations.InstallationFunctions;
 
 
@@ -80,11 +81,23 @@ public class DatabasesCRUD {
 			
 			if (databaseModel.getTablesAsCachedRowSet().size() > 0) {
 				
-				databaseModel.setCurrentInstallationModel(this.retrieveCurrentInstallationAsInstallationModelUsingDatabaseModel(databaseModel));
+				DatabaseFunctions databaseFunctions = new DatabaseFunctions();
+				databaseModel.setTableNamesAsStringArrayList(databaseFunctions.convertTablesAsCachedRowSetIntoTableNamesAsStringArrayList(databaseModel.getTablesAsCachedRowSet()));
 				
-				InstallationFunctions installationFunctions = new InstallationFunctions();
+				if (databaseModel.getTableNamesAsStringArrayList().contains("installation")) {
 				
-				databaseModel.setVersionAsString(installationFunctions.determineVersionAsStringUsingInstallationModel(databaseModel.getCurrentInstallationModel()));
+					databaseModel.setCurrentInstallationModel(this.retrieveCurrentInstallationAsInstallationModelUsingDatabaseModel(databaseModel));
+				
+					InstallationFunctions installationFunctions = new InstallationFunctions();
+				
+					databaseModel.setVersionAsString(installationFunctions.determineVersionAsStringUsingInstallationModel(databaseModel.getCurrentInstallationModel()));
+				
+				} else {
+					
+					//The database installation table was introduced in version 1.1.0
+					databaseModel.setVersionAsString("1.0.x");
+				}
+				
 			}
 			
 		}
@@ -172,7 +185,8 @@ public class DatabasesCRUD {
 				Class<?> cachedRowSetImplClass = Class.forName("com.sun.rowset.CachedRowSetImpl");
 				tablesAsCachedRowSet = (CachedRowSet) cachedRowSetImplClass.newInstance();
 		  
-				PreparedStatement preparedStatement = connection.prepareStatement("SHOW TABLES;");
+				PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM information_schema.tables WHERE TABLE_SCHEMA = ?;");
+				preparedStatement.setString(1, databaseModel.getName());
 				preparedStatement.executeQuery();
 				tablesAsCachedRowSet.populate(preparedStatement.getResultSet());
 				preparedStatement.close();

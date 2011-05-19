@@ -144,3 +144,7 @@ a:hover {
 .field-title {
 	font-size: 11pt;
 }
+
+.clearBoth {
+	clear: both;	
+}

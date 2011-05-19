@@ -73,24 +73,12 @@
 		       
         	<noscript>          
             	<p>Please enable JavaScript to use the file uploader.</p>
-            	<%-- Put a simple form for upload here --%>
+            	<%-- TODO: Put a simple form for upload here --%>
         	</noscript>
         	
         	         
     	</div>
 
-		<%--
-
-		<p>FIXME: Fix re-merge datatabled uploads.
-		</p>
-
-		<p>FIXME: Add processing animation upon pressing the merge button.
-		</p>
-
-		<p>FIXME: Fix JavaScript error: Unexpected token in attribute selector: '!'.
-		</p>
-		
- 		--%>
 	</div>	
 
 </body>

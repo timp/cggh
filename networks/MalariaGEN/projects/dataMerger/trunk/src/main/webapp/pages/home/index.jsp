@@ -19,22 +19,7 @@
 
 			<p>This is the dataMerger application, designed to help MalariaGEN merge clinical data files downloaded from Topheno.
 			</p>
-			
-			<div class="divider-space"></div>
 
-			<h3>Guides:</h3>
-
-			<div class="guides-container">
-			
-				<%@ include file="../guides/jsp/guides-menu.jsp" %>
-				
-				<div class="guide">
-					
-					<p>To view a guide, click on one of the tabs above.</p>  
-
-				</div>
-				
-			</div>
 			
 		</div>
 	</body>

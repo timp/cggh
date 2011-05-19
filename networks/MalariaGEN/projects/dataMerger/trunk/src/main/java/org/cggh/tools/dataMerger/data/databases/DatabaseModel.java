@@ -3,6 +3,7 @@ package org.cggh.tools.dataMerger.data.databases;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 import javax.servlet.ServletContext;
 import javax.sql.rowset.CachedRowSet;
@@ -22,6 +23,7 @@ public class DatabaseModel {
 	private CachedRowSet tablesAsCachedRowSet;
 	private InstallationModel currentInstallationModel;
 	private ServletContext servletContext;
+	private ArrayList<String> tableNamesAsStringArrayList;
 
 	public DatabaseModel () {
 
@@ -170,6 +172,15 @@ public class DatabaseModel {
 
 	public ServletContext getServletContext() {
 		return servletContext;
+	}
+
+	public void setTableNamesAsStringArrayList(
+			ArrayList<String> tableNamesAsStringArrayList) {
+		this.tableNamesAsStringArrayList = tableNamesAsStringArrayList;
+	}
+
+	public ArrayList<String> getTableNamesAsStringArrayList() {
+		return tableNamesAsStringArrayList;
 	}
 
 	

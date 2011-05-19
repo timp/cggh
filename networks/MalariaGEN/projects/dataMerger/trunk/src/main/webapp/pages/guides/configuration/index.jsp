@@ -31,27 +31,26 @@
 					</ul>
 		
 		
-								<h4>[dataMerger-webapp]/WEB-INF/web.xml:</h4>
+								<h4>[tomcat-server]/webapps/[application-name]/WEB-INF/web.xml:</h4>
 								<ul> 
-									<li>databaseBasePath (e.g. jdbc:mysql://localhost:3306/)</li>
-									<li>databaseName (e.g. datamerger)</li>
-									<li>databaseUsername (e.g. root)</li>
-									<li>databasePassword (e.g. root)</li>
-									<li>uploadsFileRepositoryBasePath (e.g. C:\Lee\Work\dataMerger\files\uploads\)</li>
-									<li>exportsFileRepositoryBasePath (e.g. C:\Lee\Work\dataMerger\files\exports\)</li>
-									<li>stringsToNullifyAsCSV (e.g. "",,"NULL")</li>
-									<li>stringToExportInsteadOfNull (e.g. NULL)</li>
+										<li>    databaseServerPath: jdbc:mysql://localhost:3306/</li>
+										<li>    databaseName: datamerger</li>
+										<li>    databaseUsername: root</li>
+										<li>    filebaseServerPath: C:\Lee\Work\dataMerger\files\</li>
+										<li>    filebaseInstallationLogAsCSVFilePathRelativeToFilebaseServerPath: installation\log.csv</li>
+										<li>    stringsToNullifyAsCSV: ,,NULL</li>
+										<li>    stringToExportInsteadOfNull: NULL</li>
 								</ul>
 								
 								<%-- TODO: switch to if-can-get rather than if-has-role --%>
 								<% if (request.isUserInRole("non-specific")) { %>
 								<h5>Current configuration:</h5>
 								<ul> 
-									<li>databaseBasePath: <%=application.getInitParameter("databaseBasePath") %></li>
+									<li>databaseServerPath: <%=application.getInitParameter("databaseServerPath") %></li>
 									<li>databaseName: <%=application.getInitParameter("databaseName") %></li>
 									<li>databaseUsername: <%=application.getInitParameter("databaseUsername") %></li>
-									<li>uploadsFileRepositoryBasePath: <%=application.getInitParameter("uploadsFileRepositoryBasePath") %></li>
-									<li>exportsFileRepositoryBasePath: <%=application.getInitParameter("exportsFileRepositoryBasePath") %></li>
+									<li>filebaseServerPath: <%=application.getInitParameter("filebaseServerPath") %></li>
+									<li>filebaseInstallationLogAsCSVFilePathRelativeToFilebaseServerPath: <%=application.getInitParameter("filebaseInstallationLogAsCSVFilePathRelativeToFilebaseServerPath") %></li>
 									<li>stringsToNullifyAsCSV: <%=application.getInitParameter("stringsToNullifyAsCSV") %></li>
 									<li>stringToExportInsteadOfNull: <%=application.getInitParameter("stringToExportInsteadOfNull") %></li>
 								</ul>
@@ -68,11 +67,10 @@
 &lt;role rolename="exporter"/&gt;
 
 &lt;-- Optional users --&gt;
-&lt;user username="A Dmin" password="admin" roles="user,uploader,merger,exporter,non-specific" /&gt;
-&lt;user username="U Ploader" password="uploader" roles="user,uploader" /&gt;
-&lt;user username="M Erger" password="merger" roles="user,merger" /&gt;
-&lt;user username="E Xporter" password="exporter" roles="user,exporter" /&gt;
-&lt;user username="lee" password="test" roles="user,uploader,merger,exporter" /&gt;
+&lt;user username="admin" password="admin" roles="user,uploader,merger,exporter,non-specific" /&gt;
+&lt;user username="uploader" password="uploader" roles="user,uploader" /&gt;
+&lt;user username="merger" password="merger" roles="user,merger" /&gt;
+&lt;user username="exporter" password="exporter" roles="user,exporter" /&gt;
 								</pre>
 				
 				</div>
