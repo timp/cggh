@@ -97,7 +97,6 @@ public class DataController extends HttpServlet {
 					
 				  UploadsCRUD uploadsCRUD = new UploadsCRUD();
 				  uploadsCRUD.setDatabaseModel(databaseModel);
-				  uploadsCRUD.setUserModel(userModel);
 
 				  CachedRowSet uploadsAsCachedRowSet = uploadsCRUD.retrieveUploadsAsCachedRowSetUsingUserId(userModel.getId());
 			

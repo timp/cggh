@@ -19,7 +19,6 @@ public class DatatableModel implements java.io.Serializable {
 	 */
 	private static final long serialVersionUID = 8176100759738568138L;
 	private String name;
-	private UploadModel uploadModel;
 	private Integer duplicateKeysCount; //Only relevant in the context of a merge with joins with key(s)
 	private CachedRowSet dataAsCachedRowSet;
 	private List<String> columnNamesAsStringList;
@@ -29,20 +28,10 @@ public class DatatableModel implements java.io.Serializable {
 	
 	public DatatableModel() {
 
-		this.setUploadModel(new UploadModel());
 		this.setColumnNamesAsStringList(new ArrayList<String>());
 		this.setKeyColumnNamesAsStringList(new ArrayList<String>());
 		
 	}
-
-	//To honor no-argument bean constructor
-	public void setDatatableModel(DatatableModel datatableModel) {
-		
-		//TODO: There must be a better way of doing this!? Pity we can't this = that.
-		this.setName(datatableModel.getName());
-		this.setUploadModel(datatableModel.getUploadModel());
-		this.setDuplicateKeysCount(datatableModel.getDuplicateKeysCount());
-	}	
 
 
 
@@ -56,14 +45,6 @@ public class DatatableModel implements java.io.Serializable {
 	}
 
 
-
-	public UploadModel getUploadModel() {
-
-		return this.uploadModel;
-	}
-	public void setUploadModel(UploadModel uploadModel) {
-		this.uploadModel = uploadModel;
-	}
 
 	public Integer getDuplicateKeysCount() {
 		return this.duplicateKeysCount;

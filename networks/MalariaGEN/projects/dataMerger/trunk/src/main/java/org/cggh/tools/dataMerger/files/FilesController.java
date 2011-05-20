@@ -14,6 +14,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -26,6 +27,14 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.io.IOUtils;
+import org.cggh.tools.dataMerger.data.databases.DatabaseModel;
+import org.cggh.tools.dataMerger.data.databases.DatabasesCRUD;
+import org.cggh.tools.dataMerger.data.uploads.UploadModel;
+import org.cggh.tools.dataMerger.data.uploads.UploadsCRUD;
+import org.cggh.tools.dataMerger.data.users.UserModel;
+import org.cggh.tools.dataMerger.data.users.UsersCRUD;
+import org.cggh.tools.dataMerger.files.filebases.FilebaseModel;
+import org.cggh.tools.dataMerger.files.filebases.FilebasesCRUD;
 
 
 
@@ -39,6 +48,7 @@ public class FilesController extends HttpServlet {
 	 * 
 	 */
 	private static final long serialVersionUID = 6016934494099664659L;
+	private final Logger logger = Logger.getLogger("org.cggh.tools.dataMerger.files");
 
 	/**
      * @see HttpServlet#HttpServlet()
@@ -79,7 +89,7 @@ public class FilesController extends HttpServlet {
 				
 				Class.forName(getServletContext().getInitParameter("databaseDriverFullyQualifiedClassName")).newInstance();
 				
-				Connection connection = DriverManager.getConnection(getServletContext().getInitParameter("databaseBasePath") + getServletContext().getInitParameter("databaseName"), getServletContext().getInitParameter("databaseUsername"), getServletContext().getInitParameter("databasePassword"));
+				Connection connection = DriverManager.getConnection(getServletContext().getInitParameter("databaseServerPath") + getServletContext().getInitParameter("databaseName"), getServletContext().getInitParameter("databaseUsername"), getServletContext().getInitParameter("databasePassword"));
 				 
 				if (connection != null) {
 
@@ -213,7 +223,7 @@ public class FilesController extends HttpServlet {
 				
 				Class.forName(getServletContext().getInitParameter("databaseDriverFullyQualifiedClassName")).newInstance();
 				
-				Connection connection = DriverManager.getConnection(getServletContext().getInitParameter("databaseBasePath") + getServletContext().getInitParameter("databaseName"), getServletContext().getInitParameter("databaseUsername"), getServletContext().getInitParameter("databasePassword"));
+				Connection connection = DriverManager.getConnection(getServletContext().getInitParameter("databaseServerPath") + getServletContext().getInitParameter("databaseName"), getServletContext().getInitParameter("databaseUsername"), getServletContext().getInitParameter("databasePassword"));
 				 
 				if (connection != null) {
 
@@ -406,181 +416,135 @@ public class FilesController extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-        PrintWriter writer = null;
-        InputStream is = null;
-        FileOutputStream fos = null;
-
-        //final String DESTINATION_DIR_PATH = "files";
-        //String realPath = getServletContext().getRealPath(DESTINATION_DIR_PATH) + "/";
-        
         if (request.getPathInfo().equals("/uploads")) {
 	        
-        	//TODO: Proper content-negotiation
-        	response.setContentType("application/json");
+        	FilebasesCRUD filebasesCRUD = new FilebasesCRUD();
+        	FilebaseModel filebaseModel = filebasesCRUD.retrieveFilebaseAsFilebaseModelUsingServletContext(getServletContext());
         	
-	        String realPath = getServletContext().getInitParameter("uploadsFileRepositoryBasePath");
-	        
-	        try {
-	            writer = response.getWriter();
-	        } catch (IOException ex) {
-	            //this.log(FilesController.class.getName() + "has thrown an exception: " + ex.getMessage());
-	        }
-	
-	        String filename = request.getHeader("X-File-Name");
-	        
-	        //Register the upload, get the file id
-	        Integer user_id = null;
-	        Integer file_id = null;
-	        
-	        Boolean successful = null;
-	        
-			try {
-				
-				//FIXME: Use DataModel
-				
-				Class.forName(getServletContext().getInitParameter("databaseDriverFullyQualifiedClassName")).newInstance();
-				
-				Connection connection = DriverManager.getConnection(getServletContext().getInitParameter("databaseBasePath") + getServletContext().getInitParameter("databaseName"), getServletContext().getInitParameter("databaseUsername"), getServletContext().getInitParameter("databasePassword"));
-				 
-				if (connection != null) {
-	
-					// Get the user_id
-					
-					
-				      try {
-				          PreparedStatement preparedStatement = connection.prepareStatement("SELECT id FROM user WHERE username = ?;");
-				          preparedStatement.setString(1, request.getRemoteUser());
-				          preparedStatement.executeQuery();
-				          ResultSet resultSet = preparedStatement.getResultSet();
-	
-				          // There may be no user in the user table.
-				          if (resultSet.next()) {
-				        	  //TODO: Is it worth checking for id is null?
-				        	  resultSet.first();
-				        	  user_id = resultSet.getInt("id");
-				          } else {
-				        	  //System.out.println("Did not find user in user table. This user is not registered. Db query gives !resultSet.next()");
-				          }
-	
-				          resultSet.close();
-				          preparedStatement.close();
-				          
-				        }
-				        catch(SQLException sqlException){
-					    	sqlException.printStackTrace();
-				        } 					
-					
-				        
-				        //TODO: Shouldn't this be in the UploadsModel? Or this should be a generic file table.
-			      try {
-			          PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO upload (original_filename, created_by_user_id, created_datetime) VALUES (?, ?, NOW());");
-			          preparedStatement.setString(1, URLDecoder.decode(filename, "UTF-8"));
-			          preparedStatement.setInt(2, user_id);
-			          preparedStatement.executeUpdate();
-			          preparedStatement.close();
-	
-			        }
-			        catch(SQLException sqlException){
-				    	sqlException.printStackTrace();
-			        } 					        
-				        
-			        
-				      try{
-				    	  //TODO: Is this cross-db compatible? ref: @@IDENTITY
-				          PreparedStatement preparedStatement = connection.prepareStatement("SELECT LAST_INSERT_ID();");
-				          preparedStatement.executeQuery();
-				          
-				          ResultSet resultSet = preparedStatement.getResultSet();
-				          if (resultSet.next()) {
-				        	  
-				        	  resultSet.first();
-				        	  file_id = resultSet.getInt(1);
-				        	  
-				          } else {
-				        	  
-				        	  
-				        	  //System.out.println("Unexpected: !resultSet.next()");
-				          }
-				          
-				          preparedStatement.close();
-	
-				        }
-				        catch(SQLException sqlException){
-					    	sqlException.printStackTrace();
-				        }		   
-				        
-				        
-					      try{
-					          PreparedStatement preparedStatement = connection.prepareStatement("UPDATE upload SET repository_filepath=? WHERE id=?;");
-					          preparedStatement.setString(1, realPath + file_id);
-					          preparedStatement.setInt(2, file_id);
-					          preparedStatement.executeUpdate();
-					          preparedStatement.close();
-	
-					        }
-					        catch(SQLException sqlException){
-						    	sqlException.printStackTrace();
-					        } 			        
-	
-					        //TODO: if file_id is not null
-					        
-					        try {
-					        	is = request.getInputStream();
-					            fos = new FileOutputStream(new File(realPath + file_id));
-					            IOUtils.copy(is, fos);
-					            response.setStatus(HttpServletResponse.SC_OK);
-					            writer.print("{\"success\": \"true\"}");
-					            successful = true;
-					        } catch (FileNotFoundException ex) {
-					            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-					            writer.print("{\"success\": \"false\"}");
-					            //this.log(FilesController.class.getName() + "has thrown an exception: " + ex.getMessage());
-					            successful = false;
-					        } catch (IOException ex) {
-					            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-					            writer.print("{\"success\": \"false\"}");
-					            //this.log(FilesController.class.getName() + "has thrown an exception: " + ex.getMessage());
-					            successful = false;
-					        } finally {
-					            try {
-					                fos.close();
-					                is.close();
-					            } catch (IOException ignored) {
-					            }
-					        }				        
-					     
-						      try{
-						          PreparedStatement preparedStatement = connection.prepareStatement("UPDATE upload SET repository_filepath=?, successful=? WHERE id=?;");
-						          preparedStatement.setString(1, realPath + file_id);
-						          preparedStatement.setBoolean(2, successful);
-						          preparedStatement.setInt(3, file_id);
-						          preparedStatement.executeUpdate();
-						          preparedStatement.close();
-	
-						        }
-						        catch(SQLException sqlException){
-							    	sqlException.printStackTrace();
-						        } 				        
-					        
-					connection.close();
-					
-				} else {
-					//System.out.println("connection.isClosed");
-				}
-					
-			} 
-			catch (Exception exception) {
-				//System.out.println("Failed to connect to database server.");
-				exception.printStackTrace();
-			}
+        	if (filebaseModel.isExistent() && filebaseModel.isWritable()) {
+        		
+        		 UploadModel uploadModel = new UploadModel();
+        		 
+        		 //TODO: request.getHeader("X-File-Name") works for FF but not IE
+ 			 	 //Could add qqfile the onSubmit of the upload.js and use request.getParameter("qqfile") instead, but this also causes unresolved problems:
+        		 //Problem 1: File does not upload properly 
+        		 //Problem 2: JSON response gets interpreted as a file download.
+        		 
+        		 
+        		
+        		 if (request.getHeader("X-File-Name") != null && request.getHeader("X-File-Name") != "") {
+        			 
+        			 uploadModel.setOriginalFilename(URLDecoder.decode(request.getHeader("X-File-Name"), "UTF-8"));
+        			 
+        			 DatabasesCRUD databasesCRUD = new DatabasesCRUD();
+        			 DatabaseModel databaseModel = databasesCRUD.retrieveDatabaseAsDatabaseModelUsingServletContext(getServletContext());
+        			 
+        			 Connection connection = databaseModel.getNewConnection(); 
+        			
+        			 if (connection != null) {
+        			 
+        				 UsersCRUD usersCRUD = new UsersCRUD();
+        				 usersCRUD.setDatabaseModel(databaseModel);
+        				 UserModel userModel = usersCRUD.retrieveUserAsUserModelUsingUsername(request.getRemoteUser());
+        		        
+	        			 UploadsCRUD uploadsCRUD = new UploadsCRUD();
+	        			 uploadsCRUD.createUploadUsingUploadModelAndUserModel(uploadModel, userModel, connection);
+	        			 
+	        			 uploadModel.setId(databasesCRUD.retrieveLastInsertIdAsIntegerUsingConnection(connection));
+	        			 
+	            		 uploadModel.setRepositoryFilepath(getServletContext().getInitParameter("filebaseServerPath") + "uploads" + filebaseModel.getFilepathSeparator() + uploadModel.getId());
+	            		 
+	            	     InputStream inputStream = null;
+	            	     FileOutputStream fileOutputStream = null;
+	            		 
+	            	     try {
+	            			 
+	            			 	inputStream = request.getInputStream();
+	            			 	fileOutputStream = new FileOutputStream(new File(uploadModel.getRepositoryFilepath()));
+					            IOUtils.copy(inputStream, fileOutputStream);
+					            
+					            
+					            uploadModel.setSuccessful(true);
+					            
+	            	     } catch (FileNotFoundException ex) {
+					        	
+					        	uploadModel.setSuccessful(false);
+					        	ex.printStackTrace();
+					        	
+	            	     } catch (IOException ex) {
+					        	
+					        	uploadModel.setSuccessful(false);
+					        	ex.printStackTrace();
+
+					     } finally {
+					    	 
+					    	 try {
+					    		 fileOutputStream.close();
+					             inputStream.close();
+					         } catch (IOException ex) {
+					        	 ex.printStackTrace();
+					         }
+					     }	
+	            		 
+	            		 
+	            		 uploadsCRUD.updateUploadUsingUploadModel(uploadModel, connection);
+	            		 
+	            		 try {
+							connection.close();
+	            		 } catch (SQLException e) {
+							e.printStackTrace();
+	            		 }
+	            		 
+	            		//TODO: content negotiation
+	            		 if (uploadModel.isSuccessful()) {
+	            			 
+	            	         response.setContentType("application/json");
+	            			 response.setStatus(HttpServletResponse.SC_OK);
+	            			 response.getWriter().print("{\"success\": \"true\"}");
+					         
+	            		 } else {
+	            			 
+	            			 response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+	            			 response.setContentType("application/json");
+	            			 response.getWriter().print("{\"success\": \"false\"}");
+	            		 }
+	            		 
+	            		
+        			 } else {
+        				 
+        				 logger.severe("connection is null");
+        			 }
+        			 
+        		 } else {
+        			 
+        			 logger.severe("request parameter qqfile is null or empty");
+        			 
+        		 }
+        		
+        	}
+        	
+        	
+        	
+        	
+        	
+        	//TODO: Deprecate
+        	///////////////////OLD STUFF
+        	
+        	
+        	
 
         } else {
         	
-        	//System.out.println("Unhandled pathInfo.");
+        	//
+        	
+        	//TODO: content negotiation
+        	response.setContentType("text/plain");
+        	response.getWriter().print("Unhandled pathInfo.");
+        	
         }
         
-        writer.flush();
-        writer.close();
+        response.getWriter().flush();
+        response.getWriter().close();
 
 		
 	}

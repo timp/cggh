@@ -38,7 +38,7 @@
 					
 					</p>			
 					
-					<p>The required configuration parameters are databaseBasePath, databaseName, databaseUsername, databasePassword.
+					<p>The required configuration parameters are databaseDriverFullyQualifiedClassName, databaseServerPath, databaseName, databaseUsername, databasePassword.
 					</p>
 					
 					<p>The required values can be seen on the configuration page.

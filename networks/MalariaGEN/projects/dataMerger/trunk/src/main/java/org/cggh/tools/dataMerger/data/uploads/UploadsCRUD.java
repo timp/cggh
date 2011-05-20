@@ -21,13 +21,11 @@ public class UploadsCRUD implements java.io.Serializable {
 	private static final long serialVersionUID = 4112178863119955390L;
 	private final Logger logger = Logger.getLogger("org.cggh.tools.dataMerger.data.uploads");
 	private DatabaseModel databaseModel = null;
-	private UserModel userModel;
 	
 	
 	public UploadsCRUD() {
 
         this.setDatabaseModel(new DatabaseModel());
-    	this.setUserModel(new UserModel());		
 		
 	}
 
@@ -38,12 +36,6 @@ public class UploadsCRUD implements java.io.Serializable {
         return this.databaseModel;
     }     
 
-    public void setUserModel (final UserModel userModel) {
-        this.userModel  = userModel;
-    }
-    public UserModel getUserModel () {
-        return this.userModel;
-    } 	
 
    public CachedRowSet retrieveUploadsAsCachedRowSetUsingUserId(Integer userId) {
 
@@ -167,6 +159,79 @@ public class UploadsCRUD implements java.io.Serializable {
 		  }
 		
 		return uploadsAsDecoratedXHTMLTableUsingUploadsModel;
+	}
+
+	public void createUploadUsingUploadModelAndUserModel(UploadModel uploadModel, UserModel userModel, Connection connection) {
+		
+		if (connection != null) {
+		
+			try {
+	          PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO upload (original_filename, created_by_user_id, created_datetime) VALUES (?, ?, NOW());");
+	          preparedStatement.setString(1, uploadModel.getOriginalFilename());
+	          preparedStatement.setInt(2, userModel.getId());
+	          preparedStatement.executeUpdate();
+	          preparedStatement.close();
+
+	        }
+	        catch(SQLException sqlException){
+		    	sqlException.printStackTrace();
+	        } 
+	        
+	        
+		} else {
+			
+			logger.severe("connection is null");
+		}
+		
+	}
+
+	public void updateUploadUsingUploadModel(UploadModel uploadModel, Connection connection) {
+		
+		if (connection != null) {
+			
+			try {
+	          PreparedStatement preparedStatement = connection.prepareStatement("UPDATE upload SET " +
+	          																		"repository_filepath = ?, " +
+	          																		"successful = ? " +
+	          																		"WHERE id = ?;");
+	          preparedStatement.setString(1, uploadModel.getRepositoryFilepath());
+	          preparedStatement.setBoolean(2, uploadModel.isSuccessful());
+	          preparedStatement.setInt(3, uploadModel.getId());
+	          preparedStatement.executeUpdate();
+	          preparedStatement.close();
+
+	        }
+	        catch(SQLException sqlException){
+		    	sqlException.printStackTrace();
+	        } 
+	        
+	        
+		} else {
+			
+			logger.severe("connection is null");
+		}
+		
+	}
+
+	public void updateUploadDatatableNameUsingUploadModel(
+			UploadModel uploadModel, Connection connection) {
+		
+		if (connection != null) {
+	        
+	        try {
+	        	PreparedStatement preparedStatement = connection.prepareStatement("UPDATE upload SET datatable_name=? WHERE id=?;");
+				preparedStatement.setString(1, uploadModel.getDatatableModel().getName());
+				preparedStatement.setInt(2, uploadModel.getId());
+		        preparedStatement.executeUpdate();
+		        preparedStatement.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+        
+		} else {
+			logger.severe("connection is null");
+		}
+		
 	}
 
 }

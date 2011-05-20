@@ -6,6 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 
+import org.cggh.tools.dataMerger.data.datatables.DatatableModel;
 import org.cggh.tools.dataMerger.data.users.UserModel;
 
 
@@ -18,18 +19,20 @@ public class UploadModel implements java.io.Serializable {
 	
 	private UserModel createdByUserModel;
 	
-	private String repositoryFilepath = null;
-	private Integer id = null;
+	private String repositoryFilepath;
+	private Integer id;
 	private Timestamp createdDatetime;
-	private int createdByUserId;
 	private boolean successful;
 	private String originalFilename;
+	private DatatableModel datatableModel;
 
 	
 	
 	public UploadModel() {
 		
 		this.setCreatedByUserModel(new UserModel());
+		this.setDatatableModel(new DatatableModel());
+		
 	}
 
 	public void setCreatedByUserModel(UserModel userModel) {
@@ -91,7 +94,7 @@ public class UploadModel implements java.io.Serializable {
 	        	  this.setOriginalFilename(resultSet.getString("original_filename"));
 	        	  this.setRepositoryFilepath(resultSet.getString("repository_filepath"));
 	        	  this.setSuccessful(resultSet.getBoolean("successful"));
-	        	  this.setCreatedByUserId(resultSet.getInt("created_by_user_id"));
+	        	  this.getCreatedByUserModel().setId(resultSet.getInt("created_by_user_id"));
 	        	  this.setCreatedDatetime(resultSet.getTimestamp("created_datetime"));
 	        	  
 	          } else {
@@ -119,19 +122,19 @@ public class UploadModel implements java.io.Serializable {
 
 		this.createdDatetime = createdDatetime;
 	}
+	public Timestamp getCreatedDatetime() {
 
-
-
-	public void setCreatedByUserId(final int createdByUserId) {
-
-		this.createdByUserId = createdByUserId;
+		return this.createdDatetime;
 	}
-
 
 
 	public void setSuccessful(final boolean successful) {
 
 		this.successful = successful;
+	}
+	public Boolean isSuccessful() {
+
+		return this.successful;
 	}
 
 
@@ -147,6 +150,14 @@ public class UploadModel implements java.io.Serializable {
 	}
 	public void setOriginalFilename(final String originalFilename) {
 		this.originalFilename = originalFilename;
+	}
+
+	public void setDatatableModel(DatatableModel datatableModel) {
+		this.datatableModel = datatableModel;
+	}
+
+	public DatatableModel getDatatableModel() {
+		return datatableModel;
 	}
 
 

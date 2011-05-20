@@ -1,9 +1,11 @@
 package org.cggh.tools.dataMerger.data.datatables;
 
+import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.DataInputStream;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
+import java.net.URL;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -19,6 +21,9 @@ import org.cggh.tools.dataMerger.data.databases.DatabaseModel;
 import org.cggh.tools.dataMerger.data.uploads.UploadModel;
 import org.cggh.tools.dataMerger.data.uploads.UploadsCRUD;
 import org.cggh.tools.dataMerger.data.users.UserModel;
+import org.mozilla.intl.chardet.HtmlCharsetDetector;
+import org.mozilla.intl.chardet.nsDetector;
+import org.mozilla.intl.chardet.nsICharsetDetectionObserver;
 
 
 public class DatatablesCRUD implements java.io.Serializable {
@@ -30,20 +35,12 @@ public class DatatablesCRUD implements java.io.Serializable {
 	private final Logger logger = Logger.getLogger("org.cggh.tools.dataMerger.data.datatables");
 
 	private DatabaseModel databaseModel;
-	private UserModel userModel;
-	private DatatableModel datatableModel;	
-	private UploadModel uploadModel;
 
 	
 	private String stringsToNullifyAsCSV;
 	
 	public DatatablesCRUD() {
-
 		this.setDatabaseModel(new DatabaseModel());
-		this.setUserModel(new UserModel());		
-		
-		this.setDatatableModel(new DatatableModel());
-		this.setUploadModel(new UploadModel());
 	}
 
 
@@ -54,26 +51,8 @@ public class DatatablesCRUD implements java.io.Serializable {
         return this.databaseModel;
     } 
 	
-    public void setUserModel (final UserModel userModel) {
-        this.userModel  = userModel;
-    }
-    public UserModel getUserModel () {
-        return this.userModel;
-    } 
-    
-    public void setDatatableModel (final DatatableModel datatableModel) {
-        this.datatableModel  = datatableModel;
-    }
-    public DatatableModel getDatatableModel () {
-        return this.datatableModel;
-    } 
-    
-    public void setUploadModel (final UploadModel uploadModel) {
-        this.uploadModel  = uploadModel;
-    }
-    public UploadModel getUploadModel () {
-        return this.uploadModel;
-    }     
+
+  
 
 
 	public DatatableModel retrieveDatatableAsDatatableModelThroughCreatingDatatableUsingUploadId(Integer uploadId,
@@ -81,35 +60,31 @@ public class DatatablesCRUD implements java.io.Serializable {
 
 		DatatableModel datatableModel = new DatatableModel();
 
-		UploadsCRUD uploadsModel = new UploadsCRUD();
-		datatableModel.setUploadModel(uploadsModel.retrieveUploadAsUploadModelByUploadId(uploadId, connection));
 
 		datatableModel.setName("datatable_" + uploadId);
 
 		
-		// Update the upload record.
-	     try {
-	         PreparedStatement preparedStatement = connection.prepareStatement("UPDATE upload SET datatable_name=? WHERE id=?;");
-	         preparedStatement.setString(1, datatableModel.getName());
-	         preparedStatement.setInt(2, uploadId);
-	         preparedStatement.executeUpdate();
-	         preparedStatement.close();
-	         
+		UploadModel uploadModel = new UploadModel();
+		uploadModel.setId(uploadId);
+		uploadModel.getDatatableModel().setName("datatable_" + uploadModel.getId());
+		
+		UploadsCRUD uploadsCRUD = new UploadsCRUD();
+		uploadsCRUD.updateUploadDatatableNameUsingUploadModel(uploadModel, connection);
+
 	         //Get the column names
          		try {
 
-         			FileInputStream fileInputStream = new FileInputStream(datatableModel.getUploadModel().getRepositoryFilepath());
-
-         			//this.logger.info("Upload Model repository path: " + datatableModel.getUploadModel().getRepositoryFilepath());
-         			
+         			FileInputStream fileInputStream = new FileInputStream(uploadModel.getRepositoryFilepath());
 	        	    DataInputStream dataInputStream = new DataInputStream(fileInputStream);
+	        	    
+	        	    //TODO: Character-set detection
+	        	    //http://jchardet.sourceforge.net/
+	        	    
 	        	    BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(dataInputStream,"ISO-8859-1"));
 	        	    String strLine;
 
 	        	    if ((strLine = bufferedReader.readLine()) != null)   {
-
-	        	    	//TODO: Rationalize
-	        	    	
+	
 	        	      String[] columnNames = strLine.split(",");
 	        	      List<String> columnNamesAsStringList = new ArrayList<String>();
 	        	      
@@ -117,8 +92,6 @@ public class DatatablesCRUD implements java.io.Serializable {
 	        	      String columnDefinitionsForCreateTableSQL = "";
 	        	      
 	        	      for (int i = 0; i < columnNames.length; i++) {
-	        	    	  
-	        	    	  //this.logger.info("Got column name: " + columnNames[i]);
 	        	    	  
 	        	    	  //Strip out quote marks from column names
 	        	    	  columnNames[i] = columnNames[i].replace("\"", "");
@@ -149,7 +122,7 @@ public class DatatablesCRUD implements java.io.Serializable {
 		    		    	  //TODO: OPTIONALLY ENCLOSED BY '"' ESCAPED BY '\'
 		    		    	  //ENCLOSED BY '\"' ESCAPED BY '\\\\'
 		    		          PreparedStatement preparedStatement2 = connection.prepareStatement("LOAD DATA INFILE ? INTO TABLE `" + datatableModel.getName() + "` FIELDS TERMINATED BY ',' OPTIONALLY ENCLOSED BY '\"' LINES TERMINATED BY '\n' IGNORE 1 LINES ;");
-		    		          preparedStatement2.setString(1, datatableModel.getUploadModel().getRepositoryFilepath());
+		    		          preparedStatement2.setString(1, uploadModel.getRepositoryFilepath());
 		    		          preparedStatement2.executeUpdate();
 		    		          preparedStatement2.close();
 		    		          
@@ -215,19 +188,7 @@ public class DatatablesCRUD implements java.io.Serializable {
         	    } catch (Exception e){
         	    	e.printStackTrace();
         	    }
-	         
-	         
-	         
-	         
-	         
 
-	
-	       }
-	       catch(SQLException sqlException){
-		    	sqlException.printStackTrace();
-	       } 	
-	       
-			
 
 	       return datatableModel;
 		
@@ -257,8 +218,6 @@ public class DatatablesCRUD implements java.io.Serializable {
 	          if (resultSet.next()) {
 	        	  
 	        	  resultSet.first();
-	        	  
-	        	  datatableModel.getUploadModel().setId(resultSet.getInt("id"));
 	        	  
 	        	  //TODO: Data
 	        	  
@@ -345,7 +304,6 @@ public class DatatablesCRUD implements java.io.Serializable {
 
 	        	  //Set the datatable properties
 	        	  datatableModel.setName(resultSet.getString("datatable_name"));
-	        	  datatableModel.getUploadModel().setId(resultSet.getInt("id"));
 	        	  
 	        	  if (datatableModel.getName() != null) {
 		        		  
@@ -359,9 +317,6 @@ public class DatatablesCRUD implements java.io.Serializable {
 		        	  }
 		        	  datatableModel.setColumnNamesAsStringList(columnNamesAsStringList);
 		        	  
-		        	  //Retrieve the upload data
-		        	  UploadsCRUD uploadsModel = new UploadsCRUD();
-		        	  datatableModel.setUploadModel(uploadsModel.retrieveUploadAsUploadModelByUploadId(datatableModel.getUploadModel().getId(), connection));
 		        	  
 	        	  } else {
 	        		  
@@ -442,6 +397,4 @@ public class DatatablesCRUD implements java.io.Serializable {
 		return stringsToNullifyAsCSV;
 	}
 
-
-	
 }

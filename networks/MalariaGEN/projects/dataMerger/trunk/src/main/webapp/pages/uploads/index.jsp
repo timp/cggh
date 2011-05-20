@@ -7,9 +7,7 @@
 <%
 
 	UploadsCRUD uploadsCRUD = new UploadsCRUD();
-
 	uploadsCRUD.setDatabaseModel(databaseModel);
-	uploadsCRUD.setUserModel(userModel);
 
 %>	
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
@@ -66,8 +64,16 @@
 		
 		<hr class="divider-space"/>
 
-
 		<h3 class="field-title">New uploads:</h3>
+		<% if (request.getHeader("User-Agent").indexOf("MSIE") > 0) { %>
+		
+		<p>Sorry, the upload feature is not currently supported for the Internet Explorer browser.
+		</p>
+		
+		<div id="file-uploader" style="display: none;"></div>
+		
+		<% } else { %>
+		
 
 		<div id="file-uploader">
 		       
@@ -78,6 +84,7 @@
         	
         	         
     	</div>
+    	<% } %>
 
 	</div>	
 

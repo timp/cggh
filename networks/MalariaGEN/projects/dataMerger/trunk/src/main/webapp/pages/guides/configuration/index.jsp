@@ -33,6 +33,7 @@
 		
 								<h4>[tomcat-server]/webapps/[application-name]/WEB-INF/web.xml:</h4>
 								<ul> 
+										<li>    databaseDriverFullyQualifiedClassName: com.mysql.jdbc.Driver</li>
 										<li>    databaseServerPath: jdbc:mysql://localhost:3306/</li>
 										<li>    databaseName: datamerger</li>
 										<li>    databaseUsername: root</li>
@@ -46,6 +47,7 @@
 								<% if (request.isUserInRole("non-specific")) { %>
 								<h5>Current configuration:</h5>
 								<ul> 
+									<li>databaseDriverFullyQualifiedClassName: <%=application.getInitParameter("databaseDriverFullyQualifiedClassName") %></li>
 									<li>databaseServerPath: <%=application.getInitParameter("databaseServerPath") %></li>
 									<li>databaseName: <%=application.getInitParameter("databaseName") %></li>
 									<li>databaseUsername: <%=application.getInitParameter("databaseUsername") %></li>

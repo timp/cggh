@@ -117,7 +117,7 @@ public class ScriptsController extends HttpServlet {
 				
 				Class.forName(getServletContext().getInitParameter("databaseDriverFullyQualifiedClassName")).newInstance(); 
 				
-				Connection connection = DriverManager.getConnection(getServletContext().getInitParameter("databaseBasePath"), getServletContext().getInitParameter("databaseUsername"), getServletContext().getInitParameter("databasePassword"));
+				Connection connection = DriverManager.getConnection(getServletContext().getInitParameter("databaseServerPath"), getServletContext().getInitParameter("databaseUsername"), getServletContext().getInitParameter("databasePassword"));
 				 
 				if (connection != null) {
 					
