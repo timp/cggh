@@ -58,18 +58,15 @@ public class DatatablesCRUD implements java.io.Serializable {
 	public DatatableModel retrieveDatatableAsDatatableModelThroughCreatingDatatableUsingUploadId(Integer uploadId,
 			Connection connection) {
 
-		DatatableModel datatableModel = new DatatableModel();
-
-
-		datatableModel.setName("datatable_" + uploadId);
-
-		
-		UploadModel uploadModel = new UploadModel();
-		uploadModel.setId(uploadId);
-		uploadModel.getDatatableModel().setName("datatable_" + uploadModel.getId());
-		
 		UploadsCRUD uploadsCRUD = new UploadsCRUD();
-		uploadsCRUD.updateUploadDatatableNameUsingUploadModel(uploadModel, connection);
+		UploadModel uploadModel = uploadsCRUD.retrieveUploadAsUploadModelByUploadId(uploadId, connection);
+		
+		DatatableModel datatableModel = new DatatableModel();
+		datatableModel.setName("datatable_" + uploadModel.getId());
+		
+		//NOTE: Not necessary
+		//uploadModel.setDatatableModel(datatableModel);
+		//uploadsCRUD.updateUploadDatatableNameUsingUploadModel(uploadModel, connection);
 
 	         //Get the column names
          		try {
@@ -80,6 +77,7 @@ public class DatatablesCRUD implements java.io.Serializable {
 	        	    //TODO: Character-set detection
 	        	    //http://jchardet.sourceforge.net/
 	        	    
+	        	    //NOTE: This translates the expected encoding (ISO-8859-1) into Unicode.
 	        	    BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(dataInputStream,"ISO-8859-1"));
 	        	    String strLine;
 
@@ -88,99 +86,103 @@ public class DatatablesCRUD implements java.io.Serializable {
 	        	      String[] columnNames = strLine.split(",");
 	        	      List<String> columnNamesAsStringList = new ArrayList<String>();
 	        	      
-	        	      
-	        	      String columnDefinitionsForCreateTableSQL = "";
-	        	      
-	        	      for (int i = 0; i < columnNames.length; i++) {
-	        	    	  
-	        	    	  //Strip out quote marks from column names
-	        	    	  columnNames[i] = columnNames[i].replace("\"", "");
-	        	    	  
-	        	    	  columnNamesAsStringList.add(columnNames[i]);
-	        	    	  
-	        	    	  columnDefinitionsForCreateTableSQL = columnDefinitionsForCreateTableSQL.concat("`" + columnNames[i] + "` VARCHAR(255) NULL");
-	        	    	  
-	        	    	  if (i != columnNames.length - 1) {
-	        	    		  columnDefinitionsForCreateTableSQL = columnDefinitionsForCreateTableSQL.concat(", ");
-	        	    	  }
-	        	    	  
-	        	      }
-
-	        	      datatableModel.setColumnNamesAsStringList(columnNamesAsStringList);
-	        	      
-	        	      
-	        	    // Create the table
-	    		      try {
-				          Statement statement = connection.createStatement();
-				          statement.executeUpdate("CREATE TABLE `" + datatableModel.getName() + "` (" + 
-				        		  columnDefinitionsForCreateTableSQL + 
-				        		  ") ENGINE=InnoDB;");
-				          statement.close();
-
-	 	     	         // Load the data in
+	        	      if (columnNames.length > 0) {
+		        	      
+		        	      String columnDefinitionsForCreateTableSQL = "";
+		        	      
+		        	      for (int i = 0; i < columnNames.length; i++) {
+		        	    	  
+		        	    	  //Strip out quote marks from column names
+		        	    	  columnNames[i] = columnNames[i].replace("\"", "");
+		        	    	  
+		        	    	  columnNamesAsStringList.add(columnNames[i]);
+		        	    	  
+		        	    	  columnDefinitionsForCreateTableSQL = columnDefinitionsForCreateTableSQL.concat("`" + columnNames[i] + "` VARCHAR(255) NULL");
+		        	    	  
+		        	    	  if (i != columnNames.length - 1) {
+		        	    		  columnDefinitionsForCreateTableSQL = columnDefinitionsForCreateTableSQL.concat(", ");
+		        	    	  }
+		        	    	  
+		        	      }
+	
+		        	      datatableModel.setColumnNamesAsStringList(columnNamesAsStringList);
+		        	      
+		        	      
+		        	      // Create the table
 		    		      try {
-		    		    	  //TODO: OPTIONALLY ENCLOSED BY '"' ESCAPED BY '\'
-		    		    	  //ENCLOSED BY '\"' ESCAPED BY '\\\\'
-		    		          PreparedStatement preparedStatement2 = connection.prepareStatement("LOAD DATA INFILE ? INTO TABLE `" + datatableModel.getName() + "` FIELDS TERMINATED BY ',' OPTIONALLY ENCLOSED BY '\"' LINES TERMINATED BY '\n' IGNORE 1 LINES ;");
-		    		          preparedStatement2.setString(1, uploadModel.getRepositoryFilepath());
-		    		          preparedStatement2.executeUpdate();
-		    		          preparedStatement2.close();
-		    		          
-		    		          
-		    		          //TODO: Get a list of all the strings to nullify.
-		    		          
-		    		          
-		    		          if (this.getDatabaseModel().getServletContext().getInitParameter("stringsToNullifyAsCSV") != null) {
-		    		        	  
-		    		        	  String[] stringsToNullifyAsStringArray = this.getDatabaseModel().getServletContext().getInitParameter("stringsToNullifyAsCSV").split(",");
-			    		        	 
-		    		        	  for (int i = 0; i < columnNames.length; i++) {
-		    		        		
-		    		        		  String columnName = columnNames[i];
-		    		        		  
-			    		        	  String conditionForUpdateSQL = "";
+					          Statement statement = connection.createStatement();
+					          statement.executeUpdate("CREATE TABLE `" + datatableModel.getName() + "` (" + 
+					        		  columnDefinitionsForCreateTableSQL + 
+					        		  ") ENGINE=InnoDB;");
+					          statement.close();
+	
+		 	     	         // Load the data in
+			    		      try {
+			    		    	  //TODO: OPTIONALLY ENCLOSED BY '"' ESCAPED BY '\'
+			    		    	  //ENCLOSED BY '\"' ESCAPED BY '\\\\'
+			    		          PreparedStatement preparedStatement2 = connection.prepareStatement("LOAD DATA INFILE ? INTO TABLE `" + datatableModel.getName() + "` FIELDS TERMINATED BY ',' OPTIONALLY ENCLOSED BY '\"' LINES TERMINATED BY '\n' IGNORE 1 LINES ;");
+			    		          preparedStatement2.setString(1, uploadModel.getRepositoryFilepath());
+			    		          preparedStatement2.executeUpdate();
+			    		          preparedStatement2.close();
+			    		          
+			    		          
+			    		          //TODO: Get a list of all the strings to nullify.
+			    		          
+			    		          
+			    		          if (this.getDatabaseModel().getServletContext().getInitParameter("stringsToNullifyAsCSV") != null) {
 			    		        	  
-				    		          for (int j = 0; j < stringsToNullifyAsStringArray.length; j++) {
+			    		        	  String[] stringsToNullifyAsStringArray = this.getDatabaseModel().getServletContext().getInitParameter("stringsToNullifyAsCSV").split(",");
+				    		        	 
+			    		        	  for (int i = 0; i < columnNames.length; i++) {
+			    		        		
+			    		        		  String columnName = columnNames[i];
+			    		        		  
+				    		        	  String conditionForUpdateSQL = "";
 				    		        	  
-				    		        	  String stringToNullify = stringsToNullifyAsStringArray[j];
-				    		        	  
-				    		        	  if (j > 0) {
-				    		        		  
-				    		        		  conditionForUpdateSQL += " OR ";
-				    		        	  }
-				    		        	  
-				    		        	  conditionForUpdateSQL += "`" + columnName + "` = '" + stringToNullify + "'";
-				    		          }
-				    		          
-				    		          PreparedStatement preparedStatement3 = connection.prepareStatement("UPDATE `" + datatableModel.getName() + "` SET `" + columnName + "` = NULL WHERE " + conditionForUpdateSQL + ";");
-				    		          preparedStatement3.executeUpdate();
-				    		          preparedStatement3.close();
-				    		          
-		    		        	  }
-		    		        	  
-		    		          } else {
-		    		        	  //When no NULLs are specified, the default behavior is to interpret these values as NULL: NULL, \N and "\N"
-		    		          }
-		    		          
+					    		          for (int j = 0; j < stringsToNullifyAsStringArray.length; j++) {
+					    		        	  
+					    		        	  String stringToNullify = stringsToNullifyAsStringArray[j];
+					    		        	  
+					    		        	  if (j > 0) {
+					    		        		  
+					    		        		  conditionForUpdateSQL += " OR ";
+					    		        	  }
+					    		        	  
+					    		        	  conditionForUpdateSQL += "`" + columnName + "` = '" + stringToNullify + "'";
+					    		          }
+					    		          
+					    		          PreparedStatement preparedStatement3 = connection.prepareStatement("UPDATE `" + datatableModel.getName() + "` SET `" + columnName + "` = NULL WHERE " + conditionForUpdateSQL + ";");
+					    		          preparedStatement3.executeUpdate();
+					    		          preparedStatement3.close();
+					    		          
+			    		        	  }
+			    		        	  
+			    		          } else {
+			    		        	  //When no NULLs are specified, the default behavior is to interpret these values as NULL: NULL, \N and "\N"
+			    		          }
+			    		          
+			    		          
+			    		          
+			    		        }
+			    		        catch(SQLException sqlException){
+			    			    	sqlException.printStackTrace();
+			    		        } 
 		    		          
 		    		          
 		    		        }
 		    		        catch(SQLException sqlException){
 		    			    	sqlException.printStackTrace();
 		    		        } 
-	    		          
-	    		          
-	    		        }
-	    		        catch(SQLException sqlException){
-	    			    	sqlException.printStackTrace();
-	    		        } 
-	    	         
-	        	      
+		    	         
+	        	      } else {
+	        	    	  
+	        	    	  //TODO: appropriate error
+	        	    	  //columnNames.length <= 0
+	        	      }
 	        	      
 	        	    } else {
 	        	    	
-	        	    	//TODO:
-	        	    	//(strLine = bufferedReader.readLine()) == null
+	        	    	logger.severe("bufferedReader.readLine() is null");
 	        	    }
 
 	        	    dataInputStream.close();

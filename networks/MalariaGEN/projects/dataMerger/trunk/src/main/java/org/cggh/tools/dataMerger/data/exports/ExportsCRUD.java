@@ -203,13 +203,10 @@ public class ExportsCRUD implements java.io.Serializable  {
 			preparedStatement.executeQuery();
 			preparedStatement.close();		
 
-			
-			//FIXME: Check whether it was truly successful
+		
 			exportModel.getMergedDatatableModel().setExportRepositoryFilepath(exportDirectory.toString() + pathSeparatorForRepositoryFilepath + fileName);
-			exportModel.getMergedDatatableModel().setExportSuccessful(true);
 			
 			this.updateExportMergedDatatableExportRepositoryFilepathUsingExportModel(exportModel, connection);
-			this.updateExportMergedDatatableExportSuccessfulUsingExportModel(exportModel, connection);
 			
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
@@ -236,24 +233,6 @@ public class ExportsCRUD implements java.io.Serializable  {
 		}
 		
 	}		
-
-	public void updateExportMergedDatatableExportSuccessfulUsingExportModel(
-			ExportModel exportModel, Connection connection) {
-		try {
-			//Update the export table
-			PreparedStatement preparedStatement = connection.prepareStatement("UPDATE `export` SET merged_datatable_export_successful = ? WHERE id = ?;");
-			
-			preparedStatement.setBoolean(1, exportModel.getMergedDatatableModel().getExportSuccessful());
-			preparedStatement.setInt(2, exportModel.getId());
-			
-			preparedStatement.executeUpdate();
-			preparedStatement.close();  
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
-
 
 
 
@@ -304,14 +283,10 @@ public class ExportsCRUD implements java.io.Serializable  {
 			preparedStatement.executeQuery();
 			preparedStatement.close();		
 
-			
-			//FIXME: Check whether it was truly successful
 			exportModel.getMergeModel().getJoinsModel().setExportRepositoryFilepath(exportDirectory.toString() + this.getFilebaseModel().getFilepathSeparator() + fileName);
-			exportModel.getMergeModel().getJoinsModel().setExportSuccessful(true);
 			
 			this.updateExportJoinsExportRepositoryFilepathUsingExportModel(exportModel, connection);
-			this.updateExportJoinsExportSuccessfulUsingExportModel(exportModel, connection);
-			
+
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -340,25 +315,6 @@ public class ExportsCRUD implements java.io.Serializable  {
 	}
 
 		
-	
-	
-	public void updateExportJoinsExportSuccessfulUsingExportModel(
-			ExportModel exportModel, Connection connection) {
-		try {
-			//Update the export table
-			PreparedStatement preparedStatement = connection.prepareStatement("UPDATE `export` SET joins_export_successful = ? WHERE id = ?;");
-			
-			preparedStatement.setBoolean(1, exportModel.getMergeModel().getJoinsModel().getExportSuccessful());
-			preparedStatement.setInt(2, exportModel.getId());
-			
-			preparedStatement.executeUpdate();
-			preparedStatement.close();  
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
-
 
 
 	
@@ -434,13 +390,10 @@ public class ExportsCRUD implements java.io.Serializable  {
 			preparedStatement.executeQuery();
 			preparedStatement.close();		
 
-			
-			//FIXME: Check whether it was truly successful
 			exportModel.getMergeModel().getResolutionsModel().setExportRepositoryFilepath(exportDirectory.toString() + pathSeparatorForRepositoryFilepath + fileName);
-			exportModel.getMergeModel().getResolutionsModel().setExportSuccessful(true);
-			
+
 			this.updateExportResolutionsExportRepositoryFilepathUsingExportModel(exportModel, connection);
-			this.updateExportResolutionsExportSuccessfulUsingExportModel(exportModel, connection);
+
 			
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
@@ -449,24 +402,6 @@ public class ExportsCRUD implements java.io.Serializable  {
 		
 	}
 
-
-	public void updateExportResolutionsExportSuccessfulUsingExportModel(
-			ExportModel exportModel, Connection connection) {
-		
-		try {
-			//Update the export table
-			PreparedStatement preparedStatement = connection.prepareStatement("UPDATE `export` SET resolutions_export_successful = ? WHERE id = ?;");
-			
-			preparedStatement.setBoolean(1, exportModel.getMergeModel().getResolutionsModel().getExportSuccessful());
-			preparedStatement.setInt(2, exportModel.getId());
-			
-			preparedStatement.executeUpdate();
-			preparedStatement.close();  
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
 
 
 	public void updateExportResolutionsExportRepositoryFilepathUsingExportModel(

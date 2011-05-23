@@ -7,14 +7,17 @@
 DatabasesCRUD databasesCRUD = new DatabasesCRUD();
 DatabaseModel databaseModel = databasesCRUD.retrieveDatabaseAsDatabaseModelUsingServletContext(request.getSession().getServletContext());
 
-UsersCRUD usersCRUD = new UsersCRUD();
-usersCRUD.setDatabaseModel(databaseModel);
-UserModel userModel = usersCRUD.retrieveUserAsUserModelUsingUsername(request.getRemoteUser());
+if (databaseModel.isInitialized()) {
 	
-if (userModel.getId() == null) {
-
-	usersCRUD.createUserUsingUsername(userModel.getUsername());
-	userModel = usersCRUD.retrieveUserAsUserModelUsingUsername(userModel.getUsername());
+	UsersCRUD usersCRUD = new UsersCRUD();
+	usersCRUD.setDatabaseModel(databaseModel);
+	UserModel userModel = usersCRUD.retrieveUserAsUserModelUsingUsername(request.getRemoteUser());
+		
+	if (userModel.getId() == null) {
 	
+		usersCRUD.createUserUsingUsername(userModel.getUsername());
+		userModel = usersCRUD.retrieveUserAsUserModelUsingUsername(userModel.getUsername());
+		
+	}
 }
 %>

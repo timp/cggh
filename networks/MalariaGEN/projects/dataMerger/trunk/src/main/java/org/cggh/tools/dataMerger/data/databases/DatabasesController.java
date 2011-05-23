@@ -71,4 +71,49 @@ public class DatabasesController extends HttpServlet {
 		
 	}
 	
+	protected void doDelete (HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		
+		
+		String[] headerAcceptsAsStringArray = request.getHeader("Accept").split(",");
+		List<String> headerAcceptsAsStringList = Arrays.asList(headerAcceptsAsStringArray);
+
+		  if (headerAcceptsAsStringList.contains("text/plain")) { 
+				 
+			  response.setContentType("text/plain");
+			  String responseAsPlainText = null;
+			  
+					DatabasesCRUD databasesCRUD = new DatabasesCRUD();
+					DatabaseModel databaseModel = databasesCRUD.retrieveDatabaseAsDatabaseModelUsingServletContext(request.getSession().getServletContext());
+					
+					if (databaseModel.isServerConnectable()) {
+					
+						if (databasesCRUD.deleteDatabaseUsingDatabaseModel(databaseModel)) {
+							
+							responseAsPlainText = "Database deleted.";
+							
+							
+						} else {
+							
+							responseAsPlainText = "Database deleting failed.";
+							
+						}
+					
+					} else {
+						
+						responseAsPlainText = "Database server is not connectable.";
+						
+					}
+					
+		  
+			  response.getWriter().print(responseAsPlainText);
+
+		  } else {
+
+			  response.setContentType("text/plain");
+			  response.getWriter().print("Unsupported accept header.");
+			  
+		  }	 
+		
+	}
+	
 }

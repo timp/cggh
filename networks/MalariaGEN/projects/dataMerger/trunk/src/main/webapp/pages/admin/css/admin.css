@@ -30,3 +30,10 @@
 	padding-left: 20px; 
 }
 
+.systemInformationTable .pass {
+	color: green;
+}
+.systemInformationTable .fail {
+	color: red;
+	font-weight: bold;
+}

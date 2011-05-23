@@ -22,7 +22,6 @@ public class UploadModel implements java.io.Serializable {
 	private String repositoryFilepath;
 	private Integer id;
 	private Timestamp createdDatetime;
-	private boolean successful;
 	private String originalFilename;
 	private DatatableModel datatableModel;
 
@@ -76,7 +75,6 @@ public class UploadModel implements java.io.Serializable {
 	          PreparedStatement preparedStatement = connection.prepareStatement(
 	        		  "SELECT original_filename, " + 
 	        		  "repository_filepath, " +
-	        		  "successful, " + 
 	        		  "created_by_user_id, " + 
 	        		  "created_datetime, " + 
 	        		  "FROM upload WHERE id = ?;");
@@ -93,7 +91,6 @@ public class UploadModel implements java.io.Serializable {
 	        	  
 	        	  this.setOriginalFilename(resultSet.getString("original_filename"));
 	        	  this.setRepositoryFilepath(resultSet.getString("repository_filepath"));
-	        	  this.setSuccessful(resultSet.getBoolean("successful"));
 	        	  this.getCreatedByUserModel().setId(resultSet.getInt("created_by_user_id"));
 	        	  this.setCreatedDatetime(resultSet.getTimestamp("created_datetime"));
 	        	  
@@ -127,15 +124,6 @@ public class UploadModel implements java.io.Serializable {
 		return this.createdDatetime;
 	}
 
-
-	public void setSuccessful(final boolean successful) {
-
-		this.successful = successful;
-	}
-	public Boolean isSuccessful() {
-
-		return this.successful;
-	}
 
 
 

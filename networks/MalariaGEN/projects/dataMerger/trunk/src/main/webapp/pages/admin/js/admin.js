@@ -1,12 +1,18 @@
 function initAdminFunctions () {
 
 	initCreateDatabaseFunction();
+	initDeleteDatabaseFunction();
+	
+	initCreateDatabaseTablesFunction();
+	initDeleteDatabaseTablesFunction();
+	
 	initCreateFilebaseFunction();
+	initDeleteFilebaseFunction();
 }
 
 function initCreateDatabaseFunction () {
 	
-	$('.create-database-button').click(
+	$('.createDatabaseButton').click(
 			
 			function () {
 				
@@ -30,9 +36,91 @@ function initCreateDatabaseFunction () {
 	
 }
 
+function initDeleteDatabaseFunction () {
+	
+	$('.deleteDatabaseButton').click(
+			
+			function () {
+				
+				$.ajax({
+					  type: "DELETE",
+					  data: '',
+					  url: "/dataMerger/data/databases",
+					  dataType: "text",
+					  success: function(data, textStatus, jqXHR) {
+							$('.ajaxResponse').html("Response: " + data);
+					  },
+					  error:function (jqXHR, textStatus, errorThrown){
+							$('.ajaxError').html("Error: " + errorThrown);
+			          },
+						beforeSend: function() { $('.deleting-database-indicator').show(); },
+				        complete: function() { $('.deleting-database-indicator').hide(); }
+					});
+			}
+			
+		);
+	
+}
+
+
+function initCreateDatabaseTablesFunction () {
+	
+	$('.createAndInitializeTablesButton').click(
+			
+			function () {
+				
+				$.ajax({
+					  type: "POST",
+					  data: '',
+					  url: "/dataMerger/scripts/data/tables/create-and-initialize",
+					  dataType: "text",
+					  success: function(data, textStatus, jqXHR) {
+							$('.ajaxResponse').html("Response: " + data);
+					  },
+					  error:function (jqXHR, textStatus, errorThrown){
+							$('.ajaxError').html("Error: " + errorThrown);
+			          },
+						beforeSend: function() { $('.creating-database-tables-indicator').show(); },
+				        complete: function() { $('.creating-database-tables-indicator').hide(); }
+					});
+			}
+			
+		);
+}
+
+function initDeleteDatabaseTablesFunction () {
+	
+	$('.deleteDatabaseTablesButton').click(
+			
+			function () {
+				
+				$.ajax({
+					  type: "DELETE",
+					  data: '',
+					  url: "/dataMerger/scripts/data/tables/delete-all",
+					  dataType: "text",
+					  success: function(data, textStatus, jqXHR) {
+							$('.ajaxResponse').html("Response: " + data);
+					  },
+					  error:function (jqXHR, textStatus, errorThrown){
+							$('.ajaxError').html("Error: " + errorThrown);
+			          },
+						beforeSend: function() { $('.deleting-database-tables-indicator').show(); },
+				        complete: function() { $('.deleting-database-tables-indicator').hide(); }
+					});
+			}
+			
+		);
+}
+
+
+
+
+
+
 function initCreateFilebaseFunction () {
 	
-	$('.create-filebase-button').click(
+	$('.createFilebaseButton').click(
 			
 			function () {
 				
@@ -56,45 +144,29 @@ function initCreateFilebaseFunction () {
 	
 }
 
-$('.install-1_0-button').click(
-		function () {
 
-			
-			$.ajax({
-				  type: "POST",
-				  url: "/dataMerger/scripts/install-v1.0",
-				  dataType: "html",
-				  success: function(data, textStatus, jqXHR) {
-						$('.response').html("Response: " + data);
-						$('.status').html("textStatus: " + textStatus);
-				  },
-				  error:function (jqXHR, textStatus, errorThrown){
-						$('.response').html("Response: " + data);
-		                $('.error').html("errorThrown: " + errorThrown);
-		                $('.status').html("textStatus: " + textStatus);
-		          } 
-				});
-		}
-		
-	);
-	$('.uninstall-1_0-button').click(
-			function () {
+function initDeleteFilebaseFunction () {
 	
+	$('.deleteFilebaseButton').click(
+			
+			function () {
 				
 				$.ajax({
-					  type: "POST",
-					  url: "/dataMerger/scripts/uninstall-v1.0",
-					  dataType: "html",
+					  type: "DELETE",
+					  data: '',
+					  url: "/dataMerger/files/filebases",
+					  dataType: "text",
 					  success: function(data, textStatus, jqXHR) {
-							$('.response').html("Response: " + data);
-							$('.status').html("textStatus: " + textStatus);
+							$('.ajaxResponse').html("Response: " + data);
 					  },
 					  error:function (jqXHR, textStatus, errorThrown){
-							$('.response').html("Response: " + data);
-			                $('.error').html("errorThrown: " + errorThrown);
-			                $('.status').html("textStatus: " + textStatus);
-			          } 
+							$('.ajaxError').html("Error: " + errorThrown);
+			          },
+						beforeSend: function() { $('.deleting-filebase-indicator').show(); },
+				        complete: function() { $('.deleting-filebase-indicator').hide(); }
 					});
 			}
 			
 		);
+	
+}

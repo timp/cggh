@@ -24,6 +24,7 @@ public class DatabaseModel {
 	private InstallationModel currentInstallationModel;
 	private ServletContext servletContext;
 	private ArrayList<String> tableNamesAsStringArrayList;
+	private Boolean initialized; 
 
 	public DatabaseModel () {
 
@@ -38,6 +39,8 @@ public class DatabaseModel {
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 		}
+		
+		setInitialized(false);
 		
 	}
 
@@ -181,6 +184,14 @@ public class DatabaseModel {
 
 	public ArrayList<String> getTableNamesAsStringArrayList() {
 		return tableNamesAsStringArrayList;
+	}
+
+	public void setInitialized(Boolean initialized) {
+		this.initialized = initialized;
+	}
+
+	public Boolean isInitialized() {
+		return initialized;
 	}
 
 	

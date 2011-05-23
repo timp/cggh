@@ -41,6 +41,8 @@
 			
 			<h2 class="page-title">Admin</h2>
 			
+			<div class="divider-space"></div>
+			
 			<h3>System check:</h3>
 			<ul class="systemCheckList">
 			
@@ -54,6 +56,12 @@
 				<li class="pass">Database is connectable.</li>
 				<% } else { %>
 				<li class="fail">Database is not connectable.</li>
+				<% } %>
+				
+				<% if (databaseModel.getTablesAsCachedRowSet().size() >= 11) { %>
+				<li class="pass">Database tables count &gt;= 11.</li>
+				<% } else { %>
+				<li class="fail">Database tables count &lt; 11.</li>
 				<% } %>
 				
 				<% if (filebaseModel.isReadable()) { %>
@@ -89,6 +97,8 @@
 			<% } %>
 
 			
+			<div class="divider-space"></div>
+			
 			<h3>System information:</h3>
 			<table class="systemInformationTable">
 				<tr>
@@ -97,11 +107,19 @@
 				</tr>
 				<tr>	
 					<th>Database version:</th>
-					<td><%=databaseModel.getVersionAsString() %><td>
+					<% if (databaseModel.getVersionAsString() != null) { %>
+					<td class="pass"><%=databaseModel.getVersionAsString() %><td>
+					<% } else { %>
+					<td class="fail"><%=databaseModel.getVersionAsString() %><td>
+					<% } %>
 				</tr>
 				<tr>
 					<th>Database tables count:</th>
-					<td><%=databaseModel.getTablesAsCachedRowSet().size() %><td>
+					<% if (databaseModel.getTablesAsCachedRowSet().size() >= 11) { %>
+					<td class="pass"><%=databaseModel.getTablesAsCachedRowSet().size() %><td>
+					<% } else { %>
+					<td class="fail"><%=databaseModel.getTablesAsCachedRowSet().size() %><td>
+					<% } %>
 				</tr>
 				<tr>
 					<th>Filebase version:</th>
@@ -115,22 +133,37 @@
 			
 			<div class="clearBoth"></div>
 			
-			<h3>Version management:</h3>
+			<div class="divider-space"></div>
 			
-			<h4>v1.0</h4>
-			<p>
-				<button class="install-1_0-button">Install</button>
-				<button class="uninstall-1_0-button">Uninstall</button>
-				
-			</p>
+			<h3>Database:</h3>
 			
-			<h4>v1.1</h4>
 			<p>
-				<button class="upgrade-1_0-to-1_1-button">Upgrade from v1.0</button>
-				<button class="install-1_1-button">Install</button>
-				<button class="uninstall-1_1-button">Uninstall</button>
+				<img class="creating-database-indicator" src="../shared/gif/loading.gif" style="display:none" title="Creating..."/>
+				<button class="createDatabaseButton">Create</button>
+				<button class="deleteDatabaseButton">Delete</button>
+				<img class="deleting-database-indicator" src="../shared/gif/loading.gif" style="display:none" title="Deleting..."/>
 			</p>
+			<div class="divider-space"></div>
 		
+			<h3>Database Tables:</h3>
+			
+			<p>
+				<img class="creating-database-tables-indicator" src="../shared/gif/loading.gif" style="display:none" title="Creating..."/>
+				<button class="createAndInitializeTablesButton">Create and Initialize</button>
+				<button class="deleteDatabaseTablesButton">Delete</button>
+				<img class="deleting-database-tables-indicator" src="../shared/gif/loading.gif" style="display:none" title="Deleting..."/>
+			</p>
+			<div class="divider-space"></div>
+			
+			<h3>Filebase:</h3>
+			
+			<p>
+				<img class="creating-filebase-indicator" src="../shared/gif/loading.gif" style="display:none" title="Creating..."/>
+				<button class="createFilebaseButton">Create</button>
+				<button class="deleteFilebaseButton">Delete</button>
+				<img class="deleting-filebase-indicator" src="../shared/gif/loading.gif" style="display:none" title="Deleting..."/>
+			</p>
+			<div class="divider-space"></div>
 			
 		</div>
 

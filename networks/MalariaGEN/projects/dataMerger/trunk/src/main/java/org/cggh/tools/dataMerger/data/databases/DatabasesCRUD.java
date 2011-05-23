@@ -92,6 +92,8 @@ public class DatabasesCRUD {
 				
 					databaseModel.setVersionAsString(installationFunctions.determineVersionAsStringUsingInstallationModel(databaseModel.getCurrentInstallationModel()));
 				
+					databaseModel.setInitialized(true);
+					
 				} else {
 					
 					//The database installation table was introduced in version 1.1.0
@@ -122,7 +124,7 @@ public class DatabasesCRUD {
 				  PreparedStatement preparedStatement = connection.prepareStatement(
 						  "SELECT i1.* " +
 						  "FROM installation i1 " +
-						  "LEFT JOIN installation i2 ON s1.id = s2.id AND s1.created_datetime < s2.created_datetime " +
+						  "LEFT JOIN installation i2 ON i1.id = i2.id AND i1.created_datetime < i2.created_datetime " +
 						  "WHERE i2.id IS NULL" +
 						  ";");
 				  preparedStatement.executeQuery();
@@ -299,6 +301,47 @@ public class DatabasesCRUD {
 	        }
 
 	    return lastInsertId;   
+	}
+
+
+	public boolean deleteDatabaseUsingDatabaseModel(DatabaseModel databaseModel) {
+		
+		Connection serverConnection = databaseModel.getNewServerConnection();
+		
+		if (serverConnection != null) {
+		
+			 try {
+			  
+				Statement statement = serverConnection.createStatement();
+				statement.executeUpdate("DROP DATABASE `" + databaseModel.getName() +  "`;");
+				statement.close();
+		        
+		        return true;
+			  }
+			  catch (SQLException sqlException){
+				  
+				  sqlException.printStackTrace();
+				
+			  }
+			  finally {
+				  
+				try {
+					serverConnection.close();
+				} 
+				catch (SQLException e) {
+					e.printStackTrace();
+				}
+				
+			  }
+			  
+			  return false;
+
+		} else {
+			
+			//CRUD should not have been attempted unless isServerConnectable
+			this.logger.severe("serverConnection is null");
+			return false;
+		}
 	}
 	
 }

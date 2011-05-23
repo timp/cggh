@@ -14,6 +14,8 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Arrays;
+import java.util.List;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -457,6 +459,9 @@ public class FilesController extends HttpServlet {
 	            	     InputStream inputStream = null;
 	            	     FileOutputStream fileOutputStream = null;
 	            		 
+	            	     //TODO: improve this
+	            	     Boolean successful = null;
+	            	     
 	            	     try {
 	            			 
 	            			 	inputStream = request.getInputStream();
@@ -464,17 +469,22 @@ public class FilesController extends HttpServlet {
 					            IOUtils.copy(inputStream, fileOutputStream);
 					            
 					            
-					            uploadModel.setSuccessful(true);
+					            uploadsCRUD.updateUploadRepositoryFilepathUsingUploadModel(uploadModel, connection);
+					            
+					            successful = true;
+					            
+					            
 					            
 	            	     } catch (FileNotFoundException ex) {
-					        	
-					        	uploadModel.setSuccessful(false);
-					        	ex.printStackTrace();
+					        
+	            	    	 successful = false;
+					         ex.printStackTrace();
+					         
 					        	
 	            	     } catch (IOException ex) {
 					        	
-					        	uploadModel.setSuccessful(false);
-					        	ex.printStackTrace();
+	            	    	 successful = false;
+					        ex.printStackTrace();
 
 					     } finally {
 					    	 
@@ -487,7 +497,7 @@ public class FilesController extends HttpServlet {
 					     }	
 	            		 
 	            		 
-	            		 uploadsCRUD.updateUploadUsingUploadModel(uploadModel, connection);
+	            		 
 	            		 
 	            		 try {
 							connection.close();
@@ -496,7 +506,7 @@ public class FilesController extends HttpServlet {
 	            		 }
 	            		 
 	            		//TODO: content negotiation
-	            		 if (uploadModel.isSuccessful()) {
+	            		 if (successful) {
 	            			 
 	            	         response.setContentType("application/json");
 	            			 response.setStatus(HttpServletResponse.SC_OK);
@@ -517,19 +527,11 @@ public class FilesController extends HttpServlet {
         			 
         		 } else {
         			 
-        			 logger.severe("request parameter qqfile is null or empty");
+        			 logger.severe("request header X-File-Name is null or empty");
         			 
         		 }
         		
         	}
-        	
-        	
-        	
-        	
-        	
-        	//TODO: Deprecate
-        	///////////////////OLD STUFF
-        	
         	
         	
 
@@ -542,11 +544,7 @@ public class FilesController extends HttpServlet {
         	response.getWriter().print("Unhandled pathInfo.");
         	
         }
-        
-        response.getWriter().flush();
-        response.getWriter().close();
 
-		
 	}
 
 	

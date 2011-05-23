@@ -53,7 +53,7 @@ public class UploadsCRUD implements java.io.Serializable {
 			if (connection != null) {
 
 			      try{
-			          PreparedStatement preparedStatement = connection.prepareStatement("SELECT id, original_filename, created_by_user_id, created_datetime FROM upload WHERE created_by_user_id = ? AND successful = 1;");
+			          PreparedStatement preparedStatement = connection.prepareStatement("SELECT id, original_filename, created_by_user_id, created_datetime FROM upload WHERE created_by_user_id = ? AND repository_filepath IS NOT NULL;");
 			          preparedStatement.setInt(1, userModel.getId());
 			          preparedStatement.executeQuery();
 			          Class<?> cachedRowSetImplClass = Class.forName(CACHED_ROW_SET_IMPL_CLASS);
@@ -92,7 +92,7 @@ public class UploadsCRUD implements java.io.Serializable {
 		uploadModel.setId(uploadId);
 		
 	      try{
-	          PreparedStatement preparedStatement = connection.prepareStatement("SELECT id, original_filename, repository_filepath, successful, created_by_user_id, created_datetime FROM `upload` WHERE id = ?;");
+	          PreparedStatement preparedStatement = connection.prepareStatement("SELECT id, original_filename, repository_filepath, created_by_user_id, created_datetime FROM `upload` WHERE id = ?;");
 	          preparedStatement.setInt(1, uploadModel.getId());
 	          preparedStatement.executeQuery();
 	          ResultSet resultSet = preparedStatement.getResultSet();
@@ -104,7 +104,6 @@ public class UploadsCRUD implements java.io.Serializable {
 	        	  //Set the upload data
 	        	  uploadModel.setOriginalFilename(resultSet.getString("original_filename"));
 	        	  uploadModel.setRepositoryFilepath(resultSet.getString("repository_filepath"));
-	        	  uploadModel.setSuccessful(resultSet.getBoolean("successful"));
 	        	  uploadModel.getCreatedByUserModel().setId(resultSet.getInt("created_by_user_id"));
 	        	  uploadModel.setCreatedDatetime(resultSet.getTimestamp("created_datetime"));
 	        	  
@@ -185,17 +184,15 @@ public class UploadsCRUD implements java.io.Serializable {
 		
 	}
 
-	public void updateUploadUsingUploadModel(UploadModel uploadModel, Connection connection) {
+	public void updateUploadRepositoryFilepathUsingUploadModel(UploadModel uploadModel, Connection connection) {
 		
 		if (connection != null) {
 			
 			try {
 	          PreparedStatement preparedStatement = connection.prepareStatement("UPDATE upload SET " +
 	          																		"repository_filepath = ?, " +
-	          																		"successful = ? " +
 	          																		"WHERE id = ?;");
 	          preparedStatement.setString(1, uploadModel.getRepositoryFilepath());
-	          preparedStatement.setBoolean(2, uploadModel.isSuccessful());
 	          preparedStatement.setInt(3, uploadModel.getId());
 	          preparedStatement.executeUpdate();
 	          preparedStatement.close();
