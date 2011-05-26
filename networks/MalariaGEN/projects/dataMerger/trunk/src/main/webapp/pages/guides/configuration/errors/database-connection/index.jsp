@@ -30,18 +30,16 @@
 					
 					<p>The application cannot connect to the specified database using the specified parameters.</p>
 					
-					<p>Possible causes and solutions:
-						<ul>
-							<li>The values specified in the [dataMerger-webapp]/WEB-INF/web.xml are incorrect.</li>
-							<li>The database has not been installed.</li>
-						</ul>
-					
-					</p>			
+					<h6>Possible causes:</h6>
+					<ul>
+						<li>The values specified in the web.xml are incorrect (/webapps/dataMerger/WEB-INF/web.xml).</li>
+						<li>The database has not been installed.</li>
+					</ul>	
 					
 					<p>The required configuration parameters are databaseDriverFullyQualifiedClassName, databaseServerPath, databaseName, databaseUsername, databasePassword.
 					</p>
 					
-					<p>The required values can be seen on the configuration page.
+					<p>The required values can be seen on the <a href="../../">configuration page</a>.
 					</p>
 					
 					<p>For application administrators, the current values can be seen on the <a href="../../">configuration page</a> and the database can be installed using the <a href="/pages/admin/">admin section</a>.

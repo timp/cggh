@@ -10,17 +10,27 @@ DatabaseModel databaseModel = databasesCRUD.retrieveDatabaseAsDatabaseModelUsing
 //Note: Made available in the page scope.
 UserModel userModel = null;
 
-if (databaseModel.isInitialized()) {
+if (databaseModel.isConnectable()) {
 	
-	UsersCRUD usersCRUD = new UsersCRUD();
-	usersCRUD.setDatabaseModel(databaseModel);
-	userModel = usersCRUD.retrieveUserAsUserModelUsingUsername(request.getRemoteUser());
+	if (databaseModel.isInitialized()) {
 		
-	if (userModel.getId() == null) {
-	
-		usersCRUD.createUserUsingUsername(userModel.getUsername());
-		userModel = usersCRUD.retrieveUserAsUserModelUsingUsername(userModel.getUsername());
+		UsersCRUD usersCRUD = new UsersCRUD();
+		usersCRUD.setDatabaseModel(databaseModel);
+		userModel = usersCRUD.retrieveUserAsUserModelUsingUsername(request.getRemoteUser());
+			
+		if (userModel.getId() == null) {
 		
+			usersCRUD.createUserUsingUsername(userModel.getUsername());
+			userModel = usersCRUD.retrieveUserAsUserModelUsingUsername(userModel.getUsername());
+			
+		}
+		
+	} else {
+		response.sendRedirect("/dataMerger/pages/guides/configuration/errors/database-initialization");
 	}
+	
+} else {
+	response.sendRedirect("/dataMerger/pages/guides/configuration/errors/database-connection");
 }
+
 %>

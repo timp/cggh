@@ -27,6 +27,7 @@
 					<p>This application is available from the Google Code repository as a WAR file, which can be deployed as a web application onto Apache Tomcat. 
 					</p>
 					
+					<h4>Steps</h4>
 					<ol>
 						<li>Deploy WAR</li>
 						<li>Configure the web.xml and tomcat-users.xml files.</li>
@@ -45,7 +46,7 @@
 				
 				
 				
-					<h5>More info:</h5>
+					<h4>More information</h4>
 					<ul>
 						<li><a target="_blank" href="http://en.wikipedia.org/wiki/WAR_file_format_(Sun)">WAR file format (Sun)</a>
 						</li>

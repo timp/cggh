@@ -17,7 +17,7 @@
 
 			<h2 class="page-title">Welcome</h2>
 
-			<p>This is the dataMerger application, designed to help MalariaGEN merge clinical data files downloaded from Topheno.
+			<p>This is the dataMerger application, designed to help MalariaGEN merge the clinical data files downloaded from Topheno.
 			</p>
 
 			
