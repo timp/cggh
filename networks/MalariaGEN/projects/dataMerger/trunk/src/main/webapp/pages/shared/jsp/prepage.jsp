@@ -7,11 +7,14 @@
 DatabasesCRUD databasesCRUD = new DatabasesCRUD();
 DatabaseModel databaseModel = databasesCRUD.retrieveDatabaseAsDatabaseModelUsingServletContext(request.getSession().getServletContext());
 
+//Note: Made available in the page scope.
+UserModel userModel = null;
+
 if (databaseModel.isInitialized()) {
 	
 	UsersCRUD usersCRUD = new UsersCRUD();
 	usersCRUD.setDatabaseModel(databaseModel);
-	UserModel userModel = usersCRUD.retrieveUserAsUserModelUsingUsername(request.getRemoteUser());
+	userModel = usersCRUD.retrieveUserAsUserModelUsingUsername(request.getRemoteUser());
 		
 	if (userModel.getId() == null) {
 	

@@ -190,10 +190,10 @@ public class UploadsCRUD implements java.io.Serializable {
 			
 			try {
 	          PreparedStatement preparedStatement = connection.prepareStatement("UPDATE upload SET " +
-	          																		"repository_filepath = ?, " +
+	          																		"repository_filepath = ? " +
 	          																		"WHERE id = ?;");
 	          preparedStatement.setString(1, uploadModel.getRepositoryFilepath());
-	          preparedStatement.setInt(3, uploadModel.getId());
+	          preparedStatement.setInt(2, uploadModel.getId());
 	          preparedStatement.executeUpdate();
 	          preparedStatement.close();
 

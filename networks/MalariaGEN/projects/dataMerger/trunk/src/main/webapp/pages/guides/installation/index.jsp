@@ -27,11 +27,17 @@
 					<p>This application is available from the Google Code repository as a WAR file, which can be deployed as a web application onto Apache Tomcat. 
 					</p>
 					
+					<ol>
+						<li>Deploy WAR</li>
+						<li>Configure the web.xml and tomcat-users.xml files.</li>
+						<li>Use the Admin page to create the database, database tables, filebase and filebase directories.</li>
+					</ol>
 		
-		
-					<h4>Requirements</h4>
+					<h4>System requirements</h4>
 					
 					<ul>
+						<li>Tomcat</li>
+						<li>MySQL</li>
 						<li>Tomcat and MySQL need read and write access to the file repository path, which can be set in the web.xml.</li>
 						<li>The MySQL database user needs the FILE permission, which is not database-specific.</li>
 					</ul>
@@ -48,6 +54,8 @@
 						<li><a target="_blank" href="http://code.google.com/p/cggh/">Google Code project for this application</a>
 						</li>
 						<li><a target="_blank" href="http://tomcat.apache.org/">Apache Tomcat</a>
+						</li>
+						<li><a target="_blank" href="http://www.mysql.com/">MySQL</a>
 						</li>
 					</ul>
 						
