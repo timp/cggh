@@ -4,7 +4,7 @@
 
   <groupId>org.cggh.tools</groupId>
   <artifactId>dataMerger</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
+  <version>1.1.0-RC-1-SNAPSHOT</version>
   <packaging>war</packaging>
 
   <name>dataMerger</name>
