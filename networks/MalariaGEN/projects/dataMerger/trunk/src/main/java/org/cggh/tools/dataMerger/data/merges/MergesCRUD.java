@@ -20,7 +20,7 @@ import org.cggh.tools.dataMerger.data.users.UserModel;
 import org.cggh.tools.dataMerger.functions.joins.JoinFunctionsModel;
 import org.cggh.tools.dataMerger.functions.merges.MergeFunctionsModel;
 import org.cggh.tools.dataMerger.functions.merges.MergesFunctionsModel;
-import org.cggh.tools.dataMerger.scripts.merges.MergeScriptsModel;
+import org.cggh.tools.dataMerger.scripts.merges.MergeScripts;
 
 
 public class MergesCRUD implements java.io.Serializable {
@@ -218,7 +218,7 @@ public class MergesCRUD implements java.io.Serializable {
 						
 						
 						// Guess joins automatically.
-						MergeScriptsModel mergeScriptsModel = new MergeScriptsModel();
+						MergeScripts mergeScriptsModel = new MergeScripts();
 						mergeModel = mergeScriptsModel.retrieveMergeAsMergeModelThroughGuessingJoinsUsingMergeModel(mergeModel, connection);
 
 						
@@ -287,7 +287,7 @@ public class MergesCRUD implements java.io.Serializable {
 	public MergeModel retrieveMergeAsMergeModelThroughCountingDuplicateKeysUsingMergeModel(
 			MergeModel mergeModel, Connection connection) {
 		
-		MergeScriptsModel mergeScriptsModel = new MergeScriptsModel();
+		MergeScripts mergeScriptsModel = new MergeScripts();
 		
 		//TODO: Merge 1 + 2
 		mergeModel = mergeScriptsModel

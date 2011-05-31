@@ -7,6 +7,8 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.logging.Logger;
 
@@ -43,7 +45,14 @@ public class FilebasesCRUD {
 		if (serverPath.canRead()) {
 			filebaseModel.setReadable(true);
 			
-			filebaseModel.setFilesAsStringArray(serverPath.list());
+			ArrayList<String> filesAsStringArrayList = new ArrayList<String>(); 
+			
+			String[] filesAsStringArray = serverPath.list();
+			for (int i = 0; i < filesAsStringArray.length; i++) {
+				filesAsStringArrayList.add(filesAsStringArray[i]);
+			}
+			
+			filebaseModel.setFilesAsStringArrayList(filesAsStringArrayList);
 			
 		} else {
 			filebaseModel.setReadable(false);

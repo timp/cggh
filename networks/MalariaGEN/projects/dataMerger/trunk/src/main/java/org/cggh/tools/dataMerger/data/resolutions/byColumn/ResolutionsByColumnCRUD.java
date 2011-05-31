@@ -10,7 +10,7 @@ import javax.sql.rowset.CachedRowSet;
 import org.cggh.tools.dataMerger.data.databases.DatabaseModel;
 import org.cggh.tools.dataMerger.data.merges.MergeModel;
 import org.cggh.tools.dataMerger.functions.resolutions.byColumn.ResolutionsByColumnFunctionsModel;
-import org.cggh.tools.dataMerger.scripts.merges.MergeScriptsModel;
+import org.cggh.tools.dataMerger.scripts.merges.MergeScripts;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -256,7 +256,7 @@ public class ResolutionsByColumnCRUD implements java.io.Serializable {
 		          
 	        	  //TODO: Recount the conflicts (take problems with solutions as 0, otherwise use the resolution conflict_count)
 
-	        	  MergeScriptsModel mergeScriptsModel = new MergeScriptsModel();
+	        	  MergeScripts mergeScriptsModel = new MergeScripts();
 	        	  mergeModel = mergeScriptsModel.retrieveMergeAsMergeModelThroughDeterminingTotalConflictsCountUsingMergeModel(mergeModel, connection);
 	        	  
 		          

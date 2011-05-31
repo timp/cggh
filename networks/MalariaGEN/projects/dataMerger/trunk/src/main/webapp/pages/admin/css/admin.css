@@ -1,9 +1,13 @@
+.refreshButtonContainer {
+	display: none;
+}
+
 .ajaxResponse {
 	
 	margin-top: 5px;
 	margin-bottom: 10px;
 	
-	color: green;
+	color: blue;
 }
 
 .ajaxError {

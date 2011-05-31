@@ -10,27 +10,44 @@ DatabaseModel databaseModel = databasesCRUD.retrieveDatabaseAsDatabaseModelUsing
 //Note: Made available in the page scope.
 UserModel userModel = null;
 
-if (databaseModel.isConnectable()) {
-	
-	if (databaseModel.isInitialized()) {
+if (databaseModel != null) {
+
+	if (databaseModel.isConnectable()) {
 		
-		UsersCRUD usersCRUD = new UsersCRUD();
-		usersCRUD.setDatabaseModel(databaseModel);
-		userModel = usersCRUD.retrieveUserAsUserModelUsingUsername(request.getRemoteUser());
+		if (databaseModel.isInitialized()) {
 			
-		if (userModel.getId() == null) {
-		
-			usersCRUD.createUserUsingUsername(userModel.getUsername());
-			userModel = usersCRUD.retrieveUserAsUserModelUsingUsername(userModel.getUsername());
+			UsersCRUD usersCRUD = new UsersCRUD();
+			usersCRUD.setDatabaseModel(databaseModel);
+			userModel = usersCRUD.retrieveUserAsUserModelUsingUsername(request.getRemoteUser());
+				
+			if (userModel.getId() == null) {
 			
+				usersCRUD.createUserUsingUsername(userModel.getUsername());
+				userModel = usersCRUD.retrieveUserAsUserModelUsingUsername(userModel.getUsername());
+				
+			}
+			
+		} else {
+			if (request.getServletPath().startsWith("/pages/admin/")) {
+				out.print("<p><a href=\"/dataMerger/pages/guides/configuration/errors/database-initialization\">database is not initialized<a></p>");
+			} else {
+				response.sendRedirect("/dataMerger/pages/guides/configuration/errors/database-initialization");
+			}
 		}
 		
 	} else {
-		response.sendRedirect("/dataMerger/pages/guides/configuration/errors/database-initialization");
+		if (request.getServletPath().startsWith("/pages/admin/")) {
+			out.print("<p><a href=\"/dataMerger/pages/guides/configuration/errors/database-connection\">cannot connect to database<a></p>");
+		} else {
+			response.sendRedirect("/dataMerger/pages/guides/configuration/errors/database-connection");
+		}
 	}
 	
 } else {
-	response.sendRedirect("/dataMerger/pages/guides/configuration/errors/database-connection");
+	if (request.getServletPath().startsWith("/pages/admin/")) {
+		out.print("<p><a href=\"/dataMerger/pages/guides/configuration/errors/database-connection\">cannot connect to database<a></p>");
+	} else {
+		response.sendRedirect("/dataMerger/pages/guides/configuration/errors/database-connection");
+	}
 }
-
 %>

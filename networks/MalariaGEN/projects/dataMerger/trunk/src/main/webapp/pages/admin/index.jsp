@@ -77,25 +77,14 @@
 				<% } %>
 			</ul>
 
+			<p class="refreshButtonContainer"><button onclick="window.location.reload(true)">Refresh</button>
+			</p>
 
 			<div class="ajaxResponse">
 			</div>
 			
 			<div class="ajaxError">
 			</div>		
-			
-			<% if (databaseModel.isServerConnectable() && !databaseModel.isConnectable()) { %>
-			<div><button class="create-database-button">Create database</button><img class="creating-database-indicator" src="../shared/gif/loading.gif" style="display:none" title="Processing..."/>
-			</div>
-			<% } %>
-
-			<%-- TODO: code --%>
-			<%-- If filebase some condition, show button to create filebase --%>
-			<% if (!filebaseModel.isExistent() && filebaseModel.isWritable()) { %>
-			<div><button class="create-filebase-button">Create filebase</button><img class="creating-filebase-indicator" src="../shared/gif/loading.gif" style="display:none" title="Processing..."/>
-			</div>
-			<% } %>
-
 			
 			<div class="divider-space"></div>
 			
@@ -127,7 +116,7 @@
 				</tr>
 				<tr>
 					<th>Filebase file count:</th>
-					<td><%=filebaseModel.getFilesAsStringArray().length %><td>
+					<td><%=filebaseModel.getFilesAsStringArrayList().size() %><td>
 				</tr>
 			</table>
 			
@@ -139,18 +128,35 @@
 			
 			<p>
 				<img class="creating-database-indicator" src="../shared/gif/loading.gif" style="display:none" title="Creating..."/>
-				<button class="createDatabaseButton">Create</button>
-				<button class="deleteDatabaseButton">Delete</button>
+				<% if (databaseModel.isServerConnectable() && !databaseModel.isConnectable()) { %>
+					<button class="createDatabaseButton">Create</button>
+				<% } else { %>
+					<button disabled="disabled">Create</button>
+				<% } %>
+				<% if (databaseModel.isConnectable()) { %>
+					<button class="deleteDatabaseButton">Delete</button>
+				<% } else { %>
+					<button disabled="disabled">Delete</button>
+				<% } %>
 				<img class="deleting-database-indicator" src="../shared/gif/loading.gif" style="display:none" title="Deleting..."/>
 			</p>
 			<div class="divider-space"></div>
 		
-			<h3>Database Tables:</h3>
+			<h3>Database tables and data:</h3>
 			
 			<p>
 				<img class="creating-database-tables-indicator" src="../shared/gif/loading.gif" style="display:none" title="Creating..."/>
-				<button class="createAndInitializeTablesButton">Create and Initialize</button>
-				<button class="deleteDatabaseTablesButton">Delete</button>
+				<% if (databaseModel.isConnectable() && (databaseModel.getTableNamesAsStringArrayList() == null || databaseModel.getTableNamesAsStringArrayList().size() == 0)) { %>
+					<button class="createAndInitializeTablesButton">Create and Initialize</button>
+				<% } else { %>
+					<button disabled="disabled">Create and Initialize</button>
+				<% } %>
+				<% if (databaseModel.isConnectable() && databaseModel.getTableNamesAsStringArrayList() != null && databaseModel.getTableNamesAsStringArrayList().size() > 0) { %>
+					<button class="deleteDatabaseTablesButton">Delete</button>
+				<% } else { %>
+					<button disabled="disabled">Delete</button>
+				<% } %>
+				
 				<img class="deleting-database-tables-indicator" src="../shared/gif/loading.gif" style="display:none" title="Deleting..."/>
 			</p>
 			<div class="divider-space"></div>
@@ -159,9 +165,39 @@
 			
 			<p>
 				<img class="creating-filebase-indicator" src="../shared/gif/loading.gif" style="display:none" title="Creating..."/>
-				<button class="createFilebaseButton">Create</button>
-				<button class="deleteFilebaseButton">Delete</button>
+				<% if (filebaseModel.isExistent() && filebaseModel.isWritable() && (filebaseModel.getFilesAsStringArrayList() == null || filebaseModel.getFilesAsStringArrayList().size() == 0)) { %>
+					<button class="createFilebaseButton">Create</button>
+				<% } else { %>
+					<button disabled="disabled">Create</button>
+				<% } %>
+				<% if (filebaseModel.isExistent() && filebaseModel.isWritable() && filebaseModel.getFilesAsStringArrayList() != null && filebaseModel.getFilesAsStringArrayList().size() > 0) { %>
+					<button class="deleteFilebaseButton">Delete</button>
+				<% } else { %>
+					<button disabled="disabled">Delete</button>
+				<% } %>
+				
 				<img class="deleting-filebase-indicator" src="../shared/gif/loading.gif" style="display:none" title="Deleting..."/>
+			</p>
+			<div class="divider-space"></div>
+			
+			<!-- TODO: code -->
+			
+			<h3>Filebase directories and files:</h3>
+			
+			<p>
+				<img class="creating-filebase-directories-indicator" src="../shared/gif/loading.gif" style="display:none" title="Creating..."/>
+				<% if (!filebaseModel.isExistent() && filebaseModel.isWritable()) { %>
+					<button class="createFilebaseDirectoriesButton">Create</button>
+				<% } else { %>
+					<button disabled="disabled">Create and Initialize</button>
+				<% } %>
+				<% if (filebaseModel.isExistent() && filebaseModel.isWritable()) { %>
+					<button class="deleteFilebaseDirectoriesButton">Delete</button>
+				<% } else { %>
+					<button disabled="disabled">Delete</button>
+				<% } %>
+				
+				<img class="deleting-filebase-directories-indicator" src="../shared/gif/loading.gif" style="display:none" title="Deleting..."/>
 			</p>
 			<div class="divider-space"></div>
 			

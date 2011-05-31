@@ -1,5 +1,7 @@
 package org.cggh.tools.dataMerger.files.filebases;
 
+import java.util.ArrayList;
+
 public class FilebaseModel {
 
 	private Boolean existent = null;
@@ -7,13 +9,18 @@ public class FilebaseModel {
 	private Boolean writable = null;
 	private String serverPath = null;
 	private String versionAsString = null;
-	private String[] filesAsStringArray = null;
+	private ArrayList<String> filesAsStringArrayList = null;
 	private String filebaseInstallationLogAsCSVFilePathRelativeToFilebaseServerPath = null;
 	private Boolean unix = null;
 	private Boolean mac = null;
 	private Boolean windows = null;
 	private String filepathSeparator = null;
 
+	public FilebaseModel () {
+
+		setFilesAsStringArrayList(new ArrayList<String>());
+	}
+	
 	public void setReadable(Boolean readable) {
 		this.readable = readable;
 	}
@@ -46,12 +53,12 @@ public class FilebaseModel {
 		return versionAsString;
 	}
 
-	public void setFilesAsStringArray(String[] filesAsStringArray) {
-		this.filesAsStringArray = filesAsStringArray;
+	public void setFilesAsStringArrayList(ArrayList<String> filesAsStringArrayList) {
+		this.filesAsStringArrayList = filesAsStringArrayList;
 	}
 
-	public String[] getFilesAsStringArray() {
-		return filesAsStringArray;
+	public ArrayList<String> getFilesAsStringArrayList() {
+		return filesAsStringArrayList;
 	}
 
 	public void setExistent(Boolean existent) {

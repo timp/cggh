@@ -17,7 +17,7 @@ import org.cggh.tools.dataMerger.data.merges.MergesCRUD;
 
 
 
-public class MergeScriptsModel implements java.io.Serializable {
+public class MergeScripts implements java.io.Serializable {
 
 	
 	/**
@@ -27,7 +27,7 @@ public class MergeScriptsModel implements java.io.Serializable {
 	private final Logger logger = Logger.getLogger("org.cggh.tools.dataMerger.scripts.merges");
 
 
-	public MergeScriptsModel() {
+	public MergeScripts() {
 		
 	}
 

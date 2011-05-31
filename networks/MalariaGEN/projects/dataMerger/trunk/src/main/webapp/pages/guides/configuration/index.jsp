@@ -28,6 +28,7 @@
 					<h4>Catchable errors and known remedies:</h4>
 					<ul>
 						<li><a href="errors/database-connection">Database connection</a></li>
+						<li><a href="errors/database-initialization">Database initialization</a></li>
 					</ul>
 		
 		

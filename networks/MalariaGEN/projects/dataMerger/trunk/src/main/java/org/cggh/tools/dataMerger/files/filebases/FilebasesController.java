@@ -16,6 +16,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.cggh.tools.dataMerger.data.databases.DatabasesCRUD;
 import org.cggh.tools.dataMerger.data.users.UserModel;
 import org.cggh.tools.dataMerger.data.users.UsersCRUD;
+import org.cggh.tools.dataMerger.scripts.files.filebases.FilebaseScripts;
 
 
 public class FilebasesController extends HttpServlet {
@@ -110,31 +111,12 @@ public class FilebasesController extends HttpServlet {
 			  response.setContentType("text/plain");
 			  String responseAsPlainText = null;
 			  
-			  
-			  //TODO:Code
 			  FilebasesCRUD filebasesCRUD = new FilebasesCRUD();
 			  FilebaseModel filebaseModel = filebasesCRUD.retrieveFilebaseAsFilebaseModelUsingServletContext(request.getSession().getServletContext());
-			  File filebaseServerDirectory = new File(filebaseModel.getServerPath());
 			  
-			  if (filebaseServerDirectory.isDirectory()) {
-				  
-				  if (filebaseServerDirectory.list().length == 0) {
-					  
-					  filebaseServerDirectory.delete();
-					  
-					  responseAsPlainText = "Filebase deleted.";
-					  
-				  } else {
-					
-					  responseAsPlainText = "Will not delete filebase. Directory is not empty.";
-				  }
-				  
-				  
-			  } else {
-				  responseAsPlainText = "Failed to delete filebase. Path specified in web.xml is not a directory.";
-			  }
-		  
-			  
+			  FilebaseScripts filebaseScripts = new FilebaseScripts();
+			  responseAsPlainText = filebaseScripts.deleteFilebaseUsingFilebaseModel(filebaseModel);
+			
 			  response.getWriter().print(responseAsPlainText);
 		
 		  } else {
@@ -146,31 +128,6 @@ public class FilebasesController extends HttpServlet {
 		
 	}    
     
-	//TODO: Code
-	  public static void deleteFileAndAllChildren (final File file) {
-		  
-	     
-	      if (file.isDirectory()) {
-	    	  
-	          if (file.listFiles() != null) {
-	        	  
-	              for (int i = 0; i < file.listFiles().length; i++) {
-	            	  
-	                  if (file.listFiles()[i].isDirectory()) {
-	                	  deleteFileAndAllChildren(file.listFiles()[i]);
-	                  }
-	                  file.listFiles()[i].delete();
-	              }
-	          }
-	          
-	          
-	          
-	      } else {
-	    	  if (!file.delete()) {
-		            //logger.severe("Could not delete file: " + file);
-	    	  }
-	      }
-	      
-	  }
+
 	
 }

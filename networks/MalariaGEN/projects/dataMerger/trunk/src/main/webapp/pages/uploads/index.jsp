@@ -4,12 +4,6 @@
 <%@ page import="java.util.*" %>
 <%@ page import="javax.sql.rowset.CachedRowSet" %>
 <%@ page import="org.cggh.tools.dataMerger.data.uploads.UploadsCRUD" %>
-<%
-
-	UploadsCRUD uploadsCRUD = new UploadsCRUD();
-	uploadsCRUD.setDatabaseModel(databaseModel);
-
-%>	
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
@@ -57,7 +51,23 @@
 		<form class="uploads-form" onsubmit="return false;">
 		
 		<div class="uploads">
-			<%=uploadsCRUD.retrieveUploadsAsDecoratedXHTMLTableUsingUserId(userModel.getId()) %>		
+		
+			<% 
+			
+			if (databaseModel.isInitialized()) {
+				
+				UploadsCRUD uploadsCRUD = new UploadsCRUD();
+				uploadsCRUD.setDatabaseModel(databaseModel);
+			
+				out.print(uploadsCRUD.retrieveUploadsAsDecoratedXHTMLTableUsingUserId(userModel.getId()));
+			
+			} else {
+				//NOTE: This message will not be displayed because the page will be redirected by the prepage logic.
+				//The redirect will not work if there is a NULL pointer exception when CRUD is attempted without a database connection.
+				out.print("Database is not initialized");
+			}
+			
+			%>		
 		</div>
 
 		</form>

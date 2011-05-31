@@ -23,6 +23,7 @@ function initCreateDatabaseFunction () {
 					  dataType: "text",
 					  success: function(data, textStatus, jqXHR) {
 							$('.ajaxResponse').html("Response: " + data);
+							$('.refreshButtonContainer').show();
 					  },
 					  error:function (jqXHR, textStatus, errorThrown){
 							$('.ajaxError').html("Error: " + errorThrown);
@@ -49,6 +50,7 @@ function initDeleteDatabaseFunction () {
 					  dataType: "text",
 					  success: function(data, textStatus, jqXHR) {
 							$('.ajaxResponse').html("Response: " + data);
+							$('.refreshButtonContainer').show();
 					  },
 					  error:function (jqXHR, textStatus, errorThrown){
 							$('.ajaxError').html("Error: " + errorThrown);
@@ -76,6 +78,7 @@ function initCreateDatabaseTablesFunction () {
 					  dataType: "text",
 					  success: function(data, textStatus, jqXHR) {
 							$('.ajaxResponse').html("Response: " + data);
+							$('.refreshButtonContainer').show();
 					  },
 					  error:function (jqXHR, textStatus, errorThrown){
 							$('.ajaxError').html("Error: " + errorThrown);
@@ -101,6 +104,7 @@ function initDeleteDatabaseTablesFunction () {
 					  dataType: "text",
 					  success: function(data, textStatus, jqXHR) {
 							$('.ajaxResponse').html("Response: " + data);
+							$('.refreshButtonContainer').show();
 					  },
 					  error:function (jqXHR, textStatus, errorThrown){
 							$('.ajaxError').html("Error: " + errorThrown);
@@ -131,6 +135,7 @@ function initCreateFilebaseFunction () {
 					  dataType: "text",
 					  success: function(data, textStatus, jqXHR) {
 							$('.ajaxResponse').html("Response: " + data);
+							$('.refreshButtonContainer').show();
 					  },
 					  error:function (jqXHR, textStatus, errorThrown){
 							$('.ajaxError').html("Error: " + errorThrown);
@@ -158,6 +163,7 @@ function initDeleteFilebaseFunction () {
 					  dataType: "text",
 					  success: function(data, textStatus, jqXHR) {
 							$('.ajaxResponse').html("Response: " + data);
+							$('.refreshButtonContainer').show();
 					  },
 					  error:function (jqXHR, textStatus, errorThrown){
 							$('.ajaxError').html("Error: " + errorThrown);

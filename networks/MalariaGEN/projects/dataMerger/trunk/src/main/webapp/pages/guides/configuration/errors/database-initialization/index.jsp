@@ -4,7 +4,7 @@
 <html>
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-		<title>dataMerger - Guides - Configuration - Errors - Database connection</title>
+		<title>dataMerger - Guides - Configuration - Errors - Database initialization</title>
 		
 		<link rel="stylesheet" type="text/css" href="../../../../shared/css/shared.css" />
 		<link rel="stylesheet" type="text/css" href="../../../css/guides.css" />
@@ -26,23 +26,16 @@
 		
 					<h4>Errors</h4>
 					
-					<h5>Database connection</h5>
+					<h5>Database initialization</h5>
 					
-					<p>The application cannot connect to the specified database using the specified parameters.</p>
+					<p>The database has not been initialized.</p>
 					
 					<h6>Possible causes:</h6>
 					<ul>
-						<li>The values specified in the web.xml are incorrect (/webapps/dataMerger/WEB-INF/web.xml).</li>
-						<li>The database has not been installed.</li>
+						<li>The database has not been properly installed.</li>
 					</ul>	
 					
-					<p>The required configuration parameters are databaseDriverFullyQualifiedClassName, databaseServerPath, databaseName, databaseUsername, databasePassword.
-					</p>
-					
-					<p>The required values can be seen on the <a href="../../">configuration page</a>.
-					</p>
-					
-					<p>For application administrators, the current values can be seen on the <a href="../../">configuration page</a> and the database can be installed using the <a href="/dataMerger/pages/admin/">admin section</a>.
+					<p>For application administrators, the database can be initialized using the <a href="/dataMerger//pages/admin/">admin section</a>.
 					</p>
 		
 				</div>

@@ -14,7 +14,7 @@ import org.cggh.tools.dataMerger.data.joins.JoinsCRUD;
 import org.cggh.tools.dataMerger.data.merges.MergeModel;
 import org.cggh.tools.dataMerger.data.resolutions.ResolutionsCRUD;
 import org.cggh.tools.dataMerger.functions.resolutions.byCell.ResolutionsByCellFunctionsModel;
-import org.cggh.tools.dataMerger.scripts.merges.MergeScriptsModel;
+import org.cggh.tools.dataMerger.scripts.merges.MergeScripts;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -339,7 +339,7 @@ public class ResolutionsByCellCRUD implements java.io.Serializable {
 				
 	        	  // Recount the conflicts
 
-	        	  MergeScriptsModel mergeScriptsModel = new MergeScriptsModel();
+	        	  MergeScripts mergeScriptsModel = new MergeScripts();
 	        	  mergeModel = mergeScriptsModel.retrieveMergeAsMergeModelThroughDeterminingTotalConflictsCountUsingMergeModel(mergeModel, connection);
 	        	  
 		          
