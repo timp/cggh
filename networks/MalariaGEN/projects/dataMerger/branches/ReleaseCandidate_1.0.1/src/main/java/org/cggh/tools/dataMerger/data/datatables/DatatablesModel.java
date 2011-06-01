@@ -144,7 +144,10 @@ public class DatatablesModel implements java.io.Serializable {
 	        	    	  
 	        	    	  columnNamesAsStringList.add(columnNames[i]);
 	        	    	  
-	        	    	  columnDefinitionsForCreateTableSQL = columnDefinitionsForCreateTableSQL.concat("`" + columnNames[i] + "` VARCHAR(255) NULL");
+	        	    	  //Note: This was reduced from 255 characters to 36 to allow more columns. 
+	        	    	  //MySQL imposes a limit of 65535 bytes per row. UTF8 used 3 bytes per character. Latin1 uses 1 byte per character.
+	        	    	  //36 UTF-8 characters per column allows a total number of 606 columns. 
+	        	    	  columnDefinitionsForCreateTableSQL = columnDefinitionsForCreateTableSQL.concat("`" + columnNames[i] + "` VARCHAR(36) NULL");
 	        	    	  
 	        	    	  if (i != columnNames.length - 1) {
 	        	    		  columnDefinitionsForCreateTableSQL = columnDefinitionsForCreateTableSQL.concat(", ");
