@@ -158,7 +158,7 @@ public class JoinedKeytablesModel implements java.io.Serializable {
 						keyJoinsAsCachedRowSet.first();
 						
 						
-						keyColumnDefinitionsForCreateTableSQL = keyColumnDefinitionsForCreateTableSQL.concat("`key_column_" + keyJoinsAsCachedRowSet.getString("column_number") + "` VARCHAR(255) NOT NULL ");
+						keyColumnDefinitionsForCreateTableSQL = keyColumnDefinitionsForCreateTableSQL.concat("`key_column_" + keyJoinsAsCachedRowSet.getString("column_number") + "` VARCHAR(36) NOT NULL ");
 						keyColumnNamesAsCSVForInsertIntoJoinedKeytableSQL = keyColumnNamesAsCSVForInsertIntoJoinedKeytableSQL.concat("`key_column_" + keyJoinsAsCachedRowSet.getString("column_number") + "` ");
 						
 						
@@ -168,7 +168,7 @@ public class JoinedKeytablesModel implements java.io.Serializable {
 						
 						while (keyJoinsAsCachedRowSet.next()) {
 							
-							keyColumnDefinitionsForCreateTableSQL = keyColumnDefinitionsForCreateTableSQL.concat(", `key_column_" + keyJoinsAsCachedRowSet.getString("column_number") + "` VARCHAR(255) NOT NULL ");
+							keyColumnDefinitionsForCreateTableSQL = keyColumnDefinitionsForCreateTableSQL.concat(", `key_column_" + keyJoinsAsCachedRowSet.getString("column_number") + "` VARCHAR(36) NOT NULL ");
 							keyColumnNamesAsCSVForInsertIntoJoinedKeytableSQL = keyColumnNamesAsCSVForInsertIntoJoinedKeytableSQL.concat(", `key_column_" + keyJoinsAsCachedRowSet.getString("column_number") + "` ");
 							
 							joinForSelectIntoTableSQL = joinForSelectIntoTableSQL.concat("AND `" + mergeModel.getDatatable1Model().getName() + "`.`" + keyJoinsAsCachedRowSet.getString("datatable_1_column_name") + "` = `" + mergeModel.getDatatable2Model().getName() + "`.`" + keyJoinsAsCachedRowSet.getString("datatable_2_column_name") + "` ");
