@@ -196,7 +196,7 @@ public class FilesController extends HttpServlet {
 					    	sqlException.printStackTrace();
 				        } 				
 					
-				
+				        //FIXME: Re-organize try-catch and introduce a finally block.
 					connection.close();
 					
 				} else {
@@ -387,7 +387,7 @@ public class FilesController extends HttpServlet {
 					    	sqlException.printStackTrace();
 				        } 				
 					
-				
+				      //FIXME: Re-organize try-catch and introduce a finally block.
 					connection.close();
 					
 				} else {
@@ -468,10 +468,21 @@ public class FilesController extends HttpServlet {
 	            			 	fileOutputStream = new FileOutputStream(new File(uploadModel.getRepositoryFilepath()));
 					            IOUtils.copy(inputStream, fileOutputStream);
 					            
+					            File uploadFile = new File(uploadModel.getRepositoryFilepath());
 					            
-					            uploadsCRUD.updateUploadRepositoryFilepathUsingUploadModel(uploadModel, connection);
+					            if (uploadFile.exists()) {
+					            	
+					            	uploadModel.setFileSizeInBytes(uploadFile.length());
+					            	
+					            	uploadsCRUD.updateUploadRepositoryFilepathAndFileSizeInBytesUsingUploadModel(uploadModel, connection);
+					            	successful = true;
+					            	
+					            } else {
+					            	
+					            	successful = false;
+					            }
 					            
-					            successful = true;
+					            
 					            
 					            
 					            
@@ -500,6 +511,7 @@ public class FilesController extends HttpServlet {
 	            		 
 	            		 
 	            		 try {
+	            			//FIXME: Re-organize try-catch and introduce a finally block.
 							connection.close();
 	            		 } catch (SQLException e) {
 							e.printStackTrace();

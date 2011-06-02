@@ -73,7 +73,13 @@ public class MergesCRUD implements java.io.Serializable {
 
 				mergeModel = retrieveMergeAsMergeModelByMergeId(mergeModel.getId(), connection);
 				
-				connection.close();
+						
+						try {
+							connection.close();
+						} catch (SQLException e) {
+							e.printStackTrace();
+						}
+						
 				
 			} else {
 				
@@ -257,14 +263,16 @@ public class MergesCRUD implements java.io.Serializable {
 			        }
 			        catch(SQLException sqlException){
 				    	sqlException.printStackTrace();
-			        } 			
-
-						        
-						        
+			        } finally {
 						
-						        
-			
-				connection.close();
+						try {
+							connection.close();
+						} catch (SQLException e) {
+							e.printStackTrace();
+						}
+						
+					} 			
+
 				
 			} else {
 				
@@ -488,9 +496,15 @@ public class MergesCRUD implements java.io.Serializable {
 				        catch(SQLException sqlException){
 				        	//System.out.println("<p>" + sqlException + "</p>");
 					    	sqlException.printStackTrace();
-				        } 	
-				
-					connection.close();
+				        } finally {
+							
+							try {
+								connection.close();
+							} catch (SQLException e) {
+								e.printStackTrace();
+							}
+							
+						} 	
 					
 				} else {
 					

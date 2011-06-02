@@ -114,9 +114,15 @@ public class ResolutionsByCellCRUD implements java.io.Serializable {
 				        catch(SQLException sqlException){
 				        	this.logger.severe(sqlException.toString());
 					    	sqlException.printStackTrace();
-				        } 	
-				
-					connection.close();
+				        } finally {
+							
+							try {
+								connection.close();
+							} catch (SQLException e) {
+								e.printStackTrace();
+							}
+							
+						} 	
 					
 				} else {
 					this.logger.severe("connection.isClosed");
@@ -245,9 +251,16 @@ public class ResolutionsByCellCRUD implements java.io.Serializable {
 				        catch(SQLException sqlException){
 				        	this.logger.severe(sqlException.toString());
 					    	sqlException.printStackTrace();
-				        } 	
+				        } finally {
+							
+							try {
+								connection.close();
+							} catch (SQLException e) {
+								e.printStackTrace();
+							}
+							
+						} 	
 				
-					connection.close();
 					
 				} else {
 					
@@ -273,12 +286,14 @@ public class ResolutionsByCellCRUD implements java.io.Serializable {
 		MergeModel mergeModel = new MergeModel();
 		mergeModel.setId(mergeId);
 		
-		try {
+
 			
 			Connection connection = this.getDatabaseModel().getNewConnection();
 			 
 			if (connection != null) {
-					
+
+				try {				
+				
 				
 				JSONArray keys = resolutionsByCellAsJsonObject.names();
 				
@@ -342,21 +357,27 @@ public class ResolutionsByCellCRUD implements java.io.Serializable {
 	        	  MergeScripts mergeScriptsModel = new MergeScripts();
 	        	  mergeModel = mergeScriptsModel.retrieveMergeAsMergeModelThroughDeterminingTotalConflictsCountUsingMergeModel(mergeModel, connection);
 	        	  
-		          
+				} 
+				catch (Exception e) {
 					
-				connection.close();
+					this.logger.severe(e.toString());
+					e.printStackTrace();
+				} finally {
+						
+						try {
+							connection.close();
+						} catch (SQLException e) {
+							e.printStackTrace();
+						}
+						
+					}
 				
 			} else {
 				
 				this.logger.severe("connection.isClosed");
 			}
 				
-		} 
-		catch (Exception e) {
-			
-			this.logger.severe(e.toString());
-			e.printStackTrace();
-		}
+
 	}
 
 	public void updateResolutionByCellUsingResolutionByCellModel(

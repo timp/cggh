@@ -29,9 +29,9 @@
 					
 					<h4>Steps</h4>
 					<ol>
-						<li>Deploy WAR</li>
-						<li>Configure the web.xml and tomcat-users.xml files.</li>
-						<li>Use the Admin page to create the database, database tables, filebase and filebase directories.</li>
+						<li>Deploy the WAR file to Tomcat.</li>
+						<li>Configure the web.xml and tomcat-users.xml files. (See the <a href="/dataMerger/pages/guides/configuration">Configuration</a> guide for details.)</li>
+						<li>Use the <a href="/dataMerger/pages/admin">Admin</a> page to create the database, database tables, filebase and filebase directories.</li>
 					</ol>
 		
 					<h4>System requirements</h4>
@@ -46,17 +46,15 @@
 				
 				
 				
-					<h4>More information</h4>
+					<h4>External references</h4>
 					<ul>
-						<li><a target="_blank" href="http://en.wikipedia.org/wiki/WAR_file_format_(Sun)">WAR file format (Sun)</a>
-						</li>
-						<li><a target="_blank" href="http://code.google.com/">Google Code</a>
-						</li>
 						<li><a target="_blank" href="http://code.google.com/p/cggh/">Google Code project for this application</a>
 						</li>
 						<li><a target="_blank" href="http://tomcat.apache.org/">Apache Tomcat</a>
 						</li>
 						<li><a target="_blank" href="http://www.mysql.com/">MySQL</a>
+						</li>
+						<li><a target="_blank" href="http://en.wikipedia.org/wiki/WAR_file_format_(Sun)">WAR file format</a>
 						</li>
 					</ul>
 						

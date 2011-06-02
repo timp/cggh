@@ -116,10 +116,16 @@ public class ExportsCRUD implements java.io.Serializable  {
 			        }
 			        catch(SQLException sqlException){
 				    	sqlException.printStackTrace();
-			        } 			
+			        }  finally {
+						
+						try {
+							connection.close();
+						} catch (SQLException e) {
+							e.printStackTrace();
+						}
+						
+					}			
 
-			        
-				connection.close();
 				
 			} else {
 				
@@ -994,13 +1000,15 @@ public class ExportsCRUD implements java.io.Serializable  {
 				          exportsAsCachedRowSet.populate(preparedStatement.getResultSet());
 				          preparedStatement.close();
 	
-				        }
-				        catch(SQLException sqlException){
+				        } 
+				      	catch (SQLException sqlException){
 				        	//System.out.println("<p>" + sqlException + "</p>");
 					    	sqlException.printStackTrace();
-				        } 	
+				        } finally {
+				        	connection.close();
+				        }
 				
-					connection.close();
+					
 					
 				} else {
 					

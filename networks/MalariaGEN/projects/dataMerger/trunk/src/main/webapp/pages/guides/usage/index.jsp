@@ -26,10 +26,20 @@
 		
 					<h3>Usage</h3>
 					
+					
+					<h4>Steps</h4>
+					
+					<ul>
+						<li>Upload 2 files using the Uploads page</li>
+						<li>Select 2 files using the Files page</li>
+						<li>Merge 2 files</li>
+					</ul>
+					
+					
 					<p>The file format for the source files ("uploads") is expected to be the same as the "calculated data" downloaded from Topheno.
 					</p>
 					
-					<p>Specifically:
+					<h4>Specifically:</h4>
 						<ul>
 							<li>ISO-8859-1 character-set encoding (a.k.a. Latin-1) 
 							</li>
@@ -38,7 +48,7 @@
 							<li>Comma-separated values
 							</li>
 						</ul>
-					</p>
+					
 					
 					<p>This also describes the file-type of the "export" files produced using this application. (So they too can be used in merges.) Exported files may contain \N characters (NULL), whereas Topheno exports currently only use empty strings to represent NULL (both are treated as equivalent).
 					</p>
@@ -46,39 +56,39 @@
 					<p><em>Note:</em> Saving such as file in Microsoft Excel will result in a different (as yet unsupported file type) 
 					</p>
 					
-					<p>Not yet supported (when saved by Excel):
+					<h4>Not yet supported (when saved by Excel):</h4>
 						<ul>
 							<li>ANSI and UTF8 character sets. (Ideally, Topheno should export as UTF8.)
 							</li>
 							<li>Windows-style end-of-line character (i.e. \n\r, Carriage Return with Line Feed, CR+LF)
 							</li>
 						</ul>
-					</p>
-					<p>Symptoms:	
+					
+					<h4>Symptoms:	</h4>
 						<ul>
 							<li>Unsupported character-encoding: Odd characters appearing in column headings. Potential application failures.
 							</li>
 							<li>Unsupported end-of-line character: Right-most cells contain an unexpected last character (i.e. \r). Potential application failures, esp. conflict counting and resolution.
 							</li>
 						</ul>
-					</p>
 					
-					<p>Current work-arounds:
+					
+					<h4>Current work-arounds:</h4>
 						<ul>
 							<li>Use Notepad++ to change the character encoding or end-of-line characters.
 							</li>
 						</ul>
-					</p>
 					
-					<p>Supported:
+					
+					<h4>Supported:</h4>
 						<ul>
 							<li>Values (and column headings) optionally enclosed by double-quotes.
 							</li>
 						</ul>
-					</p>
+					
 		
 		
-					<p>Handling of NULL values:
+					<h4>Handling of NULL values:</h4>
 						<ul>
 							<li>In v1.0, the following values (as they appear in the uploaded CSV file) are interpreted as NULL:
 							
@@ -101,7 +111,7 @@
 							<li>As of v1.1, all NULL values are exported as (and appear in the exported CSV file as) "NULL"</li>
 							
 						</ul>
-					</p>
+					
 		
 							<h3>Start</h3>
 							<p><a href="../uploads">Uploads</a> [requires authentication]

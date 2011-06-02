@@ -2,7 +2,7 @@ package org.cggh.tools.dataMerger.functions;
 
 import javax.sql.rowset.CachedRowSet;
 
-import org.cggh.tools.dataMerger.functions.uploads.UploadsFunctionsModel;
+import org.cggh.tools.dataMerger.functions.uploads.UploadsFunctions;
 
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
@@ -18,18 +18,18 @@ public class FunctionsModel implements java.io.Serializable {
 	private CachedRowSet cachedRowSet = null;
 	private String xhtmlTable = null;
 	private String decoratedXHTMLTable = null;
-	private UploadsFunctionsModel uploadsFunctionsModel;
+	private UploadsFunctions uploadsFunctionsModel;
 	
 	public FunctionsModel() {
 		
-		this.setUploadsFunctionsModel(new UploadsFunctionsModel());
+		this.setUploadsFunctions(new UploadsFunctions());
 	}
 
 	
-	public void setUploadsFunctionsModel(final UploadsFunctionsModel uploadsFunctionsModel) {
+	public void setUploadsFunctions(final UploadsFunctions uploadsFunctionsModel) {
 		this.uploadsFunctionsModel = uploadsFunctionsModel;
 	}
-	public UploadsFunctionsModel getUploadsFunctionsModel() {
+	public UploadsFunctions getUploadsFunctions() {
 
 		return this.uploadsFunctionsModel;
 	}	

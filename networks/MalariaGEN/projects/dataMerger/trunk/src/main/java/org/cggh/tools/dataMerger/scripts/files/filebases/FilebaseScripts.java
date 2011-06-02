@@ -84,35 +84,7 @@ public class FilebaseScripts {
 	  }
 	
 
-	  private void deleteAllFileChildren (final File file) {
-		  
-		  if (file.isDirectory()) {
-
-			  //Delete all the files in this directory, if there are any.
-			  if (file.listFiles().length > 0) {
-				  
-				  //Need to take a copy because the list will dynamically change
-				  File[] filesAsFileArray = file.listFiles();
-				  
-	              for (int i = 0; i < filesAsFileArray.length; i++) {
-	            	  
-	            	  if (filesAsFileArray[i].isDirectory()) {
-
-	            		  //Process this sub-directory 
-	            		  deleteFileAndAllChildren(filesAsFileArray[i]);
-	            		  
-	            	  } else {
-	            		  
-	            		  //Delete this file from the directory
-	            		  filesAsFileArray[i].delete();
-	            	  }
-	                  
-	              }
-			  }
-              
-	      }
-		  
-	  }	  
+	  
 	  
 	  
 }

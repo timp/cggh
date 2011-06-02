@@ -55,65 +55,12 @@ public class FilebasesController extends HttpServlet {
 			  File filebaseServerDirectory = new File(filebaseModel.getServerPath());
 			  
 			  if (filebaseServerDirectory.mkdirs()) {
-					
 
-				  	DatabasesCRUD databasesCRUD = new DatabasesCRUD();
-				  	UsersCRUD usersCRUD = new UsersCRUD();
-				  	usersCRUD.setDatabaseModel(databasesCRUD.retrieveDatabaseAsDatabaseModelUsingServletContext(getServletContext()));
-				  	UserModel userModel = usersCRUD.retrieveUserAsUserModelUsingUsername(request.getRemoteUser());
-				  
-				  
-					String filebaseInstallationLogAsCSVFilePath = filebaseModel.getServerPath() + filebaseModel.getFilebaseInstallationLogAsCSVFilePathRelativeToFilebaseServerPath();
-					
-					File filebaseInstallationLogAsCSVFile = new File(filebaseInstallationLogAsCSVFilePath);
-					
-					if (!filebaseInstallationLogAsCSVFile.exists()) {
-						
-						File filebaseInstallationLogAsCSVFileParent = new File(filebaseInstallationLogAsCSVFile.getParent());
-						
-						if (filebaseInstallationLogAsCSVFileParent.mkdirs()) {
-							
-							if (filebaseInstallationLogAsCSVFile.createNewFile()) {
-							
-								Calendar calendar = Calendar.getInstance();
-							    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-								
-								String filebaseInstallationLogAsCSVHeadings = "major_version_number,minor_version_number,revision_version_number,created_by_user_id,created_by_username,created_datetime"; 
-								String filebaseInstallationLogAsCSVEntry = "1,1,0," + userModel.getId() + "," + userModel.getUsername() + "," + simpleDateFormat.format(calendar.getTime());
-								
-								try {
-									FileWriter filebaseInstallationLogAsCSVFileWriter = new FileWriter(filebaseInstallationLogAsCSVFilePath); // a second parameter of true in the FileWriter constructor will switch on append mode.
-									BufferedWriter filebaseInstallationLogAsCSVFileBufferedWriter = new BufferedWriter(filebaseInstallationLogAsCSVFileWriter);
-									
-									filebaseInstallationLogAsCSVFileBufferedWriter.write(filebaseInstallationLogAsCSVHeadings);
-									filebaseInstallationLogAsCSVFileBufferedWriter.newLine();
-									
-									filebaseInstallationLogAsCSVFileBufferedWriter.write(filebaseInstallationLogAsCSVEntry);
-									filebaseInstallationLogAsCSVFileBufferedWriter.newLine();
-									
-									filebaseInstallationLogAsCSVFileBufferedWriter.close();
-									
-									responseAsPlainText = "Created filebase directory and installation log file.";
-									
-								} catch (IOException e) {
-									e.printStackTrace();
-								}
-								
-							} else {
-								responseAsPlainText = "An error occurred while trying to create the installation log file.";
-								logger.severe("filebaseInstallationLogAsCSVFile.createNewFile() was false");
-							}
-							
-						} else {
-							responseAsPlainText = "An error occurred while trying to create the directory for the installation log file.";
-							logger.severe("filebaseInstallationLogAsCSVFile.mkdirs() was false");
-						}
-					}
-					
+				  responseAsPlainText = "The filebase directory has now been created.";
 					
 			  } else {
 
-				  responseAsPlainText = "Failed to create filebase directory and installation log file.";
+				  responseAsPlainText = "Failed to create filebase directory.";
 			  }				
 		  
 			  

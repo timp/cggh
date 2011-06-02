@@ -74,12 +74,14 @@ public class ResolutionsByColumnCRUD implements java.io.Serializable {
 
 		   String CACHED_ROW_SET_IMPL_CLASS = "com.sun.rowset.CachedRowSetImpl";
 		   
-			try {
+			
 
 				Connection connection = this.getDatabaseModel().getNewConnection();
 				 
 				if (connection != null) {
 				
+					try {
+					
 					 //FIXME: Apparently a bug in CachedRowSet using getX('columnAlias') aka columnLabel, which actually only works with getX('columnName'), so using getX('columnIndex').
 					 
 					
@@ -97,17 +99,25 @@ public class ResolutionsByColumnCRUD implements java.io.Serializable {
 					    	sqlException.printStackTrace();
 				        } 	
 				
-					connection.close();
+					} 
+					catch (Exception e) {
+						this.logger.severe(e.toString());
+						e.printStackTrace();
+					} finally {
+							
+							try {
+								connection.close();
+							} catch (SQLException e) {
+								e.printStackTrace();
+							}
+							
+						}
 					
 				} else {
 					this.logger.severe("connection.isClosed");
 				}
 					
-			} 
-			catch (Exception e) {
-				this.logger.severe(e.toString());
-				e.printStackTrace();
-			}
+			
 		
 		return solutionsByColumnAsCachedRowSet;
 	}
@@ -122,12 +132,14 @@ public class ResolutionsByColumnCRUD implements java.io.Serializable {
 		
 		   String CACHED_ROW_SET_IMPL_CLASS = "com.sun.rowset.CachedRowSetImpl";
 		   
-			try {
+			
 
 				Connection connection = this.getDatabaseModel().getNewConnection();
 				 
 				if (connection != null) {
 				
+					try {
+					
 					 //Note: A bug in CachedRowSet using getX('columnAlias') aka columnLabel, which actually only works with getX('columnName'), so using getX('columnIndex').
 					 
 					
@@ -159,18 +171,26 @@ public class ResolutionsByColumnCRUD implements java.io.Serializable {
 					    	sqlException.printStackTrace();
 				        } 	
 				
-					connection.close();
+				} 
+				catch (Exception e) {
+					//System.out.println("Exception from getMergesAsCachedRowSet.");
+					e.printStackTrace();
+				}finally {
+							
+							try {
+								connection.close();
+							} catch (SQLException e) {
+								e.printStackTrace();
+							}
+							
+						} 
 					
 				} else {
 					
 					//System.out.println("connection.isClosed");
 				}
 					
-			} 
-			catch (Exception e) {
-				//System.out.println("Exception from getMergesAsCachedRowSet.");
-				e.printStackTrace();
-			}
+			
 	
 	
 	
@@ -187,11 +207,13 @@ public class ResolutionsByColumnCRUD implements java.io.Serializable {
 		MergeModel mergeModel = new MergeModel();
 		mergeModel.setId(mergeId);
 
-		try {
+		
 			
 			Connection connection = this.getDatabaseModel().getNewConnection();
 			 
 			if (connection != null) {
+				
+				try {
 					
 		          //Insert all the joins from this JSON Object
 				
@@ -261,19 +283,27 @@ public class ResolutionsByColumnCRUD implements java.io.Serializable {
 	        	  
 		          
 					
-				connection.close();
+				} 
+				catch (Exception e) {
+					
+					this.logger.severe(e.toString());
+					e.printStackTrace();
+				} finally {
+						
+						try {
+							connection.close();
+						} catch (SQLException e) {
+							e.printStackTrace();
+						}
+						
+					} 
 				
 			} else {
 				
 				this.logger.severe("connection.isClosed");
 			}
 				
-		} 
-		catch (Exception e) {
-			
-			this.logger.severe(e.toString());
-			e.printStackTrace();
-		}
+		
 		
 	}
 

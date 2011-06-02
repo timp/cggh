@@ -16,6 +16,7 @@ import org.cggh.tools.dataMerger.data.merges.MergeModel;
 import org.cggh.tools.dataMerger.data.merges.MergesCRUD;
 import org.cggh.tools.dataMerger.scripts.merges.MergeScripts;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 
@@ -408,14 +409,18 @@ public class JoinsCRUD implements java.io.Serializable {
 		MergeModel mergeModel = new MergeModel();
 		mergeModel.setId(mergeId);
 
-		try {
 			
 			Connection connection = this.getDatabaseModel().getNewConnection();
 			 
 			if (connection != null) {
-					
+				
+				try {
+				
 				  //Remove all the joins for this mergeId
-		          PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM `join` WHERE merge_id = ?;");
+		          PreparedStatement preparedStatement;
+				
+					preparedStatement = connection.prepareStatement("DELETE FROM `join` WHERE merge_id = ?;");
+				
 		          preparedStatement.setInt(1, mergeModel.getId());
 		          preparedStatement.executeUpdate();
 		          preparedStatement.close();
@@ -484,21 +489,26 @@ public class JoinsCRUD implements java.io.Serializable {
 		          MergeScripts mergeScriptsModel = new MergeScripts();
 		          mergeModel = mergeScriptsModel.retrieveMergeAsMergeModelThroughDeterminingDataConflictsUsingMergeModel(mergeModel, connection);
 		          
-					
-				connection.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				} catch (JSONException e) {
+					e.printStackTrace();
+				} finally {
+						
+						try {
+							connection.close();
+						} catch (SQLException e) {
+							e.printStackTrace();
+						}
+						
+					}
+		          
 				
 			} else {
 				
 				//System.out.println("connection.isClosed");
 			}
-				
-		} 
-		catch (Exception e) {
-			
-			//TODO:
-			//System.out.println("Exception in updateJoinsByMergeIdUsingJoinsAsJSONObject");
-			e.printStackTrace();
-		}
+
 		
 	}
 
@@ -519,7 +529,11 @@ public class JoinsCRUD implements java.io.Serializable {
 		
 				joinsAsCachedRowSet = this.retrieveJoinsAsCachedRowSetByMergeId(mergeId, connection);
 				
-				connection.close();
+						try {
+							connection.close();
+						} catch (SQLException e) {
+							e.printStackTrace();
+						}
 				
 			} else {
 				

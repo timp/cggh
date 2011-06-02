@@ -24,6 +24,7 @@ public class UploadModel implements java.io.Serializable {
 	private Timestamp createdDatetime;
 	private String originalFilename;
 	private DatatableModel datatableModel;
+	private Long fileSizeInBytes;
 
 	
 	
@@ -146,6 +147,14 @@ public class UploadModel implements java.io.Serializable {
 
 	public DatatableModel getDatatableModel() {
 		return datatableModel;
+	}
+
+	public void setFileSizeInBytes(Long fileSizeInBytes) {
+		this.fileSizeInBytes = fileSizeInBytes;
+	}
+
+	public Long getFileSizeInBytes() {
+		return fileSizeInBytes;
 	}
 
 

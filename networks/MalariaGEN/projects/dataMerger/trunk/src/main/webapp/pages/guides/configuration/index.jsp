@@ -25,14 +25,10 @@
 					<h3>Configuration</h3>
 		
 		
-					<h4>Catchable errors and known remedies:</h4>
-					<ul>
-						<li><a href="errors/database-connection">Database connection</a></li>
-						<li><a href="errors/database-initialization">Database initialization</a></li>
-					</ul>
+
 		
 		
-								<h4>[tomcat-server]/webapps/[application-name]/WEB-INF/web.xml:</h4>
+								<h4>Example: [tomcat-server]/webapps/[application-name]/WEB-INF/web.xml:</h4>
 								<ul> 
 										<li>    databaseDriverFullyQualifiedClassName: com.mysql.jdbc.Driver</li>
 										<li>    databaseServerPath: jdbc:mysql://localhost:3306/</li>
@@ -46,7 +42,7 @@
 								
 								<%-- TODO: switch to if-can-get rather than if-has-role --%>
 								<% if (request.isUserInRole("non-specific")) { %>
-								<h5>Current configuration:</h5>
+								<h5>Current web.xml configuration:</h5>
 								<ul> 
 									<li>databaseDriverFullyQualifiedClassName: <%=application.getInitParameter("databaseDriverFullyQualifiedClassName") %></li>
 									<li>databaseServerPath: <%=application.getInitParameter("databaseServerPath") %></li>
@@ -60,7 +56,7 @@
 								<% } %>
 		
 		
-								<h4>[tomcat-server]/tomcat-users.xml:</h4>
+								<h4>Example [tomcat-server]/tomcat-users.xml:</h4>
 								<pre style="margin-left: 25px;">
 &lt;-- Required roles, referred to in web.xml --&gt;
 &lt;role rolename="non-specific"/&gt;
@@ -79,6 +75,12 @@
 				</div>
 				
 			</div>
+			
+					<h4>Catchable configuration errors with known remedies:</h4>
+					<ul>
+						<li><a href="errors/database-connection">Database connection</a></li>
+						<li><a href="errors/database-initialization">Database initialization</a></li>
+					</ul>
 			
 		</div>
 	</body>

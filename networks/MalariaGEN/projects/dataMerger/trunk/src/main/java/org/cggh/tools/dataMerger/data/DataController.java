@@ -32,7 +32,7 @@ import org.cggh.tools.dataMerger.files.filebases.FilebaseModel;
 import org.cggh.tools.dataMerger.files.filebases.FilebasesCRUD;
 import org.cggh.tools.dataMerger.functions.joins.JoinFunctionsModel;
 import org.cggh.tools.dataMerger.functions.merges.MergeFunctionsModel;
-import org.cggh.tools.dataMerger.functions.uploads.UploadsFunctionsModel;
+import org.cggh.tools.dataMerger.functions.uploads.UploadsFunctions;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -102,7 +102,7 @@ public class DataController extends HttpServlet {
 			
 				  if (uploadsAsCachedRowSet != null) {
 			
-					  	UploadsFunctionsModel uploadsFunctionsModel = new UploadsFunctionsModel();
+					  	UploadsFunctions uploadsFunctionsModel = new UploadsFunctions();
 					  
 					  	uploadsFunctionsModel.setCachedRowSet(uploadsAsCachedRowSet);
 					  	uploadsFunctionsModel.setDecoratedXHTMLTableByCachedRowSet();

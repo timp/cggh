@@ -1,4 +1,4 @@
-package org.cggh.tools.dataMerger.scripts.data.tables;
+package org.cggh.tools.dataMerger.scripts.data.databases.tables;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -9,7 +9,7 @@ import java.util.logging.Logger;
 import org.cggh.tools.dataMerger.data.databases.DatabaseModel;
 import org.cggh.tools.dataMerger.data.users.UserModel;
 
-public class TablesScripts {
+public class DatabaseTablesScripts {
 
 	//INFO: What is a "script"?
 	//A script is not a function, not an elemental Model, CRUD or Controller.
@@ -33,6 +33,7 @@ public class TablesScripts {
 		        catch(SQLException sqlException){
 			    	sqlException.printStackTrace();
 			    	try {
+			    		//FIXME: Re-organize try-catches and introduce a finally blocks in all of these.
 						connection.close();
 					} catch (SQLException e) {
 						e.printStackTrace();
@@ -119,6 +120,7 @@ public class TablesScripts {
 	        		  "id BIGINT(255) UNSIGNED NOT NULL AUTO_INCREMENT, " +
 	        		  "original_filename VARCHAR(255) NOT NULL, " + 
 	        		  "repository_filepath VARCHAR(255) NULL, " + 
+	        		  "file_size_in_bytes BIGINT(255) UNSIGNED NULL, " +
 	        		  "created_by_user_id BIGINT(255) UNSIGNED NOT NULL, " + 
 	        		  "created_datetime DATETIME NOT NULL, " +
 	        		  "datatable_name VARCHAR(255) NULL, " + 

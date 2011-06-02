@@ -11,7 +11,7 @@ import javax.sql.rowset.CachedRowSet;
 import org.cggh.tools.dataMerger.data.databases.DatabaseModel;
 import org.cggh.tools.dataMerger.data.users.UserModel;
 import org.cggh.tools.dataMerger.data.users.UsersCRUD;
-import org.cggh.tools.dataMerger.functions.uploads.UploadsFunctionsModel;
+import org.cggh.tools.dataMerger.functions.uploads.UploadsFunctions;
 
 public class UploadsCRUD implements java.io.Serializable {
 
@@ -46,14 +46,14 @@ public class UploadsCRUD implements java.io.Serializable {
 	   
 	   CachedRowSet uploadsAsCachedRowSet = null;
 	   
-		try {
+		
 
 			Connection connection = this.getDatabaseModel().getNewConnection();
 			
 			if (connection != null) {
 
-			      try{
-			          PreparedStatement preparedStatement = connection.prepareStatement("SELECT id, original_filename, created_by_user_id, created_datetime FROM upload WHERE created_by_user_id = ? AND repository_filepath IS NOT NULL;");
+					try {
+			          PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM upload WHERE created_by_user_id = ? AND repository_filepath IS NOT NULL;");
 			          preparedStatement.setInt(1, userModel.getId());
 			          preparedStatement.executeQuery();
 			          Class<?> cachedRowSetImplClass = Class.forName(CACHED_ROW_SET_IMPL_CLASS);
@@ -63,22 +63,29 @@ public class UploadsCRUD implements java.io.Serializable {
 
 			        }
 			        catch(SQLException sqlException){
-			        	//System.out.println("<p>" + sqlException + "</p>");
 				    	sqlException.printStackTrace();
-			        } 	
-			
-				connection.close();
-				
+			        } catch (ClassNotFoundException e) {
+						e.printStackTrace();
+					} catch (InstantiationException e) {
+						e.printStackTrace();
+					} catch (IllegalAccessException e) {
+						e.printStackTrace();
+					} finally {
+						
+						try {
+							connection.close();
+						} catch (SQLException e) {
+							e.printStackTrace();
+						}
+						
+					} 
+			        
 			} else {
 				
 				//System.out.println("connection.isClosed");
 			}
 				
-		} 
-		catch (Exception e) {
-			//System.out.println("Exception from getUploadsAsCachedRowSet.");
-			e.printStackTrace();
-		}
+		
 
 
 
@@ -92,7 +99,7 @@ public class UploadsCRUD implements java.io.Serializable {
 		uploadModel.setId(uploadId);
 		
 	      try{
-	          PreparedStatement preparedStatement = connection.prepareStatement("SELECT id, original_filename, repository_filepath, created_by_user_id, created_datetime FROM `upload` WHERE id = ?;");
+	          PreparedStatement preparedStatement = connection.prepareStatement("SELECT id, original_filename, repository_filepath, file_size_in_bytes, created_by_user_id, created_datetime FROM `upload` WHERE id = ?;");
 	          preparedStatement.setInt(1, uploadModel.getId());
 	          preparedStatement.executeQuery();
 	          ResultSet resultSet = preparedStatement.getResultSet();
@@ -104,6 +111,7 @@ public class UploadsCRUD implements java.io.Serializable {
 	        	  //Set the upload data
 	        	  uploadModel.setOriginalFilename(resultSet.getString("original_filename"));
 	        	  uploadModel.setRepositoryFilepath(resultSet.getString("repository_filepath"));
+	        	  uploadModel.setFileSizeInBytes(resultSet.getLong("file_size_in_bytes"));
 	        	  uploadModel.getCreatedByUserModel().setId(resultSet.getInt("created_by_user_id"));
 	        	  uploadModel.setCreatedDatetime(resultSet.getTimestamp("created_datetime"));
 	        	  
@@ -144,7 +152,7 @@ public class UploadsCRUD implements java.io.Serializable {
 
 		  if (uploadsAsCachedRowSet != null) {
 
-			  	UploadsFunctionsModel uploadsFunctionsModel = new UploadsFunctionsModel();
+			  	UploadsFunctions uploadsFunctionsModel = new UploadsFunctions();
 			    uploadsFunctionsModel.setCachedRowSet(uploadsAsCachedRowSet);
 			    uploadsFunctionsModel.setDecoratedXHTMLTableByCachedRowSet();
 			    uploadsAsDecoratedXHTMLTableUsingUploadsModel = uploadsFunctionsModel.getDecoratedXHTMLTable();
@@ -184,16 +192,18 @@ public class UploadsCRUD implements java.io.Serializable {
 		
 	}
 
-	public void updateUploadRepositoryFilepathUsingUploadModel(UploadModel uploadModel, Connection connection) {
+	public void updateUploadRepositoryFilepathAndFileSizeInBytesUsingUploadModel(UploadModel uploadModel, Connection connection) {
 		
 		if (connection != null) {
 			
 			try {
 	          PreparedStatement preparedStatement = connection.prepareStatement("UPDATE upload SET " +
-	          																		"repository_filepath = ? " +
+	          																		"repository_filepath = ?, " +
+	          																		"file_size_in_bytes = ? " +
 	          																		"WHERE id = ?;");
 	          preparedStatement.setString(1, uploadModel.getRepositoryFilepath());
-	          preparedStatement.setInt(2, uploadModel.getId());
+	          preparedStatement.setLong(2, uploadModel.getFileSizeInBytes());
+	          preparedStatement.setInt(3, uploadModel.getId());
 	          preparedStatement.executeUpdate();
 	          preparedStatement.close();
 

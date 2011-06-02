@@ -105,9 +105,15 @@ public class ResolutionsByRowCRUD implements java.io.Serializable {
 				        catch(SQLException sqlException){
 				        	this.logger.severe(sqlException.toString());
 					    	sqlException.printStackTrace();
-				        } 	
-				
-					connection.close();
+				        } finally {
+							
+							try {
+								connection.close();
+							} catch (SQLException e) {
+								e.printStackTrace();
+							}
+							
+						} 
 					
 				} else {
 					this.logger.severe("connection.isClosed");
@@ -236,9 +242,15 @@ public class ResolutionsByRowCRUD implements java.io.Serializable {
 				        catch(SQLException sqlException){
 				        	this.logger.severe(sqlException.toString());
 					    	sqlException.printStackTrace();
-				        } 	
-				
-					connection.close();
+				        } finally {
+							
+							try {
+								connection.close();
+							} catch (SQLException e) {
+								e.printStackTrace();
+							}
+							
+						} 
 					
 				} else {
 					
@@ -268,11 +280,13 @@ public class ResolutionsByRowCRUD implements java.io.Serializable {
 		
 		//TODO: Perhaps get all of the model here?
 
-		try {
+		
 			
 			Connection connection = this.getDatabaseModel().getNewConnection();
 			 
 			if (connection != null) {
+				
+				try {
 					
 		          //Insert all the joins from this JSON Object
 				
@@ -336,19 +350,27 @@ public class ResolutionsByRowCRUD implements java.io.Serializable {
 	        	  
 		          
 					
-				connection.close();
+				} 
+				catch (Exception e) {
+					
+					this.logger.severe(e.toString());
+					e.printStackTrace();
+				}finally {
+						
+						try {
+							connection.close();
+						} catch (SQLException e) {
+							e.printStackTrace();
+						}
+						
+					} 
 				
 			} else {
 				
 				this.logger.severe("connection.isClosed");
 			}
 				
-		} 
-		catch (Exception e) {
-			
-			this.logger.severe(e.toString());
-			e.printStackTrace();
-		}
+		
 	}
 
 	public void updateResolutionByRowUsingResolutionByRowModel(

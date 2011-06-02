@@ -4,11 +4,12 @@ import javax.sql.rowset.CachedRowSet;
 
 import java.sql.SQLException;
 import java.text.DateFormat;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 
 
 
-public class UploadsFunctionsModel implements java.io.Serializable {
+public class UploadsFunctions implements java.io.Serializable {
 
 
 	/**
@@ -19,7 +20,7 @@ public class UploadsFunctionsModel implements java.io.Serializable {
 	private String xhtmlTable = null;
 	private String decoratedXHTMLTable = null;
 	
-	public UploadsFunctionsModel() {
+	public UploadsFunctions() {
 		
 	}
 
@@ -67,6 +68,7 @@ public class UploadsFunctionsModel implements java.io.Serializable {
 					 decoratedXHTMLTable = decoratedXHTMLTable.concat("<th>ID<!--  <a href=\"javascript:TODOsort();\">sort up/down</a> --></th>");
 					 decoratedXHTMLTable = decoratedXHTMLTable.concat("<th>Filename<!--  <a href=\"javascript:TODOsort();\">sort up/down</a> --></th>");
 					 decoratedXHTMLTable = decoratedXHTMLTable.concat("<th>Uploaded<!--  <a href=\"javascript:TODOsort();\">sort up/down</a> --></th>");
+					 decoratedXHTMLTable = decoratedXHTMLTable.concat("<th class=\"fileSizeHeadingContainer\">Size<!--  <a href=\"javascript:TODOsort();\">sort up/down</a> --></th>");
 					 decoratedXHTMLTable = decoratedXHTMLTable.concat("<th><!-- Column for download links --></th>");
 					 
 					 decoratedXHTMLTable = decoratedXHTMLTable.concat("</tr>");
@@ -103,6 +105,7 @@ public class UploadsFunctionsModel implements java.io.Serializable {
 						 decoratedXHTMLTable = decoratedXHTMLTable.concat("<td>" + this.getCachedRowSet().getString("id") + "</td>");
 						 decoratedXHTMLTable = decoratedXHTMLTable.concat("<td><a href=\"/dataMerger/files/uploads/" + this.getCachedRowSet().getString("id") + "\">" + this.getCachedRowSet().getString("original_filename") + "</a></td>");
 						 decoratedXHTMLTable = decoratedXHTMLTable.concat("<td>" + dateFormat.format(this.getCachedRowSet().getTimestamp("created_datetime")) + "</td>");
+						 decoratedXHTMLTable = decoratedXHTMLTable.concat("<td class=\"fileSizeContainer\">" + convertBytesAsLongIntoMegaBytesAsString(this.getCachedRowSet().getLong("file_size_in_bytes")) + "</td>");
 						 decoratedXHTMLTable = decoratedXHTMLTable.concat("<td><a href=\"/dataMerger/files/uploads/" + this.getCachedRowSet().getString("id") + "\">Download</a></td>");
 						 
 						 decoratedXHTMLTable = decoratedXHTMLTable.concat("</tr>");
@@ -134,4 +137,30 @@ public class UploadsFunctionsModel implements java.io.Serializable {
 	
 	}	
 	
+    public static String convertBytesAsLongIntoMegaBytesAsString(Long bytes) {
+    	
+        final double BASE = 1024;
+		final double KB = BASE;
+		final double MB = KB*BASE;
+		final double GB = MB*BASE;
+        final DecimalFormat decimalFormat = new DecimalFormat("#"); //#.## for 2 decimal places    	
+    	
+        if (bytes >= GB) {
+        	
+            return decimalFormat.format(bytes / GB) + " GB";
+            
+        }
+        else if (bytes >= MB) {
+        	
+            return decimalFormat.format(bytes / MB) + " MB";
+            
+        }
+        else if(bytes >= KB) {
+        	
+            return decimalFormat.format(bytes / KB) + " KB";
+            
+        } else {
+        	return Long.toString(bytes) + " bytes";
+        }
+    }
 }

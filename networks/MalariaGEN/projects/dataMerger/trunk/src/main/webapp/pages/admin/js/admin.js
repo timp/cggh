@@ -9,7 +9,8 @@ function initAdminFunctions () {
 	initCreateFilebaseFunction();
 	initDeleteFilebaseFunction();
 	
-	initCreateFilebaseDirectoriesButton();
+	initCreateFilebaseDirectoriesFunction();
+	initDeleteFilebaseDirectoriesFunction();
 }
 
 function initCreateDatabaseFunction () {
@@ -69,14 +70,14 @@ function initDeleteDatabaseFunction () {
 
 function initCreateDatabaseTablesFunction () {
 	
-	$('.createAndInitializeTablesButton').click(
+	$('.createAndInitializeDatabaseTablesButton').click(
 			
 			function () {
 				
 				$.ajax({
 					  type: "POST",
 					  data: '',
-					  url: "/dataMerger/scripts/data/tables/create-and-initialize",
+					  url: "/dataMerger/scripts/data/databases/tables/create-and-initialize",
 					  dataType: "text",
 					  success: function(data, textStatus, jqXHR) {
 							$('.ajaxResponse').html("Response: " + data);
@@ -102,7 +103,7 @@ function initDeleteDatabaseTablesFunction () {
 				$.ajax({
 					  type: "DELETE",
 					  data: '',
-					  url: "/dataMerger/scripts/data/tables/delete-all",
+					  url: "/dataMerger/scripts/data/databases/tables/delete-all",
 					  dataType: "text",
 					  success: function(data, textStatus, jqXHR) {
 							$('.ajaxResponse').html("Response: " + data);
@@ -179,8 +180,57 @@ function initDeleteFilebaseFunction () {
 	
 }
 
-function initCreateFilebaseDirectoriesButton () {
+function initCreateFilebaseDirectoriesFunction () {
 
-	//TODO:code
+	$('.createFilebaseDirectoriesButton').click(
+			
+			function () {
+				
+				$.ajax({
+					  type: "POST",
+					  data: '',
+					  url: "/dataMerger/scripts/files/filebases/directories/create-and-initialize",
+					  dataType: "text",
+					  success: function(data, textStatus, jqXHR) {
+							$('.ajaxResponse').html("Response: " + data);
+							$('.refreshButtonContainer').show();
+					  },
+					  error:function (jqXHR, textStatus, errorThrown){
+							$('.ajaxError').html("Error: " + errorThrown);
+			          },
+						beforeSend: function() { $('.creating-filebase-directories-indicator').show(); },
+				        complete: function() { $('.creating-filebase-directories-indicator').hide(); }
+					});
+				
+			}
+			
+		);
+	
+}
+
+function initDeleteFilebaseDirectoriesFunction () {
+	
+	$('.deleteFilebaseDirectoriesButton').click(
+			
+			function () {
+				
+				$.ajax({
+					  type: "DELETE",
+					  data: '',
+					  url: "/dataMerger/scripts/files/filebases/directories/delete-all",
+					  dataType: "text",
+					  success: function(data, textStatus, jqXHR) {
+							$('.ajaxResponse').html("Response: " + data);
+							$('.refreshButtonContainer').show();
+					  },
+					  error:function (jqXHR, textStatus, errorThrown){
+							$('.ajaxError').html("Error: " + errorThrown);
+			          },
+						beforeSend: function() { $('.deleting-filebase-directories-indicator').show(); },
+				        complete: function() { $('.deleting-filebase-directories-indicator').hide(); }
+					});
+			}
+			
+		);
 	
 }

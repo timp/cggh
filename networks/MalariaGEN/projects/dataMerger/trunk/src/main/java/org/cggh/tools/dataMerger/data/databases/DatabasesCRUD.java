@@ -157,10 +157,19 @@ public class DatabasesCRUD {
 		          
 		          resultSet.close();
 				  preparedStatement.close();
-				  connection.close();
+				  
 		
-			} catch (SQLException e) {
+			} 
+			catch (SQLException e) {
 				e.printStackTrace();
+			} finally {
+				
+				try {
+					connection.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+				
 			}
 		
 		
@@ -192,7 +201,6 @@ public class DatabasesCRUD {
 				preparedStatement.executeQuery();
 				tablesAsCachedRowSet.populate(preparedStatement.getResultSet());
 				preparedStatement.close();
-				connection.close();
 				
 			} catch (SQLException e) {
 				e.printStackTrace();
@@ -202,6 +210,14 @@ public class DatabasesCRUD {
 				e.printStackTrace();
 			} catch (ClassNotFoundException e) {
 				e.printStackTrace();
+			} finally {
+					
+					try {
+						connection.close();
+					} catch (SQLException e) {
+						e.printStackTrace();
+					}
+					
 			}
 
 		} else {
@@ -221,7 +237,14 @@ public class DatabasesCRUD {
 
 			Class.forName(databaseModel.getDriverFullyQualifiedClassName()).newInstance();
 			Connection connection = DriverManager.getConnection(databaseModel.getServerPath(), databaseModel.getUsername(), databaseModel.getPassword());
-			connection.close();
+
+			if (connection != null) {
+				try {
+					connection.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
 			
 			return true;
 			
@@ -249,7 +272,14 @@ public class DatabasesCRUD {
 			
 			Class.forName(databaseModel.getDriverFullyQualifiedClassName()).newInstance();
 			Connection connection = DriverManager.getConnection(databaseModel.getServerPath() + databaseModel.getName(), databaseModel.getUsername(), databaseModel.getPassword());
-			connection.close();
+					
+					try {
+						connection.close();
+					} catch (SQLException e) {
+						e.printStackTrace();
+					}
+				
+			
 			
 			return true;
 			

@@ -198,7 +198,16 @@ public class DataModel implements java.io.Serializable {
 		try {
 
 			Connection connection = DriverManager.getConnection(this.getURL(), this.getUsername(), this.getPassword());
-			connection.close();
+			
+			if (connection != null) {
+				
+						try {
+							connection.close();
+						} catch (SQLException e) {
+							e.printStackTrace();
+						}
+						
+			}
 			
 			this.setDatabaseConnectable(true);
 			
