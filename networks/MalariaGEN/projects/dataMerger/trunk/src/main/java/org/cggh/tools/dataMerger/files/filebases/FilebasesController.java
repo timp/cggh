@@ -4,7 +4,9 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -62,24 +64,50 @@ public class FilebasesController extends HttpServlet {
 				  
 				  
 					String filebaseInstallationLogAsCSVFilePath = filebaseModel.getServerPath() + filebaseModel.getFilebaseInstallationLogAsCSVFilePathRelativeToFilebaseServerPath();
-					String filebaseInstallationLogAsCSVHeadings = "major_version_number,minor_version_number,revision_version_number,created_by_user_id,created_datetime"; 
-					String filebaseInstallationLogAsCSVEntry = "1,1,0," + userModel.getId() + ",created_datetime";
 					
-					try {
-						FileWriter filebaseInstallationLogAsCSVFileWriter = new FileWriter(filebaseInstallationLogAsCSVFilePath); // a second parameter of true in the FileWriter constructor will switch on append mode.
-						BufferedWriter filebaseInstallationLogAsCSVFileBufferedWriter = new BufferedWriter(filebaseInstallationLogAsCSVFileWriter);
+					File filebaseInstallationLogAsCSVFile = new File(filebaseInstallationLogAsCSVFilePath);
+					
+					if (!filebaseInstallationLogAsCSVFile.exists()) {
 						
-						filebaseInstallationLogAsCSVFileBufferedWriter.write(filebaseInstallationLogAsCSVHeadings);
-						filebaseInstallationLogAsCSVFileBufferedWriter.newLine();
+						File filebaseInstallationLogAsCSVFileParent = new File(filebaseInstallationLogAsCSVFile.getParent());
 						
-						filebaseInstallationLogAsCSVFileBufferedWriter.write(filebaseInstallationLogAsCSVEntry);
-						filebaseInstallationLogAsCSVFileBufferedWriter.newLine();
-						
-						
-						responseAsPlainText = "Created filebase directory and installation log file.";
-						
-					} catch (IOException e) {
-						e.printStackTrace();
+						if (filebaseInstallationLogAsCSVFileParent.mkdirs()) {
+							
+							if (filebaseInstallationLogAsCSVFile.createNewFile()) {
+							
+								Calendar calendar = Calendar.getInstance();
+							    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+								
+								String filebaseInstallationLogAsCSVHeadings = "major_version_number,minor_version_number,revision_version_number,created_by_user_id,created_by_username,created_datetime"; 
+								String filebaseInstallationLogAsCSVEntry = "1,1,0," + userModel.getId() + "," + userModel.getUsername() + "," + simpleDateFormat.format(calendar.getTime());
+								
+								try {
+									FileWriter filebaseInstallationLogAsCSVFileWriter = new FileWriter(filebaseInstallationLogAsCSVFilePath); // a second parameter of true in the FileWriter constructor will switch on append mode.
+									BufferedWriter filebaseInstallationLogAsCSVFileBufferedWriter = new BufferedWriter(filebaseInstallationLogAsCSVFileWriter);
+									
+									filebaseInstallationLogAsCSVFileBufferedWriter.write(filebaseInstallationLogAsCSVHeadings);
+									filebaseInstallationLogAsCSVFileBufferedWriter.newLine();
+									
+									filebaseInstallationLogAsCSVFileBufferedWriter.write(filebaseInstallationLogAsCSVEntry);
+									filebaseInstallationLogAsCSVFileBufferedWriter.newLine();
+									
+									filebaseInstallationLogAsCSVFileBufferedWriter.close();
+									
+									responseAsPlainText = "Created filebase directory and installation log file.";
+									
+								} catch (IOException e) {
+									e.printStackTrace();
+								}
+								
+							} else {
+								responseAsPlainText = "An error occurred while trying to create the installation log file.";
+								logger.severe("filebaseInstallationLogAsCSVFile.createNewFile() was false");
+							}
+							
+						} else {
+							responseAsPlainText = "An error occurred while trying to create the directory for the installation log file.";
+							logger.severe("filebaseInstallationLogAsCSVFile.mkdirs() was false");
+						}
 					}
 					
 					

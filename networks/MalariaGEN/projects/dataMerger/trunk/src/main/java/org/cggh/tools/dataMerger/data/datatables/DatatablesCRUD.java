@@ -94,7 +94,7 @@ public class DatatablesCRUD implements java.io.Serializable {
 		        	    	  
 		        	    	  columnNamesAsStringList.add(columnNames[i]);
 		        	    	  
-		        	    	  columnDefinitionsForCreateTableSQL = columnDefinitionsForCreateTableSQL.concat("`" + columnNames[i] + "` VARCHAR(255) NULL");
+		        	    	  columnDefinitionsForCreateTableSQL = columnDefinitionsForCreateTableSQL.concat("`" + columnNames[i] + "` VARCHAR(36) NULL");
 		        	    	  
 		        	    	  if (i != columnNames.length - 1) {
 		        	    		  columnDefinitionsForCreateTableSQL = columnDefinitionsForCreateTableSQL.concat(", ");

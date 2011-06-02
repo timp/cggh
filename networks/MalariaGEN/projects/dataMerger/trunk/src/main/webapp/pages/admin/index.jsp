@@ -64,6 +64,12 @@
 				<li class="fail">Database tables count &lt; 11.</li>
 				<% } %>
 				
+				<% if (filebaseModel.isExistent()) { %>
+				<li class="pass">Filebase exists.</li>
+				<% } else { %>
+				<li class="fail">Filebase does not exist.</li>
+				<% } %>
+				
 				<% if (filebaseModel.isReadable()) { %>
 				<li class="pass">Filebase is readable.</li>
 				<% } else { %>
@@ -165,14 +171,12 @@
 			
 			<p>
 				<img class="creating-filebase-indicator" src="../shared/gif/loading.gif" style="display:none" title="Creating..."/>
-				<% if (filebaseModel.isExistent() && filebaseModel.isWritable() && (filebaseModel.getFilesAsStringArrayList() == null || filebaseModel.getFilesAsStringArrayList().size() == 0)) { %>
-					<button class="createFilebaseButton">Create</button>
-				<% } else { %>
+				
+				<% if (filebaseModel.isExistent()) { %>
 					<button disabled="disabled">Create</button>
-				<% } %>
-				<% if (filebaseModel.isExistent() && filebaseModel.isWritable() && filebaseModel.getFilesAsStringArrayList() != null && filebaseModel.getFilesAsStringArrayList().size() > 0) { %>
 					<button class="deleteFilebaseButton">Delete</button>
 				<% } else { %>
+					<button class="createFilebaseButton">Create</button>
 					<button disabled="disabled">Delete</button>
 				<% } %>
 				
@@ -186,12 +190,12 @@
 			
 			<p>
 				<img class="creating-filebase-directories-indicator" src="../shared/gif/loading.gif" style="display:none" title="Creating..."/>
-				<% if (!filebaseModel.isExistent() && filebaseModel.isWritable()) { %>
-					<button class="createFilebaseDirectoriesButton">Create</button>
+				<% if (filebaseModel.isExistent() && filebaseModel.isWritable() && filebaseModel.getFilesAsStringArrayList().size() == 1) { %>
+					<button class="createFilebaseDirectoriesButton">Create and Initialize</button>
 				<% } else { %>
 					<button disabled="disabled">Create and Initialize</button>
 				<% } %>
-				<% if (filebaseModel.isExistent() && filebaseModel.isWritable()) { %>
+				<% if (filebaseModel.isExistent() && filebaseModel.isWritable() && filebaseModel.getFilesAsStringArrayList().size() > 1) { %>
 					<button class="deleteFilebaseDirectoriesButton">Delete</button>
 				<% } else { %>
 					<button disabled="disabled">Delete</button>

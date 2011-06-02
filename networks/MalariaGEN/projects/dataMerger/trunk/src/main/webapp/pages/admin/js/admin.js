@@ -8,6 +8,8 @@ function initAdminFunctions () {
 	
 	initCreateFilebaseFunction();
 	initDeleteFilebaseFunction();
+	
+	initCreateFilebaseDirectoriesButton();
 }
 
 function initCreateDatabaseFunction () {
@@ -174,5 +176,11 @@ function initDeleteFilebaseFunction () {
 			}
 			
 		);
+	
+}
+
+function initCreateFilebaseDirectoriesButton () {
+
+	//TODO:code
 	
 }

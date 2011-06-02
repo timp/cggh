@@ -19,55 +19,100 @@ public class FilebaseScripts {
 		  
 		  if (filebaseServerDirectory.isDirectory()) {
 			  
-			  if (filebaseServerDirectory.list().length == 0) {
-				  
-				  filebaseServerDirectory.delete();
-				  
-				  responseAsPlainText = "Filebase deleted.";
+			  if (deleteFileAndAllChildren(filebaseServerDirectory)) {
+			  
+				  responseAsPlainText = "The filebase has now been deleted.";
 				  
 			  } else {
-				
-				  FilebaseScripts filebaseScripts = new FilebaseScripts();
-				  filebaseScripts.deleteFileAndAllChildren(filebaseServerDirectory);
 				  
-				  responseAsPlainText = "Filebase and all contained files deleted.";
+				  responseAsPlainText = "An error occurred while trying to delete the filebase.";
 			  }
 			  
-			  
 		  } else {
-			  responseAsPlainText = "Failed to delete filebase. Path specified in web.xml is not a directory.";
+			  responseAsPlainText = "Refused to delete filebase. Path specified in web.xml is not a directory.";
 		  }
 		  
 	      return responseAsPlainText;
 	  }
+
 	  
-	  private void deleteFileAndAllChildren (final File file) {
-		  
-		  //TODO: Code until it works!
-		  //TODO: Remove System outs
+	  private Boolean deleteFileAndAllChildren (final File file) {
 		  
 		  if (file.isDirectory()) {
 
-              for (int i = 0; i < file.listFiles().length; i++) {
-            	  
-            	  if (file.listFiles()[i].isDirectory()) {
-            		  System.out.println("deleting all of " + file.listFiles()[i].getAbsolutePath());
-            		  deleteFileAndAllChildren(file.listFiles()[i]);
-            	  } else {
-            		  System.out.println("deleting file " + file.getAbsolutePath());
-                	  file.delete();
-            	  }
-                  
-              }
+			  //Delete all the files in this directory, if there are any.
+			  if (file.listFiles().length > 0) {
+				  
+				  //Need to take a copy because the list will dynamically change
+				  File[] filesAsFileArray = file.listFiles();
+				  
+	              for (int i = 0; i < filesAsFileArray.length; i++) {
+	            	  
+	            	  if (filesAsFileArray[i].isDirectory()) {
 
-              System.out.println("deleting dir " + file.getAbsolutePath());
-        	  file.delete();
+	            		  //Process this sub-directory 
+	            		  if (!deleteFileAndAllChildren(filesAsFileArray[i])) {
+	            			  return false;
+	            		  }
+	            		  
+	            	  } else {
+	            		  
+	            		  //Delete this file from the directory
+	            		  if (!filesAsFileArray[i].delete()) {
+	            			  return false;
+	            		  }
+	            	  }
+	                  
+	              }
+			  }
+
+			  //Delete this empty directory
+        	  if (!file.delete()) {
+        		 return false; 
+        	  }
               
 	      } else {
 	    	  
-	    	  System.out.println("deleting file " + file.getAbsolutePath());
-        	  file.delete();
+	    	  //Delete this file
+        	  if (!file.delete()) {
+        		  return false;
+        	  }
+        	  
 	      }
+		  
+		  return true;
 	  }
 	
+
+	  private void deleteAllFileChildren (final File file) {
+		  
+		  if (file.isDirectory()) {
+
+			  //Delete all the files in this directory, if there are any.
+			  if (file.listFiles().length > 0) {
+				  
+				  //Need to take a copy because the list will dynamically change
+				  File[] filesAsFileArray = file.listFiles();
+				  
+	              for (int i = 0; i < filesAsFileArray.length; i++) {
+	            	  
+	            	  if (filesAsFileArray[i].isDirectory()) {
+
+	            		  //Process this sub-directory 
+	            		  deleteFileAndAllChildren(filesAsFileArray[i]);
+	            		  
+	            	  } else {
+	            		  
+	            		  //Delete this file from the directory
+	            		  filesAsFileArray[i].delete();
+	            	  }
+	                  
+	              }
+			  }
+              
+	      }
+		  
+	  }	  
+	  
+	  
 }

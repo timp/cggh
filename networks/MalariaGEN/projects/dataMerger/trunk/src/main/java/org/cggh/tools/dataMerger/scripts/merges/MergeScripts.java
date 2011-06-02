@@ -549,7 +549,7 @@ public class MergeScripts implements java.io.Serializable {
 		        
 		        if (keyJoinsAsCachedRowSet.next()) {
 		        	
-		        	columnDefinitionsUsingKeyColumnNamesSQL += "`" + keyJoinsAsCachedRowSet.getString("column_name") + "` VARCHAR(255) ";
+		        	columnDefinitionsUsingKeyColumnNamesSQL += "`" + keyJoinsAsCachedRowSet.getString("column_name") + "` VARCHAR(36) ";
 		        	
 		        	datatable1JoinSQL += "`" + mergeModel.getDatatable1Model().getName() + "`.`" + datatable1ColumnNamesByColumnNumberAsHashMap.get(keyJoinsAsCachedRowSet.getInt("column_number")) + "` = `" + mergeModel.getJoinedKeytableModel().getName() + "`.`key_column_" + keyJoinsAsCachedRowSet.getInt("column_number") + "` ";
 		        	datatable2JoinSQL += "`" + mergeModel.getDatatable2Model().getName() + "`.`" + datatable2ColumnNamesByColumnNumberAsHashMap.get(keyJoinsAsCachedRowSet.getInt("column_number")) + "` = `" + mergeModel.getJoinedKeytableModel().getName() + "`.`key_column_" + keyJoinsAsCachedRowSet.getInt("column_number") + "` AND `" + mergeModel.getDatatable2Model().getName() + "`.`" + datatable2ColumnNamesByColumnNumberAsHashMap.get(keyJoinsAsCachedRowSet.getInt("column_number")) + "` = `" + mergeModel.getDatatable1Model().getName() + "`.`" + datatable1ColumnNamesByColumnNumberAsHashMap.get(keyJoinsAsCachedRowSet.getInt("column_number")) + "` ";
@@ -558,7 +558,7 @@ public class MergeScripts implements java.io.Serializable {
 		        	
 			        while (keyJoinsAsCachedRowSet.next()) {
 			        
-			        	columnDefinitionsUsingKeyColumnNamesSQL += ", `" + keyJoinsAsCachedRowSet.getString("column_name") + "` VARCHAR(255) ";
+			        	columnDefinitionsUsingKeyColumnNamesSQL += ", `" + keyJoinsAsCachedRowSet.getString("column_name") + "` VARCHAR(36) ";
 			        	
 			        	datatable1JoinSQL += "AND `" + mergeModel.getDatatable1Model().getName() + "`.`" + datatable1ColumnNamesByColumnNumberAsHashMap.get(keyJoinsAsCachedRowSet.getInt("column_number")) + "` = `" + mergeModel.getJoinedKeytableModel().getName() + "`.`key_column_" + keyJoinsAsCachedRowSet.getInt("column_number") + "` ";
 			        	datatable2JoinSQL += "AND `" + mergeModel.getDatatable2Model().getName() + "`.`" + datatable2ColumnNamesByColumnNumberAsHashMap.get(keyJoinsAsCachedRowSet.getInt("column_number")) + "` = `" + mergeModel.getJoinedKeytableModel().getName() + "`.`key_column_" + keyJoinsAsCachedRowSet.getInt("column_number") + "` AND `" + mergeModel.getDatatable2Model().getName() + "`.`" + datatable2ColumnNamesByColumnNumberAsHashMap.get(keyJoinsAsCachedRowSet.getInt("column_number")) + "` = `" + mergeModel.getDatatable1Model().getName() + "`.`" + datatable1ColumnNamesByColumnNumberAsHashMap.get(keyJoinsAsCachedRowSet.getInt("column_number")) + "` ";
@@ -586,7 +586,7 @@ public class MergeScripts implements java.io.Serializable {
 		        
 		        if (nonKeyCrossDatatableJoinsAsCachedRowSet.next()) {
 		        	
-		        	columnDefinitionsUsingNonKeyCrossDatatableColumnAndSourceNumbersSQL = columnDefinitionsUsingNonKeyCrossDatatableColumnAndSourceNumbersSQL.concat("`column_" + nonKeyCrossDatatableJoinsAsCachedRowSet.getString("column_number") + "_source_1` VARCHAR(255), `column_" + nonKeyCrossDatatableJoinsAsCachedRowSet.getString("column_number") + "_source_2` VARCHAR(255) ");
+		        	columnDefinitionsUsingNonKeyCrossDatatableColumnAndSourceNumbersSQL = columnDefinitionsUsingNonKeyCrossDatatableColumnAndSourceNumbersSQL.concat("`column_" + nonKeyCrossDatatableJoinsAsCachedRowSet.getString("column_number") + "_source_1` VARCHAR(36), `column_" + nonKeyCrossDatatableJoinsAsCachedRowSet.getString("column_number") + "_source_2` VARCHAR(36) ");
 		        	
 		        	nonKeyCrossDatatableColumnAliasesAsCSVForSelectFromJoinSQL = nonKeyCrossDatatableColumnAliasesAsCSVForSelectFromJoinSQL.concat("`" + mergeModel.getDatatable1Model().getName() + "`.`" + nonKeyCrossDatatableJoinsAsCachedRowSet.getString("datatable_1_column_name") + "` AS `column_" + nonKeyCrossDatatableJoinsAsCachedRowSet.getInt("column_number") + "_source_1`, `" + mergeModel.getDatatable2Model().getName() + "`.`" + nonKeyCrossDatatableJoinsAsCachedRowSet.getString("datatable_2_column_name") + "` AS `column_" + nonKeyCrossDatatableJoinsAsCachedRowSet.getInt("column_number") + "_source_2` ");
 
@@ -610,7 +610,7 @@ public class MergeScripts implements java.io.Serializable {
 		        	
 			        while (nonKeyCrossDatatableJoinsAsCachedRowSet.next()) {
 			        
-			        	columnDefinitionsUsingNonKeyCrossDatatableColumnAndSourceNumbersSQL += ", `column_" + nonKeyCrossDatatableJoinsAsCachedRowSet.getString("column_number") + "_source_1` VARCHAR(255), `column_" + nonKeyCrossDatatableJoinsAsCachedRowSet.getString("column_number") + "_source_2` VARCHAR(255) ";
+			        	columnDefinitionsUsingNonKeyCrossDatatableColumnAndSourceNumbersSQL += ", `column_" + nonKeyCrossDatatableJoinsAsCachedRowSet.getString("column_number") + "_source_1` VARCHAR(36), `column_" + nonKeyCrossDatatableJoinsAsCachedRowSet.getString("column_number") + "_source_2` VARCHAR(36) ";
 
 			        	nonKeyCrossDatatableColumnAliasesAsCSVForSelectFromJoinSQL += ", `" + mergeModel.getDatatable1Model().getName() + "`.`" + nonKeyCrossDatatableJoinsAsCachedRowSet.getString("datatable_1_column_name") + "` AS `column_" + nonKeyCrossDatatableJoinsAsCachedRowSet.getInt("column_number") + "_source_1`, `" + mergeModel.getDatatable2Model().getName() + "`.`" + nonKeyCrossDatatableJoinsAsCachedRowSet.getString("datatable_2_column_name") + "` AS `column_" + nonKeyCrossDatatableJoinsAsCachedRowSet.getInt("column_number") + "_source_2` ";
 			        

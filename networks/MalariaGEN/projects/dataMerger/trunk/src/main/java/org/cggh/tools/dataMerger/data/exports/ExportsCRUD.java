@@ -859,7 +859,7 @@ public class ExportsCRUD implements java.io.Serializable  {
 			if (i != 1) {
 				columnDefinitionsForCreateSQL += ", ";
 			}
-			columnDefinitionsForCreateSQL += "`" + joinColumnNamesByColumnNumberAsHashMap.get(i) +  "` VARCHAR(255) NULL";
+			columnDefinitionsForCreateSQL += "`" + joinColumnNamesByColumnNumberAsHashMap.get(i) +  "` VARCHAR(36) NULL";
 		}
 		
 		////this.logger.info("columnDefinitionsForCreateSQL: " + columnDefinitionsForCreateSQL);
