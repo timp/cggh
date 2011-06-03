@@ -11,8 +11,8 @@ import org.cggh.tools.dataMerger.data.databases.DatabaseModel;
 import org.cggh.tools.dataMerger.data.joins.JoinsCRUD;
 import org.cggh.tools.dataMerger.data.merges.MergeModel;
 import org.cggh.tools.dataMerger.data.resolutions.ResolutionsCRUD;
-import org.cggh.tools.dataMerger.functions.resolutions.byRow.ResolutionsByRowFunctionsModel;
-import org.cggh.tools.dataMerger.scripts.merges.MergeScripts;
+import org.cggh.tools.dataMerger.functions.data.resolutions.byRow.ResolutionsByRowFunctions;
+import org.cggh.tools.dataMerger.scripts.data.merges.MergeScripts;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -50,24 +50,24 @@ public class ResolutionsByRowCRUD implements java.io.Serializable {
 		  if (resolutionsByRowAsCachedRowSet != null) {
 			  
 
-			  	ResolutionsByRowFunctionsModel resolutionsByRowFunctionsModel = new ResolutionsByRowFunctionsModel();
-			  	resolutionsByRowFunctionsModel.setResolutionsByRowAsCachedRowSet(resolutionsByRowAsCachedRowSet);
-			  	resolutionsByRowFunctionsModel.setSolutionsByRowAsCachedRowSet(this.retrieveSolutionsByRowAsCachedRowSet());
+			  	ResolutionsByRowFunctions resolutionsByRowFunctions = new ResolutionsByRowFunctions();
+			  	resolutionsByRowFunctions.setResolutionsByRowAsCachedRowSet(resolutionsByRowAsCachedRowSet);
+			  	resolutionsByRowFunctions.setSolutionsByRowAsCachedRowSet(this.retrieveSolutionsByRowAsCachedRowSet());
 
 			  	JoinsCRUD joinsModel = new JoinsCRUD();
 			  	joinsModel.setDatabaseModel(this.getDatabaseModel());
-			  	resolutionsByRowFunctionsModel.setJoinColumnNamesByColumnNumberAsHashMap(joinsModel.retrieveJoinColumnNamesByColumnNumberAsHashMapUsingMergeModel(mergeModel));
+			  	resolutionsByRowFunctions.setJoinColumnNamesByColumnNumberAsHashMap(joinsModel.retrieveJoinColumnNamesByColumnNumberAsHashMapUsingMergeModel(mergeModel));
 			  	
 			  	/////////TODO:
 			  	ResolutionsCRUD resolutionsCRUD = new ResolutionsCRUD();
 			  	resolutionsCRUD.setDatabaseModel(this.getDatabaseModel());
-			  	resolutionsByRowFunctionsModel.setSolutionByColumnIdUsingCellCoordsAsHashMap(resolutionsCRUD.retrieveSolutionByColumnIdUsingCellCoordsAsHashMapUsingMergeModel(mergeModel));
-			  	resolutionsByRowFunctionsModel.setSolutionByCellIdUsingCellCoordsAsHashMap(resolutionsCRUD.retrieveSolutionByCellIdUsingCellCoordsAsHashMapUsingMergeModel(mergeModel));
-			  	resolutionsByRowFunctionsModel.setConstantUsingCellCoordsAsHashMap(resolutionsCRUD.retrieveConstantUsingCellCoordsAsHashMapUsingMergeModel(mergeModel));
-			  	resolutionsByRowFunctionsModel.setNullOrConstantSolutionUsingColumnNumberAsHashMap(resolutionsCRUD.retrieveNullOrConstantSolutionUsingColumnNumberAsHashMapUsingMergeModel(mergeModel));
+			  	resolutionsByRowFunctions.setSolutionByColumnIdUsingCellCoordsAsHashMap(resolutionsCRUD.retrieveSolutionByColumnIdUsingCellCoordsAsHashMapUsingMergeModel(mergeModel));
+			  	resolutionsByRowFunctions.setSolutionByCellIdUsingCellCoordsAsHashMap(resolutionsCRUD.retrieveSolutionByCellIdUsingCellCoordsAsHashMapUsingMergeModel(mergeModel));
+			  	resolutionsByRowFunctions.setConstantUsingCellCoordsAsHashMap(resolutionsCRUD.retrieveConstantUsingCellCoordsAsHashMapUsingMergeModel(mergeModel));
+			  	resolutionsByRowFunctions.setNullOrConstantSolutionUsingColumnNumberAsHashMap(resolutionsCRUD.retrieveNullOrConstantSolutionUsingColumnNumberAsHashMapUsingMergeModel(mergeModel));
 			  	
-			  	resolutionsByRowFunctionsModel.setResolutionsByRowAsDecoratedXHTMLTableUsingResolutionsByRowAsCachedRowSet();
-			  	resolutionsByRowAsDecoratedXHTMLTable = resolutionsByRowFunctionsModel.getResolutionsByRowAsDecoratedXHTMLTable();
+			  	resolutionsByRowFunctions.setResolutionsByRowAsDecoratedXHTMLTableUsingResolutionsByRowAsCachedRowSet();
+			  	resolutionsByRowAsDecoratedXHTMLTable = resolutionsByRowFunctions.getResolutionsByRowAsDecoratedXHTMLTable();
 			    
 		  } else {
 			  
@@ -343,10 +343,10 @@ public class ResolutionsByRowCRUD implements java.io.Serializable {
 		          
 		        //TODO: Recount the conflicts (take problems with solutions as 0, otherwise use the resolution conflict_count)
 
-	        	  MergeScripts mergeScriptsModel = new MergeScripts();
+	        	  MergeScripts mergeScripts = new MergeScripts();
 	        	  
 
-	        	  mergeModel = mergeScriptsModel.retrieveMergeAsMergeModelThroughDeterminingTotalConflictsCountUsingMergeModel(mergeModel, connection);
+	        	  mergeModel = mergeScripts.retrieveMergeAsMergeModelThroughDeterminingTotalConflictsCountUsingMergeModel(mergeModel, connection);
 	        	  
 		          
 					

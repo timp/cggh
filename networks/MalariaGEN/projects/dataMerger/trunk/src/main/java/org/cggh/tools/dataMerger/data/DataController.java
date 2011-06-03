@@ -30,9 +30,9 @@ import org.cggh.tools.dataMerger.data.users.UserModel;
 import org.cggh.tools.dataMerger.data.users.UsersCRUD;
 import org.cggh.tools.dataMerger.files.filebases.FilebaseModel;
 import org.cggh.tools.dataMerger.files.filebases.FilebasesCRUD;
-import org.cggh.tools.dataMerger.functions.joins.JoinFunctionsModel;
-import org.cggh.tools.dataMerger.functions.merges.MergeFunctionsModel;
-import org.cggh.tools.dataMerger.functions.uploads.UploadsFunctions;
+import org.cggh.tools.dataMerger.functions.data.joins.JoinFunctions;
+import org.cggh.tools.dataMerger.functions.data.merges.MergeFunctions;
+import org.cggh.tools.dataMerger.functions.data.uploads.UploadsFunctions;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -102,12 +102,12 @@ public class DataController extends HttpServlet {
 			
 				  if (uploadsAsCachedRowSet != null) {
 			
-					  	UploadsFunctions uploadsFunctionsModel = new UploadsFunctions();
+					  	UploadsFunctions uploadsFunctions = new UploadsFunctions();
 					  
-					  	uploadsFunctionsModel.setCachedRowSet(uploadsAsCachedRowSet);
-					  	uploadsFunctionsModel.setDecoratedXHTMLTableByCachedRowSet();
+					  	uploadsFunctions.setCachedRowSet(uploadsAsCachedRowSet);
+					  	uploadsFunctions.setDecoratedXHTMLTableByCachedRowSet();
 					  	
-					  	uploadsAsHTML = uploadsFunctionsModel.getDecoratedXHTMLTable();
+					  	uploadsAsHTML = uploadsFunctions.getDecoratedXHTMLTable();
 					    
 				  } else {
 				  
@@ -155,12 +155,12 @@ public class DataController extends HttpServlet {
 				
 					  if (joinsAsCachedRowSet != null) {
 				
-						  MergeFunctionsModel mergeFunctionsModel = new MergeFunctionsModel();
+						  MergeFunctions mergeFunctions = new MergeFunctions();
 						  
-						    mergeFunctionsModel.setMergeModel(mergeModel);	    
-						    mergeFunctionsModel.setJoinsAsCachedRowSet(joinsAsCachedRowSet);
-						    mergeFunctionsModel.setJoinsAsDecoratedXHTMLTableUsingJoinsAsCachedRowSet();
-						    joinsAsHTML = mergeFunctionsModel.getJoinsAsDecoratedXHTMLTable();
+						    mergeFunctions.setMergeModel(mergeModel);	    
+						    mergeFunctions.setJoinsAsCachedRowSet(joinsAsCachedRowSet);
+						    mergeFunctions.setJoinsAsDecoratedXHTMLTableUsingJoinsAsCachedRowSet();
+						    joinsAsHTML = mergeFunctions.getJoinsAsDecoratedXHTMLTable();
 						    
 					  } else {
 					  
@@ -282,13 +282,13 @@ public class DataController extends HttpServlet {
 					  
 					  String joinAsDecoratedXHTMLTable = null;
 					  
-					  	JoinFunctionsModel joinFunctionsModel = new JoinFunctionsModel();
-						joinFunctionsModel.setJoinModel(new JoinModel()); // Unnecessary but explicit
-						joinFunctionsModel.setMergeModel(mergeModel);
-						joinFunctionsModel.setJoinAsDecoratedXHTMLTableByJoinModel();
+					  	JoinFunctions joinFunctions = new JoinFunctions();
+						joinFunctions.setJoinModel(new JoinModel()); // Unnecessary but explicit
+						joinFunctions.setMergeModel(mergeModel);
+						joinFunctions.setJoinAsDecoratedXHTMLTableByJoinModel();
 						
 					
-						joinAsDecoratedXHTMLTable = joinFunctionsModel.getJoinAsDecoratedXHTMLTable();
+						joinAsDecoratedXHTMLTable = joinFunctions.getJoinAsDecoratedXHTMLTable();
 					  
 					  
 					  if (joinAsDecoratedXHTMLTable == null) {
@@ -547,7 +547,7 @@ public class DataController extends HttpServlet {
 							joinsCRUD.setDatabaseModel(databaseModel);
 							
 							
-							//Consider: Instead of using JSONObject, use JoinsFunctionsModel to convert it to something else? 
+							//Consider: Instead of using JSONObject, use JoinsFunctions to convert it to something else? 
 							// Maybe a list of JoinModel objects, joinsAsJoinModelList
 							
 							// This update should also recalculate conflicts and destroy old resolutions

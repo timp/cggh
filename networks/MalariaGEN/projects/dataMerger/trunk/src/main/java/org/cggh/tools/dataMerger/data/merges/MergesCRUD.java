@@ -17,10 +17,10 @@ import org.cggh.tools.dataMerger.data.joins.JoinModel;
 import org.cggh.tools.dataMerger.data.joins.JoinsCRUD;
 import org.cggh.tools.dataMerger.data.uploads.UploadsCRUD;
 import org.cggh.tools.dataMerger.data.users.UserModel;
-import org.cggh.tools.dataMerger.functions.joins.JoinFunctionsModel;
-import org.cggh.tools.dataMerger.functions.merges.MergeFunctionsModel;
-import org.cggh.tools.dataMerger.functions.merges.MergesFunctionsModel;
-import org.cggh.tools.dataMerger.scripts.merges.MergeScripts;
+import org.cggh.tools.dataMerger.functions.data.joins.JoinFunctions;
+import org.cggh.tools.dataMerger.functions.data.merges.MergeFunctions;
+import org.cggh.tools.dataMerger.functions.data.merges.MergesFunctions;
+import org.cggh.tools.dataMerger.scripts.data.merges.MergeScripts;
 
 
 public class MergesCRUD implements java.io.Serializable {
@@ -224,12 +224,12 @@ public class MergesCRUD implements java.io.Serializable {
 						
 						
 						// Guess joins automatically.
-						MergeScripts mergeScriptsModel = new MergeScripts();
-						mergeModel = mergeScriptsModel.retrieveMergeAsMergeModelThroughGuessingJoinsUsingMergeModel(mergeModel, connection);
+						MergeScripts mergeScripts = new MergeScripts();
+						mergeModel = mergeScripts.retrieveMergeAsMergeModelThroughGuessingJoinsUsingMergeModel(mergeModel, connection);
 
 						
 						// Guess keys automatically.
-						mergeModel = mergeScriptsModel.retrieveMergeAsMergeModelThroughGuessingKeysUsingMergeModel(mergeModel, connection);
+						mergeModel = mergeScripts.retrieveMergeAsMergeModelThroughGuessingKeysUsingMergeModel(mergeModel, connection);
 						
 						
 						// Count the duplicate keys in each datatable (according to the join) and the total.
@@ -241,7 +241,7 @@ public class MergesCRUD implements java.io.Serializable {
 						
 						// Count the data conflicts (if there are keys and no duplicates)
 						
-						mergeModel = mergeScriptsModel.retrieveMergeAsMergeModelThroughDeterminingDataConflictsUsingMergeModel(mergeModel, connection);
+						mergeModel = mergeScripts.retrieveMergeAsMergeModelThroughDeterminingDataConflictsUsingMergeModel(mergeModel, connection);
 						
 						
 						
@@ -295,14 +295,14 @@ public class MergesCRUD implements java.io.Serializable {
 	public MergeModel retrieveMergeAsMergeModelThroughCountingDuplicateKeysUsingMergeModel(
 			MergeModel mergeModel, Connection connection) {
 		
-		MergeScripts mergeScriptsModel = new MergeScripts();
+		MergeScripts mergeScripts = new MergeScripts();
 		
 		//TODO: Merge 1 + 2
-		mergeModel = mergeScriptsModel
+		mergeModel = mergeScripts
 				.retrieveMergeAsMergeModelThroughDeterminingDatatable1DuplicateKeysCountUsingMergeModel(
 						mergeModel, connection);
 		
-		mergeModel = mergeScriptsModel
+		mergeModel = mergeScripts
 				.retrieveMergeAsMergeModelThroughDeterminingDatatable2DuplicateKeysCountUsingMergeModel(
 						mergeModel, connection);
 		
@@ -449,10 +449,10 @@ public class MergesCRUD implements java.io.Serializable {
 
 			  if (mergesAsCachedRowSet != null) {
 
-				  	MergesFunctionsModel mergesFunctionsModel = new MergesFunctionsModel();
-				  	mergesFunctionsModel.setMergesAsCachedRowSet(mergesAsCachedRowSet);
-				  	mergesFunctionsModel.setMergesAsDecoratedXHTMLTableUsingMergesAsCachedRowSet();
-				  	mergesAsDecoratedXHTMLTableUsingMergesModel = mergesFunctionsModel.getMergesAsDecoratedXHTMLTable();
+				  	MergesFunctions mergesFunctions = new MergesFunctions();
+				  	mergesFunctions.setMergesAsCachedRowSet(mergesAsCachedRowSet);
+				  	mergesFunctions.setMergesAsDecoratedXHTMLTableUsingMergesAsCachedRowSet();
+				  	mergesAsDecoratedXHTMLTableUsingMergesModel = mergesFunctions.getMergesAsDecoratedXHTMLTable();
 				    
 			  } else {
 				  
@@ -531,12 +531,12 @@ public class MergesCRUD implements java.io.Serializable {
 			
 		  if (joinsAsCachedRowSet != null) {
 		
-			  MergeFunctionsModel mergeFunctionsModel = new MergeFunctionsModel();
+			  MergeFunctions mergeFunctions = new MergeFunctions();
 			  
-			    mergeFunctionsModel.setMergeModel(mergeModel);	    
-			    mergeFunctionsModel.setJoinsAsCachedRowSet(joinsAsCachedRowSet);
-			    mergeFunctionsModel.setJoinsAsDecoratedXHTMLTableUsingJoinsAsCachedRowSet();
-			    joinsAsDecoratedXHTMLTable = mergeFunctionsModel.getJoinsAsDecoratedXHTMLTable();
+			    mergeFunctions.setMergeModel(mergeModel);	    
+			    mergeFunctions.setJoinsAsCachedRowSet(joinsAsCachedRowSet);
+			    mergeFunctions.setJoinsAsDecoratedXHTMLTableUsingJoinsAsCachedRowSet();
+			    joinsAsDecoratedXHTMLTable = mergeFunctions.getJoinsAsDecoratedXHTMLTable();
 			    
 		  } else {
 			  
@@ -553,12 +553,12 @@ public class MergesCRUD implements java.io.Serializable {
 		
 		String newJoinAsDecoratedXHTMLTable = "";
 		
-		JoinFunctionsModel joinFunctionsModel = new JoinFunctionsModel();
-		joinFunctionsModel.setJoinModel(new JoinModel()); // Unnecessary but explicit
-		joinFunctionsModel.setMergeModel(mergeModel);
-		joinFunctionsModel.setJoinAsDecoratedXHTMLTableByJoinModel();
+		JoinFunctions joinFunctions = new JoinFunctions();
+		joinFunctions.setJoinModel(new JoinModel()); // Unnecessary but explicit
+		joinFunctions.setMergeModel(mergeModel);
+		joinFunctions.setJoinAsDecoratedXHTMLTableByJoinModel();
 		
-		newJoinAsDecoratedXHTMLTable = joinFunctionsModel.getJoinAsDecoratedXHTMLTable();
+		newJoinAsDecoratedXHTMLTable = joinFunctions.getJoinAsDecoratedXHTMLTable();
 	
 		return newJoinAsDecoratedXHTMLTable;
 	}

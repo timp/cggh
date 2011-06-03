@@ -6,7 +6,7 @@
 <%@ page import="java.text.SimpleDateFormat" %>
 <%@ page import="org.cggh.tools.dataMerger.data.merges.MergesCRUD" %>
 <%@ page import="org.cggh.tools.dataMerger.data.merges.MergeModel" %>
-<%@ page import="org.cggh.tools.dataMerger.functions.resolutions.ResolutionsFunctionsModel" %>
+<%@ page import="org.cggh.tools.dataMerger.functions.resolutions.ResolutionsFunctions" %>
 <%@ page import="org.cggh.tools.dataMerger.data.resolutions.byColumn.ResolutionsByColumnCRUD" %>
 <%
 
@@ -22,7 +22,7 @@ DateFormat dateFormat = new SimpleDateFormat("dd MMM yyyy HH:mm");
 ResolutionsByColumnCRUD resolutionsByColumnCRUD = new ResolutionsByColumnCRUD();
 resolutionsByColumnCRUD.setDatabaseModel(databaseModel);
 
-ResolutionsFunctionsModel resolutionsFunctionsModel = new ResolutionsFunctionsModel();
+ResolutionsFunctions resolutionsFunctions = new ResolutionsFunctions();
 
 //FIXME
 //resolutionsByColumnCRUD.setUserModel(userModel);
@@ -133,10 +133,10 @@ ResolutionsFunctionsModel resolutionsFunctionsModel = new ResolutionsFunctionsMo
 		
 			<% 
 			
-				resolutionsFunctionsModel.setHttpServletRequest(request);
-				resolutionsFunctionsModel.setURLBasePath(headerBasePathURL);
-				resolutionsFunctionsModel.setMergeModel(mergeModel);
-				out.print(resolutionsFunctionsModel.getResolutionsMenuAsDecoratedXHTMLList()); 
+				resolutionsFunctions.setHttpServletRequest(request);
+				resolutionsFunctions.setURLBasePath(headerBasePathURL);
+				resolutionsFunctions.setMergeModel(mergeModel);
+				out.print(resolutionsFunctions.getResolutionsMenuAsDecoratedXHTMLList()); 
 			%>
 			
 			<div class="resolutions-by-column">

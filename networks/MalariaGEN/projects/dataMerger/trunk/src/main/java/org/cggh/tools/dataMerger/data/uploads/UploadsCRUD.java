@@ -11,7 +11,7 @@ import javax.sql.rowset.CachedRowSet;
 import org.cggh.tools.dataMerger.data.databases.DatabaseModel;
 import org.cggh.tools.dataMerger.data.users.UserModel;
 import org.cggh.tools.dataMerger.data.users.UsersCRUD;
-import org.cggh.tools.dataMerger.functions.uploads.UploadsFunctions;
+import org.cggh.tools.dataMerger.functions.data.uploads.UploadsFunctions;
 
 public class UploadsCRUD implements java.io.Serializable {
 
@@ -152,10 +152,10 @@ public class UploadsCRUD implements java.io.Serializable {
 
 		  if (uploadsAsCachedRowSet != null) {
 
-			  	UploadsFunctions uploadsFunctionsModel = new UploadsFunctions();
-			    uploadsFunctionsModel.setCachedRowSet(uploadsAsCachedRowSet);
-			    uploadsFunctionsModel.setDecoratedXHTMLTableByCachedRowSet();
-			    uploadsAsDecoratedXHTMLTableUsingUploadsModel = uploadsFunctionsModel.getDecoratedXHTMLTable();
+			  	UploadsFunctions uploadsFunctions = new UploadsFunctions();
+			    uploadsFunctions.setCachedRowSet(uploadsAsCachedRowSet);
+			    uploadsFunctions.setDecoratedXHTMLTableByCachedRowSet();
+			    uploadsAsDecoratedXHTMLTableUsingUploadsModel = uploadsFunctions.getDecoratedXHTMLTable();
 			    
 		  } else {
 			  

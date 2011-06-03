@@ -21,7 +21,7 @@ import org.cggh.tools.dataMerger.data.merges.MergesCRUD;
 import org.cggh.tools.dataMerger.data.resolutions.ResolutionsCRUD;
 import org.cggh.tools.dataMerger.data.users.UserModel;
 import org.cggh.tools.dataMerger.files.filebases.FilebaseModel;
-import org.cggh.tools.dataMerger.functions.exports.ExportsFunctionsModel;
+import org.cggh.tools.dataMerger.functions.data.exports.ExportsFunctions;
 
 public class ExportsCRUD implements java.io.Serializable  {
 
@@ -950,15 +950,15 @@ public class ExportsCRUD implements java.io.Serializable  {
 
 		  if (exportsAsCachedRowSet != null) {
 
-			  	ExportsFunctionsModel exportsFunctionsModel = new ExportsFunctionsModel();
-			  	exportsFunctionsModel.setExportsAsCachedRowSet(exportsAsCachedRowSet);
-			  	exportsFunctionsModel.setExportsAsDecoratedXHTMLTableUsingExportsAsCachedRowSet();
-			  	exportsAsDecoratedXHTMLTable = exportsFunctionsModel.getExportsAsDecoratedXHTMLTable();
+			  	ExportsFunctions exportsFunctions = new ExportsFunctions();
+			  	exportsFunctions.setExportsAsCachedRowSet(exportsAsCachedRowSet);
+			  	exportsFunctions.setExportsAsDecoratedXHTMLTableUsingExportsAsCachedRowSet();
+			  	exportsAsDecoratedXHTMLTable = exportsFunctions.getExportsAsDecoratedXHTMLTable();
 			    
 		  } else {
 			  
 			  //TODO: Error handling
-			  this.logger.warning("Error: exportsAsCachedRowSet is null");
+			  this.logger.severe("exportsAsCachedRowSet is null");
 			  exportsAsDecoratedXHTMLTable = "<p>Error: exportsAsCachedRowSet is null</p>";
 			  
 		  }
@@ -976,12 +976,12 @@ public class ExportsCRUD implements java.io.Serializable  {
 		
 		   String CACHED_ROW_SET_IMPL_CLASS = "com.sun.rowset.CachedRowSetImpl";
 		   
-			try {
+				
 
 				Connection connection = this.getDatabaseModel().getNewConnection();
 				 
 				if (connection != null) {
-				
+					
 					 //FIXME: Apparently a bug in CachedRowSet using getX('columnAlias') aka columnLabel, which actually only works with getX('columnName'), so using getX('columnIndex').
 					 
 					
@@ -1004,8 +1004,18 @@ public class ExportsCRUD implements java.io.Serializable  {
 				      	catch (SQLException sqlException){
 				        	//System.out.println("<p>" + sqlException + "</p>");
 					    	sqlException.printStackTrace();
-				        } finally {
-				        	connection.close();
+				        } catch (ClassNotFoundException e) {
+							e.printStackTrace();
+						} catch (InstantiationException e) {
+							e.printStackTrace();
+						} catch (IllegalAccessException e) {
+							e.printStackTrace();
+						} finally {
+				        	try {
+								connection.close();
+							} catch (SQLException e) {
+								e.printStackTrace();
+							}
 				        }
 				
 					
@@ -1014,12 +1024,7 @@ public class ExportsCRUD implements java.io.Serializable  {
 					
 					//System.out.println("connection.isClosed");
 				}
-					
-			} 
-			catch (Exception e) {
-				this.logger.severe(e.getMessage().toString());
-				e.printStackTrace();
-			}
+		
 	
 	
 	

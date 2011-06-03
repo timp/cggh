@@ -6,9 +6,9 @@
 <%@ page import="java.text.SimpleDateFormat" %>
 <%@ page import="org.cggh.tools.dataMerger.data.merges.MergesCRUD" %>
 <%@ page import="org.cggh.tools.dataMerger.data.merges.MergeModel" %>
-<%@ page import="org.cggh.tools.dataMerger.functions.merges.MergeFunctionsModel" %>
+<%@ page import="org.cggh.tools.dataMerger.functions.merges.MergeFunctions" %>
 <%@ page import="org.cggh.tools.dataMerger.data.joins.JoinModel" %>
-<%@ page import="org.cggh.tools.dataMerger.functions.joins.JoinFunctionsModel" %>
+<%@ page import="org.cggh.tools.dataMerger.functions.joins.JoinFunctions" %>
 <%
 
 MergesCRUD mergesCRUD = new MergesCRUD();

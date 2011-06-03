@@ -12,8 +12,6 @@
 
 	<link rel="stylesheet" type="text/css" href="../shared/css/shared.css" />
 	
-	<link rel="stylesheet" type="text/css" href="css/exports.css" />
-	
 	<script type="text/javascript" src="../shared/js/jquery.min.js"></script>
 	<script type="text/javascript" src="../shared/js/jquery.json.min.js"></script>
 	<script type="text/javascript" src="../shared/js/shared.js"></script>
@@ -25,7 +23,6 @@
 		$(document).ready(function(){
 			
 			initSharedFunctions();
-			initExportsFunctions();
 
 		});
 	
@@ -51,6 +48,7 @@
 			<%
 			
 				ExportsCRUD exportsCRUD = new ExportsCRUD();
+				exportsCRUD.setDatabaseModel(databaseModel);
 				out.print(exportsCRUD.retrieveExportsAsDecoratedXHTMLTableUsingUserId(userModel.getId()));
 				
 			%>	

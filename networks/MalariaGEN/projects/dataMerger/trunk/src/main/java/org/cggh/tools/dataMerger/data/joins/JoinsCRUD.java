@@ -14,7 +14,7 @@ import javax.sql.rowset.CachedRowSet;
 import org.cggh.tools.dataMerger.data.databases.DatabaseModel;
 import org.cggh.tools.dataMerger.data.merges.MergeModel;
 import org.cggh.tools.dataMerger.data.merges.MergesCRUD;
-import org.cggh.tools.dataMerger.scripts.merges.MergeScripts;
+import org.cggh.tools.dataMerger.scripts.data.merges.MergeScripts;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -486,8 +486,8 @@ public class JoinsCRUD implements java.io.Serializable {
 		          
 		          //FIXME
 		          //Recount the data conflicts (should also re-create the joined_keytable)
-		          MergeScripts mergeScriptsModel = new MergeScripts();
-		          mergeModel = mergeScriptsModel.retrieveMergeAsMergeModelThroughDeterminingDataConflictsUsingMergeModel(mergeModel, connection);
+		          MergeScripts mergeScripts = new MergeScripts();
+		          mergeModel = mergeScripts.retrieveMergeAsMergeModelThroughDeterminingDataConflictsUsingMergeModel(mergeModel, connection);
 		          
 				} catch (SQLException e) {
 					e.printStackTrace();

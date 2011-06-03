@@ -9,8 +9,8 @@ import javax.sql.rowset.CachedRowSet;
 
 import org.cggh.tools.dataMerger.data.databases.DatabaseModel;
 import org.cggh.tools.dataMerger.data.merges.MergeModel;
-import org.cggh.tools.dataMerger.functions.resolutions.byColumn.ResolutionsByColumnFunctionsModel;
-import org.cggh.tools.dataMerger.scripts.merges.MergeScripts;
+import org.cggh.tools.dataMerger.functions.data.resolutions.byColumn.ResolutionsByColumnFunctions;
+import org.cggh.tools.dataMerger.scripts.data.merges.MergeScripts;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -50,11 +50,11 @@ public class ResolutionsByColumnCRUD implements java.io.Serializable {
 
 			  	CachedRowSet solutionsByColumnAsCachedRowSet = this.retrieveSolutionsByColumnAsCachedRowSet();
 
-			  	ResolutionsByColumnFunctionsModel resolutionsByColumnFunctionsModel = new ResolutionsByColumnFunctionsModel();
-			  	resolutionsByColumnFunctionsModel.setResolutionsByColumnAsCachedRowSet(resolutionsByColumnAsCachedRowSet);
-			  	resolutionsByColumnFunctionsModel.setSolutionsByColumnAsCachedRowSet(solutionsByColumnAsCachedRowSet);
-			  	resolutionsByColumnFunctionsModel.setResolutionsByColumnAsDecoratedXHTMLTableUsingResolutionsByColumnAsCachedRowSet();
-			  	resolutionsByColumnAsDecoratedXHTMLTable = resolutionsByColumnFunctionsModel.getResolutionsByColumnAsDecoratedXHTMLTable();
+			  	ResolutionsByColumnFunctions resolutionsByColumnFunctions = new ResolutionsByColumnFunctions();
+			  	resolutionsByColumnFunctions.setResolutionsByColumnAsCachedRowSet(resolutionsByColumnAsCachedRowSet);
+			  	resolutionsByColumnFunctions.setSolutionsByColumnAsCachedRowSet(solutionsByColumnAsCachedRowSet);
+			  	resolutionsByColumnFunctions.setResolutionsByColumnAsDecoratedXHTMLTableUsingResolutionsByColumnAsCachedRowSet();
+			  	resolutionsByColumnAsDecoratedXHTMLTable = resolutionsByColumnFunctions.getResolutionsByColumnAsDecoratedXHTMLTable();
 			    
 		  } else {
 			  
@@ -278,8 +278,8 @@ public class ResolutionsByColumnCRUD implements java.io.Serializable {
 		          
 	        	  //TODO: Recount the conflicts (take problems with solutions as 0, otherwise use the resolution conflict_count)
 
-	        	  MergeScripts mergeScriptsModel = new MergeScripts();
-	        	  mergeModel = mergeScriptsModel.retrieveMergeAsMergeModelThroughDeterminingTotalConflictsCountUsingMergeModel(mergeModel, connection);
+	        	  MergeScripts mergeScripts = new MergeScripts();
+	        	  mergeModel = mergeScripts.retrieveMergeAsMergeModelThroughDeterminingTotalConflictsCountUsingMergeModel(mergeModel, connection);
 	        	  
 		          
 					

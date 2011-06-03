@@ -13,8 +13,8 @@ import javax.sql.rowset.CachedRowSet;
 
 import org.cggh.tools.dataMerger.data.installation.InstallationModel;
 import org.cggh.tools.dataMerger.data.users.UsersCRUD;
-import org.cggh.tools.dataMerger.functions.databases.DatabaseFunctions;
-import org.cggh.tools.dataMerger.functions.installations.InstallationFunctions;
+import org.cggh.tools.dataMerger.functions.data.databases.DatabaseFunctions;
+import org.cggh.tools.dataMerger.functions.data.installations.InstallationFunctions;
 
 
 

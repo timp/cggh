@@ -145,8 +145,79 @@ public class DatabaseTablesScripts {
 				}
 		    	return false;
 	        }
+
+	      try{
+	          Statement statement = connection.createStatement();
+	          statement.executeUpdate("CREATE TABLE label (" + 
+	        		  "id BIGINT(255) UNSIGNED NOT NULL AUTO_INCREMENT, " +
+	        		  "name VARCHAR(255) NOT NULL, " +  
+	        		  "PRIMARY KEY (id), " +
+	        		  "CONSTRAINT unique_name_constraint UNIQUE (name) " + 
+	        		  ") ENGINE=InnoDB;");
+	          
+	          //NOTE: Took out ON DELETE CASCADE ON UPDATE CASCADE for safety
+	          
+	          statement.close();
+
+	        }
+	      catch(SQLException sqlException){
+		    	sqlException.printStackTrace();
+		    	try {
+					connection.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+		    	return false;
+	        }	      
+
 	      
-		
+	      try{
+	    	  
+	          Statement statement = connection.createStatement();
+	          statement.executeUpdate("INSERT INTO `label` (" +
+	        		  "name " +
+	        		  ") VALUES ('hidden'), ('removed');");
+	          statement.close();
+
+	        }
+	      catch(SQLException sqlException){
+		    	sqlException.printStackTrace();
+		    	try {
+					connection.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+		    	return false;
+	        }	      
+	      
+
+	      try{
+	          Statement statement = connection.createStatement();
+	          statement.executeUpdate("CREATE TABLE upload_label (" + 
+	        		  "upload_id BIGINT(255) UNSIGNED NOT NULL, " +
+	        		  "label_id BIGINT(255) UNSIGNED NOT NULL, " +
+	        		  "PRIMARY KEY (upload_id, label_id), " +
+	        		  "INDEX upload_id_index (upload_id), " + 
+	        		  "FOREIGN KEY (upload_id) REFERENCES upload(id), " +
+	        		  "INDEX label_id_index (label_id), " +
+	        		  "FOREIGN KEY (label_id) REFERENCES label(id) " +
+	        		  ") ENGINE=InnoDB;");
+	          
+	          //NOTE: Took out ON DELETE CASCADE ON UPDATE CASCADE for safety
+	          
+	          statement.close();
+
+	        }
+	      catch(SQLException sqlException){
+		    	sqlException.printStackTrace();
+		    	try {
+					connection.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+		    	return false;
+	        }	      
+	      
 	        
 		      try{
 		          Statement statement = connection.createStatement();
@@ -188,7 +259,31 @@ public class DatabaseTablesScripts {
 			    	return false;
 		        }
 		      
-	    
+
+		      try{
+		          Statement statement = connection.createStatement();
+		          statement.executeUpdate("CREATE TABLE merge_label (" + 
+		        		  "merge_id BIGINT(255) UNSIGNED NOT NULL, " +
+		        		  "label_id BIGINT(255) UNSIGNED NOT NULL, " +
+		        		  "PRIMARY KEY (merge_id, label_id), " +
+		        		  "INDEX merge_id_index (merge_id), " + 
+		        		  "FOREIGN KEY (merge_id) REFERENCES merge(id), " +
+		        		  "INDEX label_id_index (label_id), " +
+		        		  "FOREIGN KEY (label_id) REFERENCES label(id) " +
+		        		  ") ENGINE=InnoDB;");
+		          
+		          statement.close();
+
+		        }
+		      catch(SQLException sqlException){
+			    	sqlException.printStackTrace();
+			    	try {
+						connection.close();
+					} catch (SQLException e) {
+						e.printStackTrace();
+					}
+			    	return false;
+		        }			      
 	        
 	        
 		      try{
@@ -443,12 +538,14 @@ public class DatabaseTablesScripts {
 				          Statement statement = connection.createStatement();
 				          statement.executeUpdate("CREATE TABLE export (" + 
 				        		  "id BIGINT(255) UNSIGNED NOT NULL AUTO_INCREMENT, " +
+				        		  "filename VARCHAR(255) NOT NULL, " + 
 				        		  "upload_1_id BIGINT(255) UNSIGNED NOT NULL, " +
 				        		  "upload_2_id BIGINT(255) UNSIGNED NOT NULL, " +
 				        		  "created_by_user_id BIGINT(255) UNSIGNED NOT NULL, " + 
 				        		  "created_datetime DATETIME NOT NULL, " +
 				        		  "merged_datatable_name VARCHAR(255) NULL, " + 
 				        		  "merged_datatable_export_repository_filepath VARCHAR(255) NULL, " +
+				        		  "merged_datatable_export_file_size_in_bytes BIGINT(255) UNSIGNED NULL, " +
 				        		  "joins_export_repository_filepath VARCHAR(255) NULL, " +
 				        		  "resolutions_export_repository_filepath VARCHAR(255) NULL, " +
 				        		  "PRIMARY KEY (id), " +
@@ -479,6 +576,39 @@ public class DatabaseTablesScripts {
 				        }
 				      
 		
+				      
+				      
+				      
+				      try{
+				          Statement statement = connection.createStatement();
+				          statement.executeUpdate("CREATE TABLE export_label (" + 
+				        		  "export_id BIGINT(255) UNSIGNED NOT NULL, " +
+				        		  "label_id BIGINT(255) UNSIGNED NOT NULL, " +
+				        		  "PRIMARY KEY (export_id, label_id), " +
+				        		  "INDEX export_id_index (export_id), " + 
+				        		  "FOREIGN KEY (export_id) REFERENCES export(id), " +
+				        		  "INDEX label_id_index (label_id), " +
+				        		  "FOREIGN KEY (label_id) REFERENCES label(id) " +
+				        		  ") ENGINE=InnoDB;");
+				          
+				          //NOTE: Took out ON DELETE CASCADE ON UPDATE CASCADE for safety
+				          
+				          statement.close();
+
+				        }
+				      catch(SQLException sqlException){
+					    	sqlException.printStackTrace();
+					    	try {
+								connection.close();
+							} catch (SQLException e) {
+								e.printStackTrace();
+							}
+					    	return false;
+				        }					      
+				      
+				      
+				      
+				      
 				        try {
 							connection.close();
 						} catch (SQLException e) {
@@ -505,7 +635,21 @@ public class DatabaseTablesScripts {
 		
 		if (connection != null) {
 		
-			      
+		      try{
+		          Statement statement = connection.createStatement();
+		          statement.executeUpdate("DROP TABLE export_label;");
+		          statement.close();
+
+		        }
+		      catch(SQLException sqlException){
+			    	sqlException.printStackTrace();
+			    	try {
+						connection.close();
+					} catch (SQLException e) {
+						e.printStackTrace();
+					}
+			    	return false;
+		        }			      
 			        
 			      try{
 			          Statement statement = connection.createStatement();
@@ -626,10 +770,59 @@ public class DatabaseTablesScripts {
 								}
 						    	return false;
 					        }
+
+					      
+					      try{
+					          Statement statement = connection.createStatement();
+					          statement.executeUpdate("DROP TABLE merge_label;");
+					          statement.close();
+
+					        }
+					      catch(SQLException sqlException){
+						    	sqlException.printStackTrace();
+						    	try {
+									connection.close();
+								} catch (SQLException e) {
+									e.printStackTrace();
+								}
+						    	return false;
+					        }					      
 					      
 					      try{
 					          Statement statement = connection.createStatement();
 					          statement.executeUpdate("DROP TABLE merge;");
+					          statement.close();
+
+					        }
+					      catch(SQLException sqlException){
+						    	sqlException.printStackTrace();
+						    	try {
+									connection.close();
+								} catch (SQLException e) {
+									e.printStackTrace();
+								}
+						    	return false;
+					        }					      
+
+					      try{
+					          Statement statement = connection.createStatement();
+					          statement.executeUpdate("DROP TABLE upload_label;");
+					          statement.close();
+
+					        }
+					      catch(SQLException sqlException){
+						    	sqlException.printStackTrace();
+						    	try {
+									connection.close();
+								} catch (SQLException e) {
+									e.printStackTrace();
+								}
+						    	return false;
+					        }
+					      
+					      try{
+					          Statement statement = connection.createStatement();
+					          statement.executeUpdate("DROP TABLE label;");
 					          statement.close();
 
 					        }

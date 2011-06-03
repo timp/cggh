@@ -58,10 +58,10 @@
 				<li class="fail">Database is not connectable.</li>
 				<% } %>
 				
-				<% if (databaseModel.getTablesAsCachedRowSet().size() >= 11) { %>
-				<li class="pass">Database tables count &gt;= 11.</li>
+				<% if (databaseModel.getTablesAsCachedRowSet().size() >= 15) { %>
+				<li class="pass">Database tables count &gt;= 15.</li>
 				<% } else { %>
-				<li class="fail">Database tables count &lt; 11.</li>
+				<li class="fail">Database tables count &lt; 15.</li>
 				<% } %>
 				
 				<% if (filebaseModel.isExistent()) { %>
@@ -117,7 +117,7 @@
 				</tr>
 				<tr>
 					<th>Database tables count:</th>
-					<% if (databaseModel.getTablesAsCachedRowSet().size() >= 11) { %>
+					<% if (databaseModel.getTablesAsCachedRowSet().size() >= 15) { %>
 					<td class="pass"><%=databaseModel.getTablesAsCachedRowSet().size() %><td>
 					<% } else { %>
 					<td class="fail"><%=databaseModel.getTablesAsCachedRowSet().size() %><td>

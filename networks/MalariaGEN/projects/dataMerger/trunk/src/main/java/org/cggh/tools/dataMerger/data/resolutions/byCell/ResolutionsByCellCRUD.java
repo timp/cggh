@@ -13,8 +13,8 @@ import org.cggh.tools.dataMerger.data.databases.DatabaseModel;
 import org.cggh.tools.dataMerger.data.joins.JoinsCRUD;
 import org.cggh.tools.dataMerger.data.merges.MergeModel;
 import org.cggh.tools.dataMerger.data.resolutions.ResolutionsCRUD;
-import org.cggh.tools.dataMerger.functions.resolutions.byCell.ResolutionsByCellFunctionsModel;
-import org.cggh.tools.dataMerger.scripts.merges.MergeScripts;
+import org.cggh.tools.dataMerger.functions.data.resolutions.byCell.ResolutionsByCellFunctions;
+import org.cggh.tools.dataMerger.scripts.data.merges.MergeScripts;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -53,30 +53,30 @@ public class ResolutionsByCellCRUD implements java.io.Serializable {
 		  if (resolutionsByCellAsCachedRowSet != null) {
 			  
 
-			  	ResolutionsByCellFunctionsModel resolutionsByCellFunctionsModel = new ResolutionsByCellFunctionsModel();
-			  	resolutionsByCellFunctionsModel.setResolutionsByCellAsCachedRowSet(resolutionsByCellAsCachedRowSet);
-			  	resolutionsByCellFunctionsModel.setSolutionsByCellAsCachedRowSet(this.retrieveSolutionsByCellAsCachedRowSet());
+			  	ResolutionsByCellFunctions resolutionsByCellFunctions = new ResolutionsByCellFunctions();
+			  	resolutionsByCellFunctions.setResolutionsByCellAsCachedRowSet(resolutionsByCellAsCachedRowSet);
+			  	resolutionsByCellFunctions.setSolutionsByCellAsCachedRowSet(this.retrieveSolutionsByCellAsCachedRowSet());
 
 			  	JoinsCRUD joinsModel = new JoinsCRUD();
 			  	joinsModel.setDatabaseModel(this.getDatabaseModel());
-			  	resolutionsByCellFunctionsModel.setJoinColumnNamesByColumnNumberAsHashMap(joinsModel.retrieveJoinColumnNamesByColumnNumberAsHashMapUsingMergeModel(mergeModel));
+			  	resolutionsByCellFunctions.setJoinColumnNamesByColumnNumberAsHashMap(joinsModel.retrieveJoinColumnNamesByColumnNumberAsHashMapUsingMergeModel(mergeModel));
 			  	
 			  	ResolutionsCRUD resolutionsModel = new ResolutionsCRUD();
 			  	resolutionsModel.setDatabaseModel(this.getDatabaseModel());
-			  	resolutionsByCellFunctionsModel.setUnresolvedByColumnOrRowConflictsCountUsingColumnNumberAsHashMap(resolutionsModel.retrieveUnresolvedByColumnOrRowConflictsCountUsingColumnNumberAsHashMapUsingMergeModel(mergeModel));
-			  	resolutionsByCellFunctionsModel.setUnresolvedByColumnOrRowStatusUsingCellCoordsAsHashMap(resolutionsModel.retrieveUnresolvedByColumnOrRowStatusUsingCellCoordsAsHashMapUsingMergeModel(mergeModel));
+			  	resolutionsByCellFunctions.setUnresolvedByColumnOrRowConflictsCountUsingColumnNumberAsHashMap(resolutionsModel.retrieveUnresolvedByColumnOrRowConflictsCountUsingColumnNumberAsHashMapUsingMergeModel(mergeModel));
+			  	resolutionsByCellFunctions.setUnresolvedByColumnOrRowStatusUsingCellCoordsAsHashMap(resolutionsModel.retrieveUnresolvedByColumnOrRowStatusUsingCellCoordsAsHashMapUsingMergeModel(mergeModel));
 
 			  	
-			  	resolutionsByCellFunctionsModel.setSolutionByColumnIdUsingCellCoordsAsHashMap(resolutionsModel.retrieveSolutionByColumnIdUsingCellCoordsAsHashMapUsingMergeModel(mergeModel));
-			  	resolutionsByCellFunctionsModel.setSolutionByRowIdUsingCellCoordsAsHashMap(resolutionsModel.retrieveSolutionByRowIdUsingCellCoordsAsHashMapUsingMergeModel(mergeModel));
-			  	resolutionsByCellFunctionsModel.setSolutionByCellIdUsingCellCoordsAsHashMap(resolutionsModel.retrieveSolutionByCellIdUsingCellCoordsAsHashMapUsingMergeModel(mergeModel));			  	
+			  	resolutionsByCellFunctions.setSolutionByColumnIdUsingCellCoordsAsHashMap(resolutionsModel.retrieveSolutionByColumnIdUsingCellCoordsAsHashMapUsingMergeModel(mergeModel));
+			  	resolutionsByCellFunctions.setSolutionByRowIdUsingCellCoordsAsHashMap(resolutionsModel.retrieveSolutionByRowIdUsingCellCoordsAsHashMapUsingMergeModel(mergeModel));
+			  	resolutionsByCellFunctions.setSolutionByCellIdUsingCellCoordsAsHashMap(resolutionsModel.retrieveSolutionByCellIdUsingCellCoordsAsHashMapUsingMergeModel(mergeModel));			  	
 			  	
-			  	resolutionsByCellFunctionsModel.setConstantUsingCellCoordsAsHashMap(resolutionsModel.retrieveConstantUsingCellCoordsAsHashMapUsingMergeModel(mergeModel));
-			  	resolutionsByCellFunctionsModel.setNullOrConstantSolutionUsingColumnNumberAsHashMap(resolutionsModel.retrieveNullOrConstantSolutionUsingColumnNumberAsHashMapUsingMergeModel(mergeModel));
+			  	resolutionsByCellFunctions.setConstantUsingCellCoordsAsHashMap(resolutionsModel.retrieveConstantUsingCellCoordsAsHashMapUsingMergeModel(mergeModel));
+			  	resolutionsByCellFunctions.setNullOrConstantSolutionUsingColumnNumberAsHashMap(resolutionsModel.retrieveNullOrConstantSolutionUsingColumnNumberAsHashMapUsingMergeModel(mergeModel));
 					  	
 			  	
-			  	resolutionsByCellFunctionsModel.setResolutionsByCellAsDecoratedXHTMLTableUsingResolutionsByCellAsCachedRowSet();
-			  	resolutionsByCellAsDecoratedXHTMLTable = resolutionsByCellFunctionsModel.getResolutionsByCellAsDecoratedXHTMLTable();
+			  	resolutionsByCellFunctions.setResolutionsByCellAsDecoratedXHTMLTableUsingResolutionsByCellAsCachedRowSet();
+			  	resolutionsByCellAsDecoratedXHTMLTable = resolutionsByCellFunctions.getResolutionsByCellAsDecoratedXHTMLTable();
 			    
 		  } else {
 			  
@@ -354,8 +354,8 @@ public class ResolutionsByCellCRUD implements java.io.Serializable {
 				
 	        	  // Recount the conflicts
 
-	        	  MergeScripts mergeScriptsModel = new MergeScripts();
-	        	  mergeModel = mergeScriptsModel.retrieveMergeAsMergeModelThroughDeterminingTotalConflictsCountUsingMergeModel(mergeModel, connection);
+	        	  MergeScripts mergeScripts = new MergeScripts();
+	        	  mergeModel = mergeScripts.retrieveMergeAsMergeModelThroughDeterminingTotalConflictsCountUsingMergeModel(mergeModel, connection);
 	        	  
 				} 
 				catch (Exception e) {

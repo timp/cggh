@@ -10,6 +10,10 @@
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <title>dataMerger - Uploads</title>
 
+	<!-- NOTE: This makes no difference to the problem of back-button amnesia. -->
+	<meta http-equiv="Cache-Control" content="no-cache" />
+	<meta http-equiv="Pragma" content="no-cache" />
+	<meta http-equiv="Expires" content="-1" />
 	
 	<link rel="stylesheet" type="text/css" href="../shared/css/fileuploader.css" />
 	<link rel="stylesheet" type="text/css" href="../shared/css/shared.css" />
@@ -27,10 +31,21 @@
 
 		$(document).ready(function(){
 			
-			initSharedFunctions();
-			initUploadsFunctions();
+			//FIXME: Moved calls to load, in an attempt to fix FF back-button amnesia.
+			//http://support.mozilla.com/en-US/questions/779617
 
 		});
+		
+		//NOTE: This makes no difference to the problem of back-button amnesia.
+		
+		$(window).load(function() {
+			
+            $.ajaxSetup({cache: false});
+
+            initSharedFunctions();
+			initUploadsFunctions();
+            
+        });
 	
 	</script>
 	
