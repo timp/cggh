@@ -1,0 +1,43 @@
+.refreshButtonContainer {
+	display: none;
+}
+
+.ajaxResponse {
+	
+	margin-top: 5px;
+	margin-bottom: 10px;
+	
+	color: blue;
+}
+
+.ajaxError {
+	
+	margin-top: 5px;
+	margin-bottom: 10px;
+	
+	font-weight: bold;
+	color: red;	
+}
+
+.systemCheckList .pass {
+	color: green;
+}
+.systemCheckList .fail {
+	color: red;
+	font-weight: bold;
+}
+.systemInformationTable th {
+	text-align: left;
+}
+.systemInformationTable td {
+	text-align: right;
+	padding-left: 20px; 
+}
+
+.systemInformationTable .pass {
+	color: green;
+}
+.systemInformationTable .fail {
+	color: red;
+	font-weight: bold;
+}
