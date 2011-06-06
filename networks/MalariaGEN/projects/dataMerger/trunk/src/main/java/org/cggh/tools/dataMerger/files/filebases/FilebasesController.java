@@ -1,12 +1,8 @@
 package org.cggh.tools.dataMerger.files.filebases;
 
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.Arrays;
-import java.util.Calendar;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -15,9 +11,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.cggh.tools.dataMerger.data.databases.DatabasesCRUD;
-import org.cggh.tools.dataMerger.data.users.UserModel;
-import org.cggh.tools.dataMerger.data.users.UsersCRUD;
 import org.cggh.tools.dataMerger.scripts.files.filebases.FilebaseScripts;
 
 

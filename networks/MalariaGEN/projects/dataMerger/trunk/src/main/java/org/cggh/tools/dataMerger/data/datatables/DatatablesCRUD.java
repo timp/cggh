@@ -1,11 +1,9 @@
 package org.cggh.tools.dataMerger.data.datatables;
 
-import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.DataInputStream;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
-import java.net.URL;
 import java.nio.charset.Charset;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -22,7 +20,6 @@ import org.apache.commons.lang.StringEscapeUtils;
 import org.cggh.tools.dataMerger.data.databases.DatabaseModel;
 import org.cggh.tools.dataMerger.data.uploads.UploadModel;
 import org.cggh.tools.dataMerger.data.uploads.UploadsCRUD;
-import org.cggh.tools.dataMerger.data.users.UserModel;
 
 import com.mysql.jdbc.StringUtils;
 

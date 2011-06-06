@@ -6,7 +6,6 @@ import org.cggh.tools.dataMerger.functions.data.files.FilesFunctions;
 
 import java.sql.SQLException;
 import java.text.DateFormat;
-import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 
 
