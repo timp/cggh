@@ -635,6 +635,8 @@ public class MergeScripts implements java.io.Serializable {
 			        }
 			        
 		        } else {
+		        	
+		        	//FIXME: This is not necessarily an error in usage (joins may only have keys in common). But does this cause an error in the code? 
 		        	this.logger.severe("Did not retrieve any non-key cross-datatable joins as a cached row set using merge Id: " + mergeModel.getId());
 		        }	        
 		        

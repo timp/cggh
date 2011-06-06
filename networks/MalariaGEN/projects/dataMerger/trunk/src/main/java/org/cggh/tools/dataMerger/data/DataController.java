@@ -18,6 +18,7 @@ import org.cggh.tools.dataMerger.data.databases.DatabaseModel;
 import org.cggh.tools.dataMerger.data.databases.DatabasesCRUD;
 import org.cggh.tools.dataMerger.data.exports.ExportModel;
 import org.cggh.tools.dataMerger.data.exports.ExportsCRUD;
+import org.cggh.tools.dataMerger.data.files.FilesCRUD;
 import org.cggh.tools.dataMerger.data.joins.JoinModel;
 import org.cggh.tools.dataMerger.data.joins.JoinsCRUD;
 import org.cggh.tools.dataMerger.data.merges.MergeModel;
@@ -25,14 +26,13 @@ import org.cggh.tools.dataMerger.data.merges.MergesCRUD;
 import org.cggh.tools.dataMerger.data.resolutions.byCell.ResolutionsByCellCRUD;
 import org.cggh.tools.dataMerger.data.resolutions.byColumn.ResolutionsByColumnCRUD;
 import org.cggh.tools.dataMerger.data.resolutions.byRow.ResolutionsByRowCRUD;
-import org.cggh.tools.dataMerger.data.uploads.UploadsCRUD;
 import org.cggh.tools.dataMerger.data.users.UserModel;
 import org.cggh.tools.dataMerger.data.users.UsersCRUD;
 import org.cggh.tools.dataMerger.files.filebases.FilebaseModel;
 import org.cggh.tools.dataMerger.files.filebases.FilebasesCRUD;
+import org.cggh.tools.dataMerger.functions.data.files.FilesFunctions;
 import org.cggh.tools.dataMerger.functions.data.joins.JoinFunctions;
 import org.cggh.tools.dataMerger.functions.data.merges.MergeFunctions;
-import org.cggh.tools.dataMerger.functions.data.uploads.UploadsFunctions;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -84,7 +84,7 @@ public class DataController extends HttpServlet {
 		  String[] headerAcceptsAsStringArray = request.getHeader("Accept").split(",");
 		  List<String> headerAcceptsAsStringList = Arrays.asList(headerAcceptsAsStringArray);		 
 		 
-		  if (request.getPathInfo().equals("/uploads")) {
+		  if (request.getPathInfo().equals("/files")) {
 
 			  if (headerAcceptsAsStringList.contains("text/html")) { 
 			  
@@ -93,30 +93,30 @@ public class DataController extends HttpServlet {
 				  
 				  response.setContentType("text/html");
 				  
-				  String uploadsAsHTML = null;
+				  String filesAsHTML = null;
 					
-				  UploadsCRUD uploadsCRUD = new UploadsCRUD();
-				  uploadsCRUD.setDatabaseModel(databaseModel);
+				  FilesCRUD filesCRUD = new FilesCRUD();
+				  filesCRUD.setDatabaseModel(databaseModel);
 
-				  CachedRowSet uploadsAsCachedRowSet = uploadsCRUD.retrieveUploadsAsCachedRowSetUsingUserId(userModel.getId());
+				  CachedRowSet filesAsCachedRowSet = filesCRUD.retrieveFilesAsCachedRowSetUsingUserId(userModel.getId());
 			
-				  if (uploadsAsCachedRowSet != null) {
+				  if (filesAsCachedRowSet != null) {
 			
-					  	UploadsFunctions uploadsFunctions = new UploadsFunctions();
+					  	FilesFunctions filesFunctions = new FilesFunctions();
 					  
-					  	uploadsFunctions.setCachedRowSet(uploadsAsCachedRowSet);
-					  	uploadsFunctions.setDecoratedXHTMLTableByCachedRowSet();
+					  	filesFunctions.setFilesAsCachedRowSet(filesAsCachedRowSet);
+					  	filesFunctions.setFilesAsDecoratedXHTMLTableUsingFilesAsCachedRowSet();
 					  	
-					  	uploadsAsHTML = uploadsFunctions.getDecoratedXHTMLTable();
+					  	filesAsHTML = filesFunctions.getFilesAsDecoratedXHTMLTable();
 					    
 				  } else {
 				  
-					  uploadsAsHTML = "<p>Failed to retrieve Uploads As CachedRowSet Using User Id</p>";
+					  filesAsHTML = "<p>Failed to retrieve Files As CachedRowSet Using User Id</p>";
 					  
 				  } 
 				  
 				  
-				  response.getWriter().print(uploadsAsHTML);
+				  response.getWriter().print(filesAsHTML);
 				  
 			  } else {
 				  
@@ -375,17 +375,37 @@ public class DataController extends HttpServlet {
 					    
 						try {
 							JSONObject jsonObject = new JSONObject(stringBuffer.toString());
-							JSONArray uploadIds = jsonObject.getJSONArray("upload_id");
+							JSONArray uploadIds = new JSONArray();
+							JSONArray exportIds = new JSONArray();
+							
+							if (jsonObject.has("upload_id")) {
+								uploadIds = jsonObject.getJSONArray("upload_id");
+							}
+							
+							if (jsonObject.has("export_id")) {
+								exportIds = jsonObject.getJSONArray("export_id");
+							}
 							
 							try {
 
 
 								MergeModel mergeModel = new MergeModel();
 								
-								mergeModel.getUpload1Model().setId(uploadIds.getInt(0));
-								mergeModel.getUpload2Model().setId(uploadIds.getInt(1));
+								if (uploadIds.length() >= 1) {
+									mergeModel.getUpload1Model().setId(uploadIds.getInt(0));
+								}
+								if (uploadIds.length() >= 2) {
+									mergeModel.getUpload2Model().setId(uploadIds.getInt(1));
+								}
+								if (exportIds.length() >= 1) {
+									//mergeModel.getFile1Model().setId(uploadIds.getInt(0));
+								}
+								if (uploadIds.length() >= 2) {
+									//mergeModel.getFile2Model().setId(uploadIds.getInt(1));
+								}
 								
 								
+								//TODO: allow export ids
 								
 								
 								MergesCRUD mergesModel = new MergesCRUD();

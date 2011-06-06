@@ -185,6 +185,9 @@ public class MergesCRUD implements java.io.Serializable {
 			MergeModel mergeModel) {
 
 		
+		//TODO: remove
+		logger.info("Got upload 1  id " + mergeModel.getUpload1Model().getId());
+		logger.info("Got upload 2  id " + mergeModel.getUpload2Model().getId());
 		
 
 		try {

@@ -10,6 +10,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <title>dataMerger - Files</title>
 
+	<link rel="stylesheet" type="text/css" href="../shared/css/fileuploader.css" />
 	<link rel="stylesheet" type="text/css" href="../shared/css/shared.css" />
 	
 	<link rel="stylesheet" type="text/css" href="css/files.css" />
@@ -18,6 +19,7 @@
 	<script type="text/javascript" src="../shared/js/jquery.json.min.js"></script>
 	<script type="text/javascript" src="../shared/js/shared.js"></script>
 	
+	<script type="text/javascript" src="js/fileuploader.js"></script>
 	<script type="text/javascript" src="js/files.js"></script>
 	
 	<script type="text/javascript">
@@ -57,6 +59,30 @@
 		</div>
 
 		</form>
+
+		<hr class="divider-space"/>
+
+		<h3 class="field-title">New uploads:</h3>
+		<% if (request.getHeader("User-Agent").indexOf("MSIE") > 0) { %>
+		
+		<p>Sorry, the upload feature is not currently supported for the Internet Explorer browser.
+		</p>
+		
+		<div id="file-uploader" style="display: none;"></div>
+		
+		<% } else { %>
+		
+
+		<div id="file-uploader">
+		       
+        	<noscript>          
+            	<p>Please enable JavaScript to use the file uploader.</p>
+            	<%-- TODO: Put a simple form for upload here --%>
+        	</noscript>
+        	
+        	         
+    	</div>
+    	<% } %>
 	
 	</div>	
 
