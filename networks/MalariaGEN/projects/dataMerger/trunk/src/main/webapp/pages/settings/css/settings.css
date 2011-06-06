@@ -1,0 +1,120 @@
+.refreshButtonContainer {
+	display: none;
+}
+
+.ajaxResponse {
+	
+	margin-top: 5px;
+	margin-bottom: 10px;
+	
+	color: blue;
+}
+
+.ajaxError {
+	
+	margin-top: 5px;
+	margin-bottom: 10px;
+	
+	font-weight: bold;
+	color: red;	
+}
+
+.systemCheckList .pass {
+	color: green;
+}
+.systemCheckList .fail {
+	color: red;
+	font-weight: bold;
+}
+.systemInformationTable th {
+	text-align: left;
+}
+.systemInformationTable td {
+	text-align: right;
+	padding-left: 20px; 
+}
+
+.systemInformationTable .pass {
+	color: green;
+}
+.systemInformationTable .fail {
+	color: red;
+	font-weight: bold;
+}
+
+
+
+.settings-container {
+	clear: both;	
+}
+
+
+.settings-sections-menu {
+        /* Layout */
+        clear: both;
+        float: left;
+        margin-top: 0px;
+        margin-bottom: 30px;
+        border-bottom: solid 2px #073763;
+        padding-left: 5px;
+        padding-right: 100px;
+        
+        /* Appearance */
+        list-style-type: none;
+}
+.settings-sections-menu .item {
+        float: left;
+}
+.settings-sections-menu .item .selected {
+        /* Appearance */
+        background-color: #FFFFFF;      
+        font-weight: bold;
+}
+
+.settings-sections-menu .link {
+        /* Layout */
+        float: left;
+        margin-left: 5px;
+        margin-right: 5px;
+        border-top: solid 2px #073763;
+        border-left: solid 2px #073763;
+        border-right: solid 2px #073763;
+        padding-top: 3px;
+        padding-bottom: 3px;
+        padding-left: 20px;
+        padding-right: 20px;
+        
+        
+        /* Appearance */
+        background-color: #cfe2f3;
+        color: #444444;
+        font-size: 10pt;
+        font-weight: normal;
+        text-decoration: none;
+}
+.settings-sections-menu .link:hover {
+        background-color: #FFFFFF;      
+}
+
+ .settings-section {
+ 	clear: both;
+ }
+ 
+ .settings-section h4 {
+ 	margin-bottom: 8px;
+ }
+ .settings-section ol {
+ 	margin-top: 0px;
+ 	margin-bottom: 20px;
+ }
+ 
+ .settings-section ul {
+ 	margin-top: 0px;
+ 	margin-bottom: 20px;
+ }
+ .settings-section h6 {
+	font-size: 10pt;
+	font-weight: normal;
+	margin-top: 0px;
+	margin-bottom: 8px;
+}

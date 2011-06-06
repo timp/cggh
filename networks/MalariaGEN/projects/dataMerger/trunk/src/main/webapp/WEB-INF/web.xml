@@ -1,0 +1,296 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app id="WebApp_ID" version="2.4" xmlns="http://java.sun.com/xml/ns/j2ee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd">
+	
+	
+	<display-name>dataMerger</display-name>
+	
+
+  <!-- Servlets -->
+
+  <servlet>
+  	<description>
+  	</description>
+  	<display-name>FunctionsController</display-name>
+  	<servlet-name>FunctionsController</servlet-name>
+  	<servlet-class>org.cggh.tools.dataMerger.functions.FunctionsController</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>FunctionsController</servlet-name>
+    <url-pattern>/functions/*</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+  	<description>
+  	</description>
+  	<display-name>ScriptsController</display-name>
+  	<servlet-name>ScriptsController</servlet-name>
+  	<servlet-class>org.cggh.tools.dataMerger.scripts.ScriptsController</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>ScriptsController</servlet-name>
+    <url-pattern>/scripts/*</url-pattern>
+  </servlet-mapping>
+
+
+  <servlet>
+  	<description>
+  	</description>
+  	<display-name>DataController</display-name>
+  	<servlet-name>DataController</servlet-name>
+  	<servlet-class>org.cggh.tools.dataMerger.data.DataController</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>DataController</servlet-name>
+    <url-pattern>/data/*</url-pattern>
+  </servlet-mapping>
+
+
+  <servlet>
+  	<description>
+  	</description>
+  	<display-name>DatabasesController</display-name>
+  	<servlet-name>DatabasesController</servlet-name>
+  	<servlet-class>org.cggh.tools.dataMerger.data.databases.DatabasesController</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>DatabasesController</servlet-name>
+    <url-pattern>/data/databases/*</url-pattern>
+  </servlet-mapping>
+
+
+  <servlet>
+  	<description>
+  	</description>
+  	<display-name>FilebasesController</display-name>
+  	<servlet-name>FilebasesController</servlet-name>
+  	<servlet-class>org.cggh.tools.dataMerger.files.filebases.FilebasesController</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>FilebasesController</servlet-name>
+    <url-pattern>/files/filebases/*</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+  	<description>
+  	</description>
+  	<display-name>FilesController</display-name>
+  	<servlet-name>FilesController</servlet-name>
+  	<servlet-class>org.cggh.tools.dataMerger.files.FilesController</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>FilesController</servlet-name>
+    <url-pattern>/files/*</url-pattern>
+  </servlet-mapping>
+
+  
+	
+	<!-- Welcome files -->	
+	
+	<welcome-file-list>
+		<welcome-file>index.html</welcome-file>
+		<welcome-file>index.jsp</welcome-file>
+	</welcome-file-list>
+
+	
+  <!--  Security -->
+
+ <security-constraint>
+   <web-resource-collection>
+     <web-resource-name>
+       Protected Site
+     </web-resource-name>
+
+     <url-pattern>/*</url-pattern>
+
+     <http-method>DELETE</http-method>
+     <http-method>GET</http-method>
+     <http-method>POST</http-method>
+     <http-method>PUT</http-method>
+
+   </web-resource-collection>
+   <auth-constraint>
+     <role-name>non-specific</role-name>
+   </auth-constraint>
+
+ </security-constraint>
+
+ <security-constraint>
+   <web-resource-collection>
+     <web-resource-name>
+       Home &amp; Shared
+     </web-resource-name>
+
+	 <url-pattern>/index.jsp</url-pattern>
+	 <url-pattern>/pages/index.jsp</url-pattern>
+     <url-pattern>/pages/shared/*</url-pattern>
+     <url-pattern>/pages/guides/*</url-pattern>
+
+               <http-method>GET</http-method>
+
+   </web-resource-collection>
+
+   <!-- Comment this out to allow "unregistered" users to access the welcome page. -->
+   <auth-constraint>
+     <role-name>user</role-name>
+   </auth-constraint>
+
+ </security-constraint>
+
+ <security-constraint>
+   <web-resource-collection>
+     <web-resource-name>
+       Uploads
+     </web-resource-name>
+
+     <url-pattern>/pages/uploads/*</url-pattern>
+     <url-pattern>/data/uploads/*</url-pattern>
+     <url-pattern>/files/upload/*</url-pattern>
+               <http-method>GET</http-method>
+               <http-method>POST</http-method>
+
+   </web-resource-collection>
+   <auth-constraint>
+     <role-name>uploader</role-name>
+   </auth-constraint>
+   
+   <!-- Comment this out to allow over "unsecure" HTTP. -->
+   <!-- 
+  <user-data-constraint>
+    <transport-guarantee>CONFIDENTIAL</transport-guarantee>
+  </user-data-constraint>
+   -->
+
+ </security-constraint>
+
+ <security-constraint>
+   <web-resource-collection>
+     <web-resource-name>
+       Merges
+     </web-resource-name>
+
+     <url-pattern>/pages/merges/*</url-pattern>
+     <url-pattern>/data/merges/*</url-pattern>
+               <http-method>GET</http-method>
+               <http-method>POST</http-method>
+
+   </web-resource-collection>
+   <auth-constraint>
+     <role-name>merger</role-name>
+   </auth-constraint>
+
+ </security-constraint>
+ 
+  <security-constraint>
+   <web-resource-collection>
+     <web-resource-name>
+       Files
+     </web-resource-name>
+
+     <url-pattern>/files/*</url-pattern>
+     			<http-method>GET</http-method>
+               <http-method>POST</http-method>
+               
+
+   </web-resource-collection>
+   <auth-constraint>
+     <role-name>uploader</role-name>
+   </auth-constraint>
+   
+  <!-- TODO: Ensure SSL
+  <user-data-constraint>
+    <transport-guarantee>CONFIDENTIAL</transport-guarantee>
+  </user-data-constraint>
+   -->   
+   
+ </security-constraint>
+
+ <security-constraint>
+   <web-resource-collection>
+     <web-resource-name>
+       Exports
+     </web-resource-name>
+
+     <url-pattern>/pages/exports/*</url-pattern>
+               <http-method>GET</http-method>
+
+   </web-resource-collection>
+   <auth-constraint>
+     <role-name>exporter</role-name>
+   </auth-constraint>
+ </security-constraint>
+
+ <!-- BASIC authentication -->
+ <login-config>
+   <auth-method>BASIC</auth-method>
+   <realm-name>Basic Authentication</realm-name>
+ </login-config>
+
+ <!-- Define security roles -->
+ <security-role>
+   <description>Non-specific role</description>
+   <role-name>non-specific</role-name>
+ </security-role>
+ <security-role>
+   <description>User role</description>
+   <role-name>user</role-name>
+ </security-role>
+  <security-role>
+   <description>Uploader role</description>
+   <role-name>uploader</role-name>
+ </security-role>
+  <security-role>
+   <description>Merger role</description>
+   <role-name>merger</role-name>
+ </security-role>
+  <security-role>
+   <description>Exporter role</description>
+   <role-name>exporter</role-name>
+ </security-role>
+
+
+	<!-- application init params -->
+	<context-param>
+		<param-name>databaseDriverFullyQualifiedClassName</param-name>
+		<param-value>com.mysql.jdbc.Driver</param-value>
+	</context-param>	
+	<context-param>
+		<param-name>databaseServerPath</param-name>
+		<param-value>jdbc:mysql://localhost:3306/</param-value>
+	</context-param>	
+	<context-param>
+		<param-name>databaseName</param-name>
+		<param-value>datamerger</param-value>
+	</context-param>
+	<context-param>
+		<param-name>databaseUsername</param-name>
+		<param-value>root</param-value>
+	</context-param>
+	<context-param>
+		<param-name>databasePassword</param-name>
+		<param-value>root</param-value>
+	</context-param>
+	
+	<!-- Tomcat and MySQL must have read and write access to this directory. -->
+	<context-param>
+		<param-name>filebaseServerPath</param-name>
+		<param-value>C:\Lee\Work\dataMerger\files\</param-value>
+	</context-param>	
+
+	<context-param>
+		<param-name>filebaseInstallationLogAsCSVFilePathRelativeToFilebaseServerPath</param-name>
+		<param-value>installation\log.csv</param-value>
+	</context-param>
+
+	<context-param>
+		<param-name>stringsToNullifyAsCSV</param-name>
+		<param-value>,NULL</param-value>
+	</context-param>
+	
+	<!-- Without this parameter the default behaviour is to export NULLs as \N (unquoted) -->
+	<context-param>
+		<param-name>stringToExportInsteadOfNull</param-name>
+		<param-value>NULL</param-value>
+	</context-param>
+
+</web-app>
+

@@ -1,0 +1,12 @@
+
+.data-table th.fileSizeHeadingContainer {
+	text-align: right;
+}
+.data-table td.fileSizeContainer {
+    text-align: right;
+}
+
+.merging-indicator {
+	margin-left: 5px;
+	vertical-align: middle;
+}
