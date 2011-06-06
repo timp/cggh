@@ -39,7 +39,6 @@
 		
 		<h2 class="page-title">Files</h2>
 
-
 		<div class="status">
 		</div>	
 		<div class="error">

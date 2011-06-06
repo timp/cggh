@@ -38,7 +38,7 @@
 			<div class="divider-space"></div>
 			
 
-			<div class="settings-container">
+				<div class="settings-container">
 				
 					<%@ include file="jsp/settings-sections-menu.jsp" %>
 					

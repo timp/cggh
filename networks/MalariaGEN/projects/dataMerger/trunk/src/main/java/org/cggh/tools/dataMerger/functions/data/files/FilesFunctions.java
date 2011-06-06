@@ -71,7 +71,16 @@ public class FilesFunctions {
 					
 					filesAsDecoratedXHTMLTable = filesAsDecoratedXHTMLTable.concat("<tr class=\"" + rowStripeClassName + rowFirstClassName + rowLastClassName + "\">");
 
-					 filesAsDecoratedXHTMLTable = filesAsDecoratedXHTMLTable.concat("<td><input type=\"checkbox\" name=\"upload_id\" value=\"" + this.getFilesAsCachedRowSet().getString("id") + "\" /></td>");
+					 if (this.getFilesAsCachedRowSet().getString("sourceTable").equals("upload")) {
+						 filesAsDecoratedXHTMLTable = filesAsDecoratedXHTMLTable.concat("<td><input type=\"checkbox\" name=\"upload_id\" value=\"" + this.getFilesAsCachedRowSet().getString("id") + "\" /></td>");
+					 }
+					 else if (this.getFilesAsCachedRowSet().getString("sourceTable").equals("export")) {
+						 filesAsDecoratedXHTMLTable = filesAsDecoratedXHTMLTable.concat("<td><input type=\"checkbox\" name=\"export_id\" value=\"" + this.getFilesAsCachedRowSet().getString("id") + "\" /></td>");
+					 } else {
+						 
+						 filesAsDecoratedXHTMLTable = filesAsDecoratedXHTMLTable.concat("<td>???</td>");
+					 }
+					 
 					 filesAsDecoratedXHTMLTable = filesAsDecoratedXHTMLTable.concat("<td class=\"idContainer\">" + this.getFilesAsCachedRowSet().getString("id") + "</td>");
 					 filesAsDecoratedXHTMLTable = filesAsDecoratedXHTMLTable.concat("<td><a href=\"/dataMerger/files/uploads/" + this.getFilesAsCachedRowSet().getString("id") + "\">" + this.getFilesAsCachedRowSet().getString("filename") + "</a></td>");
 					 filesAsDecoratedXHTMLTable = filesAsDecoratedXHTMLTable.concat("<td>" + dateFormat.format(this.getFilesAsCachedRowSet().getTimestamp("created_datetime")) + "</td>");
@@ -96,6 +105,8 @@ public class FilesFunctions {
 				filesAsDecoratedXHTMLTable = filesAsDecoratedXHTMLTable.concat("<button class=\"merge-files-button\">Merge</button><img class=\"merging-indicator\" src=\"/dataMerger/pages/shared/gif/loading.gif\" style=\"display:none\" title=\"Merging...\"/>");
 				
 				filesAsDecoratedXHTMLTable = filesAsDecoratedXHTMLTable.concat("<button class=\"hide-files-button\">Hide</button><img class=\"hiding-indicator\" src=\"/dataMerger/pages/shared/gif/loading.gif\" style=\"display:none\" title=\"Hiding...\"/>");
+				
+				filesAsDecoratedXHTMLTable = filesAsDecoratedXHTMLTable.concat("<button class=\"show-files-button\">Show</button><img class=\"showing-indicator\" src=\"/dataMerger/pages/shared/gif/loading.gif\" style=\"display:none\" title=\"Showing...\"/>");
 				
 				filesAsDecoratedXHTMLTable = filesAsDecoratedXHTMLTable.concat("<button class=\"remove-files-button\">Remove</button><img class=\"removing-indicator\" src=\"/dataMerger/pages/shared/gif/loading.gif\" style=\"display:none\" title=\"Removing...\"/>");
 				
