@@ -103,6 +103,11 @@ public class JoinedDatatablesCRUD {
 	        } 
 		
 		return dataAsCachedRowSet;
+	}
+
+
+	public Logger getLogger() {
+		return logger;
 	}	
 	
 }

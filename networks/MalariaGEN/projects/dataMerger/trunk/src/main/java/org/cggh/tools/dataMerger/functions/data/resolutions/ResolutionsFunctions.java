@@ -75,4 +75,8 @@ public class ResolutionsFunctions implements java.io.Serializable {
 	public HttpServletRequest getHttpServletRequest() {
 		return this.httpServletRequest;
 	}
+
+	public Logger getLogger() {
+		return logger;
+	}
 }

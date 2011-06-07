@@ -15,7 +15,7 @@ import org.cggh.tools.dataMerger.data.joinedDatatables.JoinedDatatablesCRUD;
 import org.cggh.tools.dataMerger.data.joinedKeytables.JoinedKeytablesCRUD;
 import org.cggh.tools.dataMerger.data.joins.JoinModel;
 import org.cggh.tools.dataMerger.data.joins.JoinsCRUD;
-import org.cggh.tools.dataMerger.data.uploads.UploadsCRUD;
+import org.cggh.tools.dataMerger.data.files.FilesCRUD;
 import org.cggh.tools.dataMerger.data.users.UserModel;
 import org.cggh.tools.dataMerger.functions.data.joins.JoinFunctions;
 import org.cggh.tools.dataMerger.functions.data.merges.MergeFunctions;
@@ -33,14 +33,10 @@ public class MergesCRUD implements java.io.Serializable {
 	
 	
 	private DatabaseModel databaseModel;
-	private UserModel userModel;
-	
+
 	
 	public MergesCRUD() {
 
-		this.setDatabaseModel(new DatabaseModel());
-		this.setUserModel(new UserModel());			
-	
 		
 	}
 
@@ -49,13 +45,6 @@ public class MergesCRUD implements java.io.Serializable {
     }
     public DatabaseModel getDatabaseModel () {
         return this.databaseModel;
-    } 
-	
-    public void setUserModel (final UserModel userModel) {
-        this.userModel  = userModel;
-    }
-    public UserModel getUserModel () {
-        return this.userModel;
     } 
 
     
@@ -102,7 +91,7 @@ public class MergesCRUD implements java.io.Serializable {
 		mergeModel.setId(mergeId);
 		
 	      try{
-	          PreparedStatement preparedStatement = connection.prepareStatement("SELECT id, upload_1_id, upload_2_id, created_by_user_id, created_datetime, updated_datetime, datatable_1_duplicate_keys_count, datatable_2_duplicate_keys_count, total_duplicate_keys_count, total_conflicts_count, joined_keytable_name FROM `merge` " + 
+	          PreparedStatement preparedStatement = connection.prepareStatement("SELECT id, file_1_id, file_2_id, created_by_user_id, created_datetime, updated_datetime, datatable_1_duplicate_keys_count, datatable_2_duplicate_keys_count, total_duplicate_keys_count, total_conflicts_count, joined_keytable_name FROM `merge` " + 
 	        		  "WHERE id = ? ORDER BY id;");
 	          preparedStatement.setInt(1, mergeModel.getId());
 	          preparedStatement.executeQuery();
@@ -113,8 +102,8 @@ public class MergesCRUD implements java.io.Serializable {
 	        	  resultSet.first();
 
 	        	  //Set the merge data
-	        	  mergeModel.getUpload1Model().setId(resultSet.getInt("upload_1_id"));
-	        	  mergeModel.getUpload2Model().setId(resultSet.getInt("upload_2_id"));
+	        	  mergeModel.getFile1Model().setId(resultSet.getInt("file_1_id"));
+	        	  mergeModel.getFile2Model().setId(resultSet.getInt("file_2_id"));
 	        	  mergeModel.getCreatedByUserModel().setId(resultSet.getInt("created_by_user_id"));
 	        	  mergeModel.setCreatedDatetime(resultSet.getTimestamp("created_datetime"));
 	        	  mergeModel.setUpdatedDatetime(resultSet.getTimestamp("updated_datetime"));
@@ -125,15 +114,15 @@ public class MergesCRUD implements java.io.Serializable {
 	        	  //mergeModel.getJoinedKeytableModel().setName(resultSet.getString("joined_keytable_name"));
 	        	  
 	        	  //Retrieve the upload data
-	        	  UploadsCRUD uploadsModel = new UploadsCRUD();
-	        	  uploadsModel.setDatabaseModel(this.getDatabaseModel());
-	        	  mergeModel.setUpload1Model(uploadsModel.retrieveUploadAsUploadModelByUploadId(mergeModel.getUpload1Model().getId(), connection));
-	        	  mergeModel.setUpload2Model(uploadsModel.retrieveUploadAsUploadModelByUploadId(mergeModel.getUpload2Model().getId(), connection));
+	        	  FilesCRUD filesCRUD = new FilesCRUD();
+	        	  filesCRUD.setDatabaseModel(this.getDatabaseModel());
+	        	  mergeModel.setFile1Model(filesCRUD.retrieveFileAsFileModelByFileId(mergeModel.getFile1Model().getId(), connection));
+	        	  mergeModel.setFile2Model(filesCRUD.retrieveFileAsFileModelByFileId(mergeModel.getFile2Model().getId(), connection));
 	        	  
 	        	  //Retrieve the datatable data
 	        	  DatatablesCRUD datatablesCRUD = new DatatablesCRUD();
-	        	  mergeModel.setDatatable1Model(datatablesCRUD.retrieveDatatableAsDatatableModelUsingUploadId(mergeModel.getUpload1Model().getId(), connection));
-	        	  mergeModel.setDatatable2Model(datatablesCRUD.retrieveDatatableAsDatatableModelUsingUploadId(mergeModel.getUpload2Model().getId(), connection));
+	        	  mergeModel.setDatatable1Model(datatablesCRUD.retrieveDatatableAsDatatableModelUsingFileId(mergeModel.getFile1Model().getId(), connection));
+	        	  mergeModel.setDatatable2Model(datatablesCRUD.retrieveDatatableAsDatatableModelUsingFileId(mergeModel.getFile2Model().getId(), connection));
 	        	  
 	        	  //Add the merge-specific datatable data from the merge data to the datatable models
 	        	  mergeModel.getDatatable1Model().setDuplicateKeysCount(resultSet.getInt("datatable_1_duplicate_keys_count"));
@@ -186,8 +175,8 @@ public class MergesCRUD implements java.io.Serializable {
 
 		
 		//TODO: remove
-		logger.info("Got upload 1  id " + mergeModel.getUpload1Model().getId());
-		logger.info("Got upload 2  id " + mergeModel.getUpload2Model().getId());
+		logger.info("Got file 1  id " + mergeModel.getFile1Model().getId());
+		logger.info("Got file 2  id " + mergeModel.getFile2Model().getId());
 		
 
 		try {
@@ -200,19 +189,19 @@ public class MergesCRUD implements java.io.Serializable {
 			      try {
 			    	  
 
-			  		  // Retrieve the merge's upload models from the db.
-					  UploadsCRUD uploadsModel = new UploadsCRUD();
-					  mergeModel.setUpload1Model(uploadsModel.retrieveUploadAsUploadModelByUploadId(mergeModel.getUpload1Model().getId(), connection));
-					  mergeModel.setUpload2Model(uploadsModel.retrieveUploadAsUploadModelByUploadId(mergeModel.getUpload2Model().getId(), connection));
+			  		  // Retrieve the merge's file models from the db.
+					  FilesCRUD filesCRUD = new FilesCRUD();
+					  mergeModel.setFile1Model(filesCRUD.retrieveFileAsFileModelByFileId(mergeModel.getFile1Model().getId(), connection));
+					  mergeModel.setFile2Model(filesCRUD.retrieveFileAsFileModelByFileId(mergeModel.getFile2Model().getId(), connection));
 
-			    	  // If the uploads in the provided model actually exist
-			    	  if (mergeModel.getUpload1Model().getRepositoryFilepath() != null && mergeModel.getUpload1Model().getRepositoryFilepath() != null) {
+			    	  // If the files in the provided model actually exist
+			    	  if (mergeModel.getFile1Model().getFilepath() != null && mergeModel.getFile1Model().getFilepath() != null) {
 			    		  
 						//Insert the merge record
-						PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO merge (upload_1_id, upload_2_id, created_by_user_id, created_datetime, updated_datetime) VALUES (?, ?, ?, NOW(), NOW());");
-						preparedStatement.setInt(1, mergeModel.getUpload1Model().getId());
-						preparedStatement.setInt(2, mergeModel.getUpload2Model().getId());
-						preparedStatement.setInt(3, this.getUserModel().getId());
+						PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO merge (file_1_id, file_2_id, created_by_user_id, created_datetime, updated_datetime) VALUES (?, ?, ?, NOW(), NOW());");
+						preparedStatement.setInt(1, mergeModel.getFile1Model().getId());
+						preparedStatement.setInt(2, mergeModel.getFile2Model().getId());
+						preparedStatement.setInt(3, mergeModel.getCreatedByUserModel().getId());
 						preparedStatement.executeUpdate();
 						preparedStatement.close();
 						
@@ -225,29 +214,32 @@ public class MergesCRUD implements java.io.Serializable {
 						// Create datatables if necessary.
 						mergeModel = this.retrieveMergeAsMergeModelThroughCreatingUncreatedDatatablesUsingMergeModel(mergeModel, connection);
 						
+						if (mergeModel.getDatatable1Model().getName() != null && mergeModel.getDatatable2Model().getName() != null) {
+							
+							// Guess joins automatically.
+							MergeScripts mergeScripts = new MergeScripts();
+							mergeModel = mergeScripts.retrieveMergeAsMergeModelThroughGuessingJoinsUsingMergeModel(mergeModel, connection);
+	
+							
+							// Guess keys automatically.
+							mergeModel = mergeScripts.retrieveMergeAsMergeModelThroughGuessingKeysUsingMergeModel(mergeModel, connection);
+							
+							
+							// Count the duplicate keys in each datatable (according to the join) and the total.
+							mergeModel = this.retrieveMergeAsMergeModelThroughCountingDuplicateKeysUsingMergeModel(mergeModel, connection);
+							
+							
+							//this.logger.info("keysCount=" + mergeModel.getJoinsModel().getKeysCount());
+							//this.logger.info("totalDuplicateKeysCount=" + mergeModel.getTotalDuplicateKeysCount());
+							
+							// Count the data conflicts (if there are keys and no duplicates)
+							
+							mergeModel = mergeScripts.retrieveMergeAsMergeModelThroughDeterminingDataConflictsUsingMergeModel(mergeModel, connection);
+							
 						
-						// Guess joins automatically.
-						MergeScripts mergeScripts = new MergeScripts();
-						mergeModel = mergeScripts.retrieveMergeAsMergeModelThroughGuessingJoinsUsingMergeModel(mergeModel, connection);
-
-						
-						// Guess keys automatically.
-						mergeModel = mergeScripts.retrieveMergeAsMergeModelThroughGuessingKeysUsingMergeModel(mergeModel, connection);
-						
-						
-						// Count the duplicate keys in each datatable (according to the join) and the total.
-						mergeModel = this.retrieveMergeAsMergeModelThroughCountingDuplicateKeysUsingMergeModel(mergeModel, connection);
-						
-						
-						//this.logger.info("keysCount=" + mergeModel.getJoinsModel().getKeysCount());
-						//this.logger.info("totalDuplicateKeysCount=" + mergeModel.getTotalDuplicateKeysCount());
-						
-						// Count the data conflicts (if there are keys and no duplicates)
-						
-						mergeModel = mergeScripts.retrieveMergeAsMergeModelThroughDeterminingDataConflictsUsingMergeModel(mergeModel, connection);
-						
-						
-						
+						} else {
+							logger.severe("mergeModel.getDatatable1Model().getName() or mergeModel.getDatatable2Model().getName() is null");
+						}
 						
 						
 						
@@ -346,15 +338,15 @@ public class MergesCRUD implements java.io.Serializable {
 		  
 		  datatablesCRUD.setDatabaseModel(this.getDatabaseModel());
 
-		  mergeModel.setDatatable1Model(datatablesCRUD.retrieveDatatableAsDatatableModelUsingUploadId(mergeModel.getUpload1Model().getId(), connection));
-		  mergeModel.setDatatable2Model(datatablesCRUD.retrieveDatatableAsDatatableModelUsingUploadId(mergeModel.getUpload2Model().getId(), connection));
+		  mergeModel.setDatatable1Model(datatablesCRUD.retrieveDatatableAsDatatableModelUsingFileId(mergeModel.getFile1Model().getId(), connection));
+		  mergeModel.setDatatable2Model(datatablesCRUD.retrieveDatatableAsDatatableModelUsingFileId(mergeModel.getFile2Model().getId(), connection));
 		  
 		  if (mergeModel.getDatatable1Model().getName() == null) {
-			  mergeModel.setDatatable1Model(datatablesCRUD.retrieveDatatableAsDatatableModelThroughCreatingDatatableUsingUploadId(mergeModel.getUpload1Model().getId(), connection));
+			  mergeModel.setDatatable1Model(datatablesCRUD.retrieveDatatableAsDatatableModelThroughCreatingDatatableUsingFileId(mergeModel.getFile1Model().getId(), connection));
 		  }
 
 		  if (mergeModel.getDatatable2Model().getName() == null) {
-			  mergeModel.setDatatable2Model(datatablesCRUD.retrieveDatatableAsDatatableModelThroughCreatingDatatableUsingUploadId(mergeModel.getUpload2Model().getId(), connection));
+			  mergeModel.setDatatable2Model(datatablesCRUD.retrieveDatatableAsDatatableModelThroughCreatingDatatableUsingFileId(mergeModel.getFile2Model().getId(), connection));
 		  }
 		  
 		  return mergeModel;
@@ -396,8 +388,8 @@ public class MergesCRUD implements java.io.Serializable {
 	      try {
 
 	          PreparedStatement preparedStatement = connection.prepareStatement("UPDATE `merge` SET upload_1_id = ?, upload_2_id = ?, updated_datetime = NOW(), datatable_1_duplicate_keys_count = ?, datatable_2_duplicate_keys_count = ?, total_duplicate_keys_count = ?, total_conflicts_count = ?, joined_keytable_name = ? WHERE id = ?;");
-	          preparedStatement.setInt(1, mergeModel.getUpload1Model().getId());
-	          preparedStatement.setInt(2, mergeModel.getUpload2Model().getId());
+	          preparedStatement.setInt(1, mergeModel.getFile1Model().getId());
+	          preparedStatement.setInt(2, mergeModel.getFile2Model().getId());
 	          if (mergeModel.getDatatable1Model().getDuplicateKeysCount() != null) {
 	        	  preparedStatement.setInt(3, mergeModel.getDatatable1Model().getDuplicateKeysCount());
 	        	  

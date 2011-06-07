@@ -6,6 +6,21 @@
     text-align: right;
 }
 
+
+.data-table th.rowsCountHeadingContainer {
+	text-align: right;
+}
+.data-table td.rowsCountContainer {
+    text-align: right;
+}
+
+.data-table th.columnCountHeadingContainer {
+	text-align: right;
+}
+.data-table td.columnsCountContainer {
+    text-align: right;
+}
+
 .merging-indicator {
 	margin-left: 0px;
 	margin-right: 20px;

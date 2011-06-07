@@ -501,4 +501,8 @@ public class ResolutionsByRowFunctions implements java.io.Serializable {
 		return nullOrConstantSolutionUsingColumnNumberAsHashMap;
 	}
 
+	public Logger getLogger() {
+		return logger;
+	}
+
 }

@@ -81,23 +81,7 @@ function initMergeFilesFunction () {
 		
 		var obj = jQuery.parseJSON(data);
 		
-		if (obj != undefined && 
-				
-				(
-				
-					(obj.upload_id != undefined && obj.upload_id.length == 2)
-					
-					||
-					
-					(obj.upload_id != undefined && obj.upload_id.length == 1 && obj.export_id != undefined && obj.export_id.length == 1)
-					
-					||
-					
-					(obj.export_id != undefined && obj.export_id.length == 2)
-					
-				)
-				
-		) {
+		if (obj != undefined && obj.file_id != undefined && obj.file_id.length == 2) {
 		
 			$.ajax({
 				type: 'POST',

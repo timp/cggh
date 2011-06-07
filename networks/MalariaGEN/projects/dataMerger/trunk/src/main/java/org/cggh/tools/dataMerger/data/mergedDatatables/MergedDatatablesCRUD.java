@@ -103,6 +103,11 @@ public class MergedDatatablesCRUD {
 	        } 
 		
 		return dataAsCachedRowSet;
+	}
+
+
+	public Logger getLogger() {
+		return logger;
 	}	
 	
 }

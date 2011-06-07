@@ -89,8 +89,8 @@ ResolutionsFunctions resolutionsFunctions = new ResolutionsFunctions();
 					<td>
 						<ol class="sources-list">
 							<%-- TODO: This url should be more dynamic --%>
-							<li><a href="/dataMerger/files/uploads/<%=mergeModel.getUpload1Model().getId()%>"><%=mergeModel.getUpload1Model().getOriginalFilename()%></a></li>
-							<li><a href="/dataMerger/files/uploads/<%=mergeModel.getUpload2Model().getId()%>"><%=mergeModel.getUpload2Model().getOriginalFilename()%></a></li>
+							<li><a href="/dataMerger/files/uploads/<%=mergeModel.getFile1Model().getId()%>"><%=mergeModel.getFile1Model().getFilename()%></a></li>
+							<li><a href="/dataMerger/files/uploads/<%=mergeModel.getFile2Model().getId()%>"><%=mergeModel.getFile2Model().getFilename()%></a></li>
 						</ol>
 					</td>
 				</tr>

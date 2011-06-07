@@ -18,8 +18,8 @@ import javax.sql.rowset.CachedRowSet;
 
 import org.apache.commons.lang.StringEscapeUtils;
 import org.cggh.tools.dataMerger.data.databases.DatabaseModel;
-import org.cggh.tools.dataMerger.data.uploads.UploadModel;
-import org.cggh.tools.dataMerger.data.uploads.UploadsCRUD;
+import org.cggh.tools.dataMerger.data.files.FileModel;
+import org.cggh.tools.dataMerger.data.files.FilesCRUD;
 
 import com.mysql.jdbc.StringUtils;
 
@@ -53,23 +53,23 @@ public class DatatablesCRUD implements java.io.Serializable {
   
 
 
-	public DatatableModel retrieveDatatableAsDatatableModelThroughCreatingDatatableUsingUploadId(Integer uploadId,
+	public DatatableModel retrieveDatatableAsDatatableModelThroughCreatingDatatableUsingFileId(Integer fileId,
 			Connection connection) {
 
-		UploadsCRUD uploadsCRUD = new UploadsCRUD();
-		UploadModel uploadModel = uploadsCRUD.retrieveUploadAsUploadModelByUploadId(uploadId, connection);
+		FilesCRUD filesCRUD = new FilesCRUD();
+		FileModel fileModel = filesCRUD.retrieveFileAsFileModelByFileId(fileId, connection);
 		
 		DatatableModel datatableModel = new DatatableModel();
-		datatableModel.setName("datatable_" + uploadModel.getId());
+		datatableModel.setName("datatable_" + fileModel.getId());
 		
 		//NOTE: Not necessary
-		//uploadModel.setDatatableModel(datatableModel);
-		//uploadsCRUD.updateUploadDatatableNameUsingUploadModel(uploadModel, connection);
+		//fileModel.setDatatableModel(datatableModel);
+		//filesCRUD.updateUploadDatatableNameUsingFileModel(fileModel, connection);
 
 	         //Get the column names
          		try {
 
-         			FileInputStream fileInputStream = new FileInputStream(uploadModel.getRepositoryFilepath());
+         			FileInputStream fileInputStream = new FileInputStream(fileModel.getFilepath());
 	        	    DataInputStream dataInputStream = new DataInputStream(fileInputStream);
 	        	    
 	        	    //TODO: Character-set detection
@@ -165,7 +165,7 @@ public class DatatablesCRUD implements java.io.Serializable {
 				    		    	  //TODO: OPTIONALLY ENCLOSED BY '"' ESCAPED BY '\'
 				    		    	  //ENCLOSED BY '\"' ESCAPED BY '\\\\'
 				    		          PreparedStatement preparedStatement2 = connection.prepareStatement("LOAD DATA INFILE ? INTO TABLE `" + datatableModel.getName() + "` FIELDS TERMINATED BY ',' OPTIONALLY ENCLOSED BY '\"' LINES TERMINATED BY '\n' IGNORE 1 LINES ;");
-				    		          preparedStatement2.setString(1, uploadModel.getRepositoryFilepath());
+				    		          preparedStatement2.setString(1, fileModel.getFilepath());
 				    		          preparedStatement2.executeUpdate();
 				    		          preparedStatement2.close();
 				    		          
@@ -265,7 +265,7 @@ public class DatatablesCRUD implements java.io.Serializable {
 
 
 	      try {
-	          PreparedStatement preparedStatement = connection.prepareStatement("SELECT id FROM upload WHERE datatable_name = ?;");
+	          PreparedStatement preparedStatement = connection.prepareStatement("SELECT id FROM file WHERE datatable_name = ?;");
 	          preparedStatement.setString(1, datatableModel.getName());				          
 	          preparedStatement.executeQuery();
 
@@ -341,17 +341,17 @@ public class DatatablesCRUD implements java.io.Serializable {
 	}
 
 
-	public DatatableModel retrieveDatatableAsDatatableModelUsingUploadId(
+	public DatatableModel retrieveDatatableAsDatatableModelUsingFileId(
 			Integer uploadId, Connection connection) {
 
-		UploadModel uploadModel = new UploadModel();
-		uploadModel.setId(uploadId);
+		FileModel fileModel = new FileModel();
+		fileModel.setId(uploadId);
 		
 		DatatableModel datatableModel = new DatatableModel();
 
 	      try{
-	          PreparedStatement preparedStatement = connection.prepareStatement("SELECT id, datatable_name FROM `upload` WHERE id = ?;");
-	          preparedStatement.setInt(1, uploadModel.getId());
+	          PreparedStatement preparedStatement = connection.prepareStatement("SELECT id, datatable_name FROM `file` WHERE id = ?;");
+	          preparedStatement.setInt(1, fileModel.getId());
 	          preparedStatement.executeQuery();
 	          ResultSet resultSet = preparedStatement.getResultSet();
 	          

@@ -173,14 +173,14 @@ public class DatabaseTablesScripts {
 	        		  "filename VARCHAR(255) NOT NULL, " + 
 	        		  "filepath VARCHAR(255) NULL, " + 
 	        		  "file_size_in_bytes BIGINT(255) UNSIGNED NULL, " +
+	        		  "file_origin_id BIGINT(255) UNSIGNED NULL, " +
 	        		  "created_by_user_id BIGINT(255) UNSIGNED NOT NULL, " + 
 	        		  "created_datetime DATETIME NOT NULL, " +
+	        		  
 	        		  "datatable_name VARCHAR(255) NULL, " +
 	        		  
 	        		  "rows_count BIGINT(255) NULL, " +
 	        		  "columns_count BIGINT(255) NULL, " +
-	        		  
-	        		  "file_origin_id BIGINT(255) UNSIGNED NULL, " +
 	        		  
 	        		  "PRIMARY KEY (id), " +
 	        		  "CONSTRAINT unique_path_constraint UNIQUE (filepath), " +

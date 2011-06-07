@@ -43,5 +43,10 @@ public class UserModel implements java.io.Serializable {
 		this.registered = registered;
 	}
 
+
+	public Logger getLogger() {
+		return logger;
+	}
+
 	
 }

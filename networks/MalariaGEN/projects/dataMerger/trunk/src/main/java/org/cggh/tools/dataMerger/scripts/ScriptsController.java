@@ -301,4 +301,8 @@ public class ScriptsController extends HttpServlet {
 		
 	}
 
+	public Logger getLogger() {
+		return logger;
+	}
+
 }

@@ -16,6 +16,7 @@ public class DataModel implements java.io.Serializable {
 	 */
 	private static final long serialVersionUID = 6445378947804522984L;
 	private final Logger logger = Logger.getLogger("org.cggh.tools.dataMerger.data");
+	
 	private ServletContext servletContext = null;
 	private String url = null;
 	private String username = null;
@@ -262,6 +263,10 @@ public class DataModel implements java.io.Serializable {
 
 	public String getDatabaseName() {
 		return databaseName;
+	}
+
+	public Logger getLogger() {
+		return logger;
 	}
 
 }

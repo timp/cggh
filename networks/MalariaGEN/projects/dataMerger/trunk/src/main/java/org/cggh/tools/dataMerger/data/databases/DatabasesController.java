@@ -115,5 +115,9 @@ public class DatabasesController extends HttpServlet {
 		  }	 
 		
 	}
+
+	public Logger getLogger() {
+		return logger;
+	}
 	
 }

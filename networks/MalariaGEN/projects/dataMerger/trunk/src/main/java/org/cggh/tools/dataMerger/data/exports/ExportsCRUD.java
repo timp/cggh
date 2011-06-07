@@ -67,8 +67,8 @@ public class ExportsCRUD implements java.io.Serializable  {
 					
 						//Insert the export record
 						PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO export (upload_1_id, upload_2_id, created_by_user_id, created_datetime) VALUES (?, ?, ?, NOW());");
-						preparedStatement.setInt(1, exportModel.getMergeModel().getUpload1Model().getId());
-						preparedStatement.setInt(2, exportModel.getMergeModel().getUpload2Model().getId());
+						preparedStatement.setInt(1, exportModel.getMergeModel().getFile1Model().getId());
+						preparedStatement.setInt(2, exportModel.getMergeModel().getFile2Model().getId());
 						preparedStatement.setInt(3, this.getUserModel().getId());
 						preparedStatement.executeUpdate();
 						preparedStatement.close();  
@@ -339,10 +339,8 @@ public class ExportsCRUD implements java.io.Serializable  {
 		//TODO: Make this writable for MySQL
 		//exportDirectory.setWritable(true); //This would only make it writable for tomcat
 		String pathSeparatorForSQL = "\\\\";
-		String pathSeparatorForRepositoryFilepath = "\\";
 		if(this.getFilebaseModel().isUnix()){
 			pathSeparatorForSQL = "/";
-			pathSeparatorForRepositoryFilepath = "/";
 			try {
 				Runtime.getRuntime().exec("chmod g+w " + exportDirectory.getAbsolutePath());
 			} catch (IOException e1) {
@@ -396,7 +394,8 @@ public class ExportsCRUD implements java.io.Serializable  {
 			preparedStatement.executeQuery();
 			preparedStatement.close();		
 
-			exportModel.getMergeModel().getResolutionsModel().setExportRepositoryFilepath(exportDirectory.toString() + pathSeparatorForRepositoryFilepath + fileName);
+			//FIXME: This is going to be done quite differently.
+			//exportModel.getMergeModel().getResolutionsModel().setExportRepositoryFilepath(exportDirectory.toString() + pathSeparatorForRepositoryFilepath + fileName);
 
 			this.updateExportResolutionsExportRepositoryFilepathUsingExportModel(exportModel, connection);
 
@@ -413,6 +412,8 @@ public class ExportsCRUD implements java.io.Serializable  {
 	public void updateExportResolutionsExportRepositoryFilepathUsingExportModel(
 			ExportModel exportModel, Connection connection) {
 		
+		//FIXME: This is going to be done quite differently.
+		/*
 		try {
 			//Update the export table
 			PreparedStatement preparedStatement = connection.prepareStatement("UPDATE `export` SET resolutions_export_repository_filepath = ? WHERE id = ?;");
@@ -425,7 +426,8 @@ public class ExportsCRUD implements java.io.Serializable  {
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}	
+		}
+		*/	
 	}
 
 

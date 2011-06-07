@@ -602,5 +602,9 @@ public class ResolutionsByCellFunctions implements java.io.Serializable {
 		return solutionByCellIdUsingCellCoordsAsHashMap;
 	}
 
+	public Logger getLogger() {
+		return logger;
+	}
+
 	
 }

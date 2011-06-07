@@ -332,7 +332,8 @@ public class DataController extends HttpServlet {
 		
 		UserModel userModel = new UserModel();
 		
-		if (databaseModel.isConnectable()) {
+		// Get the user, if possible
+		if (databaseModel.isInitialized()) {
 		
 			UsersCRUD usersCRUD = new UsersCRUD();
 			usersCRUD.setDatabaseModel(databaseModel);
@@ -348,15 +349,7 @@ public class DataController extends HttpServlet {
 
 		   
 		 
-		 if (request.getPathInfo().equals("/databases")) {
-		 
-			 //TODO:tmp
-			 this.logger.info("Forwarding..");
-			 request.getRequestDispatcher("/databases").forward(request, response);
-			 
-			 
-		 }
-		 else if (request.getPathInfo().equals("/merges")) {
+		 if (request.getPathInfo().equals("/merges")) {
 			 
 			  if (headerAcceptsAsStringList.contains("application/json")) { 
 			 
@@ -375,45 +368,21 @@ public class DataController extends HttpServlet {
 					    
 						try {
 							JSONObject jsonObject = new JSONObject(stringBuffer.toString());
-							JSONArray uploadIds = new JSONArray();
-							JSONArray exportIds = new JSONArray();
+							JSONArray fileIds = jsonObject.getJSONArray("file_id");
 							
-							if (jsonObject.has("upload_id")) {
-								uploadIds = jsonObject.getJSONArray("upload_id");
-							}
-							
-							if (jsonObject.has("export_id")) {
-								exportIds = jsonObject.getJSONArray("export_id");
-							}
 							
 							try {
 
 
 								MergeModel mergeModel = new MergeModel();
 								
-								if (uploadIds.length() >= 1) {
-									mergeModel.getUpload1Model().setId(uploadIds.getInt(0));
-								}
-								if (uploadIds.length() >= 2) {
-									mergeModel.getUpload2Model().setId(uploadIds.getInt(1));
-								}
-								if (exportIds.length() >= 1) {
-									//mergeModel.getFile1Model().setId(uploadIds.getInt(0));
-								}
-								if (uploadIds.length() >= 2) {
-									//mergeModel.getFile2Model().setId(uploadIds.getInt(1));
-								}
+								mergeModel.getFile1Model().setId(fileIds.getInt(0));
+								mergeModel.getFile2Model().setId(fileIds.getInt(1));
+								mergeModel.setCreatedByUserModel(userModel);
 								
-								
-								//TODO: allow export ids
-								
-								
-								MergesCRUD mergesModel = new MergesCRUD();
-								
-								mergesModel.setDatabaseModel(databaseModel);
-								mergesModel.setUserModel(userModel);
-								
-								mergeModel = mergesModel.retrieveMergeAsMergeModelThroughCreatingMergeUsingMergeModel(mergeModel);
+								MergesCRUD mergesCRUD = new MergesCRUD();
+								mergesCRUD.setDatabaseModel(databaseModel);
+								mergeModel = mergesCRUD.retrieveMergeAsMergeModelThroughCreatingMergeUsingMergeModel(mergeModel);
 								
 						        responseAsJSON = "{\"id\": \"" + mergeModel.getId().toString() + "\"}";		
 								
@@ -817,5 +786,10 @@ public class DataController extends HttpServlet {
 		  }
 		  
 		
+	}
+
+
+	public Logger getLogger() {
+		return logger;
 	}
 }

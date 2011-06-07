@@ -61,8 +61,8 @@ public class JoinFunctions implements java.io.Serializable {
 		joinAsDecoratedXHTMLTable += "<tr>";
 		joinAsDecoratedXHTMLTable += "	<th><!-- Above key label --></th>";
 		joinAsDecoratedXHTMLTable += "	<th><!-- Above key checkbox --></th>";
-		joinAsDecoratedXHTMLTable += "	<th class=\"file-link-container\"><a href=\"/dataMerger/files/uploads/" + this.getMergeModel().getUpload1Model().getId() + "\">" + this.getMergeModel().getUpload1Model().getOriginalFilename() + "</a></th>";
-		joinAsDecoratedXHTMLTable += "	<th class=\"file-link-container\"><a href=\"/dataMerger/files/uploads/" + this.getMergeModel().getUpload2Model().getId() + "\">" + this.getMergeModel().getUpload2Model().getOriginalFilename() + "</a></th>";
+		joinAsDecoratedXHTMLTable += "	<th class=\"file-link-container\"><a href=\"/dataMerger/files/uploads/" + this.getMergeModel().getFile1Model().getId() + "\">" + this.getMergeModel().getFile1Model().getFilename() + "</a></th>";
+		joinAsDecoratedXHTMLTable += "	<th class=\"file-link-container\"><a href=\"/dataMerger/files/uploads/" + this.getMergeModel().getFile2Model().getId() + "\">" + this.getMergeModel().getFile2Model().getFilename() + "</a></th>";
 		joinAsDecoratedXHTMLTable += "	<th class=\"column_name-heading\">Column name</th>";
 		joinAsDecoratedXHTMLTable += "	<th><!-- Above insert column selector --></th>";
 		joinAsDecoratedXHTMLTable += "	<th><!-- Above add column selector --></th>";

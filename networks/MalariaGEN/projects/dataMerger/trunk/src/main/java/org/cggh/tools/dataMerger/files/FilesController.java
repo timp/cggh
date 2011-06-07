@@ -9,10 +9,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URLDecoder;
 import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
+
 import java.sql.SQLException;
+
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -28,8 +27,9 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.io.IOUtils;
 import org.cggh.tools.dataMerger.data.databases.DatabaseModel;
 import org.cggh.tools.dataMerger.data.databases.DatabasesCRUD;
-import org.cggh.tools.dataMerger.data.uploads.UploadModel;
-import org.cggh.tools.dataMerger.data.uploads.UploadsCRUD;
+import org.cggh.tools.dataMerger.data.files.FileModel;
+import org.cggh.tools.dataMerger.data.files.FileOriginModel;
+import org.cggh.tools.dataMerger.data.files.FilesCRUD;
 import org.cggh.tools.dataMerger.data.users.UserModel;
 import org.cggh.tools.dataMerger.data.users.UsersCRUD;
 import org.cggh.tools.dataMerger.files.filebases.FilebaseModel;
@@ -62,344 +62,70 @@ public class FilesController extends HttpServlet {
 
 		//TODO: See DataController for better content-negotiation pattern
 		
-        //Should be able to access files using a GET request to /dataMerger/files/uploads/[id]
-		//request.getPathInfo().equals("/1")
-		
-		//Should be able to access files using a GET request to /dataMerger/files/uploads/1
-		//request.getParameter("id");
-		
-		
+        //Should be able to access files using a GET request to /dataMerger/files/[id]
+	
 
-		Pattern uploadsURLPattern = Pattern.compile("^/uploads/(\\d+)$");
-		 Matcher uploadsURLPatternMatcher = uploadsURLPattern.matcher(request.getPathInfo());
+		Pattern filesURLPattern = Pattern.compile("^/(\\d+)$");
+		 Matcher filesURLPatternMatcher = filesURLPattern.matcher(request.getPathInfo());
+		
+		 //Not used.
+		 //String[] headerAcceptsAsStringArray = request.getHeader("Accept").split(",");
+		 // List<String> headerAcceptsAsStringList = Arrays.asList(headerAcceptsAsStringArray);
 		 
-		 Pattern exportsURLPattern = Pattern.compile("^/exports/(\\d+)/(.+)$");
-		 Matcher exportsURLPatternMatcher = exportsURLPattern.matcher(request.getPathInfo());
+		 //TODO: export record files
 		
+		if (filesURLPatternMatcher.find()) {
 		
-		if (uploadsURLPatternMatcher.find()) {
+				DatabasesCRUD databasesCRUD = new DatabasesCRUD();
+				DatabaseModel databaseModel = databasesCRUD.retrieveDatabaseAsDatabaseModelUsingServletContext(getServletContext());
 			
-			
-			
-			
-			try {
+				UsersCRUD usersCRUD = new UsersCRUD();
+				usersCRUD.setDatabaseModel(databaseModel);
+				UserModel userModel = usersCRUD.retrieveUserAsUserModelUsingUsername(request.getRemoteUser());
 				
-				//FIXME: Use DataModel
+				//TODO: Bail out if user_id is null
 				
-				Class.forName(getServletContext().getInitParameter("databaseDriverFullyQualifiedClassName")).newInstance();
-				
-				Connection connection = DriverManager.getConnection(getServletContext().getInitParameter("databaseServerPath") + getServletContext().getInitParameter("databaseName"), getServletContext().getInitParameter("databaseUsername"), getServletContext().getInitParameter("databasePassword"));
-				 
-				if (connection != null) {
-
-					// Get the user_id
-					//TODO: convert to UserModel.setId
-					Integer user_id = null;
-					
-				      try{
-				          PreparedStatement preparedStatement = connection.prepareStatement("SELECT id FROM user WHERE username = ?;");
-				          preparedStatement.setString(1, request.getRemoteUser());
-				          preparedStatement.executeQuery();
-				          ResultSet resultSet = preparedStatement.getResultSet();
-
-				          // There may be no user in the user table.
-				          if (resultSet.next()) {
-				        	  resultSet.first();
-				        	  user_id = resultSet.getInt("id");
-				          } else {
-				        	  //System.out.println("Did not find user in user table. This user is not registered. Db query gives !resultSet.next()");
-				          }
-
-				          resultSet.close();
-				          preparedStatement.close();
-				          
-				        }
-				        catch(SQLException sqlException){
-				        	//System.out.println("<p>" + sqlException + "</p>");
-					    	sqlException.printStackTrace();
-				        } 					
-					
-				        //TODO: Bail out if user_id is null
-				        
-				      try{
-				    	  
-				    	//TODO: convert to UploadModel.setId
-				    	  Integer upload_id = Integer.parseInt(uploadsURLPatternMatcher.group(1));
-				    	  
-				    	  
-				          PreparedStatement preparedStatement = connection.prepareStatement("SELECT id, repository_filepath, original_filename FROM upload WHERE id = ? AND created_by_user_id = ?;");
-				          preparedStatement.setInt(1, upload_id);
-				          preparedStatement.setInt(2, user_id);
-				          preparedStatement.executeQuery();
-				          ResultSet resultSet = preparedStatement.getResultSet();
+		    	  FilesCRUD filesCRUD = new FilesCRUD();
+		    	  filesCRUD.setDatabaseModel(databaseModel);
+		    	  FileModel fileModel = filesCRUD.retrieveFileCreatedByUserAsFileModelUsingFileIdAndUserModel(Integer.parseInt(filesURLPatternMatcher.group(1)), userModel);
 	
-				          // There may be no file in the uploads table.
-				          if (resultSet.next()) {
-				        	  resultSet.first();
-				        	  
-				        	  String repository_filepath = null;
-				      		String original_filename = null;
-				        	  
-				        	  repository_filepath = resultSet.getString("repository_filepath");
-				        	  original_filename = resultSet.getString("original_filename");
-				        	  
-				        	  
-				        	  
-				        	  
-				        	  
-				              File                f        = new File(repository_filepath);
-				              int                 length   = 0;
-				              ServletOutputStream op       = response.getOutputStream();
-				              ServletContext      context  = getServletConfig().getServletContext();
-				              String              mimetype = context.getMimeType( repository_filepath );
-
-
-				              response.setContentType( (mimetype != null) ? mimetype : "application/octet-stream" );
-				              response.setContentLength( (int)f.length() );
-				              response.setHeader( "Content-Disposition", "attachment; filename=\"" + original_filename + "\"" );
-
-				           
-				              //res.setContentType("application/x-download");
-				              //res.setHeader("Content-Disposition", "attachment; filename=" + filename);
-				              
-
-				              byte[] bbuf = new byte[2048]; //8192
-				              DataInputStream in = new DataInputStream(new FileInputStream(f));
-
-				              while ((in != null) && ((length = in.read(bbuf)) != -1))
-				              {
-				                  op.write(bbuf,0,length);
-				              }
-
-				              in.close();
-				              op.flush();
-				              op.close();					        	  
-				        	  
-				        	  
-				        	  
-				        	  
-				        	  
-				        	  
-				          } else {
-				        	  //System.out.println("Db query gives !resultSet.next()");
-				          }
+		          // There may be no file or the file may not belong to this user (created_by).
+		          if (fileModel.getFilename() != null) {
+		        	  
+		              File                f        = new File(fileModel.getFilepath());
+		              int                 length   = 0;
+		              ServletOutputStream op       = response.getOutputStream();
+		              ServletContext      context  = getServletConfig().getServletContext();
+		              String              mimetype = context.getMimeType(fileModel.getFilepath());
 	
-				          resultSet.close();
-				          preparedStatement.close();
-				          
-				        }
-				        catch(SQLException sqlException){
-				        	//System.out.println("<p>" + sqlException + "</p>");
-					    	sqlException.printStackTrace();
-				        } 				
-					
-				        //FIXME: Re-organize try-catch and introduce a finally block.
-					connection.close();
-					
-				} else {
-					
-					//System.out.println("connection.isClosed");
-				}
-					
-			} 
-			catch (Exception e) {
-				//System.out.println(e.getMessage().toString());
-				e.printStackTrace();
-			}		
-		
-			
-			
-		}
-		
-		else if (exportsURLPatternMatcher.find()) {
-			
-			
-			
-			
-			try {
-				
-				//FIXME: Use DataModel
-				
-				Class.forName(getServletContext().getInitParameter("databaseDriverFullyQualifiedClassName")).newInstance();
-				
-				Connection connection = DriverManager.getConnection(getServletContext().getInitParameter("databaseServerPath") + getServletContext().getInitParameter("databaseName"), getServletContext().getInitParameter("databaseUsername"), getServletContext().getInitParameter("databasePassword"));
-				 
-				if (connection != null) {
+	
+		              response.setContentType( (mimetype != null) ? mimetype : "application/octet-stream" );
+		              response.setContentLength( (int)f.length() );
+		              response.setHeader( "Content-Disposition", "attachment; filename=\"" + fileModel.getFilename() + "\"" );
+	
+		           
+	
+		              byte[] bbuf = new byte[2048]; //8192
+		              DataInputStream in = new DataInputStream(new FileInputStream(f));
+	
+		              while ((in != null) && ((length = in.read(bbuf)) != -1))
+		              {
+		                  op.write(bbuf,0,length);
+		              }
+	
+		              in.close();
+		              op.flush();
+		              op.close();					        	  
+		        	  
+		        	  
+		        	  
+		        	  
+		        	  
+		        	  
+		          } else {
+		        	  logger.warning("fileModel.getFilename() is null");
+		          }
 
-					// Get the user_id
-					//TODO: convert to UserModel.setId
-					Integer user_id = null;
-					
-				      try{
-				          PreparedStatement preparedStatement = connection.prepareStatement("SELECT id FROM user WHERE username = ?;");
-				          preparedStatement.setString(1, request.getRemoteUser());
-				          preparedStatement.executeQuery();
-				          ResultSet resultSet = preparedStatement.getResultSet();
-
-				          // There may be no user in the user table.
-				          if (resultSet.next()) {
-				        	  
-				        	  resultSet.first();
-				        	  
-				        	  user_id = resultSet.getInt("id");
-				        	  
-				        	  
-						      try{
-						    	  
-						    	//TODO: use Models
-						    	  
-						    	  Integer export_id = Integer.parseInt(exportsURLPatternMatcher.group(1));
-						    	  
-						    	  String resourceName = exportsURLPatternMatcher.group(2);
-							    
-						    	  String repository_filepath = null;
-						    	  
-						    	  if (resourceName.equals("joins")) {
-							    	  
-							          PreparedStatement preparedStatement2 = connection.prepareStatement("SELECT joins_export_repository_filepath FROM export WHERE id = ? AND created_by_user_id = ?;");
-							          preparedStatement2.setInt(1, export_id);
-							          preparedStatement2.setInt(2, user_id);
-							          preparedStatement2.executeQuery();
-							          ResultSet resultSet2 = preparedStatement2.getResultSet();
-				
-							          // There may be no such export.
-							          if (resultSet2.next()) {
-							        	  resultSet2.first();
-							        	  
-							        	  
-							        	  repository_filepath = resultSet2.getString("joins_export_repository_filepath");
-							        	  
-							          } else {
-							        	  //System.out.println("Db query gives !resultSet.next()");
-							          }
-				
-							          resultSet2.close();
-							          preparedStatement2.close();
-				        	  
-						    	  } 
-						    	  else if (resourceName.equals("resolutions")) {
-						    		
-							          PreparedStatement preparedStatement2 = connection.prepareStatement("SELECT resolutions_export_repository_filepath FROM export WHERE id = ? AND created_by_user_id = ?;");
-							          preparedStatement2.setInt(1, export_id);
-							          preparedStatement2.setInt(2, user_id);
-							          preparedStatement2.executeQuery();
-							          ResultSet resultSet2 = preparedStatement2.getResultSet();
-				
-							          // There may be no such export.
-							          if (resultSet2.next()) {
-							        	  resultSet2.first();
-							        	  
-							        	  
-							        	  repository_filepath = resultSet2.getString("resolutions_export_repository_filepath");
-							        	  
-							          } else {
-							        	  //System.out.println("Db query gives !resultSet.next()");
-							          }
-				
-							          resultSet2.close();
-							          preparedStatement2.close();
-						    	  } 
-						    	  else if (resourceName.equals("merged")) {
-						    		  
-							          PreparedStatement preparedStatement2 = connection.prepareStatement("SELECT merged_datatable_export_repository_filepath FROM export WHERE id = ? AND created_by_user_id = ?;");
-							          preparedStatement2.setInt(1, export_id);
-							          preparedStatement2.setInt(2, user_id);
-							          preparedStatement2.executeQuery();
-							          ResultSet resultSet2 = preparedStatement2.getResultSet();
-				
-							          // There may be no such export.
-							          if (resultSet2.next()) {
-							        	  resultSet2.first();
-							        	  
-							        	  
-							        	  repository_filepath = resultSet2.getString("merged_datatable_export_repository_filepath");
-							        	  
-							          } else {
-							        	  //System.out.println("Db query gives !resultSet.next()");
-							          }
-				
-							          resultSet2.close();
-							          preparedStatement2.close(); 
- 
-						    	  } else {
-							    	  //TODO
-							    	  //this.log("Unrecognised resource name:" + resourceName);
-							      }
-							          
-							          
-						    	  if (repository_filepath != null) {
-						        	  
-						              File                f        = new File(repository_filepath);
-						              int                 length   = 0;
-						              ServletOutputStream op       = response.getOutputStream();
-						              ServletContext      context  = getServletConfig().getServletContext();
-						              String              mimetype = context.getMimeType( repository_filepath );
-		
-		
-						              response.setContentType( (mimetype != null) ? mimetype : "application/octet-stream" );
-						              response.setContentLength( (int)f.length() );
-						              response.setHeader( "Content-Disposition", "attachment; filename=\"" + f.getName() + "\"" );
-		
-						           
-						              //res.setContentType("application/x-download");
-						              //res.setHeader("Content-Disposition", "attachment; filename=" + filename);
-						              
-		
-						              byte[] bbuf = new byte[2048]; //8192
-						              DataInputStream in = new DataInputStream(new FileInputStream(f));
-		
-						              while ((in != null) && ((length = in.read(bbuf)) != -1))
-						              {
-						                  op.write(bbuf,0,length);
-						              }
-		
-						              in.close();
-						              op.flush();
-						              op.close();					        	  
-						        	  
-					        	  } else {
-					        		  //this.log("Unexpected: repository_filepath is null");
-					        	  }
-
-						      
-						          
-						        }
-						        catch(SQLException sqlException){
-						        	//System.out.println("<p>" + sqlException + "</p>");
-							    	sqlException.printStackTrace();
-						        } 					
-							
-				        //TODO: Bail out if user_id is null
-				      
-				          } else {
-				        	  //System.out.println("Did not find user in user table. This user is not registered. Db query gives !resultSet.next()");
-				          }    
-					          
-				          resultSet.close();
-				          preparedStatement.close();
-				          
-				        }
-				        catch(SQLException sqlException){
-				        	//System.out.println("<p>" + sqlException + "</p>");
-					    	sqlException.printStackTrace();
-				        } 				
-					
-				      //FIXME: Re-organize try-catch and introduce a finally block.
-					connection.close();
-					
-				} else {
-					
-					//System.out.println("connection.isClosed");
-				}
-					
-			} 
-			catch (Exception e) {
-				//System.out.println(e.getMessage().toString());
-				e.printStackTrace();
-			}	
-			
-			
-			
 			
 		} else {
 			
@@ -422,7 +148,7 @@ public class FilesController extends HttpServlet {
         	
         	if (filebaseModel.isExistent() && filebaseModel.isWritable()) {
         		
-        		 UploadModel uploadModel = new UploadModel();
+        		 
         		 
         		 //TODO: request.getHeader("X-File-Name") works for FF but not IE
  			 	 //Could add qqfile the onSubmit of the upload.js and use request.getParameter("qqfile") instead, but this also causes unresolved problems:
@@ -432,8 +158,6 @@ public class FilesController extends HttpServlet {
         		 
         		
         		 if (request.getHeader("X-File-Name") != null && request.getHeader("X-File-Name") != "") {
-        			 
-        			 uploadModel.setOriginalFilename(URLDecoder.decode(request.getHeader("X-File-Name"), "UTF-8"));
         			 
         			 DatabasesCRUD databasesCRUD = new DatabasesCRUD();
         			 DatabaseModel databaseModel = databasesCRUD.retrieveDatabaseAsDatabaseModelUsingServletContext(getServletContext());
@@ -445,13 +169,24 @@ public class FilesController extends HttpServlet {
         				 UsersCRUD usersCRUD = new UsersCRUD();
         				 usersCRUD.setDatabaseModel(databaseModel);
         				 UserModel userModel = usersCRUD.retrieveUserAsUserModelUsingUsername(request.getRemoteUser());
-        		        
-	        			 UploadsCRUD uploadsCRUD = new UploadsCRUD();
-	        			 uploadsCRUD.createUploadUsingUploadModelAndUserModel(uploadModel, userModel, connection);
+        		     
+        				 FileOriginModel fileOriginModel = new FileOriginModel();
+        				 // Short-cut
+        				 fileOriginModel.setId(1);
+        				 
+        				 FileModel fileModel = new FileModel();
+            			 fileModel.setFilename(URLDecoder.decode(request.getHeader("X-File-Name"), "UTF-8"));
+            			 fileModel.setCreatedByUserModel(userModel);
+            			 fileModel.setFileOriginModel(fileOriginModel);
+        				 
+	        			 FilesCRUD filesCRUD = new FilesCRUD();
+	        			 filesCRUD.createFileUsingFileModel(fileModel, connection);
 	        			 
-	        			 uploadModel.setId(databasesCRUD.retrieveLastInsertIdAsIntegerUsingConnection(connection));
 	        			 
-	            		 uploadModel.setRepositoryFilepath(getServletContext().getInitParameter("filebaseServerPath") + "uploads" + filebaseModel.getFilepathSeparator() + uploadModel.getId());
+	        			 fileModel.setId(databasesCRUD.retrieveLastInsertIdAsIntegerUsingConnection(connection));
+	            		 fileModel.setFilepath(getServletContext().getInitParameter("filebaseServerPath") + "uploads" + filebaseModel.getFilepathSeparator() + fileModel.getId());
+	            		 
+	            		 
 	            		 
 	            	     InputStream inputStream = null;
 	            	     FileOutputStream fileOutputStream = null;
@@ -462,16 +197,16 @@ public class FilesController extends HttpServlet {
 	            	     try {
 	            			 
 	            			 	inputStream = request.getInputStream();
-	            			 	fileOutputStream = new FileOutputStream(new File(uploadModel.getRepositoryFilepath()));
+	            			 	fileOutputStream = new FileOutputStream(new File(fileModel.getFilepath()));
 					            IOUtils.copy(inputStream, fileOutputStream);
 					            
-					            File uploadFile = new File(uploadModel.getRepositoryFilepath());
+					            File uploadFile = new File(fileModel.getFilepath());
 					            
 					            if (uploadFile.exists()) {
 					            	
-					            	uploadModel.setFileSizeInBytes(uploadFile.length());
+					            	fileModel.setFileSizeInBytes(uploadFile.length());
 					            	
-					            	uploadsCRUD.updateUploadRepositoryFilepathAndFileSizeInBytesUsingUploadModel(uploadModel, connection);
+					            	filesCRUD.updateFileFilepathAndFileSizeInBytesUsingFileModel(fileModel, connection);
 					            	successful = true;
 					            	
 					            } else {

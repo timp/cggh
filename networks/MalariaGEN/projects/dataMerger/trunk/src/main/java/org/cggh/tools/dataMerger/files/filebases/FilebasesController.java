@@ -94,6 +94,11 @@ public class FilebasesController extends HttpServlet {
 			  
 		  }	 
 		
+	}
+
+
+	public Logger getLogger() {
+		return logger;
 	}    
     
 
