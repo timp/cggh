@@ -26,7 +26,12 @@ public class DatabaseTablesScripts {
         
 				try {
 		          Statement statement = connection.createStatement();
-		          statement.executeUpdate("CREATE TABLE user (id BIGINT(255) UNSIGNED NOT NULL AUTO_INCREMENT, username VARCHAR(255) NOT NULL, PRIMARY KEY (id), CONSTRAINT unique_username_constraint UNIQUE (username)) ENGINE=InnoDB;");
+		          statement.executeUpdate("CREATE TABLE user (" +
+		          		"id BIGINT(255) UNSIGNED NOT NULL AUTO_INCREMENT, " +
+		          		"username VARCHAR(255) NOT NULL, " +
+		          		"PRIMARY KEY (id), " +
+		          		"CONSTRAINT unique_username_constraint UNIQUE (username) " +
+		          		") ENGINE=InnoDB;");
 		          statement.close();
 	
 		        }
@@ -113,25 +118,76 @@ public class DatabaseTablesScripts {
 				    	return false;
 			        }
 			      
-	        
+			      
+			      try{
+			          Statement statement = connection.createStatement();
+			          statement.executeUpdate("CREATE TABLE `file_origin` (" +  
+			        		  "id BIGINT(255) UNSIGNED NOT NULL AUTO_INCREMENT, " +
+			        		  "origin VARCHAR(255) NOT NULL, " +
+			        		  "PRIMARY KEY (id)," +
+			        		  "CONSTRAINT unique_origin_constraint UNIQUE (origin) " +
+			        		  ") ENGINE=InnoDB;");
+			          statement.close();
+
+			        }
+			      catch(SQLException sqlException){
+				    	sqlException.printStackTrace();
+				    	try {
+							connection.close();
+						} catch (SQLException e) {
+							e.printStackTrace();
+						}
+				    	return false;
+			        }
+			      
+			        
+			        
+				      try{
+				    	  
+				          
+				          PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO `file_origin` (" +
+				        		  "origin" +
+				        		  ") VALUES ('upload'), ('export');");
+				          preparedStatement.executeUpdate();
+				          preparedStatement.close();
+
+				        }
+				      catch(SQLException sqlException){
+					    	sqlException.printStackTrace();
+					    	try {
+								connection.close();
+							} catch (SQLException e) {
+								e.printStackTrace();
+							}
+					    	return false;
+				        }
+			      
+			      
+			      
+			      
+			      
 	      try{
 	          Statement statement = connection.createStatement();
-	          statement.executeUpdate("CREATE TABLE upload (" + 
+	          statement.executeUpdate("CREATE TABLE file (" + 
 	        		  "id BIGINT(255) UNSIGNED NOT NULL AUTO_INCREMENT, " +
-	        		  "original_filename VARCHAR(255) NOT NULL, " + 
-	        		  "repository_filepath VARCHAR(255) NULL, " + 
+	        		  "filename VARCHAR(255) NOT NULL, " + 
+	        		  "filepath VARCHAR(255) NULL, " + 
 	        		  "file_size_in_bytes BIGINT(255) UNSIGNED NULL, " +
 	        		  "created_by_user_id BIGINT(255) UNSIGNED NOT NULL, " + 
 	        		  "created_datetime DATETIME NOT NULL, " +
-	        		  "datatable_name VARCHAR(255) NULL, " + 
+	        		  "datatable_name VARCHAR(255) NULL, " +
+	        		  
+	        		  "rows_count BIGINT(255) NULL, " +
+	        		  "columns_count BIGINT(255) NULL, " +
+	        		  
+	        		  "file_origin_id BIGINT(255) UNSIGNED NULL, " +
+	        		  
 	        		  "PRIMARY KEY (id), " +
-	        		  "CONSTRAINT unique_path_constraint UNIQUE (repository_filepath), " +
+	        		  "CONSTRAINT unique_path_constraint UNIQUE (filepath), " +
 	        		  "CONSTRAINT unique_datatable_name_constraint UNIQUE (datatable_name), " +
 	        		  "INDEX created_by_user_id_index (created_by_user_id), " + 
 	        		  "FOREIGN KEY (created_by_user_id) REFERENCES user(id) " + 
 	        		  ") ENGINE=InnoDB;");
-	          
-	          //NOTE: Took out ON DELETE CASCADE ON UPDATE CASCADE for safety
 	          
 	          statement.close();
 
@@ -154,8 +210,6 @@ public class DatabaseTablesScripts {
 	        		  "PRIMARY KEY (id), " +
 	        		  "CONSTRAINT unique_name_constraint UNIQUE (name) " + 
 	        		  ") ENGINE=InnoDB;");
-	          
-	          //NOTE: Took out ON DELETE CASCADE ON UPDATE CASCADE for safety
 	          
 	          statement.close();
 
@@ -189,42 +243,14 @@ public class DatabaseTablesScripts {
 				}
 		    	return false;
 	        }	      
-	      
-
-	      try{
-	          Statement statement = connection.createStatement();
-	          statement.executeUpdate("CREATE TABLE upload_label (" + 
-	        		  "upload_id BIGINT(255) UNSIGNED NOT NULL, " +
-	        		  "label_id BIGINT(255) UNSIGNED NOT NULL, " +
-	        		  "PRIMARY KEY (upload_id, label_id), " +
-	        		  "INDEX upload_id_index (upload_id), " + 
-	        		  "FOREIGN KEY (upload_id) REFERENCES upload(id), " +
-	        		  "INDEX label_id_index (label_id), " +
-	        		  "FOREIGN KEY (label_id) REFERENCES label(id) " +
-	        		  ") ENGINE=InnoDB;");
-	          
-	          //NOTE: Took out ON DELETE CASCADE ON UPDATE CASCADE for safety
-	          
-	          statement.close();
-
-	        }
-	      catch(SQLException sqlException){
-		    	sqlException.printStackTrace();
-		    	try {
-					connection.close();
-				} catch (SQLException e) {
-					e.printStackTrace();
-				}
-		    	return false;
-	        }	      
-	      
+	      	      
 	        
 		      try{
 		          Statement statement = connection.createStatement();
 		          statement.executeUpdate("CREATE TABLE merge (" + 
 		        		  "id BIGINT(255) UNSIGNED NOT NULL AUTO_INCREMENT, " +
-		        		  "upload_1_id BIGINT(255) UNSIGNED NOT NULL, " + 
-		        		  "upload_2_id BIGINT(255) UNSIGNED NOT NULL, " + 
+		        		  "file_1_id BIGINT(255) UNSIGNED NOT NULL, " + 
+		        		  "file_2_id BIGINT(255) UNSIGNED NOT NULL, " + 
 		        		  "created_by_user_id BIGINT(255) UNSIGNED NOT NULL, " + 
 		        		  "created_datetime DATETIME NOT NULL, " +
 		        		  "updated_datetime DATETIME NOT NULL, " +
@@ -238,13 +264,11 @@ public class DatabaseTablesScripts {
 		        		  "CONSTRAINT unique_joined_keytable_name_constraint UNIQUE (joined_keytable_name), " +
 		        		  "INDEX created_by_user_id_index (created_by_user_id), " + 
 		        		  "FOREIGN KEY (created_by_user_id) REFERENCES user(id), " +
-		        		  "INDEX upload_1_id_index (upload_1_id), " + 
-		        		  "FOREIGN KEY (upload_1_id) REFERENCES upload(id), " +
-		        		  "INDEX upload_2_id_index (upload_2_id), " + 
-		        		  "FOREIGN KEY (upload_2_id) REFERENCES upload(id) " + 
+		        		  "INDEX file_1_id_index (file_1_id), " + 
+		        		  "FOREIGN KEY (file_1_id) REFERENCES file(id), " +
+		        		  "INDEX file_2_id_index (file_2_id), " + 
+		        		  "FOREIGN KEY (file_2_id) REFERENCES file(id) " + 
 		        		  ") ENGINE=InnoDB;");
-		          
-		        //NOTE: Took out ON DELETE CASCADE ON UPDATE CASCADE for safety
 		          
 		          statement.close();
 
@@ -260,31 +284,6 @@ public class DatabaseTablesScripts {
 		        }
 		      
 
-		      try{
-		          Statement statement = connection.createStatement();
-		          statement.executeUpdate("CREATE TABLE merge_label (" + 
-		        		  "merge_id BIGINT(255) UNSIGNED NOT NULL, " +
-		        		  "label_id BIGINT(255) UNSIGNED NOT NULL, " +
-		        		  "PRIMARY KEY (merge_id, label_id), " +
-		        		  "INDEX merge_id_index (merge_id), " + 
-		        		  "FOREIGN KEY (merge_id) REFERENCES merge(id), " +
-		        		  "INDEX label_id_index (label_id), " +
-		        		  "FOREIGN KEY (label_id) REFERENCES label(id) " +
-		        		  ") ENGINE=InnoDB;");
-		          
-		          statement.close();
-
-		        }
-		      catch(SQLException sqlException){
-			    	sqlException.printStackTrace();
-			    	try {
-						connection.close();
-					} catch (SQLException e) {
-						e.printStackTrace();
-					}
-			    	return false;
-		        }			      
-	        
 	        
 		      try{
 		    	  
@@ -538,29 +537,41 @@ public class DatabaseTablesScripts {
 				          Statement statement = connection.createStatement();
 				          statement.executeUpdate("CREATE TABLE export (" + 
 				        		  "id BIGINT(255) UNSIGNED NOT NULL AUTO_INCREMENT, " +
-				        		  "filename VARCHAR(255) NOT NULL, " + 
-				        		  "upload_1_id BIGINT(255) UNSIGNED NOT NULL, " +
-				        		  "upload_2_id BIGINT(255) UNSIGNED NOT NULL, " +
+				        		  
+				        		  "source_file_1_id BIGINT(255) UNSIGNED NOT NULL, " +
+				        		  "source_file_2_id BIGINT(255) UNSIGNED NOT NULL, " +
+				        		  "merged_file_id BIGINT(255) UNSIGNED NOT NULL, " +
+				        		  
+				        		  "source_file_1_filepath VARCHAR(255) NOT NULL, " +
+				        		  "source_file_2_filepath VARCHAR(255) NOT NULL, " +
+				        		  "merged_file_filepath VARCHAR(255) NOT NULL, " +
+				        		  
+				        		  "joins_record_filepath VARCHAR(255) NOT NULL, " +
+				        		  "resolutions_record_filepath VARCHAR(255) NOT NULL, " +
+				        		  "settings_record_filepath VARCHAR(255) NOT NULL, " +
+				        		  
 				        		  "created_by_user_id BIGINT(255) UNSIGNED NOT NULL, " + 
 				        		  "created_datetime DATETIME NOT NULL, " +
-				        		  "merged_datatable_name VARCHAR(255) NULL, " + 
-				        		  "merged_datatable_export_repository_filepath VARCHAR(255) NULL, " +
-				        		  "merged_datatable_export_file_size_in_bytes BIGINT(255) UNSIGNED NULL, " +
-				        		  "joins_export_repository_filepath VARCHAR(255) NULL, " +
-				        		  "resolutions_export_repository_filepath VARCHAR(255) NULL, " +
+				        		  
+				        		  
 				        		  "PRIMARY KEY (id), " +
-				        		  "CONSTRAINT unique_merged_datatable_export_repository_filepath_constraint UNIQUE (merged_datatable_export_repository_filepath), " +
-				        		  "CONSTRAINT unique_joins_export_repository_filepath_constraint UNIQUE (joins_export_repository_filepath), " +
-				        		  "CONSTRAINT unique_resolutions_export_repository_filepath_constraint UNIQUE (resolutions_export_repository_filepath), " +
+				        		  "CONSTRAINT unique_merged_file_filepath_constraint UNIQUE (merged_file_filepath), " +
+				        		  "CONSTRAINT unique_joins_record_filepath_constraint UNIQUE (joins_record_filepath), " +
+				        		  "CONSTRAINT unique_resolutions_record_filepath_constraint UNIQUE (resolutions_record_filepath), " +
+				        		  "CONSTRAINT unique_settings_record_filepath_constraint UNIQUE (settings_record_filepath), " +
+				        		  
 				        		  "INDEX created_by_user_id_index (created_by_user_id), " + 
 				        		  "FOREIGN KEY (created_by_user_id) REFERENCES user(id), " +
-				        		  "INDEX upload_1_id_index (upload_1_id), " + 
-				        		  "FOREIGN KEY (upload_1_id) REFERENCES upload(id), " +
-				        		  "INDEX upload_2_id_index (upload_2_id), " + 
-				        		  "FOREIGN KEY (upload_2_id) REFERENCES upload(id) " + 
+				        		  
+				        		  "INDEX source_file_1_id_index (source_file_1_id), " + 
+				        		  "FOREIGN KEY (source_file_1_id) REFERENCES file(id), " +
+				        		  
+				        		  "INDEX source_file_2_id_index (source_file_2_id), " + 
+				        		  "FOREIGN KEY (source_file_2_id) REFERENCES file(id), " +
+				        		  
+				        		  "INDEX merged_file_id_index (merged_file_id), " + 
+				        		  "FOREIGN KEY (merged_file_id) REFERENCES file(id) " + 
 				        		  ") ENGINE=InnoDB;");
-				          
-				        //NOTE: Took out ON DELETE CASCADE ON UPDATE CASCADE for safety
 				          
 				          statement.close();
 	
@@ -581,17 +592,15 @@ public class DatabaseTablesScripts {
 				      
 				      try{
 				          Statement statement = connection.createStatement();
-				          statement.executeUpdate("CREATE TABLE export_label (" + 
-				        		  "export_id BIGINT(255) UNSIGNED NOT NULL, " +
+				          statement.executeUpdate("CREATE TABLE file_label (" + 
+				        		  "file_id BIGINT(255) UNSIGNED NOT NULL, " +
 				        		  "label_id BIGINT(255) UNSIGNED NOT NULL, " +
-				        		  "PRIMARY KEY (export_id, label_id), " +
-				        		  "INDEX export_id_index (export_id), " + 
-				        		  "FOREIGN KEY (export_id) REFERENCES export(id), " +
+				        		  "PRIMARY KEY (file_id, label_id), " +
+				        		  "INDEX file_id_index (file_id), " + 
+				        		  "FOREIGN KEY (file_id) REFERENCES file(id), " +
 				        		  "INDEX label_id_index (label_id), " +
 				        		  "FOREIGN KEY (label_id) REFERENCES label(id) " +
 				        		  ") ENGINE=InnoDB;");
-				          
-				          //NOTE: Took out ON DELETE CASCADE ON UPDATE CASCADE for safety
 				          
 				          statement.close();
 
@@ -606,8 +615,29 @@ public class DatabaseTablesScripts {
 					    	return false;
 				        }					      
 				      
+				      try{
+				          Statement statement = connection.createStatement();
+				          statement.executeUpdate("CREATE TABLE setting (" +
+				        		  "id BIGINT(255) UNSIGNED NOT NULL AUTO_INCREMENT, " +
+				        		  "name VARCHAR(255) NOT NULL, " +
+				        		  "value VARCHAR(255) NULL, " +
+				        		  "PRIMARY KEY (id) " +
+				        		  ") ENGINE=InnoDB;");
+				          
+				          statement.close();
+
+				        }
+				      catch(SQLException sqlException){
+					    	sqlException.printStackTrace();
+					    	try {
+								connection.close();
+							} catch (SQLException e) {
+								e.printStackTrace();
+							}
+					    	return false;
+				        }					      
 				      
-				      
+				      ///////////
 				      
 				        try {
 							connection.close();
@@ -629,7 +659,7 @@ public class DatabaseTablesScripts {
 		
 	}
 
-	public boolean deleteTablesUsingDatabaseModel(DatabaseModel databaseModel) {
+	public Boolean deleteTablesUsingDatabaseModel(DatabaseModel databaseModel) {
 
 		Connection connection = databaseModel.getNewConnection();
 		
@@ -637,7 +667,7 @@ public class DatabaseTablesScripts {
 		
 		      try{
 		          Statement statement = connection.createStatement();
-		          statement.executeUpdate("DROP TABLE export_label;");
+		          statement.executeUpdate("DROP TABLE setting;");
 		          statement.close();
 
 		        }
@@ -650,7 +680,24 @@ public class DatabaseTablesScripts {
 					}
 			    	return false;
 		        }			      
-			        
+
+		      
+		      try{
+		          Statement statement = connection.createStatement();
+		          statement.executeUpdate("DROP TABLE file_label;");
+		          statement.close();
+
+		        }
+		      catch(SQLException sqlException){
+			    	sqlException.printStackTrace();
+			    	try {
+						connection.close();
+					} catch (SQLException e) {
+						e.printStackTrace();
+					}
+			    	return false;
+		        }			      
+		      
 			      try{
 			          Statement statement = connection.createStatement();
 			          statement.executeUpdate("DROP TABLE export;");
@@ -754,8 +801,6 @@ public class DatabaseTablesScripts {
 			      
 					      try{
 					    	  
-					    	  //Note: (255) in BIGINT(255) is only the display width, not the capacity.
-					    	  
 					          Statement statement = connection.createStatement();
 					          statement.executeUpdate("DROP TABLE `join`;");
 					          statement.close();
@@ -771,23 +816,7 @@ public class DatabaseTablesScripts {
 						    	return false;
 					        }
 
-					      
-					      try{
-					          Statement statement = connection.createStatement();
-					          statement.executeUpdate("DROP TABLE merge_label;");
-					          statement.close();
 
-					        }
-					      catch(SQLException sqlException){
-						    	sqlException.printStackTrace();
-						    	try {
-									connection.close();
-								} catch (SQLException e) {
-									e.printStackTrace();
-								}
-						    	return false;
-					        }					      
-					      
 					      try{
 					          Statement statement = connection.createStatement();
 					          statement.executeUpdate("DROP TABLE merge;");
@@ -803,22 +832,6 @@ public class DatabaseTablesScripts {
 								}
 						    	return false;
 					        }					      
-
-					      try{
-					          Statement statement = connection.createStatement();
-					          statement.executeUpdate("DROP TABLE upload_label;");
-					          statement.close();
-
-					        }
-					      catch(SQLException sqlException){
-						    	sqlException.printStackTrace();
-						    	try {
-									connection.close();
-								} catch (SQLException e) {
-									e.printStackTrace();
-								}
-						    	return false;
-					        }
 					      
 					      try{
 					          Statement statement = connection.createStatement();
@@ -838,7 +851,23 @@ public class DatabaseTablesScripts {
 					      
 					      try{
 					          Statement statement = connection.createStatement();
-					          statement.executeUpdate("DROP TABLE upload;");
+					          statement.executeUpdate("DROP TABLE file;");
+					          statement.close();
+
+					        }
+					      catch(SQLException sqlException){
+						    	sqlException.printStackTrace();
+						    	try {
+									connection.close();
+								} catch (SQLException e) {
+									e.printStackTrace();
+								}
+						    	return false;
+					        }
+
+					      try{
+					          Statement statement = connection.createStatement();
+					          statement.executeUpdate("DROP TABLE file_origin;");
 					          statement.close();
 
 					        }
@@ -885,6 +914,7 @@ public class DatabaseTablesScripts {
 						        }					      
 					      
 			      
+				    ///////////////////////////
 			      
 			        try {
 						connection.close();
