@@ -13,7 +13,6 @@
 
 MergesCRUD mergesCRUD = new MergesCRUD();
 mergesCRUD.setDatabaseModel(databaseModel);
-mergesCRUD.setUserModel(userModel);
 
 MergeModel mergeModel = new MergeModel();
 mergeModel = mergesCRUD.retrieveMergeAsMergeModelByMergeId(Integer.parseInt(request.getParameter("merge_id")));

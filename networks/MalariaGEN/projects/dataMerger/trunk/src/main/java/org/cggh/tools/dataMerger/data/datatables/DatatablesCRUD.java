@@ -62,9 +62,8 @@ public class DatatablesCRUD implements java.io.Serializable {
 		DatatableModel datatableModel = new DatatableModel();
 		datatableModel.setName("datatable_" + fileModel.getId());
 		
-		//NOTE: Not necessary
-		//fileModel.setDatatableModel(datatableModel);
-		//filesCRUD.updateUploadDatatableNameUsingFileModel(fileModel, connection);
+		fileModel.setDatatableModel(datatableModel);
+		filesCRUD.updateFileDatatableNameUsingFileModel(fileModel, connection);
 
 	         //Get the column names
          		try {
@@ -75,7 +74,7 @@ public class DatatablesCRUD implements java.io.Serializable {
 	        	    //TODO: Character-set detection
 	        	    //http://jchardet.sourceforge.net/
 	        	    
-	        	    //NOTE: This translates the expected encoding (ISO-8859-1) into Unicode.
+	        	    //NOTE: This translates the expected encoding (ISO-8859-1, Latin1) into Unicode.
 	        	    BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(dataInputStream,"ISO-8859-1"));
 	        	    String strLine;
 
@@ -91,7 +90,7 @@ public class DatatablesCRUD implements java.io.Serializable {
 		        	      for (int i = 0; i < columnNames.length; i++) {
 		        	    	  
 		        	    	  //Convert column name to Unicode
-		        	    	  columnNames[i] = new String(columnNames[i].getBytes(Charset.forName("UTF-8")), Charset.forName("UTF-8"));
+		        	    	  //columnNames[i] = new String(columnNames[i].getBytes(Charset.forName("UTF-8")), Charset.forName("UTF-8"));
 		        	    	  
 		        	    	  //Remove leading and trailing quotes, escape the rest.
 		        	    	  if (columnNames[i].startsWith("\"")) {
@@ -111,10 +110,7 @@ public class DatatablesCRUD implements java.io.Serializable {
 			        	    	  columnNames[i] = columnNames[i].replace("`", "``");
 			        	    	  
 			        	    	  columnNames[i] = StringEscapeUtils.escapeSql(columnNames[i]);
-			        	    	  
-			        	    	  //TODO: check what this does.
-			        	    	  columnNames[i] = StringUtils.sanitizeProcOrFuncName(columnNames[i]);
-			        	    	  
+			        	    	
 			        	    	  //Remove characters outside Basic Multilingual Plane (MySQL column name character restriction).
 			        	    	  columnNames[i] = columnNames[i].replace("[^\u0000-\uFFFF]", "");
 			        	    	  

@@ -173,12 +173,6 @@ public class MergesCRUD implements java.io.Serializable {
 	public MergeModel retrieveMergeAsMergeModelThroughCreatingMergeUsingMergeModel(
 			MergeModel mergeModel) {
 
-		
-		//TODO: remove
-		logger.info("Got file 1  id " + mergeModel.getFile1Model().getId());
-		logger.info("Got file 2  id " + mergeModel.getFile2Model().getId());
-		
-
 		try {
 			
 			Connection connection = this.getDatabaseModel().getNewConnection();
@@ -191,6 +185,7 @@ public class MergesCRUD implements java.io.Serializable {
 
 			  		  // Retrieve the merge's file models from the db.
 					  FilesCRUD filesCRUD = new FilesCRUD();
+					  filesCRUD.setDatabaseModel(this.getDatabaseModel());
 					  mergeModel.setFile1Model(filesCRUD.retrieveFileAsFileModelByFileId(mergeModel.getFile1Model().getId(), connection));
 					  mergeModel.setFile2Model(filesCRUD.retrieveFileAsFileModelByFileId(mergeModel.getFile2Model().getId(), connection));
 
@@ -335,7 +330,6 @@ public class MergesCRUD implements java.io.Serializable {
 			Connection connection) {
 
 		  DatatablesCRUD datatablesCRUD = new DatatablesCRUD();
-		  
 		  datatablesCRUD.setDatabaseModel(this.getDatabaseModel());
 
 		  mergeModel.setDatatable1Model(datatablesCRUD.retrieveDatatableAsDatatableModelUsingFileId(mergeModel.getFile1Model().getId(), connection));
@@ -387,7 +381,7 @@ public class MergesCRUD implements java.io.Serializable {
 		
 	      try {
 
-	          PreparedStatement preparedStatement = connection.prepareStatement("UPDATE `merge` SET upload_1_id = ?, upload_2_id = ?, updated_datetime = NOW(), datatable_1_duplicate_keys_count = ?, datatable_2_duplicate_keys_count = ?, total_duplicate_keys_count = ?, total_conflicts_count = ?, joined_keytable_name = ? WHERE id = ?;");
+	          PreparedStatement preparedStatement = connection.prepareStatement("UPDATE `merge` SET file_1_id = ?, file_2_id = ?, updated_datetime = NOW(), datatable_1_duplicate_keys_count = ?, datatable_2_duplicate_keys_count = ?, total_duplicate_keys_count = ?, total_conflicts_count = ?, joined_keytable_name = ? WHERE id = ?;");
 	          preparedStatement.setInt(1, mergeModel.getFile1Model().getId());
 	          preparedStatement.setInt(2, mergeModel.getFile2Model().getId());
 	          if (mergeModel.getDatatable1Model().getDuplicateKeysCount() != null) {

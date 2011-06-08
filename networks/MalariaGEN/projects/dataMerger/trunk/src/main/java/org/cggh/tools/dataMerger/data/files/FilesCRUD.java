@@ -192,6 +192,32 @@ public class FilesCRUD implements java.io.Serializable  {
 		}
 	}
 	
+	public void updateFileDatatableNameUsingFileModel(
+			FileModel fileModel, Connection connection) {
+		
+		if (connection != null) {
+			
+			try {
+	          PreparedStatement preparedStatement = connection.prepareStatement("UPDATE file SET " +
+	          																		"datatable_name = ? " +
+	          																		"WHERE id = ?;");
+	          preparedStatement.setString(1, fileModel.getDatatableModel().getName());
+	          preparedStatement.setInt(2, fileModel.getId());
+	          preparedStatement.executeUpdate();
+	          preparedStatement.close();
+
+	        }
+	        catch(SQLException sqlException){
+		    	sqlException.printStackTrace();
+	        } 
+	        
+	        
+		} else {
+			
+			logger.severe("connection is null");
+		}
+	}
+	
 	public FileModel retrieveFileCreatedByUserAsFileModelUsingFileIdAndUserModel (Integer fileId, UserModel userModel) {
 		
 		FileModel fileModel = new FileModel();
