@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import javax.servlet.ServletContext;
 import javax.sql.rowset.CachedRowSet;
 
-import org.cggh.tools.dataMerger.data.installation.InstallationModel;
+import org.cggh.tools.dataMerger.data.installations.InstallationModel;
 
 public class DatabaseModel {
 

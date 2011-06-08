@@ -1,6 +1,6 @@
 package org.cggh.tools.dataMerger.functions.data.installations;
 
-import org.cggh.tools.dataMerger.data.installation.InstallationModel;
+import org.cggh.tools.dataMerger.data.installations.InstallationModel;
 
 public class InstallationFunctions {
 

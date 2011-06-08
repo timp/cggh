@@ -1,4 +1,4 @@
-package org.cggh.tools.dataMerger.data.installation;
+package org.cggh.tools.dataMerger.data.installations;
 
 import java.sql.Timestamp;
 
