@@ -84,8 +84,8 @@ public class MergesFunctions implements java.io.Serializable {
 					 //FIXME: Apparently a bug in CachedRowSet using getX('columnAlias') aka columnLabel, which actually only works with getX('columnName'), so using getX('columnIndex').
 					 
 					 //TODO: This URL shouldn't be hard-coded
-					 mergesAsDecoratedXHTMLTable = mergesAsDecoratedXHTMLTable.concat("<td><a href=\"/dataMerger/files/uploads/" + this.getMergesAsCachedRowSet().getInt(2) + "\">" + this.getMergesAsCachedRowSet().getString(3) + "</a></td>");
-					 mergesAsDecoratedXHTMLTable = mergesAsDecoratedXHTMLTable.concat("<td><a href=\"/dataMerger/files/uploads/" + this.getMergesAsCachedRowSet().getInt(4) + "\">" + this.getMergesAsCachedRowSet().getString(5) + "</a></td>");
+					 mergesAsDecoratedXHTMLTable = mergesAsDecoratedXHTMLTable.concat("<td><a href=\"/dataMerger/files/" + this.getMergesAsCachedRowSet().getInt(2) + "\">" + this.getMergesAsCachedRowSet().getString(3) + "</a></td>");
+					 mergesAsDecoratedXHTMLTable = mergesAsDecoratedXHTMLTable.concat("<td><a href=\"/dataMerger/files/" + this.getMergesAsCachedRowSet().getInt(4) + "\">" + this.getMergesAsCachedRowSet().getString(5) + "</a></td>");
 					 //TODO: format datetime 02 Jan 2011
 					 mergesAsDecoratedXHTMLTable = mergesAsDecoratedXHTMLTable.concat("<td>" + dateFormat.format(this.getMergesAsCachedRowSet().getTimestamp("created_datetime")) + "</td>");
 					 mergesAsDecoratedXHTMLTable = mergesAsDecoratedXHTMLTable.concat("<td>" + dateFormat.format(this.getMergesAsCachedRowSet().getTimestamp("updated_datetime")) + "</td>");

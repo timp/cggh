@@ -51,7 +51,6 @@
 				MergesCRUD mergesCRUD = new MergesCRUD();
 			
 				mergesCRUD.setDatabaseModel(databaseModel);
-				mergesCRUD.setUserModel(userModel);
 				
 				out.print(mergesCRUD.retrieveMergesAsDecoratedXHTMLTableUsingUserId(userModel.getId()));
 				

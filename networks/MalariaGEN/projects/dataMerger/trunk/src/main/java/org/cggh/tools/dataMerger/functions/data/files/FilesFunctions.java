@@ -83,7 +83,7 @@ public class FilesFunctions {
 					 if (this.getFilesAsCachedRowSet().getString("origin") != null) {
 						 filesAsDecoratedXHTMLTable += "<td>" + this.getFilesAsCachedRowSet().getString("origin") + "</td>";
 					 } else {
-						 filesAsDecoratedXHTMLTable += "<td>unknown</td>";
+						 filesAsDecoratedXHTMLTable += "<td>---</td>";
 					 }
 					 
 					 
@@ -94,13 +94,13 @@ public class FilesFunctions {
 					 if (this.getFilesAsCachedRowSet().getString("rows_count") != null) {
 						 filesAsDecoratedXHTMLTable += "<td class=\"rowsCountContainer\">" + this.getFilesAsCachedRowSet().getString("rows_count") + "</td>";
 					 } else {
-						 filesAsDecoratedXHTMLTable += "<td class=\"rowsCountContainer\">unknown</td>";
+						 filesAsDecoratedXHTMLTable += "<td class=\"rowsCountContainer\">---</td>";
 					 }
 					 
 					 if (this.getFilesAsCachedRowSet().getString("columns_count") != null) {
 						 filesAsDecoratedXHTMLTable += "<td class=\"columnsCountContainer\">" + this.getFilesAsCachedRowSet().getString("columns_count") + "</td>";
 					 } else {
-						 filesAsDecoratedXHTMLTable += "<td class=\"columnsCountContainer\">unknown</td>";
+						 filesAsDecoratedXHTMLTable += "<td class=\"columnsCountContainer\">---</td>";
 					 }
 					 
 					 filesAsDecoratedXHTMLTable += "<td><a href=\"/dataMerger/files/" + this.getFilesAsCachedRowSet().getString("id") + "\">Download</a></td>";

@@ -473,7 +473,13 @@ public class MergesCRUD implements java.io.Serializable {
 					 
 					
 				      try{
-				          PreparedStatement preparedStatement = connection.prepareStatement("SELECT merge.id, upload_1.id AS upload_1_id, upload_1.original_filename AS upload_1_original_filename, upload_2.id AS 'upload_2_id', upload_2.original_filename AS 'upload_2_original_filename', merge.created_datetime, merge.updated_datetime, merge.total_duplicate_keys_count, merge.total_conflicts_count FROM merge INNER JOIN upload AS upload_1 ON upload_1.id = merge.upload_1_id INNER JOIN upload AS upload_2 ON upload_2.id = merge.upload_2_id WHERE merge.created_by_user_id = ? ORDER BY merge.id;");
+				          PreparedStatement preparedStatement = connection.prepareStatement(
+				        		"SELECT merge.id, file_1.id AS file_1_id, file_1.filename AS file_1_filename, file_2.id AS 'file_2_id', file_2.filename AS 'file_2_filename', merge.created_datetime, merge.updated_datetime, merge.total_duplicate_keys_count, merge.total_conflicts_count " +
+				          		"FROM merge " +
+				          		"INNER JOIN file AS file_1 ON file_1.id = merge.file_1_id " +
+				          		"INNER JOIN file AS file_2 ON file_2.id = merge.file_2_id " +
+				          		"WHERE merge.created_by_user_id = ? " +
+				          		"ORDER BY merge.id;");
 				          preparedStatement.setInt(1, userModel.getId());
 				          preparedStatement.executeQuery();
 				          Class<?> cachedRowSetImplClass = Class.forName(CACHED_ROW_SET_IMPL_CLASS);
@@ -483,7 +489,6 @@ public class MergesCRUD implements java.io.Serializable {
 	
 				        }
 				        catch(SQLException sqlException){
-				        	//System.out.println("<p>" + sqlException + "</p>");
 					    	sqlException.printStackTrace();
 				        } finally {
 							
@@ -497,12 +502,11 @@ public class MergesCRUD implements java.io.Serializable {
 					
 				} else {
 					
-					//System.out.println("connection.isClosed");
+					logger.severe("connection is null");
 				}
 					
 			} 
 			catch (Exception e) {
-				//System.out.println("Exception from getMergesAsCachedRowSet.");
 				e.printStackTrace();
 			}
 	

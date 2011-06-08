@@ -84,6 +84,9 @@ public class DatatablesCRUD implements java.io.Serializable {
 	        	      List<String> columnNamesAsStringList = new ArrayList<String>();
 	        	      
 	        	      if (columnNames.length > 0) {
+	        	    	  
+	        	    	  fileModel.setColumnsCount(columnNames.length);
+	        	    	  filesCRUD.updateFileColumnsCountUsingFileModel(fileModel, connection);
 		        	      
 		        	      String columnDefinitionsForCreateTableSQL = "";
 		        	      
@@ -147,8 +150,7 @@ public class DatatablesCRUD implements java.io.Serializable {
 						          statement.executeUpdate(statementSQL);
 						          statement.close();
 		
-						          //DISABLE THE STRICT
-						          
+						          // Disable the STRICT_TRANS_TABLES to enable automatic truncation
 
 						          Statement statement1 = connection.createStatement();
 						          String statementSQL1 = "SET sql_mode = 'NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION';";
@@ -171,6 +173,8 @@ public class DatatablesCRUD implements java.io.Serializable {
 							          statement11.executeUpdate(statementSQL11);
 							          statement11.close();
 				    		          
+							          filesCRUD.updateFileRowsCountUsingFileModel(fileModel, connection);
+							          
 				    		          
 				    		          //TODO: Get a list of all the strings to nullify.
 				    		          

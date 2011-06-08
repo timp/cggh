@@ -354,4 +354,59 @@ public class FilesCRUD implements java.io.Serializable  {
 		
 		return fileModel;
 	}
+
+	public void updateFileColumnsCountUsingFileModel(FileModel fileModel,
+			Connection connection) {
+		
+		if (connection != null) {
+			
+			try {
+	          PreparedStatement preparedStatement = connection.prepareStatement("UPDATE file SET " +
+	          																		"columns_count = ? " +
+	          																		"WHERE id = ?;");
+	          preparedStatement.setInt(1, fileModel.getColumnsCount());
+	          preparedStatement.setInt(2, fileModel.getId());
+	          preparedStatement.executeUpdate();
+	          preparedStatement.close();
+
+	        }
+	        catch(SQLException sqlException){
+		    	sqlException.printStackTrace();
+	        } 
+	        
+	        
+		} else {
+			
+			logger.severe("connection is null");
+		}
+	}
+
+
+	public void updateFileRowsCountUsingFileModel(FileModel fileModel,
+			Connection connection) {
+		
+		if (connection != null) {
+			
+			try {
+	          PreparedStatement preparedStatement = connection.prepareStatement("UPDATE file SET " +
+	          																		"rows_count = (SELECT COUNT(*) FROM `" + fileModel.getDatatableModel().getName() + "`) " +
+	          																		"WHERE id = ?;");
+	          preparedStatement.setInt(1, fileModel.getId());
+	          preparedStatement.executeUpdate();
+	          preparedStatement.close();
+
+	        }
+	        catch(SQLException sqlException){
+		    	sqlException.printStackTrace();
+	        } 
+	        
+	        
+		} else {
+			
+			logger.severe("connection is null");
+		}
+		
+	}
+	
+
 }

@@ -42,13 +42,17 @@ public class ExportsFunctions implements java.io.Serializable  {
 				 exportsAsDecoratedXHTMLTable = exportsAsDecoratedXHTMLTable.concat("<thead>");
 				 exportsAsDecoratedXHTMLTable = exportsAsDecoratedXHTMLTable.concat("<tr>");
 				 
-				 exportsAsDecoratedXHTMLTable = exportsAsDecoratedXHTMLTable.concat("<th class=\"idHeadingContainer\">ID<!--  <a href=\"javascript:TODOsort();\">sort up/down</a> --></th>");
-				 exportsAsDecoratedXHTMLTable = exportsAsDecoratedXHTMLTable.concat("<th>File 1<!--  <a href=\"javascript:TODOsort();\">sort up/down</a> --></th>");
-				 exportsAsDecoratedXHTMLTable = exportsAsDecoratedXHTMLTable.concat("<th>File 2<!--  <a href=\"javascript:TODOsort();\">sort up/down</a> --></th>");
-				 exportsAsDecoratedXHTMLTable = exportsAsDecoratedXHTMLTable.concat("<th><!-- --></th>");
-				 exportsAsDecoratedXHTMLTable = exportsAsDecoratedXHTMLTable.concat("<th><!-- --></th>");
-				 exportsAsDecoratedXHTMLTable = exportsAsDecoratedXHTMLTable.concat("<th>Created<!--  <a href=\"javascript:TODOsort();\">sort up/down</a> --></th>");
-				 exportsAsDecoratedXHTMLTable = exportsAsDecoratedXHTMLTable.concat("<th><!-- --></th>");
+				 exportsAsDecoratedXHTMLTable = exportsAsDecoratedXHTMLTable.concat("<th class=\"idHeadingContainer\">ID</th>");
+				 exportsAsDecoratedXHTMLTable = exportsAsDecoratedXHTMLTable.concat("<th>File</th>");
+				 exportsAsDecoratedXHTMLTable = exportsAsDecoratedXHTMLTable.concat("<th>Source 1</th>");
+				 exportsAsDecoratedXHTMLTable = exportsAsDecoratedXHTMLTable.concat("<th>Source 2</th>");
+				 
+				 exportsAsDecoratedXHTMLTable = exportsAsDecoratedXHTMLTable.concat("<th><!-- Above Settings button --></th>");
+				 exportsAsDecoratedXHTMLTable = exportsAsDecoratedXHTMLTable.concat("<th><!-- Above Joins button --></th>");
+				 exportsAsDecoratedXHTMLTable = exportsAsDecoratedXHTMLTable.concat("<th><!-- Above Resolutions button --></th>");
+				 
+				 exportsAsDecoratedXHTMLTable = exportsAsDecoratedXHTMLTable.concat("<th>Created</th>");
+				 exportsAsDecoratedXHTMLTable = exportsAsDecoratedXHTMLTable.concat("<th><!-- Above Download button --></th>");
 				 
 				 exportsAsDecoratedXHTMLTable = exportsAsDecoratedXHTMLTable.concat("</tr>");
 				 exportsAsDecoratedXHTMLTable = exportsAsDecoratedXHTMLTable.concat("</thead>");
@@ -81,14 +85,20 @@ public class ExportsFunctions implements java.io.Serializable  {
 					exportsAsDecoratedXHTMLTable = exportsAsDecoratedXHTMLTable.concat("<tr class=\"" + rowStripeClassName + rowFirstClassName + rowLastClassName + "\">");
 
 					 exportsAsDecoratedXHTMLTable = exportsAsDecoratedXHTMLTable.concat("<td class=\"idContainer\">" + this.getExportsAsCachedRowSet().getString("id") + "</td>");
-					 
+
 					 //FIXME: Apparently a bug in CachedRowSet using getX('columnAlias') aka columnLabel, which actually only works with getX('columnName'), so using getX('columnIndex').
 					 
-					 //TODO: This URL shouldn't be hard-coded
-					 exportsAsDecoratedXHTMLTable = exportsAsDecoratedXHTMLTable.concat("<td><a href=\"/dataMerger/files/uploads/" + this.getExportsAsCachedRowSet().getInt(2) + "\">" + this.getExportsAsCachedRowSet().getString(3) + "</a></td>");
-					 exportsAsDecoratedXHTMLTable = exportsAsDecoratedXHTMLTable.concat("<td><a href=\"/dataMerger/files/uploads/" + this.getExportsAsCachedRowSet().getInt(4) + "\">" + this.getExportsAsCachedRowSet().getString(5) + "</a></td>");
+					 exportsAsDecoratedXHTMLTable = exportsAsDecoratedXHTMLTable.concat("<td><a href=\"/dataMerger/files/" + this.getExportsAsCachedRowSet().getInt("merged_file_id") + "\">" + this.getExportsAsCachedRowSet().getString(3) + "</a></td>");
+					 
+					 
 
-					 exportsAsDecoratedXHTMLTable = exportsAsDecoratedXHTMLTable.concat("<td><a href=\"/dataMerger/files/exports/" + this.getExportsAsCachedRowSet().getInt("id") + "/joins\">Join</a></td>");
+					 
+					 //TODO: This URL shouldn't be hard-coded
+					 exportsAsDecoratedXHTMLTable = exportsAsDecoratedXHTMLTable.concat("<td><a href=\"/dataMerger/files/" + this.getExportsAsCachedRowSet().getInt("source_file_1_id") + "\">" + this.getExportsAsCachedRowSet().getString(1) + "</a></td>");
+					 exportsAsDecoratedXHTMLTable = exportsAsDecoratedXHTMLTable.concat("<td><a href=\"/dataMerger/files/" + this.getExportsAsCachedRowSet().getInt("source_file_2_id") + "\">" + this.getExportsAsCachedRowSet().getString(2) + "</a></td>");
+
+					 exportsAsDecoratedXHTMLTable = exportsAsDecoratedXHTMLTable.concat("<td><a href=\"/dataMerger/files/exports/" + this.getExportsAsCachedRowSet().getInt("id") + "/settings\">Settings</a></td>");
+					 exportsAsDecoratedXHTMLTable = exportsAsDecoratedXHTMLTable.concat("<td><a href=\"/dataMerger/files/exports/" + this.getExportsAsCachedRowSet().getInt("id") + "/joins\">Joins</a></td>");
 					 exportsAsDecoratedXHTMLTable = exportsAsDecoratedXHTMLTable.concat("<td><a href=\"/dataMerger/files/exports/" + this.getExportsAsCachedRowSet().getInt("id") + "/resolutions\">Resolutions</a></td>");
 					 					 
 					 
@@ -97,7 +107,7 @@ public class ExportsFunctions implements java.io.Serializable  {
 					 
 					 
 					 
-					 exportsAsDecoratedXHTMLTable = exportsAsDecoratedXHTMLTable.concat("<td><a href=\"/dataMerger/files/exports/" + this.getExportsAsCachedRowSet().getInt("id") + "/merged\">Download</a></td>");
+					 exportsAsDecoratedXHTMLTable = exportsAsDecoratedXHTMLTable.concat("<td><a href=\"/dataMerger/files/" + this.getExportsAsCachedRowSet().getInt("merged_file_id") + "\">Download</a></td>");
 					 
 					 
 					 exportsAsDecoratedXHTMLTable = exportsAsDecoratedXHTMLTable.concat("</tr>");

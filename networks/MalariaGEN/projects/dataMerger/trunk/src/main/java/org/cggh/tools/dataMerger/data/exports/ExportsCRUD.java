@@ -989,10 +989,11 @@ public class ExportsCRUD implements java.io.Serializable  {
 					
 				      try{
 				          PreparedStatement preparedStatement = connection.prepareStatement(
-				        		  "SELECT export.id, upload_1.id, upload_1.original_filename, upload_2.id, upload_2.original_filename, export.created_datetime " +
+				        		  "SELECT source_file_1.filename, source_file_2.filename, merged_file.filename, export.id, source_file_1_id, source_file_2_id, merged_file_id, export.created_datetime " +
 				        		  "FROM export " +
-				        		  "JOIN upload AS upload_1 ON upload_1.id = export.upload_1_id " +
-				        		  "JOIN upload AS upload_2 ON upload_2.id = export.upload_2_id " +
+				        		  "JOIN file AS source_file_1 ON source_file_1.id = export.source_file_1_id " +
+				        		  "JOIN file AS source_file_2 ON source_file_2.id = export.source_file_2_id " +
+				        		  "JOIN file AS merged_file ON merged_file.id = export.merged_file_id " +
 				        		  "WHERE export.created_by_user_id = ?" +
 				        		  ";");
 				          preparedStatement.setInt(1, userModel.getId());
