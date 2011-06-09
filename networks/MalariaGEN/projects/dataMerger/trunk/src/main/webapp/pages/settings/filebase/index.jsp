@@ -95,7 +95,11 @@
 						</tr>
 					</table>
 					
-					<div class="clearBoth"></div>
+					<h3>web.xml configuration:</h3>
+					<table class="systemInformationTable"> 
+						<tr><th>filebaseServerPath:</th><td><%=application.getInitParameter("filebaseServerPath") %></td></tr>
+						<tr><th>filebaseInstallationLogAsCSVFilePathRelativeToFilebaseServerPath:</th><td><%=application.getInitParameter("filebaseInstallationLogAsCSVFilePathRelativeToFilebaseServerPath") %></td></tr>
+					</table>
 					
 					<p class="refreshButtonContainer"><button onclick="window.location.reload(true)">Refresh</button>
 					</p>

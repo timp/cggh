@@ -73,7 +73,7 @@ public class DatabaseTablesScripts {
 	        
 		      try{
 		          Statement statement = connection.createStatement();
-		          statement.executeUpdate("CREATE TABLE `installation` (" +  
+		          statement.executeUpdate("CREATE TABLE `data_installation` (" +  
 		        		  "id BIGINT(255) UNSIGNED NOT NULL AUTO_INCREMENT, " +
 		        		  "major_version_number BIGINT(255) UNSIGNED NOT NULL, " +
 		        		  "minor_version_number BIGINT(255) UNSIGNED NOT NULL, " +
@@ -100,7 +100,7 @@ public class DatabaseTablesScripts {
 			      try{
 			    	  
 			          
-			          PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO `installation` (" +
+			          PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO `data_installation` (" +
 			        		  "major_version_number, minor_version_number, revision_version_number, created_by_user_id, created_datetime " +
 			        		  ") VALUES (1, 1, 0, ?, NOW());");
 			          preparedStatement.setInt(1, userModel.getId());
@@ -883,7 +883,7 @@ public class DatabaseTablesScripts {
 					      
 					      try{
 					          Statement statement = connection.createStatement();
-					          statement.executeUpdate("DROP TABLE `installation`;");
+					          statement.executeUpdate("DROP TABLE `data_installation`;");
 					          statement.close();
 
 					        }

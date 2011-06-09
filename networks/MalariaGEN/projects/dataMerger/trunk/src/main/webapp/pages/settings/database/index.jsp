@@ -84,7 +84,15 @@
 					
 					</table>
 					
-					<div class="clearBoth"></div>
+				
+					<h3>web.xml configuration:</h3>
+					<table class="systemInformationTable"> 
+						<tr><th>databaseDriverFullyQualifiedClassName:</th><td><%=application.getInitParameter("databaseDriverFullyQualifiedClassName") %></td></tr>
+						<tr><th>databaseServerPath:</th><td><%=application.getInitParameter("databaseServerPath") %></td></tr>
+						<tr><th>databaseName:</th><td><%=application.getInitParameter("databaseName") %></td></tr>
+						<tr><th>databaseUsername:</th><td><%=application.getInitParameter("databaseUsername") %></td></tr>
+					</table>
+				
 				
 					<p class="refreshButtonContainer"><button onclick="window.location.reload(true)">Refresh</button>
 					</p>

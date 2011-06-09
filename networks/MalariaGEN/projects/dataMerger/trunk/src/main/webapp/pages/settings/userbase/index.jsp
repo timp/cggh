@@ -25,7 +25,36 @@
 					
 					<h3>Userbase</h3>
 		
-		
+					<h3>System check:</h3>
+					<ul class="systemCheckList">
+						
+						<%--
+					
+						<% if (userbaseModel.isServerConnectable()) { %>
+						<li class="pass">Userbase server is connectable.</li>
+						<% } else { %>
+						<li class="fail">Userbase server is not connectable.</li>
+						<% } %>
+					
+						<% if (userbaseModel.isConnectable()) { %>
+						<li class="pass">Userbase is connectable.</li>
+						<% } else { %>
+						<li class="fail">Userbase is not connectable.</li>
+						<% } %>
+						
+						<% if (userbaseModel.getTablesAsCachedRowSet().size() >= 1) { %>
+						<li class="pass">Userbase tables count &gt;= 1.</li>
+						<% } else { %>
+						<li class="fail">Userbase tables count &lt; 1.</li>
+						<% } %>
+							
+						 --%>	
+						
+					</ul>
+					
+					<ul>
+						<li>Add user, list users, edit user (if poss), username/password/permissions. TODO: Add permissions + user_permissions tables. userbase password hash algorithm (select, auto-determine).</li>
+					</ul>
 				
 				</div>
 				

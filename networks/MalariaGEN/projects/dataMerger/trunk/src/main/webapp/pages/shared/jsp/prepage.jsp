@@ -4,6 +4,8 @@
 <%@ page import="org.cggh.tools.dataMerger.data.users.UserModel" %>
 <%
 
+String prepageBasePathURL = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath() + "/";
+
 DatabasesCRUD databasesCRUD = new DatabasesCRUD();
 DatabaseModel databaseModel = databasesCRUD.retrieveDatabaseAsDatabaseModelUsingServletContext(request.getSession().getServletContext());
 
@@ -29,25 +31,25 @@ if (databaseModel != null) {
 			
 		} else {
 			if (request.getServletPath().startsWith("/pages/settings/")) {
-				out.print("<p><a href=\"/dataMerger/pages/guides/configuration/errors/database-initialization\">database is not initialized<a></p>");
+				out.print("<p><a href=\"" + prepageBasePathURL + "pages/guides/configuration/errors/database-initialization\">database is not initialized<a></p>");
 			} else {
-				response.sendRedirect("/dataMerger/pages/guides/configuration/errors/database-initialization");
+				response.sendRedirect("/" + prepageBasePathURL + "pages/guides/configuration/errors/database-initialization");
 			}
 		}
 		
 	} else {
 		if (request.getServletPath().startsWith("/pages/settings/")) {
-			out.print("<p><a href=\"/dataMerger/pages/guides/configuration/errors/database-connection\">cannot connect to database<a></p>");
+			out.print("<p><a href=\"/" + prepageBasePathURL + "pages/guides/configuration/errors/database-connection\">cannot connect to database<a></p>");
 		} else {
-			response.sendRedirect("/dataMerger/pages/guides/configuration/errors/database-connection");
+			response.sendRedirect("/" + prepageBasePathURL + "pages/guides/configuration/errors/database-connection");
 		}
 	}
 	
 } else {
 	if (request.getServletPath().startsWith("/pages/settings/")) {
-		out.print("<p><a href=\"/dataMerger/pages/guides/configuration/errors/database-connection\">cannot connect to database<a></p>");
+		out.print("<p><a href=\"/" + prepageBasePathURL + "pages/guides/configuration/errors/database-connection\">cannot connect to database<a></p>");
 	} else {
-		response.sendRedirect("/dataMerger/pages/guides/configuration/errors/database-connection");
+		response.sendRedirect("/" + prepageBasePathURL + "pages/guides/configuration/errors/database-connection");
 	}
 }
 %>

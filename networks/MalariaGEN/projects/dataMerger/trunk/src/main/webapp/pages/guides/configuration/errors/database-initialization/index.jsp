@@ -1,5 +1,9 @@
 <%-- Note: This file should not require any database interaction because it is also used on database installation pages, etc. --%>
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1" pageEncoding="ISO-8859-1"%>
+<%
+String databaseInitializationErrorBasePathURL = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath() + "/";
+
+%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 	<head>
@@ -35,7 +39,7 @@
 						<li>The database has not been properly installed.</li>
 					</ul>	
 					
-					<p>For application administrators, the database can be initialized using the <a href="/dataMerger//pages/settings/">settings section</a>.
+					<p>For application administrators, the database can be initialized using the <a href="<%=databaseInitializationErrorBasePathURL %>/pages/settings/">settings section</a>.
 					</p>
 		
 				</div>

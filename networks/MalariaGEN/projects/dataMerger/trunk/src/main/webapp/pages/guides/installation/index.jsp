@@ -1,5 +1,9 @@
 <%-- Note: This file should not require any database interaction because it is also used on database installation pages, etc. --%>
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1" pageEncoding="ISO-8859-1"%>
+<%
+String installationGuideBasePathURL = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath() + "/";
+
+%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 	<head>
@@ -30,8 +34,8 @@
 					<h4>Steps</h4>
 					<ol>
 						<li>Deploy the WAR file to Tomcat.</li>
-						<li>Configure the web.xml and tomcat-users.xml files. (See the <a href="/dataMerger/pages/guides/configuration">Configuration</a> guide for details.)</li>
-						<li>Use the <a href="/dataMerger/pages/settings">Settings</a> page to create the database, database tables, filebase and filebase directories.</li>
+						<li>Configure the web.xml and tomcat-users.xml files. (See the <a href="<%=installationGuideBasePathURL %>pages/guides/configuration">Configuration</a> guide for details.)</li>
+						<li>Use the <a href="<%=installationGuideBasePathURL %>pages/settings">Settings</a> page to create the database, database tables, filebase and filebase directories.</li>
 					</ol>
 		
 					<h4>System requirements</h4>

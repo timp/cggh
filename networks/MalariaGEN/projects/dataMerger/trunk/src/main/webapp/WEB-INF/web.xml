@@ -3,7 +3,7 @@
 	
 	
 	<display-name>dataMerger</display-name>
-	
+
 
   <!-- Servlets -->
 
@@ -35,6 +35,19 @@
   <servlet>
   	<description>
   	</description>
+  	<display-name>DatabasesController</display-name>
+  	<servlet-name>DatabasesController</servlet-name>
+  	<servlet-class>org.cggh.tools.dataMerger.data.databases.DatabasesController</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>DatabasesController</servlet-name>
+    <url-pattern>/data/databases/*</url-pattern>
+  </servlet-mapping>
+
+
+  <servlet>
+  	<description>
+  	</description>
   	<display-name>DataController</display-name>
   	<servlet-name>DataController</servlet-name>
   	<servlet-class>org.cggh.tools.dataMerger.data.DataController</servlet-class>
@@ -45,17 +58,6 @@
   </servlet-mapping>
 
 
-  <servlet>
-  	<description>
-  	</description>
-  	<display-name>DatabasesController</display-name>
-  	<servlet-name>DatabasesController</servlet-name>
-  	<servlet-class>org.cggh.tools.dataMerger.data.databases.DatabasesController</servlet-class>
-  </servlet>
-  <servlet-mapping>
-    <servlet-name>DatabasesController</servlet-name>
-    <url-pattern>/data/databases/*</url-pattern>
-  </servlet-mapping>
 
 
   <servlet>
@@ -278,7 +280,7 @@
 
 	<context-param>
 		<param-name>filebaseInstallationLogAsCSVFilePathRelativeToFilebaseServerPath</param-name>
-		<param-value>installation\log.csv</param-value>
+		<param-value>filebase-installation\log.csv</param-value>
 	</context-param>
 
 	<context-param>

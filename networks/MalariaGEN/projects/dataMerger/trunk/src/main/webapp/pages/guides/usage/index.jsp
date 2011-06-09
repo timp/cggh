@@ -29,11 +29,19 @@
 					
 					<h4>Steps</h4>
 					
-					<ul>
-						<li>Upload 2 files using the Uploads page</li>
-						<li>Select 2 files using the Files page</li>
-						<li>Merge 2 files</li>
-					</ul>
+					<ol>
+						<li>Login
+							<ul>
+								<li>Currently using HTTP Basic. Waiting for SSO developments. Possible temporary move to custom db.</li>
+							</ul>
+						</li>
+						<li>Upload files</li>
+						<li>Select files</li>
+						<li>Press Merge</li>
+						<li>Edit Joins</li>
+						<li>Edit Resolutions</li>
+						<li>Export merged file</li>
+					</ol>
 					
 					
 					<p>The file format for the source files ("uploads") is expected to be the same as the "calculated data" downloaded from Topheno.

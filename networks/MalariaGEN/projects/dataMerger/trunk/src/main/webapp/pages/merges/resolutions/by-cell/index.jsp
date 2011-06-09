@@ -10,9 +10,11 @@
 <%@ page import="org.cggh.tools.dataMerger.data.resolutions.byCell.ResolutionsByCellCRUD" %>
 <%
 
+String resolutionsByCellBasePathURL = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath() + "/";
+
+
 MergesCRUD mergesCRUD = new MergesCRUD();
 mergesCRUD.setDatabaseModel(databaseModel);
-mergesCRUD.setUserModel(userModel);
 
 MergeModel mergeModel = new MergeModel();
 mergeModel = mergesCRUD.retrieveMergeAsMergeModelByMergeId(Integer.parseInt(request.getParameter("merge_id")));
@@ -85,9 +87,8 @@ ResolutionsFunctions resolutionsFunctions = new ResolutionsFunctions();
 					<th>Sources:</th>
 					<td>
 						<ol class="sources-list">
-							<%-- TODO: This url should be more dynamic --%>
-							<li><a href="/dataMerger/files/uploads/<%=mergeModel.getFile1Model().getId()%>"><%=mergeModel.getFile1Model().getFilename()%></a></li>
-							<li><a href="/dataMerger/files/uploads/<%=mergeModel.getFile2Model().getId()%>"><%=mergeModel.getFile2Model().getFilename()%></a></li>
+							<li><a href="<%=resolutionsByCellBasePathURL %>files/uploads/<%=mergeModel.getFile1Model().getId()%>"><%=mergeModel.getFile1Model().getFilename()%></a></li>
+							<li><a href="<%=resolutionsByCellBasePathURL %>files/uploads/<%=mergeModel.getFile2Model().getId()%>"><%=mergeModel.getFile2Model().getFilename()%></a></li>
 						</ol>
 					</td>
 				</tr>

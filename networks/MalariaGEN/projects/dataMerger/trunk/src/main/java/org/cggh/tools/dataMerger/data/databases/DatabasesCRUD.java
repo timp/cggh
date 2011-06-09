@@ -84,7 +84,7 @@ public class DatabasesCRUD {
 				DatabaseFunctions databaseFunctions = new DatabaseFunctions();
 				databaseModel.setTableNamesAsStringArrayList(databaseFunctions.convertTablesAsCachedRowSetIntoTableNamesAsStringArrayList(databaseModel.getTablesAsCachedRowSet()));
 				
-				if (databaseModel.getTableNamesAsStringArrayList().contains("installation")) {
+				if (databaseModel.getTableNamesAsStringArrayList().contains("data_installation")) {
 				
 					databaseModel.setCurrentInstallationModel(this.retrieveCurrentInstallationAsInstallationModelUsingDatabaseModel(databaseModel));
 				
@@ -123,8 +123,8 @@ public class DatabasesCRUD {
 					
 				  PreparedStatement preparedStatement = connection.prepareStatement(
 						  "SELECT i1.* " +
-						  "FROM installation i1 " +
-						  "LEFT JOIN installation i2 ON i1.id = i2.id AND i1.created_datetime < i2.created_datetime " +
+						  "FROM data_installation i1 " +
+						  "LEFT JOIN data_installation i2 ON i1.id = i2.id AND i1.created_datetime < i2.created_datetime " +
 						  "WHERE i2.id IS NULL" +
 						  ";");
 				  preparedStatement.executeQuery();

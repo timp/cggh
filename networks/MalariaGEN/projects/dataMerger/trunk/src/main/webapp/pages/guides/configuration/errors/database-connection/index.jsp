@@ -1,5 +1,9 @@
 <%-- Note: This file should not require any database interaction because it is also used on database installation pages, etc. --%>
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1" pageEncoding="ISO-8859-1"%>
+<%
+String databaseConnectionErrorBasePathURL = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath() + "/";
+
+%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 	<head>
@@ -42,7 +46,7 @@
 					<p>The required values can be seen on the <a href="../../">configuration page</a>.
 					</p>
 					
-					<p>For application administrators, the current values can be seen on the <a href="../../">configuration page</a> and the database can be installed using the <a href="/dataMerger/pages/settings/">settings section</a>.
+					<p>For application administrators, the current values can be seen on the <a href="../../">configuration page</a> and the database can be installed using the <a href="<%=databaseConnectionErrorBasePathURL %>pages/settings/">settings section</a>.
 					</p>
 		
 				</div>

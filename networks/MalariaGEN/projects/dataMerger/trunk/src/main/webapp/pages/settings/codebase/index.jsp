@@ -39,7 +39,11 @@
 							</tr>
 						</table>
 						
-						<div class="clearBoth"></div>
+					<h3>web.xml configuration:</h3>
+					<table class="systemInformationTable"> 
+						<tr><th>stringsToNullifyAsCSV:</th><td><%=application.getInitParameter("stringsToNullifyAsCSV") %></td></tr>
+						<tr><th>stringToExportInsteadOfNull:</th><td><%=application.getInitParameter("stringToExportInsteadOfNull") %></td></tr>
+					</table>
 							
 				
 				</div>
