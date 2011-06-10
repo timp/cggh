@@ -29,6 +29,7 @@ public class DatabaseTablesScripts {
 		          statement.executeUpdate("CREATE TABLE user (" +
 		          		"id BIGINT(255) UNSIGNED NOT NULL AUTO_INCREMENT, " +
 		          		"username VARCHAR(255) NOT NULL, " +
+		          		"password_hash VARCHAR(255) NULL, " +
 		          		"PRIMARY KEY (id), " +
 		          		"CONSTRAINT unique_username_constraint UNIQUE (username) " +
 		          		") ENGINE=InnoDB;");
@@ -45,7 +46,94 @@ public class DatabaseTablesScripts {
 					}
 			    	return false;
 		        }	
-		     
+
+			      try{
+			          Statement statement = connection.createStatement();
+			          statement.executeUpdate("CREATE TABLE hash_function (" + 
+			        		  "id BIGINT(255) UNSIGNED NOT NULL AUTO_INCREMENT, " +
+			        		  "name VARCHAR(255) NOT NULL, " +  
+			        		  "PRIMARY KEY (id), " +
+			        		  "CONSTRAINT unique_name_constraint UNIQUE (name) " + 
+			        		  ") ENGINE=InnoDB;");
+			          
+			          statement.close();
+
+			        }
+			      catch(SQLException sqlException){
+				    	sqlException.printStackTrace();
+				    	try {
+							connection.close();
+						} catch (SQLException e) {
+							e.printStackTrace();
+						}
+				    	return false;
+			        }			        
+
+			      
+			      try{
+			    	  
+			          PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO `hash_function` (name) VALUES ('MD5'), ('SHA-1'), ('SHA-256'), ('SHA-512');");
+			          preparedStatement.executeUpdate();
+			          preparedStatement.close();
+
+			        }
+			      catch(SQLException sqlException){
+				    	sqlException.printStackTrace();
+				    	try {
+							connection.close();
+						} catch (SQLException e) {
+							e.printStackTrace();
+						}
+				    	return false;
+			        }			      
+		        
+				try {
+			          Statement statement = connection.createStatement();
+			          statement.executeUpdate("CREATE TABLE permission (" +
+			          		"id BIGINT(255) UNSIGNED NOT NULL AUTO_INCREMENT, " +
+			          		"permission VARCHAR(255) NOT NULL, " +
+			          		"PRIMARY KEY (id), " +
+			          		"CONSTRAINT unique_permission_constraint UNIQUE (permission) " +
+			          		") ENGINE=InnoDB;");
+			          statement.close();
+		
+			        }
+			        catch(SQLException sqlException){
+				    	sqlException.printStackTrace();
+				    	try {
+				    		//FIXME: Re-organize try-catches and introduce a finally blocks in all of these.
+							connection.close();
+						} catch (SQLException e) {
+							e.printStackTrace();
+						}
+				    	return false;
+			        }	
+			        
+					try {
+				          Statement statement = connection.createStatement();
+				          statement.executeUpdate("CREATE TABLE user_permission (" +
+				          		"user_id BIGIN(255) NOT NULL, " +
+				          		"permission_id BIGIN(255) NOT NULL, " +
+				        		  "PRIMARY KEY (user_id, permission_id), " +
+				        		  "INDEX user_id_index (user_id), " + 
+				        		  "FOREIGN KEY (user_id) REFERENCES user(id), " +
+				        		  "INDEX permission_id_index (permission_id), " +
+				        		  "FOREIGN KEY (permission_id) REFERENCES permission(id) " +
+				        		  ") ENGINE=InnoDB;");
+				          statement.close();
+			
+				        }
+				        catch(SQLException sqlException){
+					    	sqlException.printStackTrace();
+					    	try {
+					    		//FIXME: Re-organize try-catches and introduce a finally blocks in all of these.
+								connection.close();
+							} catch (SQLException e) {
+								e.printStackTrace();
+							}
+					    	return false;
+				        }				        
+			        
 	        
 		      try{
 		    	  
@@ -635,7 +723,33 @@ public class DatabaseTablesScripts {
 								e.printStackTrace();
 							}
 					    	return false;
-				        }					      
+				        }		
+				      
+				      // fileRepositoryBasePath:  Tomcat and MySQL must have read and write access to this directory.
+				      // stringToExportInsteadOfNull: Without this parameter the default behaviour is to export NULLs as \N (unquoted)
+				      
+				      try{
+				    	  
+				          Statement statement = connection.createStatement();
+				          statement.executeUpdate("INSERT INTO `setting` (" +
+				        		  "name, value" +
+				        		  ") VALUES " +
+				        		  "('stringsToNullifyAsCSV', ',NULL'), " +
+				        		  "('stringToExportInsteadOfNull', 'NULL') " +
+				        		  ";");
+				          
+				          statement.close();
+
+				        }
+				      catch(SQLException sqlException){
+					    	sqlException.printStackTrace();
+					    	try {
+								connection.close();
+							} catch (SQLException e) {
+								e.printStackTrace();
+							}
+					    	return false;
+				        }
 				      
 				      ///////////
 				      
@@ -896,7 +1010,55 @@ public class DatabaseTablesScripts {
 								}
 						    	return false;
 					        }					      
+
+							try {
+						          Statement statement = connection.createStatement();
+						          statement.executeUpdate("DROP TABLE user_permission;");
+						          statement.close();
+					
+						        }
+						        catch(SQLException sqlException){
+							    	sqlException.printStackTrace();
+							    	try {
+										connection.close();
+									} catch (SQLException e) {
+										e.printStackTrace();
+									}
+							    	return false;
+						        }					      
 					      
+							try {
+						          Statement statement = connection.createStatement();
+						          statement.executeUpdate("DROP TABLE permission;");
+						          statement.close();
+					
+						        }
+						        catch(SQLException sqlException){
+							    	sqlException.printStackTrace();
+							    	try {
+										connection.close();
+									} catch (SQLException e) {
+										e.printStackTrace();
+									}
+							    	return false;
+						        }	
+					      
+						        try {
+							          Statement statement = connection.createStatement();
+							          statement.executeUpdate("DROP TABLE hash_function;");
+							          statement.close();
+						
+							        }
+							        catch(SQLException sqlException){
+								    	sqlException.printStackTrace();
+								    	try {
+											connection.close();
+										} catch (SQLException e) {
+											e.printStackTrace();
+										}
+								    	return false;
+							        }
+						        
 							try {
 						          Statement statement = connection.createStatement();
 						          statement.executeUpdate("DROP TABLE user;");

@@ -4,7 +4,7 @@
 <%@ page import="org.cggh.tools.dataMerger.data.users.UserModel" %>
 <%
 
-String prepageBasePathURL = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath() + "/";
+String prepageBasePathURL = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath() + "/"; 
 
 DatabasesCRUD databasesCRUD = new DatabasesCRUD();
 DatabaseModel databaseModel = databasesCRUD.retrieveDatabaseAsDatabaseModelUsingServletContext(request.getSession().getServletContext());
@@ -12,28 +12,45 @@ DatabaseModel databaseModel = databasesCRUD.retrieveDatabaseAsDatabaseModelUsing
 //Note: Made available in the page scope.
 UserModel userModel = null;
 
-if (databaseModel != null) {
 
-	if (databaseModel.isConnectable()) {
-		
-		if (databaseModel.isInitialized()) {
+
+	if (databaseModel != null) {
+	
+		if (databaseModel.isConnectable()) {
 			
-			UsersCRUD usersCRUD = new UsersCRUD();
-			usersCRUD.setDatabaseModel(databaseModel);
-			userModel = usersCRUD.retrieveUserAsUserModelUsingUsername(request.getRemoteUser());
+			if (databaseModel.isInitialized()) {
 				
-			if (userModel.getId() == null) {
-			
-				usersCRUD.createUserUsingUsername(userModel.getUsername());
-				userModel = usersCRUD.retrieveUserAsUserModelUsingUsername(userModel.getUsername());
+				if (session.getAttribute("userModel") != null) {
+					
+					UsersCRUD usersCRUD = new UsersCRUD();
+					usersCRUD.setDatabaseModel(databaseModel);
+					userModel = usersCRUD.retrieveUserAsUserModelUsingUsername(request.getRemoteUser());
+						
+					if (userModel.getId() == null) {
+					
+						usersCRUD.createUserUsingUsername(userModel.getUsername());
+						userModel = usersCRUD.retrieveUserAsUserModelUsingUsername(userModel.getUsername());
+						
+					}
 				
+				} else {
+					response.sendRedirect(prepageBasePathURL + "pages/shared/login/");
+					response.flushBuffer();
+				}
+				
+			} else {
+				if (request.getServletPath().startsWith("/pages/settings/")) {
+					out.print("<p><a href=\"" + prepageBasePathURL + "pages/guides/configuration/errors/database-initialization\">database is not initialized<a></p>");
+				} else {
+					response.sendRedirect("/" + prepageBasePathURL + "pages/guides/configuration/errors/database-initialization");
+				}
 			}
 			
 		} else {
 			if (request.getServletPath().startsWith("/pages/settings/")) {
-				out.print("<p><a href=\"" + prepageBasePathURL + "pages/guides/configuration/errors/database-initialization\">database is not initialized<a></p>");
+				out.print("<p><a href=\"/" + prepageBasePathURL + "pages/guides/configuration/errors/database-connection\">cannot connect to database<a></p>");
 			} else {
-				response.sendRedirect("/" + prepageBasePathURL + "pages/guides/configuration/errors/database-initialization");
+				response.sendRedirect("/" + prepageBasePathURL + "pages/guides/configuration/errors/database-connection");
 			}
 		}
 		
@@ -44,12 +61,6 @@ if (databaseModel != null) {
 			response.sendRedirect("/" + prepageBasePathURL + "pages/guides/configuration/errors/database-connection");
 		}
 	}
-	
-} else {
-	if (request.getServletPath().startsWith("/pages/settings/")) {
-		out.print("<p><a href=\"/" + prepageBasePathURL + "pages/guides/configuration/errors/database-connection\">cannot connect to database<a></p>");
-	} else {
-		response.sendRedirect("/" + prepageBasePathURL + "pages/guides/configuration/errors/database-connection");
-	}
-}
+
+
 %>

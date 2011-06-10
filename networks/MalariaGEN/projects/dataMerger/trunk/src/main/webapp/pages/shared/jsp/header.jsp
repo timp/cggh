@@ -28,7 +28,7 @@
 
 
 		
-		<% if (request.isUserInRole("uploader") && request.isUserInRole("exporter")) { %>
+		<% if (request.isUserInRole("user")) { %>
 			<% if (request.getServletPath().startsWith("/pages/files/")) { %>
 				<li class="item"><a class="link selected" href="<%= headerBasePathURL %>pages/files/">Files</a></li>
 			<% } else { %>
@@ -39,7 +39,7 @@
 		
 
 	
-		<% if (request.isUserInRole("merger")) { %>
+		<% if (request.isUserInRole("user")) { %>
 			<% if (request.getServletPath().startsWith("/pages/merges/")) { %>
 				<li class="item"><a class="link selected" href="<%= headerBasePathURL %>pages/merges/">Merges</a></li>
 			<% } else { %>
@@ -47,7 +47,7 @@
 			<% } %>
 		<% } %>
 		
-		<% if (request.isUserInRole("exporter")) { %>
+		<% if (request.isUserInRole("user")) { %>
 			<% if (request.getServletPath().startsWith("/pages/exports/")) { %>
 				<li class="item"><a class="link selected" href="<%= headerBasePathURL %>pages/exports/">Exports</a></li>
 			<% } else { %>
@@ -61,7 +61,7 @@
 
 		
 	
-		<% if (request.isUserInRole("non-specific")) { %>
+		<% if (request.isUserInRole("admin")) { %>
 			<% if (request.getServletPath().startsWith("/pages/settings/")) { %>
 				<li class="item"><a class="link selected" href="<%= headerBasePathURL %>pages/settings/">Settings</a></li>
 			<% } else { %>

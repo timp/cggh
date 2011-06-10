@@ -24,8 +24,13 @@
 					
 					<h3>Configuration</h3>
 		
-		
-
+<pre style="margin-left: 25px;">		
+&lt;Connector port="8443" protocol="HTTP/1.1" SSLEnabled="true"
+               maxThreads="150" scheme="https" secure="true"
+               clientAuth="false" sslProtocol="TLS"
+               keystoreFile="C:\Lee\localssl.bin" keystorePass="testtest"
+               enableLookups="true" disableUploadTimeout="true" /&gt;
+</pre>
 		
 		
 								<h4>Example: [tomcat-server]/webapps/[application-name]/WEB-INF/web.xml:</h4>
@@ -34,8 +39,8 @@
 										<li>    databaseServerPath: jdbc:mysql://localhost:3306/</li>
 										<li>    databaseName: datamerger</li>
 										<li>    databaseUsername: root</li>
-										<li>    filebaseServerPath: C:\Lee\Work\dataMerger\files\</li>
-										<li>    filebaseInstallationLogAsCSVFilePathRelativeToFilebaseServerPath: installation\log.csv</li>
+										<li>    fileRepositoryBasePath: C:\Lee\Work\dataMerger\files\</li>
+										<li>    fileRepositoryInstallationLogPathRelativeToRepositoryBasePath: installation\log.csv</li>
 										<li>    stringsToNullifyAsCSV: ,,NULL</li>
 										<li>    stringToExportInsteadOfNull: NULL</li>
 								</ul>
@@ -48,8 +53,8 @@
 									<li>databaseServerPath: <%=application.getInitParameter("databaseServerPath") %></li>
 									<li>databaseName: <%=application.getInitParameter("databaseName") %></li>
 									<li>databaseUsername: <%=application.getInitParameter("databaseUsername") %></li>
-									<li>filebaseServerPath: <%=application.getInitParameter("filebaseServerPath") %></li>
-									<li>filebaseInstallationLogAsCSVFilePathRelativeToFilebaseServerPath: <%=application.getInitParameter("filebaseInstallationLogAsCSVFilePathRelativeToFilebaseServerPath") %></li>
+									<li>fileRepositoryBasePath: <%=application.getInitParameter("fileRepositoryBasePath") %></li>
+									<li>fileRepositoryInstallationLogPathRelativeToRepositoryBasePath: <%=application.getInitParameter("fileRepositoryInstallationLogPathRelativeToRepositoryBasePath") %></li>
 									<li>stringsToNullifyAsCSV: <%=application.getInitParameter("stringsToNullifyAsCSV") %></li>
 									<li>stringToExportInsteadOfNull: <%=application.getInitParameter("stringToExportInsteadOfNull") %></li>
 								</ul>

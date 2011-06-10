@@ -60,9 +60,7 @@ public class DatabasesCRUD {
 	public DatabaseModel retrieveDatabaseAsDatabaseModelUsingServletContext (final ServletContext servletContext) {
 		
 		DatabaseModel databaseModel = new DatabaseModel();
-		
-		//TODO: refactor
-		databaseModel.setServletContext(servletContext);
+
 		
 		databaseModel.setDriverFullyQualifiedClassName(servletContext.getInitParameter("databaseDriverFullyQualifiedClassName"));
 		databaseModel.setServerPath(servletContext.getInitParameter("databaseServerPath"));

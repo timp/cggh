@@ -10,7 +10,7 @@ public class FilebaseModel {
 	private String serverPath = null;
 	private String versionAsString = null;
 	private ArrayList<String> filesAsStringArrayList = null;
-	private String filebaseInstallationLogAsCSVFilePathRelativeToFilebaseServerPath = null;
+	private String fileRepositoryInstallationLogPathRelativeToRepositoryBasePath = null;
 	private Boolean unix = null;
 	private Boolean mac = null;
 	private Boolean windows = null;
@@ -70,12 +70,12 @@ public class FilebaseModel {
 	}
 
 	public void setFilebaseInstallationLogAsCSVFilePathRelativeToFilebaseServerPath(
-			String filebaseInstallationLogAsCSVFilePathRelativeToFilebaseServerPath) {
-		this.filebaseInstallationLogAsCSVFilePathRelativeToFilebaseServerPath = filebaseInstallationLogAsCSVFilePathRelativeToFilebaseServerPath;
+			String fileRepositoryInstallationLogPathRelativeToRepositoryBasePath) {
+		this.fileRepositoryInstallationLogPathRelativeToRepositoryBasePath = fileRepositoryInstallationLogPathRelativeToRepositoryBasePath;
 	}
 
 	public String getFilebaseInstallationLogAsCSVFilePathRelativeToFilebaseServerPath() {
-		return filebaseInstallationLogAsCSVFilePathRelativeToFilebaseServerPath;
+		return fileRepositoryInstallationLogPathRelativeToRepositoryBasePath;
 	}
 
 	public void setUnix(Boolean unix) {

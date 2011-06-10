@@ -21,8 +21,8 @@ public class FilebasesCRUD {
 	public FilebaseModel retrieveFilebaseAsFilebaseModelUsingServletContext (final ServletContext servletContext) {
 		
 		FilebaseModel filebaseModel = new FilebaseModel();
-		filebaseModel.setServerPath(servletContext.getInitParameter("filebaseServerPath"));
-		filebaseModel.setFilebaseInstallationLogAsCSVFilePathRelativeToFilebaseServerPath(servletContext.getInitParameter("filebaseInstallationLogAsCSVFilePathRelativeToFilebaseServerPath"));
+		filebaseModel.setServerPath(servletContext.getInitParameter("fileRepositoryBasePath"));
+		filebaseModel.setFilebaseInstallationLogAsCSVFilePathRelativeToFilebaseServerPath(servletContext.getInitParameter("fileRepositoryInstallationLogPathRelativeToRepositoryBasePath"));
 		
 		File serverPath = new File(filebaseModel.getServerPath());
 

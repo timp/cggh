@@ -97,8 +97,8 @@
 					
 					<h3>web.xml configuration:</h3>
 					<table class="systemInformationTable"> 
-						<tr><th>filebaseServerPath:</th><td><%=application.getInitParameter("filebaseServerPath") %></td></tr>
-						<tr><th>filebaseInstallationLogAsCSVFilePathRelativeToFilebaseServerPath:</th><td><%=application.getInitParameter("filebaseInstallationLogAsCSVFilePathRelativeToFilebaseServerPath") %></td></tr>
+						<tr><th>fileRepositoryBasePath:</th><td><%=application.getInitParameter("fileRepositoryBasePath") %></td></tr>
+						<tr><th>fileRepositoryInstallationLogPathRelativeToRepositoryBasePath:</th><td><%=application.getInitParameter("fileRepositoryInstallationLogPathRelativeToRepositoryBasePath") %></td></tr>
 					</table>
 					
 					<p class="refreshButtonContainer"><button onclick="window.location.reload(true)">Refresh</button>

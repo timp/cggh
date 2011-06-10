@@ -184,7 +184,7 @@ public class FilesController extends HttpServlet {
 	        			 
 	        			 
 	        			 fileModel.setId(databasesCRUD.retrieveLastInsertIdAsIntegerUsingConnection(connection));
-	            		 fileModel.setFilepath(getServletContext().getInitParameter("filebaseServerPath") + "uploads" + filebaseModel.getFilepathSeparator() + fileModel.getId());
+	            		 fileModel.setFilepath(getServletContext().getInitParameter("fileRepositoryBasePath") + "uploads" + filebaseModel.getFilepathSeparator() + fileModel.getId());
 	            		 
 	            		 
 	            		 

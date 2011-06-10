@@ -22,7 +22,6 @@ public class DatabaseModel {
 	private String versionAsString;
 	private CachedRowSet tablesAsCachedRowSet;
 	private InstallationModel currentInstallationModel;
-	private ServletContext servletContext;
 	private ArrayList<String> tableNamesAsStringArrayList;
 	private Boolean initialized; 
 
@@ -169,13 +168,6 @@ public class DatabaseModel {
 		return currentInstallationModel;
 	}
 
-	public void setServletContext(ServletContext servletContext) {
-		this.servletContext = servletContext;
-	}
-
-	public ServletContext getServletContext() {
-		return servletContext;
-	}
 
 	public void setTableNamesAsStringArrayList(
 			ArrayList<String> tableNamesAsStringArrayList) {

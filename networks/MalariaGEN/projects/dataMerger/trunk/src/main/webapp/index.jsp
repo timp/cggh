@@ -1,4 +1,4 @@
 <% 
 	String rootBasePathURL = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath() + "/";
-	response.sendRedirect(rootBasePathURL + "pages/guides"); 
+	response.sendRedirect(rootBasePathURL + "pages/guides/"); 
 %>
