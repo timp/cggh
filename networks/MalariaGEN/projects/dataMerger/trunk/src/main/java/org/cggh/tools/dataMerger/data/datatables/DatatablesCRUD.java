@@ -4,7 +4,6 @@ import java.io.BufferedReader;
 import java.io.DataInputStream;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
-import java.nio.charset.Charset;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -17,11 +16,10 @@ import java.util.logging.Logger;
 import javax.sql.rowset.CachedRowSet;
 
 import org.apache.commons.lang.StringEscapeUtils;
+import org.cggh.tools.dataMerger.code.settings.SettingsModel;
 import org.cggh.tools.dataMerger.data.databases.DatabaseModel;
 import org.cggh.tools.dataMerger.data.files.FileModel;
 import org.cggh.tools.dataMerger.data.files.FilesCRUD;
-
-import com.mysql.jdbc.StringUtils;
 
 
 public class DatatablesCRUD implements java.io.Serializable {
@@ -33,12 +31,15 @@ public class DatatablesCRUD implements java.io.Serializable {
 	private final Logger logger = Logger.getLogger("org.cggh.tools.dataMerger.data.datatables");
 
 	private DatabaseModel databaseModel;
+	private SettingsModel settingsModel;
 
 	
 	private String stringsToNullifyAsCSV;
 	
 	public DatatablesCRUD() {
-		this.setDatabaseModel(new DatabaseModel());
+		
+		//Prefer not to construct
+		//this.setDatabaseModel(new DatabaseModel());
 	}
 
 
@@ -179,9 +180,9 @@ public class DatatablesCRUD implements java.io.Serializable {
 				    		          //TODO: Get a list of all the strings to nullify.
 				    		          
 				    		          
-				    		          if (this.getDatabaseModel().getServletContext().getInitParameter("stringsToNullifyAsCSV") != null) {
+				    		          if (this.getSettingsModel().getSettingValueAsStringUsingName("stringsToNullifyAsCSV") != null) {
 				    		        	  
-				    		        	  String[] stringsToNullifyAsStringArray = this.getDatabaseModel().getServletContext().getInitParameter("stringsToNullifyAsCSV").split(",");
+				    		        	  String[] stringsToNullifyAsStringArray = this.getSettingsModel().getSettingValueAsStringUsingName("stringsToNullifyAsCSV").split(",");
 					    		        	 
 				    		        	  for (int i = 0; i < columnNames.length; i++) {
 				    		        		
@@ -452,6 +453,16 @@ public class DatatablesCRUD implements java.io.Serializable {
 
 	public String getStringsToNullifyAsCSV() {
 		return stringsToNullifyAsCSV;
+	}
+
+
+	public void setSettingsModel(SettingsModel settingsModel) {
+		this.settingsModel = settingsModel;
+	}
+
+
+	public SettingsModel getSettingsModel() {
+		return settingsModel;
 	}
 
 }

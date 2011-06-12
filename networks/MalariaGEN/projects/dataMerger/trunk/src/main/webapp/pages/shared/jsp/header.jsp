@@ -1,9 +1,14 @@
+<%@ page import="org.cggh.tools.dataMerger.data.users.UserModel" %>
 <%-- Note: This file should not require any database interaction because it is also used on database installation pages, etc. --%>
+<%
+	String headerBasePathURL = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath() + "/"; 
+	
+	UserModel userModel = (UserModel) request.getSession().getAttribute("userModel");
+	
+%>
 <div class="header">
 
-	<%
-	String headerBasePathURL = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath() + "/";
-	%>
+	
 
 	<h1 class="title">dataMerger</h1>
 
@@ -19,6 +24,16 @@
 	<ul class="apps-menu">
 	
 		<!-- TODO: Adaptive interface (based on real ability to GET the page) rather than role-based. -->
+
+		<% if (userModel != null && userModel.isAuthenticated()) { %>
+	
+			<% if (request.getServletPath().startsWith("/pages/shared/login/")) { %>
+				<li class="item"><a class="link selected" href="<%= headerBasePathURL %>pages/shared/login/">Login</a></li>
+			<% } else { %>
+				<li class="item"><a class="link" href="<%= headerBasePathURL %>pages/shared/login/">Login</a></li>
+			<% } %>
+			
+		<% } %>
 		
 		<% if (request.getServletPath().startsWith("/pages/guides/")) { %>
 			<li class="item"><a class="link selected" href="<%= headerBasePathURL %>pages/guides/">Guides</a></li>
@@ -61,7 +76,7 @@
 
 		
 	
-		<% if (request.isUserInRole("admin")) { %>
+		<% if (userModel.isUserInRole("admin")) { %>
 			<% if (request.getServletPath().startsWith("/pages/settings/")) { %>
 				<li class="item"><a class="link selected" href="<%= headerBasePathURL %>pages/settings/">Settings</a></li>
 			<% } else { %>

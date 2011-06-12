@@ -220,7 +220,7 @@
 		<param-value>root</param-value>
 	</context-param>
 	<context-param>
-		<param-name>userTableName</param-name>
+		<param-name>userDatabaseTableName</param-name>
 		<param-value>user</param-value>
 	</context-param>
 	<context-param>
@@ -233,7 +233,7 @@
 	</context-param>
 	<context-param>
 		<param-name>userbasePasswordHashFunctionName</param-name>
-		<param-value>SHA-1</param-value>
+		<param-value>SHA-256</param-value>
 	</context-param>
 
 </web-app>

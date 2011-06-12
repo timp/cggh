@@ -47,32 +47,11 @@ public class DatabaseTablesScripts {
 			    	return false;
 		        }	
 
-			      try{
-			          Statement statement = connection.createStatement();
-			          statement.executeUpdate("CREATE TABLE hash_function (" + 
-			        		  "id BIGINT(255) UNSIGNED NOT NULL AUTO_INCREMENT, " +
-			        		  "name VARCHAR(255) NOT NULL, " +  
-			        		  "PRIMARY KEY (id), " +
-			        		  "CONSTRAINT unique_name_constraint UNIQUE (name) " + 
-			        		  ") ENGINE=InnoDB;");
-			          
-			          statement.close();
-
-			        }
-			      catch(SQLException sqlException){
-				    	sqlException.printStackTrace();
-				    	try {
-							connection.close();
-						} catch (SQLException e) {
-							e.printStackTrace();
-						}
-				    	return false;
-			        }			        
-
-			      
+		        
 			      try{
 			    	  
-			          PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO `hash_function` (name) VALUES ('MD5'), ('SHA-1'), ('SHA-256'), ('SHA-512');");
+			          PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO `user` (username) VALUES (?)");
+			          preparedStatement.setString(1, Username);
 			          preparedStatement.executeUpdate();
 			          preparedStatement.close();
 
@@ -85,8 +64,83 @@ public class DatabaseTablesScripts {
 							e.printStackTrace();
 						}
 				    	return false;
-			        }			      
+			        }
+			      
+					//Short-cut
+			        UserModel userModel = new UserModel();
+			        userModel.setUsername(Username);
+					userModel.setId(1);		        
 		        
+		        
+		        
+		        
+				try {
+			          Statement statement = connection.createStatement();
+			          statement.executeUpdate("CREATE TABLE role (" +
+			          		"id BIGINT(255) UNSIGNED NOT NULL AUTO_INCREMENT, " +
+			          		"role VARCHAR(255) NOT NULL, " +
+			          		"PRIMARY KEY (id), " +
+			          		"CONSTRAINT unique_role_constraint UNIQUE (role) " +
+			          		") ENGINE=InnoDB;");
+			          statement.close();
+		
+			        }
+			        catch(SQLException sqlException){
+				    	sqlException.printStackTrace();
+				    	try {
+				    		//FIXME: Re-organize try-catches and introduce a finally blocks in all of these.
+							connection.close();
+						} catch (SQLException e) {
+							e.printStackTrace();
+						}
+				    	return false;
+			        }
+			        
+				      try{
+				    	  
+				          PreparedStatement preparedStatement = connection.prepareStatement(
+				        		  "INSERT INTO `role` (role) " +
+				        		  "VALUES ('admin')");
+				          preparedStatement.executeUpdate();
+				          preparedStatement.close();
+
+				        }
+				      catch(SQLException sqlException){
+					    	sqlException.printStackTrace();
+					    	try {
+								connection.close();
+							} catch (SQLException e) {
+								e.printStackTrace();
+							}
+					    	return false;
+				        }
+			        
+					try {
+				          Statement statement = connection.createStatement();
+				          statement.executeUpdate("CREATE TABLE user_role (" +
+				          		"user_id BIGIN(255) NOT NULL, " +
+				          		"role_id BIGIN(255) NOT NULL, " +
+				        		  "PRIMARY KEY (user_id, role_id), " +
+				        		  "INDEX user_id_index (user_id), " + 
+				        		  "FOREIGN KEY (user_id) REFERENCES user(id), " +
+				        		  "INDEX role_id_index (role_id), " +
+				        		  "FOREIGN KEY (role_id) REFERENCES role(id) " +
+				        		  ") ENGINE=InnoDB;");
+				          statement.close();
+			
+				        }
+				        catch(SQLException sqlException){
+					    	sqlException.printStackTrace();
+					    	try {
+					    		//FIXME: Re-organize try-catches and introduce a finally blocks in all of these.
+								connection.close();
+							} catch (SQLException e) {
+								e.printStackTrace();
+							}
+					    	return false;
+				        }	
+		        
+				        
 				try {
 			          Statement statement = connection.createStatement();
 			          statement.executeUpdate("CREATE TABLE permission (" +
@@ -135,28 +189,7 @@ public class DatabaseTablesScripts {
 				        }				        
 			        
 	        
-		      try{
-		    	  
-		          PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO `user` (username) VALUES (?)");
-		          preparedStatement.setString(1, Username);
-		          preparedStatement.executeUpdate();
-		          preparedStatement.close();
 
-		        }
-		      catch(SQLException sqlException){
-			    	sqlException.printStackTrace();
-			    	try {
-						connection.close();
-					} catch (SQLException e) {
-						e.printStackTrace();
-					}
-			    	return false;
-		        }
-		      
-				//Short-cut
-		        UserModel userModel = new UserModel();
-		        userModel.setUsername(Username);
-				userModel.setId(1);
 						
 	        
 		      try{
@@ -270,6 +303,8 @@ public class DatabaseTablesScripts {
 	        		  "rows_count BIGINT(255) NULL, " +
 	        		  "columns_count BIGINT(255) NULL, " +
 	        		  
+	        		  "hidden BOOLEAN NULL, " +
+	        		  
 	        		  "PRIMARY KEY (id), " +
 	        		  "CONSTRAINT unique_path_constraint UNIQUE (filepath), " +
 	        		  "CONSTRAINT unique_datatable_name_constraint UNIQUE (datatable_name), " +
@@ -290,47 +325,7 @@ public class DatabaseTablesScripts {
 		    	return false;
 	        }
 
-	      try{
-	          Statement statement = connection.createStatement();
-	          statement.executeUpdate("CREATE TABLE label (" + 
-	        		  "id BIGINT(255) UNSIGNED NOT NULL AUTO_INCREMENT, " +
-	        		  "name VARCHAR(255) NOT NULL, " +  
-	        		  "PRIMARY KEY (id), " +
-	        		  "CONSTRAINT unique_name_constraint UNIQUE (name) " + 
-	        		  ") ENGINE=InnoDB;");
-	          
-	          statement.close();
-
-	        }
-	      catch(SQLException sqlException){
-		    	sqlException.printStackTrace();
-		    	try {
-					connection.close();
-				} catch (SQLException e) {
-					e.printStackTrace();
-				}
-		    	return false;
-	        }	      
-
-	      
-	      try{
-	    	  
-	          Statement statement = connection.createStatement();
-	          statement.executeUpdate("INSERT INTO `label` (" +
-	        		  "name " +
-	        		  ") VALUES ('hidden'), ('removed');");
-	          statement.close();
-
-	        }
-	      catch(SQLException sqlException){
-		    	sqlException.printStackTrace();
-		    	try {
-					connection.close();
-				} catch (SQLException e) {
-					e.printStackTrace();
-				}
-		    	return false;
-	        }	      
+	     
 	      	      
 	        
 		      try{
@@ -677,31 +672,7 @@ public class DatabaseTablesScripts {
 		
 				      
 				      
-				      
-				      try{
-				          Statement statement = connection.createStatement();
-				          statement.executeUpdate("CREATE TABLE file_label (" + 
-				        		  "file_id BIGINT(255) UNSIGNED NOT NULL, " +
-				        		  "label_id BIGINT(255) UNSIGNED NOT NULL, " +
-				        		  "PRIMARY KEY (file_id, label_id), " +
-				        		  "INDEX file_id_index (file_id), " + 
-				        		  "FOREIGN KEY (file_id) REFERENCES file(id), " +
-				        		  "INDEX label_id_index (label_id), " +
-				        		  "FOREIGN KEY (label_id) REFERENCES label(id) " +
-				        		  ") ENGINE=InnoDB;");
-				          
-				          statement.close();
-
-				        }
-				      catch(SQLException sqlException){
-					    	sqlException.printStackTrace();
-					    	try {
-								connection.close();
-							} catch (SQLException e) {
-								e.printStackTrace();
-							}
-					    	return false;
-				        }					      
+				      				      
 				      
 				      try{
 				          Statement statement = connection.createStatement();
@@ -795,22 +766,7 @@ public class DatabaseTablesScripts {
 			    	return false;
 		        }			      
 
-		      
-		      try{
-		          Statement statement = connection.createStatement();
-		          statement.executeUpdate("DROP TABLE file_label;");
-		          statement.close();
-
-		        }
-		      catch(SQLException sqlException){
-			    	sqlException.printStackTrace();
-			    	try {
-						connection.close();
-					} catch (SQLException e) {
-						e.printStackTrace();
-					}
-			    	return false;
-		        }			      
+		      		      
 		      
 			      try{
 			          Statement statement = connection.createStatement();
@@ -946,22 +902,7 @@ public class DatabaseTablesScripts {
 								}
 						    	return false;
 					        }					      
-					      
-					      try{
-					          Statement statement = connection.createStatement();
-					          statement.executeUpdate("DROP TABLE label;");
-					          statement.close();
-
-					        }
-					      catch(SQLException sqlException){
-						    	sqlException.printStackTrace();
-						    	try {
-									connection.close();
-								} catch (SQLException e) {
-									e.printStackTrace();
-								}
-						    	return false;
-					        }					      
+				      
 					      
 					      try{
 					          Statement statement = connection.createStatement();
@@ -1042,10 +983,12 @@ public class DatabaseTablesScripts {
 									}
 							    	return false;
 						        }	
-					      
-						        try {
+
+						        
+						        
+								try {
 							          Statement statement = connection.createStatement();
-							          statement.executeUpdate("DROP TABLE hash_function;");
+							          statement.executeUpdate("DROP TABLE user_role;");
 							          statement.close();
 						
 							        }
@@ -1057,7 +1000,23 @@ public class DatabaseTablesScripts {
 											e.printStackTrace();
 										}
 								    	return false;
-							        }
+							        }	
+							        
+									try {
+								          Statement statement = connection.createStatement();
+								          statement.executeUpdate("DROP TABLE role;");
+								          statement.close();
+							
+								        }
+								        catch(SQLException sqlException){
+									    	sqlException.printStackTrace();
+									    	try {
+												connection.close();
+											} catch (SQLException e) {
+												e.printStackTrace();
+											}
+									    	return false;
+								        }								        
 						        
 							try {
 						          Statement statement = connection.createStatement();

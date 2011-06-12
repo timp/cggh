@@ -1,5 +1,5 @@
-<%-- Note: This file should not require any database interaction because it is also used on database installation pages, etc. --%>
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1" pageEncoding="ISO-8859-1"%>
+<%-- Note: This file should not require any database interaction because it is also used on database installation pages, etc. --%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 	<head>
@@ -23,6 +23,8 @@
 				<div class="guide">
 					
 					<h3>Configuration</h3>
+					
+		<p><a href="http://techtracer.com/2007/09/12/setting-up-ssl-on-tomcat-in-3-easy-steps/" target="_blank">Setting up SSL on Tomcat</a></p>
 		
 <pre style="margin-left: 25px;">		
 &lt;Connector port="8443" protocol="HTTP/1.1" SSLEnabled="true"

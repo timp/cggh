@@ -1,5 +1,6 @@
 package org.cggh.tools.dataMerger.data.users;
 
+import java.util.ArrayList;
 import java.util.logging.Logger;
 
 
@@ -14,7 +15,10 @@ public class UserModel implements java.io.Serializable {
 	private Integer id = null;
 	private String username = null;
 	private Boolean registered = null;
-	
+	private ArrayList<String> rolesAsStringArrayList = null;
+	private Boolean authenticated;
+
+
 	public UserModel() {
 
 	}
@@ -48,5 +52,39 @@ public class UserModel implements java.io.Serializable {
 		return logger;
 	}
 
-	
+	public Boolean isUserInRole (String role) {
+		
+		Boolean userInRole = null;
+		
+		if (getRolesAsStringArrayList().contains(role)) {
+			userInRole = true;
+		} else {
+			userInRole = false;
+		}
+		
+		return userInRole;
+		
+	}
+
+
+	public void setRolesAsStringArrayList(ArrayList<String> rolesAsStringArrayList) {
+		this.rolesAsStringArrayList = rolesAsStringArrayList;
+	}
+
+
+	public ArrayList<String> getRolesAsStringArrayList() {
+		return rolesAsStringArrayList;
+	}
+
+
+	public void setAuthenticated(Boolean authenticated) {
+		this.authenticated = authenticated;
+	}
+
+
+	public Boolean isAuthenticated() {
+		return authenticated;
+	}
+
+
 }

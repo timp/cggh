@@ -1,10 +1,11 @@
-package org.cggh.tools.dataMerger.users.userbases;
+package org.cggh.tools.dataMerger.data.users.userbases;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
 import javax.servlet.ServletContext;
+
 
 
 public class UserbasesCRUD {
@@ -22,7 +23,7 @@ public class UserbasesCRUD {
 		userbaseModel.setDatabaseUsername(servletContext.getInitParameter("userDatabaseUsernameName"));
 		userbaseModel.setDatabasePassword(servletContext.getInitParameter("userDatabasePasswordName"));
 		
-		userbaseModel.setTableName(servletContext.getInitParameter("userTableName"));
+		userbaseModel.setDatabaseTableName(servletContext.getInitParameter("userDatabaseTableName"));
 		userbaseModel.setUsernameColumnName(servletContext.getInitParameter("userUsernameColumnName"));
 		userbaseModel.setPasswordHashColumnName(servletContext.getInitParameter("userbasePasswordHashColumnName"));
 		userbaseModel.setPasswordHashFunctionName(servletContext.getInitParameter("userbasePasswordHashFunctionName"));

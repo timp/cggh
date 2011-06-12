@@ -1,4 +1,8 @@
-package org.cggh.tools.dataMerger.users.userbases;
+package org.cggh.tools.dataMerger.data.users.userbases;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 
 public class UserbaseModel {
 
@@ -8,7 +12,7 @@ public class UserbaseModel {
 	private String databaseName;
 	private String databaseUsername;
 	private String databasePassword;
-	private String tableName;
+	private String databaseTableName;
 	private String usernameColumnName;
 	private String passwordHashColumnName;
 	private String passwordHashFunctionName;
@@ -56,12 +60,12 @@ public class UserbaseModel {
 		return databasePassword;
 	}
 
-	public void setTableName(String tableName) {
-		this.tableName = tableName;
+	public void setDatabaseTableName(String databaseTableName) {
+		this.databaseTableName = databaseTableName;
 	}
 
-	public String getTableName() {
-		return tableName;
+	public String getDatabaseTableName() {
+		return databaseTableName;
 	}
 
 	public void setUsernameColumnName(String usernameColumnName) {
@@ -104,5 +108,25 @@ public class UserbaseModel {
 		return databaseServerConnectable;
 	}
 
-	
+	public Connection getNewDatabaseConnection() {
+		
+		Connection connection = null;
+
+		try {
+			
+			Class.forName(this.getDatabaseDriverFullyQualifiedClassName()).newInstance();
+			connection = DriverManager.getConnection(this.getDatabaseServerPath() + this.getDatabaseName(), this.getDatabaseUsername(), this.getDatabasePassword());
+			
+		} catch (InstantiationException e) {
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			e.printStackTrace();
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		return connection;
+	}
 }

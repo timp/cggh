@@ -9,6 +9,8 @@ import java.util.List;
 
 import javax.sql.rowset.CachedRowSet;
 
+import org.cggh.tools.dataMerger.code.settings.SettingsModel;
+
 
 
 public class DatatableModel implements java.io.Serializable {
@@ -23,6 +25,7 @@ public class DatatableModel implements java.io.Serializable {
 	private List<String> columnNamesAsStringList;
 	private Integer duplicateValuesCount;
 	private List<String> keyColumnNamesAsStringList;
+	private SettingsModel settingsModel;
 	
 	
 	public DatatableModel() {
@@ -142,6 +145,20 @@ public class DatatableModel implements java.io.Serializable {
 	public void setDuplicateValuesCount(final Integer duplicateValuesCount) {
 		
 		this.duplicateValuesCount = duplicateValuesCount;
+	}
+
+
+
+
+	public void setSettingsModel(SettingsModel settingsModel) {
+		this.settingsModel = settingsModel;
+	}
+
+
+
+
+	public SettingsModel getSettingsModel() {
+		return settingsModel;
 	}
 
 

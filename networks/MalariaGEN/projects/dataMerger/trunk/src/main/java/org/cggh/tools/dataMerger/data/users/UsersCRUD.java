@@ -4,9 +4,11 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.logging.Logger;
 
 import org.cggh.tools.dataMerger.data.databases.DatabaseModel;
+import org.cggh.tools.dataMerger.data.users.userbases.UserbaseModel;
 
 public class UsersCRUD implements java.io.Serializable {
 
@@ -17,6 +19,7 @@ public class UsersCRUD implements java.io.Serializable {
 	private final Logger logger = Logger.getLogger("org.cggh.tools.dataMerger.data.users");
 
 	private DatabaseModel databaseModel = null;
+	private UserbaseModel userbaseModel;
 	
 	public UsersCRUD () {
 		
@@ -48,6 +51,28 @@ public class UsersCRUD implements java.io.Serializable {
 		        	  
 		        	  userModel.setId(resultSet.getInt("id"));
 		        	  
+		        	  //Get roles
+		        	  PreparedStatement preparedStatement1 = connection.prepareStatement("SELECT * FROM user_role WHERE user_id = ?;");
+			          preparedStatement1.setString(1, userModel.getUsername());
+			          preparedStatement1.executeQuery();
+			          
+			          ResultSet resultSet1 = preparedStatement.getResultSet();
+			          
+			          if (resultSet1.next()) {
+			        	  
+			        	  ArrayList<String> rolesAsStringArrayList = new ArrayList<String>();
+			        	  
+			        	  resultSet1.beforeFirst();
+			        	  
+			        	  while (resultSet1.next()) {
+			        		  
+			        		  rolesAsStringArrayList.add(resultSet1.getString("role"));
+			        		  
+			        	  }
+			        	  
+			        	  userModel.setRolesAsStringArrayList(rolesAsStringArrayList);
+			        	  
+			          }
 		        	  
 		      	  } else {
 		      		  // user record not found using username
@@ -169,7 +194,85 @@ public class UsersCRUD implements java.io.Serializable {
 		return databaseModel;
 	}
 	
-	
+
+
+	public void setUserbaseModel(UserbaseModel userbaseModel) {
+		this.userbaseModel = userbaseModel;
+	}
+
+	public UserbaseModel getUserbaseModel() {
+		return userbaseModel;
+	}
+
+
+	public Boolean retrieveAuthenticatedAsBooleanUsingUsernameAndPasswordHashAsStrings(
+			String username,
+			String passwordHash) {
+		
+		
+		Boolean authenticated = null;
+		
+
+		Connection connection = this.getUserbaseModel().getNewDatabaseConnection();
+		 
+		if (connection != null) {
+			
+			
+		      try{
+		    	  PreparedStatement preparedStatement = connection.prepareStatement(
+		    			  
+		    			  "SELECT `" + userbaseModel.getUsernameColumnName() + "` " +
+		    			  "FROM `" + userbaseModel.getDatabaseTableName() + "` " +
+		    			  "WHERE `" + userbaseModel.getUsernameColumnName() + "` = ? AND `" + userbaseModel.getPasswordHashColumnName() + "` = ?" +
+		    			  ";"
+		    	  
+		    	  );
+		          preparedStatement.setString(1, username);
+		          preparedStatement.setString(2, passwordHash);
+		          preparedStatement.executeQuery();
+		          
+		          ResultSet resultSet = preparedStatement.getResultSet();
+		          
+		          if (resultSet.next()) {
+		        	  
+		        	  authenticated = true;
+		        	  
+		        	
+		      	  } else {
+		      		  
+		      		  authenticated = false;
+		      		  
+		      		  //Note: This may be a password cracking attempt or just a user error.
+		      		  logger.warning("User not found with the specified username and password.");
+		      		  
+		      	  }
+		          
+		          resultSet.close();
+		          preparedStatement.close();
+
+		        } 
+		      	catch (SQLException sqlException){
+			    	sqlException.printStackTrace();
+		        } finally {
+		        	try {
+						connection.close();
+					} catch (SQLException e) {
+						e.printStackTrace();
+					}
+		        }
+		
+			
+			
+		} else {
+			
+			logger.severe("connection is null");
+		}
+
+
+
+
+		return authenticated;
+	}
 	
 	
 	
