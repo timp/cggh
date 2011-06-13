@@ -50,29 +50,7 @@ public class UsersCRUD implements java.io.Serializable {
 		        	  resultSet.first();
 		        	  
 		        	  userModel.setId(resultSet.getInt("id"));
-		        	  
-		        	  //Get roles
-		        	  PreparedStatement preparedStatement1 = connection.prepareStatement("SELECT * FROM user_role WHERE user_id = ?;");
-			          preparedStatement1.setString(1, userModel.getUsername());
-			          preparedStatement1.executeQuery();
-			          
-			          ResultSet resultSet1 = preparedStatement.getResultSet();
-			          
-			          if (resultSet1.next()) {
-			        	  
-			        	  ArrayList<String> rolesAsStringArrayList = new ArrayList<String>();
-			        	  
-			        	  resultSet1.beforeFirst();
-			        	  
-			        	  while (resultSet1.next()) {
-			        		  
-			        		  rolesAsStringArrayList.add(resultSet1.getString("role"));
-			        		  
-			        	  }
-			        	  
-			        	  userModel.setRolesAsStringArrayList(rolesAsStringArrayList);
-			        	  
-			          }
+
 		        	  
 		      	  } else {
 		      		  // user record not found using username

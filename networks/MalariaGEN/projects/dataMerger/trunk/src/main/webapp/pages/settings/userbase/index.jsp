@@ -1,5 +1,11 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1" pageEncoding="ISO-8859-1"%>
-<%@ include file="../../shared/jsp/prepage.jsp" %>
+<%-- Note: Shouldn't have the prepage include. --%>
+<%@ page import="org.cggh.tools.dataMerger.data.users.userbases.UserbasesCRUD" %>
+<%@ page import="org.cggh.tools.dataMerger.data.users.userbases.UserbaseModel" %>
+<%
+	UserbasesCRUD userbasesCRUD = new UserbasesCRUD();
+	UserbaseModel userbaseModel = userbasesCRUD.retrieveUserbaseAsUserbaseModelUsingServletContext(getServletContext());
+%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 	<head>
@@ -28,33 +34,31 @@
 					<h3>System check:</h3>
 					<ul class="systemCheckList">
 						
-						<%--
-					
-						<% if (userbaseModel.isServerConnectable()) { %>
+						<% if (userbaseModel.isDatabaseServerConnectable()) { %>
 						<li class="pass">Userbase server is connectable.</li>
 						<% } else { %>
 						<li class="fail">Userbase server is not connectable.</li>
 						<% } %>
 					
-						<% if (userbaseModel.isConnectable()) { %>
+						<% if (userbaseModel.isDatabaseConnectable()) { %>
 						<li class="pass">Userbase is connectable.</li>
 						<% } else { %>
 						<li class="fail">Userbase is not connectable.</li>
 						<% } %>
 						
-						<% if (userbaseModel.getTablesAsCachedRowSet().size() >= 1) { %>
-						<li class="pass">Userbase tables count &gt;= 1.</li>
+						<% if (userbaseModel.isDatabaseDataRetrievable()) { %>
+						<li class="pass">Userbase data is retrievable.</li>
 						<% } else { %>
-						<li class="fail">Userbase tables count &lt; 1.</li>
+						<li class="fail">Userbase data is not retrievable.</li>
 						<% } %>
 							
-						 --%>	
-						
 					</ul>
 					
-					<ul>
-						<li>Add user, list users, edit user (if poss), username/password/permissions. TODO: Add permissions + user_permissions tables. userbase password hash algorithm (select, auto-determine).</li>
-					</ul>
+					<p>TODO: list of users
+					</p>
+					
+					<p>TODO: add user (skip edit/delete user)
+					</p>
 				
 				</div>
 				

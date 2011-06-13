@@ -1,11 +1,16 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1" pageEncoding="ISO-8859-1"%>
-<%@ include file="../../shared/jsp/prepage.jsp" %>
+<%-- Note: Shouldn't have the prepage include. --%>
+<%@ page import="org.cggh.tools.dataMerger.data.databases.DatabasesCRUD" %>
+<%@ page import="org.cggh.tools.dataMerger.data.databases.DatabaseModel" %>
 <%@ page import="org.cggh.tools.dataMerger.files.filebases.FilebasesCRUD" %>
 <%@ page import="org.cggh.tools.dataMerger.files.filebases.FilebaseModel" %>
 <%
 
+	DatabasesCRUD databasesCRUD = new DatabasesCRUD();
+	DatabaseModel databaseModel = databasesCRUD.retrieveDatabaseAsDatabaseModelUsingServletContext(getServletContext());
+
 	FilebasesCRUD filebasesCRUD = new FilebasesCRUD();
-	FilebaseModel filebaseModel = filebasesCRUD.retrieveFilebaseAsFilebaseModelUsingServletContext(request.getSession().getServletContext());
+	FilebaseModel filebaseModel = filebasesCRUD.retrieveFilebaseAsFilebaseModelUsingServletContext(getServletContext());
 	
 %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">

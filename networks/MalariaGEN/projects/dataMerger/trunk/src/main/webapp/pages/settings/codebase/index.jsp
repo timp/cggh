@@ -1,5 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1" pageEncoding="ISO-8859-1"%>
-<%@ include file="../../shared/jsp/prepage.jsp" %>
+<%-- Note: Shouldn't have the prepage include. --%>
 <%@ page import="org.cggh.tools.dataMerger.files.filebases.FilebasesCRUD" %>
 <%@ page import="org.cggh.tools.dataMerger.files.filebases.FilebaseModel" %>
 <%@ page import="org.cggh.tools.dataMerger.code.codebases.CodebaseModel" %>

@@ -1,5 +1,11 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1" pageEncoding="ISO-8859-1"%>
-<%@ include file="../../shared/jsp/prepage.jsp" %>
+<%-- Note: Shouldn't have the prepage include. --%>
+<%@ page import="org.cggh.tools.dataMerger.data.databases.DatabasesCRUD" %>
+<%@ page import="org.cggh.tools.dataMerger.data.databases.DatabaseModel" %>
+<%
+	DatabasesCRUD databasesCRUD = new DatabasesCRUD();
+	DatabaseModel databaseModel = databasesCRUD.retrieveDatabaseAsDatabaseModelUsingServletContext(getServletContext());
+%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 	<head>
@@ -53,10 +59,10 @@
 						<li class="fail">Database is not connectable.</li>
 						<% } %>
 						
-						<% if (databaseModel.getTablesAsCachedRowSet().size() >= 15) { %>
-						<li class="pass">Database tables count &gt;= 15.</li>
+						<% if (databaseModel.getTablesAsCachedRowSet().size() >= 13) { %>
+						<li class="pass">Database tables count &gt;= 13.</li>
 						<% } else { %>
-						<li class="fail">Database tables count &lt; 15.</li>
+						<li class="fail">Database tables count &lt; 13.</li>
 						<% } %>
 								
 						
@@ -75,7 +81,7 @@
 						</tr>
 						<tr>
 							<th>Database tables count:</th>
-							<% if (databaseModel.getTablesAsCachedRowSet().size() >= 15) { %>
+							<% if (databaseModel.getTablesAsCachedRowSet().size() >= 13) { %>
 							<td class="pass"><%=databaseModel.getTablesAsCachedRowSet().size() %></td>
 							<% } else { %>
 							<td class="fail"><%=databaseModel.getTablesAsCachedRowSet().size() %></td>

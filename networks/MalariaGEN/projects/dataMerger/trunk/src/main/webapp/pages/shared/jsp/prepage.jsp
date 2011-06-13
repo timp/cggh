@@ -17,8 +17,6 @@
 			
 			if (databaseModel.isInitialized()) {
 				
-				if (userModel != null) {
-					
 					UsersCRUD usersCRUD = new UsersCRUD();
 					usersCRUD.setDatabaseModel(databaseModel);
 					userModel = usersCRUD.retrieveUserAsUserModelUsingUsername(request.getRemoteUser());
@@ -30,33 +28,23 @@
 						
 					}
 				
-				} else {
-					response.sendRedirect(webappBaseURLAsString + "pages/shared/login/");
-					response.flushBuffer();
-				}
 				
 			} else {
-				if (request.getServletPath().startsWith("/pages/settings/")) {
-					out.print("<p><a href=\"" + webappBaseURLAsString + "pages/guides/configuration/errors/database-initialization\">database is not initialized<a></p>");
-				} else {
+
 					response.sendRedirect("/" + webappBaseURLAsString + "pages/guides/configuration/errors/database-initialization");
-				}
+
 			}
 			
 		} else {
-			if (request.getServletPath().startsWith("/pages/settings/")) {
-				out.print("<p><a href=\"/" + webappBaseURLAsString + "pages/guides/configuration/errors/database-connection\">cannot connect to database<a></p>");
-			} else {
+
 				response.sendRedirect("/" + webappBaseURLAsString + "pages/guides/configuration/errors/database-connection");
-			}
+
 		}
 		
 	} else {
-		if (request.getServletPath().startsWith("/pages/settings/")) {
-			out.print("<p><a href=\"/" + webappBaseURLAsString + "pages/guides/configuration/errors/database-connection\">cannot connect to database<a></p>");
-		} else {
+
 			response.sendRedirect("/" + webappBaseURLAsString + "pages/guides/configuration/errors/database-connection");
-		}
+
 	}
 
 %>

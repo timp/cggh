@@ -25,7 +25,7 @@ public class FilesCRUD implements java.io.Serializable  {
 	 * 
 	 */
 	private static final long serialVersionUID = 6872757755874307990L;
-	private final Logger logger = Logger.getLogger("org.cggh.tools.dataMerger.data.files");
+	private final Logger logger = Logger.getLogger(this.getClass().getPackage().getName());
 	
 	private DatabaseModel databaseModel;
 	

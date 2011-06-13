@@ -156,7 +156,7 @@
 <!-- BASIC authentication -->
  <login-config>
    <auth-method>BASIC</auth-method>
-   <realm-name>Basic Authentication</realm-name>
+   <realm-name>dataMerger Settings</realm-name>
  </login-config>
  
   <!-- Define security roles -->

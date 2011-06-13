@@ -18,6 +18,7 @@ public class UserbaseModel {
 	private String passwordHashFunctionName;
 	private Boolean databaseServerConnectable;
 	private Boolean databaseConnectable;
+	private Boolean databaseDataRetrievable;
 
 	public void setDatabaseDriverFullyQualifiedClassName(
 			String databaseDriverFullyQualifiedClassName) {
@@ -128,5 +129,13 @@ public class UserbaseModel {
 		}
 		
 		return connection;
+	}
+
+	public void setDatabaseDataRetrievable(Boolean databaseDataRetrievable) {
+		this.databaseDataRetrievable = databaseDataRetrievable;
+	}
+
+	public Boolean isDatabaseDataRetrievable() {
+		return databaseDataRetrievable;
 	}
 }
