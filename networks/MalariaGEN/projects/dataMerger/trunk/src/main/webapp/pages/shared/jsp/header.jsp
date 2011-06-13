@@ -48,11 +48,7 @@
 		
 		
 		
-		<% if (request.getServletPath().startsWith("/pages/guides/")) { %>
-			<li class="item"><a class="link selected" href="<%= headerBasePathURL %>pages/guides/">Guides</a></li>
-		<% } else { %>
-			<li class="item"><a class="link" href="<%= headerBasePathURL %>pages/guides/">Guides</a></li>
-		<% } %>
+
 
 
 
@@ -84,7 +80,11 @@
 		<% } %>		
 
 
-
+		<% if (request.getServletPath().startsWith("/pages/guides/")) { %>
+			<li class="item"><a class="link selected" href="<%= headerBasePathURL %>pages/guides/">Guides</a></li>
+		<% } else { %>
+			<li class="item"><a class="link" href="<%= headerBasePathURL %>pages/guides/">Guides</a></li>
+		<% } %>
 
 
 		

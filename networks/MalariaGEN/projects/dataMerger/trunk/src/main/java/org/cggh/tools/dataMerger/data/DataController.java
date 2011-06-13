@@ -100,22 +100,41 @@ public class DataController extends HttpServlet {
 				  FilesCRUD filesCRUD = new FilesCRUD();
 				  filesCRUD.setDatabaseModel(databaseModel);
 
-				  CachedRowSet filesAsCachedRowSet = filesCRUD.retrieveFilesAsCachedRowSetUsingUserId(userModel.getId());
-			
-				  if (filesAsCachedRowSet != null) {
-			
-					  	FilesFunctions filesFunctions = new FilesFunctions();
-					  
-					  	filesFunctions.setFilesAsCachedRowSet(filesAsCachedRowSet);
-					  	filesFunctions.setFilesAsDecoratedXHTMLTableUsingFilesAsCachedRowSet();
-					  	
-					  	filesAsHTML = filesFunctions.getFilesAsDecoratedXHTMLTable();
-					    
-				  } else {
 				  
-					  filesAsHTML = "<p>Failed to retrieve Files As CachedRowSet Using User Id</p>";
+				  if (request.getParameter("hidden") != null) {
+				  
+					  CachedRowSet hiddenFilesAsCachedRowSet = filesCRUD.retrieveHiddenFilesAsCachedRowSetUsingUserId(userModel.getId());
+				
+					  if (hiddenFilesAsCachedRowSet != null) {
+				
+						  	FilesFunctions filesFunctions = new FilesFunctions();
+						  	filesAsHTML = filesFunctions.getHiddenFilesAsDecoratedXHTMLTableUsingHiddenFilesAsCachedRowSet(hiddenFilesAsCachedRowSet);
+						    
+					  } else {
 					  
-				  } 
+						  filesAsHTML = "<p>Failed to retrieve Files As CachedRowSet Using User Id</p>";
+						  
+					  } 
+			
+				  } else {
+					  
+					  
+					  
+					  CachedRowSet filesAsCachedRowSet = filesCRUD.retrieveFilesAsCachedRowSetUsingUserId(userModel.getId());
+				
+					  if (filesAsCachedRowSet != null) {
+				
+						  	FilesFunctions filesFunctions = new FilesFunctions();
+
+						  	filesAsHTML = filesFunctions.getFilesAsDecoratedXHTMLTableUsingFilesAsCachedRowSet(filesAsCachedRowSet);
+						    
+					  } else {
+					  
+						  filesAsHTML = "<p>Failed to retrieve Files As CachedRowSet Using User Id</p>";
+						  
+					  } 
+					  
+				  }
 				  
 				  
 				  response.getWriter().print(filesAsHTML);
@@ -597,7 +616,10 @@ public class DataController extends HttpServlet {
 
 		 Pattern resolutionsByCellURLPattern = Pattern.compile("/merges/(\\d+)/resolutions-by-cell");
 		 Matcher resolutionsByCellURLPatternMatcher = resolutionsByCellURLPattern.matcher(request.getPathInfo());
-			 
+		
+		 
+		 String[] headerAcceptsAsStringArray = request.getHeader("Accept").split(",");
+		  List<String> headerAcceptsAsStringList = Arrays.asList(headerAcceptsAsStringArray);
 		 
 		 if (joinsURLPatternMatcher.find()) {
 			 
@@ -606,9 +628,6 @@ public class DataController extends HttpServlet {
 			 mergeModel.setId(Integer.parseInt(joinsURLPatternMatcher.group(1)));
 			 
 			 
-			 String[] headerAcceptsAsStringArray = request.getHeader("Accept").split(",");
-			  List<String> headerAcceptsAsStringList = Arrays.asList(headerAcceptsAsStringArray);
-			  
 			  if (headerAcceptsAsStringList.contains("application/json")) { 
 			 
 				  response.setContentType("application/json");
@@ -675,10 +694,6 @@ public class DataController extends HttpServlet {
 			 MergeModel mergeModel = new MergeModel();
 			 mergeModel.setId(Integer.parseInt(resolutionsByColumnURLPatternMatcher.group(1)));
 			 
-			 
-			 String[] headerAcceptsAsStringArray = request.getHeader("Accept").split(",");
-			  List<String> headerAcceptsAsStringList = Arrays.asList(headerAcceptsAsStringArray);
-			  
 			  if (headerAcceptsAsStringList.contains("application/json")) { 
 			 
 				  response.setContentType("application/json");
@@ -743,9 +758,6 @@ public class DataController extends HttpServlet {
 				 mergeModel.setId(Integer.parseInt(resolutionsByRowURLPatternMatcher.group(1)));
 				 
 				 
-				 String[] headerAcceptsAsStringArray = request.getHeader("Accept").split(",");
-				  List<String> headerAcceptsAsStringList = Arrays.asList(headerAcceptsAsStringArray);
-				  
 				  if (headerAcceptsAsStringList.contains("application/json")) { 
 				 
 					  response.setContentType("application/json");
@@ -813,9 +825,6 @@ public class DataController extends HttpServlet {
 						 mergeModel.setId(Integer.parseInt(resolutionsByCellURLPatternMatcher.group(1)));
 						 
 						 
-						 String[] headerAcceptsAsStringArray = request.getHeader("Accept").split(",");
-						  List<String> headerAcceptsAsStringList = Arrays.asList(headerAcceptsAsStringArray);
-						  
 						  if (headerAcceptsAsStringList.contains("application/json")) { 
 						 
 							  response.setContentType("application/json");
@@ -875,7 +884,92 @@ public class DataController extends HttpServlet {
 						  }				  
 			  
 			
-		  } else {
+		  } 
+		  else if (request.getPathInfo().equals("/files")) {
+			 
+			  if (headerAcceptsAsStringList.contains("application/json")) { 
+			 
+				  if (request.getParameter("hide") != null ^ request.getParameter("unhide") != null) {
+					  
+					  	Boolean hidden = null;
+						
+						if (request.getParameter("hide") != null) {
+							hidden = true;
+						} else if (request.getParameter("unhide") != null) {
+							hidden = false;
+						}
+						
+					  response.setContentType("application/json");
+					  String responseAsJSON = null;
+					  
+					  try {
+						  
+						    BufferedReader reader = request.getReader();
+						    String line = null;
+						    StringBuffer stringBuffer = new StringBuffer();
+						    
+						    while ((line = reader.readLine()) != null) {
+						      stringBuffer.append(line);
+						    }
+						    
+							try {
+								JSONObject jsonObject = new JSONObject(stringBuffer.toString());
+								
+								JSONArray fileIds = jsonObject.optJSONArray("file_id");
+								if (fileIds == null) {
+									fileIds = new JSONArray();
+									fileIds.put(jsonObject.getInt("file_id"));
+								}
+								
+								
+								FilesCRUD filesCRUD = new FilesCRUD();
+								filesCRUD.setDatabaseModel(databaseModel);
+								
+								UsersCRUD usersCRUD = new UsersCRUD();
+								usersCRUD.setDatabaseModel(databaseModel);
+								UserModel userModel = usersCRUD.retrieveUserAsUserModelUsingUsername((String)request.getSession().getAttribute("username"));
+								
+								if (filesCRUD.updateFileHiddensUsingFileIdsAsJSONArrayAndHiddenAsBooleanAndUserId(fileIds, hidden, userModel.getId())) {
+									responseAsJSON = "{\"success\": \"true\"}";
+								} else {
+									responseAsJSON = "{\"success\": \"false\"}";
+								}
+									
+				
+							} catch (JSONException e1) {
+								// TODO Auto-generated catch block
+								e1.printStackTrace();
+							} 
+					    
+					    
+					  } catch (Exception e) { 
+						  //TODO:
+						  e.printStackTrace(); 
+					  
+					  }
+					  
+					  response.getWriter().print(responseAsJSON);
+
+				  } else {
+					//FIXME: This will cause a parser error (Invalid JSON).
+					  
+					  response.setContentType("text/plain");
+					  response.getWriter().println("Unhandled Query Parameters");
+					  
+				  }
+					  
+			  } else {
+				  
+				  //FIXME: This will cause a parser error (Invalid JSON).
+				  
+				  response.setContentType("text/plain");
+				  response.getWriter().println("Unhandled Header Accept: " + request.getHeader("Accept"));
+				  
+			  }
+			  
+		  
+		 
+		 } else {
 			  
 			  //FIXME: This will cause a parser error (Invalid JSON).
 			  
@@ -887,6 +981,9 @@ public class DataController extends HttpServlet {
 
 	protected void doDelete (HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
+			DatabasesCRUD databasesCRUD = new DatabasesCRUD();
+			DatabaseModel databaseModel = databasesCRUD.retrieveDatabaseAsDatabaseModelUsingServletContext(request.getSession().getServletContext());
+
 
 		  String[] headerAcceptsAsStringArray = request.getHeader("Accept").split(",");
 		  List<String> headerAcceptsAsStringList = Arrays.asList(headerAcceptsAsStringArray);		 
@@ -927,10 +1024,77 @@ public class DataController extends HttpServlet {
 			  }	  
 				  
 				  
-		  } else {
+		  }
+		  else if (request.getPathInfo().equals("/files")) {
+				 
+			  if (headerAcceptsAsStringList.contains("application/json")) { 
+
+					  response.setContentType("application/json");
+					  String responseAsJSON = null;
+					  
+					  try {
+						  
+						    BufferedReader reader = request.getReader();
+						    String line = null;
+						    StringBuffer stringBuffer = new StringBuffer();
+						    
+						    while ((line = reader.readLine()) != null) {
+						      stringBuffer.append(line);
+						    }
+						    
+							try {
+								JSONObject jsonObject = new JSONObject(stringBuffer.toString());
+								
+								JSONArray fileIds = jsonObject.optJSONArray("file_id");
+								if (fileIds == null) {
+									fileIds = new JSONArray();
+									fileIds.put(jsonObject.getInt("file_id"));
+								}
+								
+								FilesCRUD filesCRUD = new FilesCRUD();
+								filesCRUD.setDatabaseModel(databaseModel);
+								
+								UsersCRUD usersCRUD = new UsersCRUD();
+								usersCRUD.setDatabaseModel(databaseModel);
+								UserModel userModel = usersCRUD.retrieveUserAsUserModelUsingUsername((String)request.getSession().getAttribute("username"));
+								
+								if (filesCRUD.deleteFilesUsingFileIdsAsJSONArrayAndUserId(fileIds, userModel.getId())) {
+									responseAsJSON = "{\"success\": \"true\"}";
+								} else {
+									responseAsJSON = "{\"success\": \"false\"}";
+								}
+									
+				
+							} catch (JSONException e1) {
+								// TODO Auto-generated catch block
+								e1.printStackTrace();
+							} 
+					    
+					    
+					  } catch (Exception e) { 
+						  //TODO:
+						  e.printStackTrace(); 
+					  
+					  }
+					  
+					  response.getWriter().print(responseAsJSON);
+
+					  
+			  } else {
+				  
+				  //FIXME: This will cause a parser error (Invalid JSON).
+				  
+				  response.setContentType("text/plain");
+				  response.getWriter().println("Unhandled Header Accept: " + request.getHeader("Accept"));
+				  
+			  }
+			  
+		  
+		 
+		 } else {
 			  
 			  response.getWriter().println("Unhandled Path Info: " + request.getPathInfo());
-		  }
+		 }
 	}
 
 	public Logger getLogger() {

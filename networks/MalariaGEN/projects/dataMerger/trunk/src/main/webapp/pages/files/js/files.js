@@ -3,9 +3,10 @@ function initFilesFunctions () {
 	initCreateUploadUsingFileUploaderFunction();
 	initMergeFilesFunction();
 	initHideFilesFunction();
-	initShowFilesFunction();
+	initShowHiddenFilesFunction();
 	initRemoveFilesFunction();
-	
+	initUnhideFilesFunction();
+	initShowUnhiddenFilesFunction();
 }
 
 
@@ -74,6 +75,22 @@ function retrieveFilesAsDecoratedHTMLTable () {
 	
 }
 
+function retrieveHiddenFilesAsDecoratedHTMLTable () {
+	
+	$.ajax({
+			data: '',
+			dataType: 'html',
+			success: function (data, textStatus, jqXHR) { 
+				$('.files').html(data); 
+				//Need to re-bind the new HTML
+				initFilesFunctions();
+			},
+			type: 'GET',
+			url: '/dataMerger/data/files?hidden'
+		});
+	
+}
+
 function initMergeFilesFunction () {
 
 	$(".merge-files-button").click(function() {	
@@ -125,15 +142,117 @@ function initHideFilesFunction () {
 
 	$(".hide-files-button").click(function() {	
 		
+		// Get data from files form.
+		var data = $.toJSON($('.files-form').serializeObject());
+		
+		//Validate exactly two checkboxes selected.
+		
+		var obj = jQuery.parseJSON(data);
+		
+		if (obj != undefined && obj.file_id != undefined && obj.file_id.length > 0) {
+		
+			$.ajax({
+				type: 'PUT',
+				data: data,
+				url: '/dataMerger/data/files?hide',
+				dataType: 'json',
+				success: function (data, textStatus, jqXHR) {
+					
+					if (data.success) {
+						
+						if (data.success = "true") {
+							retrieveFilesAsDecoratedHTMLTable();
+							initFilesFunctions(); //rebind
+							alert("Files have been hidden.");
+						} else {
+							alert("An error occurred.");
+						}
+		
+					} else {
+						$('.status').html("textStatus: " + textStatus);
+					}
+				},
+				error: function (jqXHR, textStatus, errorThrown){
+		            $('.error').html("errorThrown: " + errorThrown);
+		            $('.status').html("textStatus: " + textStatus);
+		        },
+				beforeSend: function() { $('.hiding-indicator').show(); },
+		        complete: function() { $('.hiding-indicator').hide(); }
+			});
+		
+		} else {
+			alert("Please select files to hide.");
+		}		
 		
 	});
 	
 }
 
-function initShowFilesFunction () {
+function initUnhideFilesFunction () {
 
-	$(".show-files-button").click(function() {	
+	$(".unhide-files-button").click(function() {	
 		
+		// Get data from files form.
+		var data = $.toJSON($('.files-form').serializeObject());
+		
+		//Validate exactly two checkboxes selected.
+		
+		var obj = jQuery.parseJSON(data);
+		
+		if (obj != undefined && obj.file_id != undefined && obj.file_id.length > 0) {
+		
+			$.ajax({
+				type: 'PUT',
+				data: data,
+				url: '/dataMerger/data/files?unhide',
+				dataType: 'json',
+				success: function (data, textStatus, jqXHR) {
+					
+					if (data.success) {
+						
+						if (data.success = "true") {
+							retrieveHiddenFilesAsDecoratedHTMLTable();
+							initFilesFunctions(); //rebind
+							alert("Files have been unhidden.");
+						} else {
+							alert("An error occurred.");
+						}
+		
+					} else {
+						$('.status').html("textStatus: " + textStatus);
+					}
+				},
+				error: function (jqXHR, textStatus, errorThrown){
+		            $('.error').html("errorThrown: " + errorThrown);
+		            $('.status').html("textStatus: " + textStatus);
+		        },
+				beforeSend: function() { $('.hiding-indicator').show(); },
+		        complete: function() { $('.hiding-indicator').hide(); }
+			});
+		
+		} else {
+			alert("Please select files to hide.");
+		}		
+		
+	});
+	
+}
+
+function initShowHiddenFilesFunction () {
+
+	$(".show-hidden-files-button").click(function() {	
+		
+		retrieveHiddenFilesAsDecoratedHTMLTable();
+		
+	});
+	
+}
+
+function initShowUnhiddenFilesFunction () {
+
+	$(".show-unhidden-files-button").click(function() {	
+		
+		retrieveFilesAsDecoratedHTMLTable();
 		
 	});
 	
@@ -143,6 +262,51 @@ function initRemoveFilesFunction () {
 
 	$(".remove-files-button").click(function() {	
 		
+		// Get data from files form.
+		var data = $.toJSON($('.files-form').serializeObject());
+		
+		//Validate exactly two checkboxes selected.
+		
+		var obj = jQuery.parseJSON(data);
+		
+		if (obj != undefined && obj.file_id != undefined && obj.file_id.length > 0) {
+		
+			$.ajax({
+				type: 'DELETE',
+				data: data,
+				url: '/dataMerger/data/files',
+				dataType: 'json',
+				success: function (data, textStatus, jqXHR) {
+					
+					if (data.success) {
+						
+						if (data.success = "true") {
+							
+							//FIXME: Could be viewing either the hidden or unhidden list.
+							// This loads the unhidden list regardless.
+							retrieveFilesAsDecoratedHTMLTable();
+							
+							initFilesFunctions(); //rebind
+							alert("Files have been removed.");
+						} else {
+							alert("An error occurred.");
+						}
+		
+					} else {
+						$('.status').html("textStatus: " + textStatus);
+					}
+				},
+				error: function (jqXHR, textStatus, errorThrown){
+		            $('.error').html("errorThrown: " + errorThrown);
+		            $('.status').html("textStatus: " + textStatus);
+		        },
+				beforeSend: function() { $('.removing-indicator').show(); },
+		        complete: function() { $('.removing-indicator').hide(); }
+			});
+		
+		} else {
+			alert("Please select files to remove.");
+		}
 		
 	});
 	

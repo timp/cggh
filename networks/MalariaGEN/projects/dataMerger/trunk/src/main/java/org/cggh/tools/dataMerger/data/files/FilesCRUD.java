@@ -15,6 +15,8 @@ import org.cggh.tools.dataMerger.data.files.FileModel;
 import org.cggh.tools.dataMerger.data.users.UserModel;
 import org.cggh.tools.dataMerger.data.users.UsersCRUD;
 import org.cggh.tools.dataMerger.functions.data.files.FilesFunctions;
+import org.json.JSONArray;
+import org.json.JSONException;
 
 
 
@@ -39,9 +41,7 @@ public class FilesCRUD implements java.io.Serializable  {
 		  if (filesAsCachedRowSet != null) {
 
 			  	FilesFunctions filesFunctions = new FilesFunctions();
-			  	filesFunctions.setFilesAsCachedRowSet(filesAsCachedRowSet);
-			  	filesFunctions.setFilesAsDecoratedXHTMLTableUsingFilesAsCachedRowSet();
-			  	filesAsDecoratedXHTMLTable = filesFunctions.getFilesAsDecoratedXHTMLTable();
+			  	filesAsDecoratedXHTMLTable = filesFunctions.getFilesAsDecoratedXHTMLTableUsingFilesAsCachedRowSet(filesAsCachedRowSet);
 			    
 		  } else {
 			  
@@ -76,7 +76,7 @@ public class FilesCRUD implements java.io.Serializable  {
 				    			  "SELECT file.id, filename, filepath, file_size_in_bytes, created_by_user_id, created_datetime, rows_count, columns_count, file_origin.origin " +
 				    			  "FROM file " +
 				    			  "LEFT JOIN file_origin ON file_origin.id = file.file_origin_id "  +
-				    			  "WHERE created_by_user_id = ? " +
+				    			  "WHERE created_by_user_id = ? AND (hidden IS NULL OR hidden = 0) " +
 				    			  ";"
 				    	  
 				    	  );
@@ -407,6 +407,232 @@ public class FilesCRUD implements java.io.Serializable  {
 		}
 		
 	}
+
+	//TODO: Consider moving this to scripts.
+	public Boolean updateFileHiddensUsingFileIdsAsJSONArrayAndHiddenAsBooleanAndUserId(JSONArray fileIds, Boolean hidden, Integer userId) {
+		
+		Boolean success = null;
+		
+		Connection connection = this.getDatabaseModel().getNewConnection();
+		 
+		if (connection != null) {
+		
+			for (int i = 0; i < fileIds.length(); i++) {
+				
+				try {
+					
+					
+					if (!this.updateFileHiddenUsingFileIdAndHiddenAsBooleanAndUserId(fileIds.getInt(i), hidden, userId, connection)) {
+						
+						success = false;
+						break;
+					}
+					
+					
+				} catch (JSONException e) {
+					
+					e.printStackTrace();
+					success = false;
+					
+				}
+				
+			}
+			
+			success = true;
+			
+			try {
+				connection.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+			
+		} else {
+			
+			logger.severe("connection is null");
+			
+			success = false;
+		}
+		
+		return success;
+	}
+
+	public boolean updateFileHiddenUsingFileIdAndHiddenAsBooleanAndUserId(Integer fileId, Boolean hidden, Integer userId, Connection connection) {
+
+		Boolean success = null;
+		
+		if (connection != null) {
+			
+			try {
+	          PreparedStatement preparedStatement = connection.prepareStatement(
+	        		  "UPDATE file SET " +
+	          			"hidden = ? " +
+	          			"WHERE id = ? AND created_by_user_id = ?;");
+	          preparedStatement.setBoolean(1, hidden);
+	          preparedStatement.setInt(2, fileId);
+	          preparedStatement.setInt(2, userId);
+	          preparedStatement.executeUpdate();
+	          preparedStatement.close();
+	          
+	          success = true;
+
+	        }
+	        catch(SQLException sqlException){
+		    	sqlException.printStackTrace();
+		    	success = false;
+	        } 
+	        
+	        
+		} else {
+			
+			logger.severe("connection is null");
+			success = false;
+		}
+		
+		return success;
+	}
+
+	public CachedRowSet retrieveHiddenFilesAsCachedRowSetUsingUserId(Integer userId) {
+
+		CachedRowSet hiddenFilesAsCachedRowSet = null;
+		
+		UserModel userModel = new UserModel();
+		userModel.setId(userId);
+		
+		   String CACHED_ROW_SET_IMPL_CLASS = "com.sun.rowset.CachedRowSetImpl";
+		   
+				
+
+				Connection connection = this.getDatabaseModel().getNewConnection();
+				 
+				if (connection != null) {
+					
+					
+				      try{
+				    	  PreparedStatement preparedStatement = connection.prepareStatement(
+				    			  
+				    			  "SELECT file.id, filename, filepath, file_size_in_bytes, created_by_user_id, created_datetime, rows_count, columns_count, hidden, file_origin.origin " +
+				    			  "FROM file " +
+				    			  "LEFT JOIN file_origin ON file_origin.id = file.file_origin_id "  +
+				    			  "WHERE created_by_user_id = ? AND hidden = 1 " +
+				    			  ";"
+				    	  
+				    	  );
+				          preparedStatement.setInt(1, userModel.getId());
+				          preparedStatement.executeQuery();
+				          Class<?> cachedRowSetImplClass = Class.forName(CACHED_ROW_SET_IMPL_CLASS);
+				          hiddenFilesAsCachedRowSet = (CachedRowSet) cachedRowSetImplClass.newInstance();
+				          hiddenFilesAsCachedRowSet.populate(preparedStatement.getResultSet());
+				          preparedStatement.close();
+	
+				        } 
+				      	catch (SQLException sqlException){
+					    	sqlException.printStackTrace();
+				        } catch (ClassNotFoundException e) {
+							e.printStackTrace();
+						} catch (InstantiationException e) {
+							e.printStackTrace();
+						} catch (IllegalAccessException e) {
+							e.printStackTrace();
+						} finally {
+				        	try {
+								connection.close();
+							} catch (SQLException e) {
+								e.printStackTrace();
+							}
+				        }
+				
+					
+					
+				} else {
+					
+					logger.severe("connection is null");
+				}
+		
+	
+	
+	
+	     return hiddenFilesAsCachedRowSet;
+	}
+
+	public boolean deleteFilesUsingFileIdsAsJSONArrayAndUserId(JSONArray fileIds, Integer userId) {
+		
+		Boolean success = null;
+		
+		Connection connection = this.getDatabaseModel().getNewConnection();
+		 
+		if (connection != null) {
+		
+			for (int i = 0; i < fileIds.length(); i++) {
+				
+				try {
+					
+					
+					if (!this.deleteFileUsingFileIdAndUserId(fileIds.getInt(i), userId, connection)) {
+						
+						success = false;
+						break;
+					}
+					
+					
+				} catch (JSONException e) {
+					
+					e.printStackTrace();
+					success = false;
+					
+				}
+				
+			}
+			
+			success = true;
+			
+			try {
+				connection.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+			
+		} else {
+			
+			logger.severe("connection is null");
+			
+			success = false;
+		}
+		
+		return success;
+	}
+
+	public boolean deleteFileUsingFileIdAndUserId(int fileId, Integer userId, Connection connection) {
+		
+		Boolean success = null;
+		
+		if (connection != null) {
+			
+			try {
+	          PreparedStatement preparedStatement = connection.prepareStatement(
+	        		  "DELETE FROM file WHERE id = ? AND created_by_user_id = ?;");
+	          preparedStatement.setInt(1, fileId);
+	          preparedStatement.setInt(2, userId);
+	          preparedStatement.executeUpdate();
+	          preparedStatement.close();
+	          
+	          success = true;
+
+	        }
+	        catch(SQLException sqlException){
+		    	sqlException.printStackTrace();
+		    	success = false;
+	        } 
+	        
+	        
+		} else {
+			
+			logger.severe("connection is null");
+			success = false;
+		}
+		
+		return success;
+	}
+
 	
 
 }

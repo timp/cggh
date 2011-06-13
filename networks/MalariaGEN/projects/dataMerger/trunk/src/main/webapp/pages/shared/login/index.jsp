@@ -21,6 +21,7 @@
 				initSharedFunctions();
 				initLoginFunctions();
 	
+				document.getElementById("loginForm").username.focus();
 			});
 		
 		</script>
@@ -47,7 +48,7 @@
 			<p>To enter, please complete the form below.
 			</p>
 			
-			<form class="loginForm" onsubmit="return false;">
+			<form id="loginForm" class="loginForm" onsubmit="return false;">
 				
 				<table>
 				

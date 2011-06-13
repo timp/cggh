@@ -29,7 +29,7 @@ function initLoginFunction () {
 					if (data.success) {
 						
 						if (data.success == "true") {
-							window.location.href = '/dataMerger/pages/guides/';
+							window.location.href = '/dataMerger/pages/files/';
 						} else {
 							$('.badLoginMessage').show();
 						}
