@@ -28,7 +28,11 @@ function initLoginFunction () {
 					
 					if (data.success) {
 						
-						window.location.href = '/dataMerger/pages/guides/';
+						if (data.success == "true") {
+							window.location.href = '/dataMerger/pages/guides/';
+						} else {
+							$('.badLoginMessage').show();
+						}
 		
 					} else {
 						alert("An authentication error occurred.");

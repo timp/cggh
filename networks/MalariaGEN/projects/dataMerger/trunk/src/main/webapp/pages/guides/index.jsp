@@ -8,7 +8,16 @@
 		
 		<link rel="stylesheet" type="text/css" href="../shared/css/shared.css" />
 		<link rel="stylesheet" type="text/css" href="css/guides.css" />
+		
+		<script type="text/javascript" src="../shared/js/jquery.min.js"></script>
 		<script type="text/javascript" src="../shared/js/shared.js"></script>
+		<script type="text/javascript">
+	
+			$(document).ready(function(){
+				initSharedFunctions();
+			});
+		
+		</script>
 		
 	</head>
 	<body>

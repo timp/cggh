@@ -1,7 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1" pageEncoding="ISO-8859-1"%>
 <%-- Note: Shouldn't have the prepage include. --%>
-<%@ page import="org.cggh.tools.dataMerger.data.users.userbases.UserbasesCRUD" %>
-<%@ page import="org.cggh.tools.dataMerger.data.users.userbases.UserbaseModel" %>
+<%@ page import="org.cggh.tools.dataMerger.data.userbases.UserbasesCRUD" %>
+<%@ page import="org.cggh.tools.dataMerger.data.userbases.UserbaseModel" %>
 <%@ page import="org.cggh.tools.dataMerger.data.users.UsersCRUD" %>
 <%
 	UserbasesCRUD userbasesCRUD = new UserbasesCRUD();
@@ -48,7 +48,7 @@
 					
 					<h3>Userbase</h3>
 		
-					<h3>System check:</h3>
+					<h4>System check:</h4>
 					<ul class="systemCheckList">
 						
 						<% if (userbaseModel.isDatabaseServerConnectable()) { %>
@@ -72,7 +72,7 @@
 					</ul>
 					
 					
-					<h3>Users</h3>
+					<h4>Users</h4>
 			
 					<div class="status">
 					</div>	
@@ -101,7 +101,7 @@
 			
 					<%-- FIXME: If duplicate username, provide useful error message or prevent case. --%>
 					<form class="new-user-form" onsubmit="return false;" autocomplete="off">
-						<h3>New user:</h3>
+						<h4>New user:</h4>
 						<div class="new-user-table-container">
 						<%=usersCRUD.retrieveNewUserAsDecoratedXHTMLTable() %>
 						</div>

@@ -81,7 +81,7 @@ public class FilesController extends HttpServlet {
 			
 				UsersCRUD usersCRUD = new UsersCRUD();
 				usersCRUD.setDatabaseModel(databaseModel);
-				UserModel userModel = usersCRUD.retrieveUserAsUserModelUsingUsername(request.getRemoteUser());
+				UserModel userModel = usersCRUD.retrieveUserAsUserModelUsingUsername((String)request.getSession().getAttribute("username"));
 				
 				//TODO: Bail out if user_id is null
 				
@@ -168,7 +168,7 @@ public class FilesController extends HttpServlet {
         			 
         				 UsersCRUD usersCRUD = new UsersCRUD();
         				 usersCRUD.setDatabaseModel(databaseModel);
-        				 UserModel userModel = usersCRUD.retrieveUserAsUserModelUsingUsername(request.getRemoteUser());
+        				 UserModel userModel = usersCRUD.retrieveUserAsUserModelUsingUsername((String)request.getSession().getAttribute("username"));
         		     
         				 FileOriginModel fileOriginModel = new FileOriginModel();
         				 // Short-cut

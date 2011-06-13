@@ -68,7 +68,7 @@ public class DataController extends HttpServlet {
 
 		UsersCRUD usersCRUD = new UsersCRUD();
 		usersCRUD.setDatabaseModel(databaseModel);
-		UserModel userModel = usersCRUD.retrieveUserAsUserModelUsingUsername(request.getRemoteUser());
+		UserModel userModel = usersCRUD.retrieveUserAsUserModelUsingUsername((String)request.getSession().getAttribute("username"));
 
 		//TODO: centralize these
 		
@@ -86,39 +86,7 @@ public class DataController extends HttpServlet {
 		 
 		  String[] headerAcceptsAsStringArray = request.getHeader("Accept").split(",");
 		  List<String> headerAcceptsAsStringList = Arrays.asList(headerAcceptsAsStringArray);		 
-
-		  //FIXME: Make sure only admin can get this.
-		  if (request.getPathInfo().equals("/users")) {
-
-			  if (headerAcceptsAsStringList.contains("text/html")) { 
-			  
-				  //Otherwise degree symbols turn into question-marks
-				  response.setCharacterEncoding("UTF-8");
-				  
-				  response.setContentType("text/html");
-				  
-				  String usersAsHTML = null;
-					
-				  
-				  UserbasesCRUD userbasesCRUD = new UserbasesCRUD();
-				  UserbaseModel userbaseModel = userbasesCRUD.retrieveUserbaseAsUserbaseModelUsingServletContext(getServletContext());
-					
-				  usersCRUD.setUserbaseModel(userbaseModel);
-
-				  
-				  usersAsHTML = usersCRUD.retrieveUsersAsDecoratedXHTMLTable();
-				  
-				  response.getWriter().print(usersAsHTML);
-				  
-			  } else {
-				  
-				  response.setContentType("text/plain");
-				  response.getWriter().println("Unhandled Header Accept: " + request.getHeader("Accept"));
-				  
-			  }
-			
-		  }		  
-		  else if (request.getPathInfo().equals("/files")) {
+		  if (request.getPathInfo().equals("/files")) {
 
 			  if (headerAcceptsAsStringList.contains("text/html")) { 
 			  
@@ -371,7 +339,7 @@ public class DataController extends HttpServlet {
 		
 			UsersCRUD usersCRUD = new UsersCRUD();
 			usersCRUD.setDatabaseModel(databaseModel);
-			userModel = usersCRUD.retrieveUserAsUserModelUsingUsername(request.getRemoteUser());
+			userModel = usersCRUD.retrieveUserAsUserModelUsingUsername((String)request.getSession().getAttribute("username"));
 			
 		}
 		
@@ -384,7 +352,7 @@ public class DataController extends HttpServlet {
 		//TODO: Not sure how login/logout should map onto HTTP methods, in a RESTful sense. 
 		 if (request.getPathInfo().equals("/users/authentication")) {
 
-			  if (request.getContentType() != null && request.getContentType().equals("application/json; charset=UTF-8")) {
+			  if (request.getContentType() != null && request.getContentType().startsWith("application/json")) {
 			  
 			  	if (headerAcceptsAsStringList.contains("application/json")) { 
 			  
@@ -917,6 +885,53 @@ public class DataController extends HttpServlet {
 		
 	}
 
+	protected void doDelete (HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		
+
+		  String[] headerAcceptsAsStringArray = request.getHeader("Accept").split(",");
+		  List<String> headerAcceptsAsStringList = Arrays.asList(headerAcceptsAsStringArray);		 
+		 
+		  if (request.getPathInfo().equals("/users/authentication")) {
+
+			  if (request.getContentType() != null && request.getContentType().startsWith("application/json")) {
+			  
+			  	if (headerAcceptsAsStringList.contains("application/json")) { 
+			  
+					  response.setCharacterEncoding("UTF-8");
+					  
+					  response.setContentType("application/json");
+					  
+					  String responseAsJSON = null;
+					  
+							  
+				        	request.getSession().invalidate();
+				        	
+				        	responseAsJSON = "{\"success\": \"true\"}";
+				     
+				        	
+					  response.getWriter().print(responseAsJSON);
+				  
+				  } else {
+					  
+					  response.setContentType("text/plain");
+					  response.getWriter().println("Unhandled Header Accept: " + request.getHeader("Accept"));
+					  
+				  }
+
+				  
+			  } else {
+				  
+				  response.setContentType("text/plain");
+				  response.getWriter().println("Unhandled Content Type: " + request.getContentType());
+				  
+			  }	  
+				  
+				  
+		  } else {
+			  
+			  response.getWriter().println("Unhandled Path Info: " + request.getPathInfo());
+		  }
+	}
 
 	public Logger getLogger() {
 		return logger;

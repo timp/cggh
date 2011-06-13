@@ -24,7 +24,7 @@ function initCreateUserFunction () {
 			$.ajax({
 				type: 'PUT',
 				data: data,
-				url: '/dataMerger/data/users',
+				url: '/dataMerger/data/userbases',
 				contentType: 'application/json',
 				dataType: 'json',
 				success: function (data, textStatus, jqXHR) {
@@ -52,7 +52,7 @@ function retrieveUsersAsDecoratedXHTMLTable () {
 	
 	$.ajax({
 			type: 'GET',
-			url: '/dataMerger/data/users',
+			url: '/dataMerger/data/userbases',
 			data: '',
 			dataType: 'html',
 			success: function (data, textStatus, jqXHR) { 

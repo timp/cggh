@@ -15,11 +15,10 @@ function logout () {
 function initLogoutLink () {
 
 	$(".logoutLink").click(function() {	
-		
-		
+
 			$.ajax({
 				type: 'DELETE',
-				data: data,
+				data: '',
 				contentType: 'application/json',
 				url: '/dataMerger/data/users/authentication',
 				dataType: 'json',
@@ -27,7 +26,11 @@ function initLogoutLink () {
 					
 					if (data.success) {
 						
-						window.location.href = '/dataMerger/pages/shared/login/';
+						if (data.success = "true") {
+							window.location.href = '/dataMerger/pages/shared/login/';
+						} else {
+							alert("An error occurred.");
+						}
 		
 					} else {
 						alert("An error occurred.");

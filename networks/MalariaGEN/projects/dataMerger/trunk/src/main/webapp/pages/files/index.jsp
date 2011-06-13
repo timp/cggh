@@ -1,9 +1,9 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1" pageEncoding="ISO-8859-1" %>
+<%@ include file="../shared/jsp/prepage.jsp" %>
 <%@ page import="java.util.*" %>
 <%@ page import="javax.sql.rowset.CachedRowSet" %>
 <%@ page import="org.cggh.tools.dataMerger.data.files.FilesCRUD" %>
 <%@ page import="org.cggh.tools.dataMerger.data.files.FileModel" %>
-<%@ include file="../shared/jsp/prepage.jsp" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
@@ -51,7 +51,7 @@
 		<div class="files">
 			<%
 			
-				if (databaseModel != null && userModel != null) {
+				if (databaseModel.isInitialized() && userModel.getId() != null) {
 					FilesCRUD filesCRUD = new FilesCRUD();
 					filesCRUD.setDatabaseModel(databaseModel);
 					out.print(filesCRUD.retrieveFilesAsDecoratedXHTMLTableUsingUserId(userModel.getId()));

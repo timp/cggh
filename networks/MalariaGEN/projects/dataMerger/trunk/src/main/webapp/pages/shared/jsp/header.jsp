@@ -88,13 +88,13 @@
 
 
 		
-	
+	<% if (request.isUserInRole("administrator")) { %>
 			<% if (request.getServletPath().startsWith("/pages/settings/")) { %>
 				<li class="item"><a class="link selected" href="<%= headerBasePathURL %>pages/settings/">Settings</a></li>
 			<% } else { %>
 				<li class="item"><a class="link" href="<%= headerBasePathURL %>pages/settings/">Settings</a></li>
 			<% } %>
-	
+	<% } %>
 	
 	</ul>
 </div>

@@ -37,6 +37,12 @@
 			</div>	
 			<div class="error">
 			</div>
+			
+			<div class="badLoginMessage" style="display:none">
+				<p class="error">Access denied.
+				</p>
+			
+			</div>
 
 			<p>To enter, please complete the form below.
 			</p>

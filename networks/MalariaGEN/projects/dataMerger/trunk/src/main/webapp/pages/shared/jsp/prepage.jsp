@@ -23,25 +23,25 @@
 						
 					if (userModel.getId() == null) {
 					
-						response.sendRedirect("/" + webappBaseURLAsString + "pages/guides/usage/errors/session-persistence");
+						response.sendRedirect(webappBaseURLAsString + "pages/guides/usage/errors/session-persistence");
 					}
 				
 				
 			} else {
 
-					response.sendRedirect("/" + webappBaseURLAsString + "pages/guides/configuration/errors/database-initialization");
+					response.sendRedirect(webappBaseURLAsString + "pages/guides/configuration/errors/database-initialization");
 
 			}
 			
 		} else {
 
-				response.sendRedirect("/" + webappBaseURLAsString + "pages/guides/configuration/errors/database-connection");
+				response.sendRedirect(webappBaseURLAsString + "pages/guides/configuration/errors/database-connection");
 
 		}
 		
 	} else {
 
-			response.sendRedirect("/" + webappBaseURLAsString + "pages/guides/configuration/errors/database-connection");
+			response.sendRedirect(webappBaseURLAsString + "pages/guides/configuration/errors/database-connection");
 
 	}
 

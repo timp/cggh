@@ -16,7 +16,7 @@ public class DatabaseTablesScripts {
 	
 	private final Logger logger = Logger.getLogger("org.cggh.tools.dataMerger.scripts.data.tables");
 	
-	public Boolean createInitialTablesUsingDatabaseModelAndUsername (DatabaseModel databaseModel, String Username) {
+	public Boolean createInitialTablesUsingDatabaseModel (DatabaseModel databaseModel) {
 
 		Connection connection = databaseModel.getNewConnection();
 		

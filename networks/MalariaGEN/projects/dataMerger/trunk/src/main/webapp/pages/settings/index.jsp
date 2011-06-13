@@ -7,7 +7,7 @@
 <html>
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-		<title>dataMerger - Admin</title>
+		<title>dataMerger - Settings</title>
 		
 		<link rel="stylesheet" type="text/css" href="../shared/css/shared.css" />
 		<link rel="stylesheet" type="text/css" href="css/settings.css" />
@@ -15,6 +15,13 @@
 		
 		<script type="text/javascript" src="../shared/js/jquery.min.js"></script>		
 		<script type="text/javascript" src="../shared/js/shared.js"></script>
+		<script type="text/javascript">
+	
+			$(document).ready(function(){
+				initSharedFunctions();
+			});
+		
+		</script>
 
 	</head>
 	<body>

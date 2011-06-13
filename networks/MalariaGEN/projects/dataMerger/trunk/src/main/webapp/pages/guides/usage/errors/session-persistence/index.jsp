@@ -4,7 +4,7 @@
 <html>
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-		<title>dataMerger - Guides - Usage - Errors - Accept header</title>
+		<title>dataMerger - Guides - Usage - Errors - Session persistence</title>
 		
 		<link rel="stylesheet" type="text/css" href="../../../../shared/css/shared.css" />
 		<link rel="stylesheet" type="text/css" href="../../../css/guides.css" />
@@ -26,13 +26,11 @@
 		
 					<h4>Errors</h4>
 					
-					<h5>Accept header</h5>
+					<h5>Session persistence</h5>
 					
-					<p>The request did not provide a supported accept header.</p>
+					<p>Your session has timed-out or become invalidated.</p>
 					
-					<p>Modify the request to provide a supported accept header.</p>
-					
-					<p>TODO: The list of supported mime-types (for accept headers) is available by making a HTTP GET request to the resource using a text/plain accept header.</p>
+					<p>To continue, you will need to <a href="/dataMerger/pages/shared/login/">log in</a> again.</p>
 					
 		
 				</div>

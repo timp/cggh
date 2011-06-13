@@ -70,7 +70,7 @@ public class ScriptsController extends HttpServlet {
 					
 						DatabaseTablesScripts databaseTablesScripts = new DatabaseTablesScripts();
 						
-						if (databaseTablesScripts.createInitialTablesUsingDatabaseModelAndUsername(databaseModel, request.getRemoteUser())) {
+						if (databaseTablesScripts.createInitialTablesUsingDatabaseModel(databaseModel)) {
 							
 							responseAsPlainText = "Database Tables created and initialized.";
 							
@@ -129,7 +129,7 @@ public class ScriptsController extends HttpServlet {
 						  	
 						  	UsersCRUD usersCRUD = new UsersCRUD();
 						  	usersCRUD.setDatabaseModel(databaseModel);
-						  	UserModel userModel = usersCRUD.retrieveUserAsUserModelUsingUsername(request.getRemoteUser());
+						  	UserModel userModel = usersCRUD.retrieveUserAsUserModelUsingUsername((String)request.getSession().getAttribute("username"));
 							
 							
 							FilebaseDirectoriesScripts filebaseDirectoriesScripts = new FilebaseDirectoriesScripts();

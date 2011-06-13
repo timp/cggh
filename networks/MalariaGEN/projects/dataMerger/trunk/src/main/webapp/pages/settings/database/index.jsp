@@ -44,7 +44,7 @@
 					<h3>Database</h3>
 
 
-					<h3>System check:</h3>
+					<h4>System check:</h4>
 					<ul class="systemCheckList">
 					
 						<% if (databaseModel.isServerConnectable()) { %>
@@ -59,6 +59,12 @@
 						<li class="fail">Database is not connectable.</li>
 						<% } %>
 						
+						<% if (databaseModel.isInitialized()) { %>
+						<li class="pass">Database is initialized.</li>
+						<% } else { %>
+						<li class="fail">Database is not initialized.</li>
+						<% } %>
+						
 						<% if (databaseModel.getTablesAsCachedRowSet().size() >= 13) { %>
 						<li class="pass">Database tables count &gt;= 13.</li>
 						<% } else { %>
@@ -68,7 +74,7 @@
 						
 					</ul>
 				
-					<h3>System information:</h3>
+					<h4>System information:</h4>
 					<table class="systemInformationTable">
 
 						<tr>	
@@ -91,7 +97,7 @@
 					</table>
 					
 				
-					<h3>web.xml configuration:</h3>
+					<h4>web.xml configuration:</h4>
 					<table class="systemInformationTable"> 
 						<tr><th>databaseDriverFullyQualifiedClassName:</th><td><%=application.getInitParameter("databaseDriverFullyQualifiedClassName") %></td></tr>
 						<tr><th>databaseServerPath:</th><td><%=application.getInitParameter("databaseServerPath") %></td></tr>
@@ -109,7 +115,7 @@
 					<div class="ajaxError">
 					</div>	
 		
-					<h3>Database:</h3>
+					<h4>Database:</h4>
 					<p>
 						<img class="creating-database-indicator" src="../../shared/gif/loading.gif" style="display:none" title="Creating..."/>
 						<% if (databaseModel.isServerConnectable() && !databaseModel.isConnectable()) { %>
@@ -127,7 +133,7 @@
 					<div class="divider-space"></div>
 				
 				
-					<h3>Database tables and data:</h3>	
+					<h4>Database tables and data:</h4>	
 					<p>
 						<img class="creating-database-tables-indicator" src="../../shared/gif/loading.gif" style="display:none" title="Creating..."/>
 						<% if (databaseModel.isConnectable() && (databaseModel.getTableNamesAsStringArrayList() == null || databaseModel.getTableNamesAsStringArrayList().size() == 0)) { %>

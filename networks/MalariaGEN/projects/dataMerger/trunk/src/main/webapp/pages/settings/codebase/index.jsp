@@ -41,7 +41,19 @@
 					
 					<h3>Codebase</h3>
 		
-						<h3>System information:</h3>
+					<h4>System check:</h4>
+					<ul class="systemCheckList">
+						
+						<% if (databaseModel.isInitialized()) { %>
+						<li class="pass">Database is initialized.</li>
+						<% } else { %>
+						<li class="fail">Database is not initialized.</li>
+						<% } %>
+						
+					</ul>
+		
+		
+						<h4>System information:</h4>
 						<table class="systemInformationTable">
 							<tr>
 								<th>Codebase version:</th>
@@ -49,11 +61,17 @@
 							</tr>
 						</table>
 						
-					<h3>Settings</h3>
+					
+						
+					<h4>Settings</h4>
+					<% if (databaseModel.isInitialized()) { %>
 					<table class="systemInformationTable"> 
 						<tr><th>stringsToNullifyAsCSV:</th><td><%=settingsModel.getSettingsAsHashMap().get("stringsToNullifyAsCSV") %></td></tr>
 						<tr><th>stringToExportInsteadOfNull:</th><td><%=settingsModel.getSettingsAsHashMap().get("stringToExportInsteadOfNull") %></td></tr>
 					</table>
+					<% } else { %>
+					<p>Settings data are not retrievable.</p>
+					<% } %>
 							
 				
 				</div>
