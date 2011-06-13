@@ -1,10 +1,20 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1" pageEncoding="ISO-8859-1"%>
 <%-- Note: Shouldn't have the prepage include. --%>
-<%@ page import="org.cggh.tools.dataMerger.files.filebases.FilebasesCRUD" %>
-<%@ page import="org.cggh.tools.dataMerger.files.filebases.FilebaseModel" %>
 <%@ page import="org.cggh.tools.dataMerger.code.codebases.CodebaseModel" %>
+<%@ page import="org.cggh.tools.dataMerger.data.databases.DatabasesCRUD" %>
+<%@ page import="org.cggh.tools.dataMerger.data.databases.DatabaseModel" %>
+<%@ page import="org.cggh.tools.dataMerger.code.settings.SettingsCRUD" %>
+<%@ page import="org.cggh.tools.dataMerger.code.settings.SettingsModel" %>
 <%
 	CodebaseModel codebaseModel = new CodebaseModel();
+
+	DatabasesCRUD databasesCRUD = new DatabasesCRUD();
+	DatabaseModel databaseModel = databasesCRUD.retrieveDatabaseAsDatabaseModelUsingServletContext(getServletContext());
+	
+	SettingsCRUD settingsCRUD = new SettingsCRUD();
+	settingsCRUD.setDatabaseModel(databaseModel);
+	SettingsModel settingsModel = settingsCRUD.retrieveSettingsAsSettingsModel();
+	
 %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
@@ -39,10 +49,10 @@
 							</tr>
 						</table>
 						
-					<h3>web.xml configuration:</h3>
+					<h3>Settings</h3>
 					<table class="systemInformationTable"> 
-						<tr><th>stringsToNullifyAsCSV:</th><td><%=application.getInitParameter("stringsToNullifyAsCSV") %></td></tr>
-						<tr><th>stringToExportInsteadOfNull:</th><td><%=application.getInitParameter("stringToExportInsteadOfNull") %></td></tr>
+						<tr><th>stringsToNullifyAsCSV:</th><td><%=settingsModel.getSettingsAsHashMap().get("stringsToNullifyAsCSV") %></td></tr>
+						<tr><th>stringToExportInsteadOfNull:</th><td><%=settingsModel.getSettingsAsHashMap().get("stringToExportInsteadOfNull") %></td></tr>
 					</table>
 							
 				

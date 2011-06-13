@@ -1,18 +1,12 @@
-package org.cggh.tools.dataMerger.data.users.userbases;
+package org.cggh.tools.dataMerger.data.userbases;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.logging.Logger;
 
 import javax.servlet.ServletContext;
-import javax.sql.rowset.CachedRowSet;
-
-import org.cggh.tools.dataMerger.data.datatables.DatatablesCRUD;
-import org.cggh.tools.dataMerger.data.files.FileOriginsCRUD;
-import org.cggh.tools.dataMerger.data.users.UsersCRUD;
 
 
 
@@ -67,23 +61,11 @@ public class UserbasesCRUD {
 			        		  
 			          );
 			          preparedStatement.executeQuery();
-			          ResultSet resultSet = preparedStatement.getResultSet();
-			          
-			          if (resultSet.next()) {
-			        	  
-				          dataRetrievable = true;
-	
-			      	  } else {
-			      		  
-			      		  //There is no data in the table.		      		  
-				          dataRetrievable = false;
-			      		  
-			      	  }
-			          
-			          resultSet.close();
 			          preparedStatement.close();
-			          
 	
+			          //Note: Ignoring the possibility of there being no data in the table.		      		  
+			          dataRetrievable = true;
+			          
 			        }
 			        catch(SQLException sqlException){
 			        	
@@ -181,6 +163,11 @@ public class UserbasesCRUD {
 			e.printStackTrace();
 			return false;
 		}
+	}
+
+
+	public Logger getLogger() {
+		return logger;
 	}
 
 

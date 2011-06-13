@@ -19,13 +19,11 @@
 				
 					UsersCRUD usersCRUD = new UsersCRUD();
 					usersCRUD.setDatabaseModel(databaseModel);
-					userModel = usersCRUD.retrieveUserAsUserModelUsingUsername(request.getRemoteUser());
+					userModel = usersCRUD.retrieveUserAsUserModelUsingUsername((String)session.getAttribute("username"));
 						
 					if (userModel.getId() == null) {
 					
-						usersCRUD.createUserUsingUsername(userModel.getUsername());
-						userModel = usersCRUD.retrieveUserAsUserModelUsingUsername(userModel.getUsername());
-						
+						response.sendRedirect("/" + webappBaseURLAsString + "pages/guides/usage/errors/session-persistence");
 					}
 				
 				

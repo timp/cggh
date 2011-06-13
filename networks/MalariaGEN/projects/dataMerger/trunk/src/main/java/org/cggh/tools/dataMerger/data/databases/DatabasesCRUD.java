@@ -136,7 +136,6 @@ public class DatabasesCRUD {
 		        	  currentInstallationModel.setMajorVersionNumber(resultSet.getInt("major_version_number"));
 		        	  currentInstallationModel.setMinorVersionNumber(resultSet.getInt("minor_version_number"));
 		        	  currentInstallationModel.setRevisionVersionNumber(resultSet.getInt("revision_version_number"));
-		        	  currentInstallationModel.getCreatedByUserModel().setId(resultSet.getInt("created_by_user_id"));
 		        	  currentInstallationModel.setCreatedDatetime(resultSet.getTimestamp("created_datetime"));
 		        	  
 		        	  

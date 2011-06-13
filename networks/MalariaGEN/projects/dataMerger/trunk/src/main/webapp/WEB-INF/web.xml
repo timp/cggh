@@ -7,18 +7,8 @@
 
   <!-- Servlets -->
 
-  <servlet>
-  	<description>
-  	</description>
-  	<display-name>UsersController</display-name>
-  	<servlet-name>UsersController</servlet-name>
-  	<servlet-class>org.cggh.tools.dataMerger.users.UsersController</servlet-class>
-  </servlet>
-  <servlet-mapping>
-    <servlet-name>UsersController</servlet-name>
-    <url-pattern>/users/*</url-pattern>
-  </servlet-mapping>
 
+	<!-- Servlets for admin -->
   <servlet>
   	<description>
   	</description>
@@ -35,17 +25,14 @@
   <servlet>
   	<description>
   	</description>
-  	<display-name>DataController</display-name>
-  	<servlet-name>DataController</servlet-name>
-  	<servlet-class>org.cggh.tools.dataMerger.data.DataController</servlet-class>
+  	<display-name>UserbasesController</display-name>
+  	<servlet-name>UserbasesController</servlet-name>
+  	<servlet-class>org.cggh.tools.dataMerger.data.userbases.UserbasesController</servlet-class>
   </servlet>
   <servlet-mapping>
-    <servlet-name>DataController</servlet-name>
-    <url-pattern>/data/*</url-pattern>
+    <servlet-name>UserbasesController</servlet-name>
+    <url-pattern>/data/userbases/*</url-pattern>
   </servlet-mapping>
-
-
-
 
   <servlet>
   	<description>
@@ -59,6 +46,20 @@
     <url-pattern>/files/filebases/*</url-pattern>
   </servlet-mapping>
 
+	<!-- Servlets for users -->
+  <servlet>
+  	<description>
+  	</description>
+  	<display-name>DataController</display-name>
+  	<servlet-name>DataController</servlet-name>
+  	<servlet-class>org.cggh.tools.dataMerger.data.DataController</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>DataController</servlet-name>
+    <url-pattern>/data/*</url-pattern>
+  </servlet-mapping>
+
+
   <servlet>
   	<description>
   	</description>
@@ -70,8 +71,6 @@
     <servlet-name>FilesController</servlet-name>
     <url-pattern>/files/*</url-pattern>
   </servlet-mapping>
-
-  
 
   <servlet>
   	<description>
@@ -141,6 +140,9 @@
      </web-resource-name>
 
      <url-pattern>/pages/settings/*</url-pattern>
+     <url-pattern>/data/userbases/*</url-pattern>
+     <url-pattern>/data/databases/*</url-pattern>
+     <url-pattern>/data/filebases/*</url-pattern>
                <http-method>GET</http-method>
                <http-method>POST</http-method>
                <http-method>PUT</http-method>
@@ -153,10 +155,11 @@
    
  </security-constraint>
 
+
 <!-- BASIC authentication -->
  <login-config>
    <auth-method>BASIC</auth-method>
-   <realm-name>dataMerger Settings</realm-name>
+   <realm-name>dataMerger Admin</realm-name>
  </login-config>
  
   <!-- Define security roles -->

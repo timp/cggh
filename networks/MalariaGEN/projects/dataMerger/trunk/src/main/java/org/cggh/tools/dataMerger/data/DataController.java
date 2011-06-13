@@ -26,6 +26,8 @@ import org.cggh.tools.dataMerger.data.merges.MergesCRUD;
 import org.cggh.tools.dataMerger.data.resolutions.byCell.ResolutionsByCellCRUD;
 import org.cggh.tools.dataMerger.data.resolutions.byColumn.ResolutionsByColumnCRUD;
 import org.cggh.tools.dataMerger.data.resolutions.byRow.ResolutionsByRowCRUD;
+import org.cggh.tools.dataMerger.data.userbases.UserbaseModel;
+import org.cggh.tools.dataMerger.data.userbases.UserbasesCRUD;
 import org.cggh.tools.dataMerger.data.users.UserModel;
 import org.cggh.tools.dataMerger.data.users.UsersCRUD;
 import org.cggh.tools.dataMerger.files.filebases.FilebaseModel;
@@ -33,6 +35,7 @@ import org.cggh.tools.dataMerger.files.filebases.FilebasesCRUD;
 import org.cggh.tools.dataMerger.functions.data.files.FilesFunctions;
 import org.cggh.tools.dataMerger.functions.data.joins.JoinFunctions;
 import org.cggh.tools.dataMerger.functions.data.merges.MergeFunctions;
+import org.cggh.tools.dataMerger.functions.data.users.UsersFunctions;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -83,8 +86,39 @@ public class DataController extends HttpServlet {
 		 
 		  String[] headerAcceptsAsStringArray = request.getHeader("Accept").split(",");
 		  List<String> headerAcceptsAsStringList = Arrays.asList(headerAcceptsAsStringArray);		 
-		 
-		  if (request.getPathInfo().equals("/files")) {
+
+		  //FIXME: Make sure only admin can get this.
+		  if (request.getPathInfo().equals("/users")) {
+
+			  if (headerAcceptsAsStringList.contains("text/html")) { 
+			  
+				  //Otherwise degree symbols turn into question-marks
+				  response.setCharacterEncoding("UTF-8");
+				  
+				  response.setContentType("text/html");
+				  
+				  String usersAsHTML = null;
+					
+				  
+				  UserbasesCRUD userbasesCRUD = new UserbasesCRUD();
+				  UserbaseModel userbaseModel = userbasesCRUD.retrieveUserbaseAsUserbaseModelUsingServletContext(getServletContext());
+					
+				  usersCRUD.setUserbaseModel(userbaseModel);
+
+				  
+				  usersAsHTML = usersCRUD.retrieveUsersAsDecoratedXHTMLTable();
+				  
+				  response.getWriter().print(usersAsHTML);
+				  
+			  } else {
+				  
+				  response.setContentType("text/plain");
+				  response.getWriter().println("Unhandled Header Accept: " + request.getHeader("Accept"));
+				  
+			  }
+			
+		  }		  
+		  else if (request.getPathInfo().equals("/files")) {
 
 			  if (headerAcceptsAsStringList.contains("text/html")) { 
 			  
@@ -347,9 +381,104 @@ public class DataController extends HttpServlet {
 		 String[] headerAcceptsAsStringArray = request.getHeader("Accept").split(",");
 		 List<String> headerAcceptsAsStringList = Arrays.asList(headerAcceptsAsStringArray);
 
-		   
-		 
-		 if (request.getPathInfo().equals("/merges")) {
+		//TODO: Not sure how login/logout should map onto HTTP methods, in a RESTful sense. 
+		 if (request.getPathInfo().equals("/users/authentication")) {
+
+			  if (request.getContentType() != null && request.getContentType().equals("application/json; charset=UTF-8")) {
+			  
+			  	if (headerAcceptsAsStringList.contains("application/json")) { 
+			  
+					  response.setCharacterEncoding("UTF-8");
+					  
+					  response.setContentType("application/json");
+					  
+					  String responseAsJSON = null;
+					  
+					  try {
+						  
+						    //NOTE: This is applicable to POST, not GET
+						    BufferedReader reader = request.getReader();
+						    String line = null;
+						    StringBuffer stringBuffer = new StringBuffer();
+						    
+						    while ((line = reader.readLine()) != null) {
+						      stringBuffer.append(line);
+						    }
+						    
+						    
+							try {
+								JSONObject jsonObject = new JSONObject(stringBuffer.toString());
+								
+								
+								try {
+
+
+							        		
+									
+							        
+							        
+							        UserbasesCRUD userbasesCRUD = new UserbasesCRUD();
+							        UserbaseModel userbaseModel = userbasesCRUD.retrieveUserbaseAsUserbaseModelUsingServletContext(getServletContext()); 
+							        
+									
+							        UsersCRUD usersCRUD = new UsersCRUD();
+							        usersCRUD.setUserbaseModel(userbaseModel);
+							        
+							        UsersFunctions usersFunctions = new UsersFunctions();
+							        
+							        if (usersCRUD.retrieveAuthenticatedAsBooleanUsingUsernameAndPasswordHashAsStrings(jsonObject.getString("username"), usersFunctions.convertStringIntoHashAsHexStringUsingStringAndHashFunctionName(jsonObject.getString("password"), getServletContext().getInitParameter("userbasePasswordHashFunctionName")))) {
+							        
+							        	request.getSession().setAttribute("userAuthenticated", true);
+							        	request.getSession().setAttribute("username", jsonObject.getString("username"));
+							        	
+							        	responseAsJSON = "{\"success\": \"true\"}";
+							        	
+							        } else {
+							        	
+							        	request.getSession().invalidate();
+							        	
+							        	responseAsJSON = "{\"success\": \"false\"}";
+							        }
+							        
+									
+								} catch (JSONException e) {
+
+									e.printStackTrace();
+								}
+								
+				
+							} catch (JSONException e1) {
+
+								e1.printStackTrace();
+							} 
+					    
+					    
+					  } catch (Exception e) { 
+
+						  e.printStackTrace(); 
+					  
+					  }
+					  
+					  response.getWriter().print(responseAsJSON);
+				  
+				  } else {
+					  
+					  response.setContentType("text/plain");
+					  response.getWriter().println("Unhandled Header Accept: " + request.getHeader("Accept"));
+					  
+				  }
+
+				  
+			  } else {
+				  
+				  response.setContentType("text/plain");
+				  response.getWriter().println("Unhandled Content Type: " + request.getContentType());
+				  
+			  }	  
+				  
+				  
+		  } 
+		 else if (request.getPathInfo().equals("/merges")) {
 			 
 			  if (headerAcceptsAsStringList.contains("application/json")) { 
 			 
@@ -777,7 +906,7 @@ public class DataController extends HttpServlet {
 							  
 						  }				  
 			  
-			  
+			
 		  } else {
 			  
 			  //FIXME: This will cause a parser error (Invalid JSON).

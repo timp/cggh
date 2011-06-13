@@ -18,25 +18,20 @@ function initLoginFunction () {
 		if (obj != undefined && obj.username != undefined && obj.password != undefined
 				&& obj.username != "" && obj.password != "") {
 		
-			alert("sending " + data);
-			
 			$.ajax({
 				type: 'POST',
 				data: data,
 				contentType: 'application/json',
-				url: '/dataMerger/users/authentication',
+				url: '/dataMerger/data/users/authentication',
 				dataType: 'json',
 				success: function (data, textStatus, jqXHR) {
 					
-					if (data.redirectURL) {
+					if (data.success) {
 						
-						window.location.href = data.redirectURL;
+						window.location.href = '/dataMerger/pages/guides/';
 		
 					} else {
-						alert("data: " + data);
-						alert("data.redirectURL: " + data.redirectURL);
-						alert("data.username: " + data.username);
-						$('.status').html("textStatus: " + textStatus);
+						alert("An authentication error occurred.");
 					}
 				},
 				error: function (jqXHR, textStatus, errorThrown){

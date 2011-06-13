@@ -7,8 +7,16 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.logging.Logger;
 
+import javax.sql.rowset.CachedRowSet;
+
 import org.cggh.tools.dataMerger.data.databases.DatabaseModel;
-import org.cggh.tools.dataMerger.data.users.userbases.UserbaseModel;
+import org.cggh.tools.dataMerger.data.joins.JoinModel;
+import org.cggh.tools.dataMerger.data.merges.MergeModel;
+import org.cggh.tools.dataMerger.data.userbases.UserbaseModel;
+import org.cggh.tools.dataMerger.functions.data.files.FilesFunctions;
+import org.cggh.tools.dataMerger.functions.data.joins.JoinFunctions;
+import org.cggh.tools.dataMerger.functions.data.users.UserFunctions;
+import org.cggh.tools.dataMerger.functions.data.users.UsersFunctions;
 
 public class UsersCRUD implements java.io.Serializable {
 
@@ -253,7 +261,144 @@ public class UsersCRUD implements java.io.Serializable {
 	}
 	
 	
+	public String retrieveUsersAsDecoratedXHTMLTable () {
+		
+		String usersAsDecoratedXHTMLTable = "";
+		
+		
+		  CachedRowSet usersAsCachedRowSet = this.retrieveUsersAsCachedRowSet();
+
+		  if (usersAsCachedRowSet != null) {
+
+			  	UsersFunctions usersFunctions = new UsersFunctions();
+			  	usersAsDecoratedXHTMLTable = usersFunctions.getUsersAsDecoratedXHTMLTableUsingUsersAsCachedRowSet(usersAsCachedRowSet);
+			    
+		  } else {
+			  
+			  this.logger.severe("usersAsCachedRowSet is null");
+			  usersAsDecoratedXHTMLTable = "<p>Error: usersAsCachedRowSet is null</p>";
+			  
+		  }
+		
+		return usersAsDecoratedXHTMLTable;
+	}
+	
+	public CachedRowSet retrieveUsersAsCachedRowSet() {
+		
+		CachedRowSet usersAsCachedRowSet = null;
+		
+		
+		   String CACHED_ROW_SET_IMPL_CLASS = "com.sun.rowset.CachedRowSetImpl";
+		   
+				
+
+				Connection connection = this.getUserbaseModel().getNewDatabaseConnection();
+				 
+				if (connection != null) {
+					
+					
+				      try{
+				    	  PreparedStatement preparedStatement = connection.prepareStatement(
+				    			  
+				    			  "SELECT `" + userbaseModel.getUsernameColumnName() + "` " +
+				    			  "FROM `" + userbaseModel.getDatabaseTableName() + "` " +
+				    			  ";"
+				    	  
+				    	  );
+				          preparedStatement.executeQuery();
+				          Class<?> cachedRowSetImplClass = Class.forName(CACHED_ROW_SET_IMPL_CLASS);
+				          usersAsCachedRowSet = (CachedRowSet) cachedRowSetImplClass.newInstance();
+				          usersAsCachedRowSet.populate(preparedStatement.getResultSet());
+				          preparedStatement.close();
+	
+				        } 
+				      	catch (SQLException sqlException){
+					    	sqlException.printStackTrace();
+				        } catch (ClassNotFoundException e) {
+							e.printStackTrace();
+						} catch (InstantiationException e) {
+							e.printStackTrace();
+						} catch (IllegalAccessException e) {
+							e.printStackTrace();
+						} finally {
+				        	try {
+								connection.close();
+							} catch (SQLException e) {
+								e.printStackTrace();
+							}
+				        }
+				
+					
+					
+				} else {
+					
+					logger.severe("connection is null");
+				}
+		
 	
 	
 	
+	     return usersAsCachedRowSet;
+	     
+	}
+	public String retrieveNewUserAsDecoratedXHTMLTable () {
+		
+		String newUserAsDecoratedXHTMLTable = "";
+		
+		UserFunctions userFunctions = new UserFunctions();
+		newUserAsDecoratedXHTMLTable = userFunctions.getUserAsDecoratedXHTMLTableUsingUserModel(new UserModel());//Unnecessary but explicit.
+	
+		return newUserAsDecoratedXHTMLTable;
+	}
+
+
+	public Boolean createUserUsingUsernameAndPasswordHash(String username,
+			String passwordHash) {
+		
+		Boolean success = null;
+
+		Connection connection = this.getUserbaseModel().getNewDatabaseConnection();
+		 
+		if (connection != null) {
+			
+			
+		      try{
+		    	  PreparedStatement preparedStatement = connection.prepareStatement(
+		    			  
+		    			  "INSERT INTO `" + this.getUserbaseModel().getDatabaseTableName() + "` (`" + this.getUserbaseModel().getUsernameColumnName() + "`, `" + this.getUserbaseModel().getPasswordHashColumnName() + "`) " +
+		    			  "VALUES ('" + username + "', '" + passwordHash + "') " +
+		    			  ";"
+		    	  
+		    	  );
+		          preparedStatement.executeUpdate();
+		          preparedStatement.close();
+
+		          success = true;
+		          
+		        } 
+		      	catch (SQLException sqlException){
+			    	
+		      		sqlException.printStackTrace();
+			    	success = false;
+			    	
+		        } finally {
+		        	try {
+						connection.close();
+					} catch (SQLException e) {
+						e.printStackTrace();
+					}
+		        }
+		
+			
+			
+		} else {
+			
+			logger.severe("connection is null");
+			success = false;
+		}
+
+
+		
+		return success;
+	}
 }

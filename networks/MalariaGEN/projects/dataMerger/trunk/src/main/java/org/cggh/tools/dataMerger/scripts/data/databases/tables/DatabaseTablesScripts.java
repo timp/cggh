@@ -7,7 +7,6 @@ import java.sql.Statement;
 import java.util.logging.Logger;
 
 import org.cggh.tools.dataMerger.data.databases.DatabaseModel;
-import org.cggh.tools.dataMerger.data.users.UserModel;
 
 public class DatabaseTablesScripts {
 
@@ -29,7 +28,7 @@ public class DatabaseTablesScripts {
 		          statement.executeUpdate("CREATE TABLE user (" +
 		          		"id BIGINT(255) UNSIGNED NOT NULL AUTO_INCREMENT, " +
 		          		"username VARCHAR(255) NOT NULL, " +
-		          		"password_hash VARCHAR(255) NULL, " +
+		          		"password_hash VARCHAR(255) NOT NULL, " +
 		          		"PRIMARY KEY (id), " +
 		          		"CONSTRAINT unique_username_constraint UNIQUE (username) " +
 		          		") ENGINE=InnoDB;");
@@ -47,31 +46,7 @@ public class DatabaseTablesScripts {
 			    	return false;
 		        }	
 
-		        
-			      try{
-			    	  
-			          PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO `user` (username) VALUES (?)");
-			          preparedStatement.setString(1, Username);
-			          preparedStatement.executeUpdate();
-			          preparedStatement.close();
 
-			        }
-			      catch(SQLException sqlException){
-				    	sqlException.printStackTrace();
-				    	try {
-							connection.close();
-						} catch (SQLException e) {
-							e.printStackTrace();
-						}
-				    	return false;
-			        }
-			      
-					//Short-cut
-			        UserModel userModel = new UserModel();
-			        userModel.setUsername(Username);
-					userModel.setId(1);		        
-		        
-		      
 						
 	        
 		      try{
@@ -81,7 +56,6 @@ public class DatabaseTablesScripts {
 		        		  "major_version_number BIGINT(255) UNSIGNED NOT NULL, " +
 		        		  "minor_version_number BIGINT(255) UNSIGNED NOT NULL, " +
 		        		  "revision_version_number BIGINT(255) UNSIGNED NOT NULL, " + 
-		        		  "created_by_user_id BIGINT(255) UNSIGNED NOT NULL, " + 
 		        		  "created_datetime DATETIME NOT NULL, " +
 		        		  "PRIMARY KEY (id) " +
 		        		  ") ENGINE=InnoDB;");
@@ -104,9 +78,8 @@ public class DatabaseTablesScripts {
 			    	  
 			          
 			          PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO `data_installation` (" +
-			        		  "major_version_number, minor_version_number, revision_version_number, created_by_user_id, created_datetime " +
-			        		  ") VALUES (1, 1, 0, ?, NOW());");
-			          preparedStatement.setInt(1, userModel.getId());
+			        		  "major_version_number, minor_version_number, revision_version_number, created_datetime " +
+			        		  ") VALUES (1, 1, 0, NOW());");
 			          preparedStatement.executeUpdate();
 			          preparedStatement.close();
 

@@ -180,9 +180,9 @@ public class DatatablesCRUD implements java.io.Serializable {
 				    		          //TODO: Get a list of all the strings to nullify.
 				    		          
 				    		          
-				    		          if (this.getSettingsModel().getSettingValueAsStringUsingName("stringsToNullifyAsCSV") != null) {
+				    		          if (this.getSettingsModel().getSettingsAsHashMap().get("stringsToNullifyAsCSV") != null) {
 				    		        	  
-				    		        	  String[] stringsToNullifyAsStringArray = this.getSettingsModel().getSettingValueAsStringUsingName("stringsToNullifyAsCSV").split(",");
+				    		        	  String[] stringsToNullifyAsStringArray = this.getSettingsModel().getSettingsAsHashMap().get("stringsToNullifyAsCSV").split(",");
 					    		        	 
 				    		        	  for (int i = 0; i < columnNames.length; i++) {
 				    		        		

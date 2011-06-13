@@ -8,7 +8,11 @@ public class InstallationFunctions {
 
 		String versionAsString = null;
 		
-		versionAsString = installationModel.getMajorVersionNumber().toString() + "." + installationModel.getMinorVersionNumber().toString() + "." + installationModel.getRevisionVersionNumber().toString();
+		if (installationModel.getMajorVersionNumber() != null 
+				&& installationModel.getMinorVersionNumber() != null
+				&& installationModel.getRevisionVersionNumber() != null) {
+			versionAsString = installationModel.getMajorVersionNumber().toString() + "." + installationModel.getMinorVersionNumber().toString() + "." + installationModel.getRevisionVersionNumber().toString();
+		}
 		
 		return versionAsString;
 	}

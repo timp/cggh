@@ -10,26 +10,27 @@
 	<h1 class="title">dataMerger</h1>
 
 	<p class="user-menu">
-		<% 
-			if (session.getAttribute("userAuthenticated") != null && (Boolean)session.getAttribute("userAuthenticated")) { 
-
-		%>
-			<span class="user"><%=session.getAttribute("username") %></span>
-			<span class="logout"><a href="javascript:logout();">logout</a></span>
 		<%
-		
-			} 
-			else if (request.getRemoteUser() != null) {
+			if (request.getRemoteUser() != null) {
 		%>
 				<span class="user"><%=request.getRemoteUser() %></span>
 		<%
-			} else {
-				
+			}
 		%>
-		<span class="user">Anonymous</span>
+		<% 
+			if (session.getAttribute("userAuthenticated") != null && (Boolean)session.getAttribute("userAuthenticated")) { 
+		%>
+			<span class="user"><%=session.getAttribute("username") %></span>
+			<span class="logout"><a class="logoutLink">logout</a></span>
+		<%
+			} else {
+		%>
+				<span class="user">Anonymous</span>
 		<%				
 			}
 		%>
+
+
 	</p>
 
 	<ul class="apps-menu">

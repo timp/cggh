@@ -1,4 +1,4 @@
-package org.cggh.tools.dataMerger.data.users;
+package org.cggh.tools.dataMerger.data.userbases;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -15,23 +15,24 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.cggh.tools.dataMerger.data.userbases.UserbaseModel;
 import org.cggh.tools.dataMerger.data.userbases.UserbasesCRUD;
+import org.cggh.tools.dataMerger.data.users.UsersCRUD;
 import org.cggh.tools.dataMerger.functions.data.users.UsersFunctions;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 
-public class UsersController extends HttpServlet {
+public class UserbasesController extends HttpServlet {
 
 
 
 	
-    /**
+	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 2142411300172699330L;
+	private static final long serialVersionUID = 38313151712112693L;
 	private final Logger logger = Logger.getLogger(this.getClass().getPackage().getName());
 
-    public UsersController() {
+    public UserbasesController() {
         super();
 
         
@@ -82,113 +83,7 @@ public class UsersController extends HttpServlet {
     }
     
     
-    //TODO: Not sure how login/logout should map onto HTTP methods, in a RESTful sense. 
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
-
-		  String[] headerAcceptsAsStringArray = request.getHeader("Accept").split(",");
-		  List<String> headerAcceptsAsStringList = Arrays.asList(headerAcceptsAsStringArray);		 
-		 
-		  if (request.getPathInfo().equals("/authentication")) {
-
-			  if (request.getContentType() != null && request.getContentType().equals("application/json; charset=UTF-8")) {
-			  
-			  	if (headerAcceptsAsStringList.contains("application/json")) { 
-			  
-					  response.setCharacterEncoding("UTF-8");
-					  
-					  response.setContentType("application/json");
-					  
-					  String responseAsJSON = null;
-					  
-					  try {
-						  
-						    //NOTE: This is applicable to POST, not GET
-						    BufferedReader reader = request.getReader();
-						    String line = null;
-						    StringBuffer stringBuffer = new StringBuffer();
-						    
-						    while ((line = reader.readLine()) != null) {
-						      stringBuffer.append(line);
-						    }
-						    
-						    
-							try {
-								JSONObject jsonObject = new JSONObject(stringBuffer.toString());
-								
-								
-								try {
-
-
-							        		
-									
-							        
-							        
-							        UserbasesCRUD userbasesCRUD = new UserbasesCRUD();
-							        UserbaseModel userbaseModel = userbasesCRUD.retrieveUserbaseAsUserbaseModelUsingServletContext(getServletContext()); 
-							        
-									
-							        UsersCRUD usersCRUD = new UsersCRUD();
-							        usersCRUD.setUserbaseModel(userbaseModel);
-							        
-							        UsersFunctions usersFunctions = new UsersFunctions();
-							        
-							        if (usersCRUD.retrieveAuthenticatedAsBooleanUsingUsernameAndPasswordHashAsStrings(jsonObject.getString("username"), usersFunctions.convertStringIntoHashAsHexStringUsingStringAndHashFunctionName(jsonObject.getString("password"), getServletContext().getInitParameter("userbasePasswordHashFunctionName")))) {
-							        
-							        	request.getSession().setAttribute("userAuthenticated", true);
-							        	request.getSession().setAttribute("username", jsonObject.getString("username"));
-							        	
-							        	responseAsJSON = "{\"success\": \"true\"}";
-							        	
-							        } else {
-							        	
-							        	request.getSession().invalidate();
-							        	
-							        	responseAsJSON = "{\"success\": \"false\"}";
-							        }
-							        
-									
-								} catch (JSONException e) {
-
-									e.printStackTrace();
-								}
-								
-				
-							} catch (JSONException e1) {
-
-								e1.printStackTrace();
-							} 
-					    
-					    
-					  } catch (Exception e) { 
-
-						  e.printStackTrace(); 
-					  
-					  }
-					  
-					  response.getWriter().print(responseAsJSON);
-				  
-				  } else {
-					  
-					  response.setContentType("text/plain");
-					  response.getWriter().println("Unhandled Header Accept: " + request.getHeader("Accept"));
-					  
-				  }
-
-				  
-			  } else {
-				  
-				  response.setContentType("text/plain");
-				  response.getWriter().println("Unhandled Content Type: " + request.getContentType());
-				  
-			  }	  
-				  
-				  
-		  } else {
-			  
-			  response.getWriter().println("Unhandled Path Info: " + request.getPathInfo());
-		  }
-	}
+    
 
 	
 	protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

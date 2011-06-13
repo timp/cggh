@@ -5,11 +5,41 @@ function initSharedFunctions () {
 
 	initSerializeObjectFunction();
 	initURLParamsVar();
+	initLogoutLink();
 }
 
 function logout () {
 	
 	alert("You will need to close all of your browser windows to log out.");
+}
+function initLogoutLink () {
+
+	$(".logoutLink").click(function() {	
+		
+		
+			$.ajax({
+				type: 'DELETE',
+				data: data,
+				contentType: 'application/json',
+				url: '/dataMerger/data/users/authentication',
+				dataType: 'json',
+				success: function (data, textStatus, jqXHR) {
+					
+					if (data.success) {
+						
+						window.location.href = '/dataMerger/pages/shared/login/';
+		
+					} else {
+						alert("An error occurred.");
+					}
+				},
+				error: function (jqXHR, textStatus, errorThrown){
+		            alert(errorThrown);
+		        }
+			});
+
+		
+	});
 }
 
 

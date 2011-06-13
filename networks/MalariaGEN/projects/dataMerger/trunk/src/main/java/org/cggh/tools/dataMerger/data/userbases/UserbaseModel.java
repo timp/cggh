@@ -1,4 +1,4 @@
-package org.cggh.tools.dataMerger.data.users.userbases;
+package org.cggh.tools.dataMerger.data.userbases;
 
 import java.sql.Connection;
 import java.sql.DriverManager;

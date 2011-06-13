@@ -39,7 +39,11 @@ function initCreateUploadUsingFileUploaderFunction () {
             onProgress: function(id, fileName, loaded, total){},
             onComplete: function(id, fileName, responseJSON){ 
             	
-            	retrieveFilesAsHTML(); 
+            	//Note: Just reloading would get around the FF3 back-button async amnesia and not much difference in performance
+            	// but the async error would then be erased.
+            	// document.location.reload();
+            	
+            	retrieveFilesAsDecoratedHTMLTable(); 
             	
             },
             onCancel: function(id, fileName){},
@@ -54,7 +58,7 @@ function initCreateUploadUsingFileUploaderFunction () {
 	
 }
 
-function retrieveFilesAsHTML () {
+function retrieveFilesAsDecoratedHTMLTable () {
 	
 	$.ajax({
 			data: '',

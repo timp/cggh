@@ -26,6 +26,10 @@ button:hover {
 	background-color: #dddddd;
 }
 
+a.logoutLink {
+	color: blue;
+	cursor: pointer;
+}
 
 /* elements in classes */
 a {

@@ -1,11 +1,18 @@
 package org.cggh.tools.dataMerger.code.settings;
 
+import java.util.HashMap;
+
 public class SettingsModel {
 
-	public String getSettingValueAsStringUsingName(String string) {
-		// TODO Auto-generated method stub
-		return null;
-		
+	private HashMap<String, String> settingsAsHashMap;
+
+	public void setSettingsAsHashMap(HashMap<String, String> settingsAsHashMap) {
+		this.settingsAsHashMap = settingsAsHashMap;
 	}
+
+	public HashMap<String, String> getSettingsAsHashMap() {
+		return settingsAsHashMap;
+	}
+
 
 }
