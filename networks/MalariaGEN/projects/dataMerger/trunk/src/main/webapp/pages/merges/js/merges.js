@@ -15,16 +15,14 @@ function initExportFunction () {
 		
 		if ($(this).closest('tr').find('input[name="merge_id"]').val() != null) {
 		
-			//TODO: Refactor this URL
-			//window.location.href = '/dataMerger/pages/merges/joins?merge_id=' + urlParams["merge_id"];
-			
-			//alert("Go Go Go!");
+			var dataObj = {mergedFileFilename : $(this).closest('tr').find("input[name=mergedFileFilename]").val()};
 			
 			var exportingIndicator = $(this).closest('tr').find('.exporting-indicator');
 			
 			$.ajax({
 				type: 'POST',
-				data: '',
+				contentType: 'application/json',
+				data: $.toJSON(dataObj),
 				url: '/dataMerger/data/merges/' + $(this).closest('tr').find('input[name="merge_id"]').val() + '/exports',
 				dataType: 'json',
 				success: function (data, textStatus, jqXHR) {

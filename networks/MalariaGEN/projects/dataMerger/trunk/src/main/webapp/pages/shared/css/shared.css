@@ -211,3 +211,7 @@ a:hover {
 	color: red;
 	font-weight: bold;	
 }
+
+.problem-message-container {
+	color: red;	
+}	

@@ -13,6 +13,7 @@ public class ExportModel implements java.io.Serializable {
 	private static final long serialVersionUID = 6542800631952380713L;
 
 	private Integer id;
+	private String filename;
 	private MergeModel mergeModel;
 
 
@@ -54,6 +55,16 @@ public class ExportModel implements java.io.Serializable {
 
 	public MergedDatatableModel getMergedDatatableModel() {		
 		return this.mergedDatatableModel;
+	}
+
+
+	public void setFilename(String filename) {
+		this.filename = filename;
+	}
+
+
+	public String getFilename() {
+		return filename;
 	}
 
 }

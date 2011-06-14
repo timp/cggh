@@ -98,7 +98,7 @@ public class MergeFunctions implements java.io.Serializable {
 					 else if (this.getMergeModel().getDatatable1Model().getDuplicateKeysCount() > 1) {
 						 decoratedXHTMLTable += "<th class=\"problem-message-container\">" + this.getMergeModel().getDatatable1Model().getDuplicateKeysCount() + " duplicate keys</th>";
 					 } else {
-						 decoratedXHTMLTable += "<th></th>";
+						 decoratedXHTMLTable += "<th class=\"problem-message-container\"></th>";
 					 }
 					 
 					 if (this.getMergeModel().getDatatable2Model().getDuplicateKeysCount() == 1) {
@@ -107,7 +107,7 @@ public class MergeFunctions implements java.io.Serializable {
 					 else if (this.getMergeModel().getDatatable2Model().getDuplicateKeysCount() > 1) {
 						 decoratedXHTMLTable += "<th class=\"problem-message-container\">" + this.getMergeModel().getDatatable2Model().getDuplicateKeysCount() + " duplicate keys</th>";
 					 } else {
-						 decoratedXHTMLTable += "<th></th>";
+						 decoratedXHTMLTable += "<th class=\"problem-message-container\"></th>";
 					 }
 					 
 					 decoratedXHTMLTable += "<th class=\"column_name-heading\">Column name</th>";

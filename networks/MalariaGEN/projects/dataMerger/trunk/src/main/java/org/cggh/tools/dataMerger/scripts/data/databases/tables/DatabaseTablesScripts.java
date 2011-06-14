@@ -478,15 +478,15 @@ public class DatabaseTablesScripts {
 				        		  
 				        		  "source_file_1_id BIGINT(255) UNSIGNED NOT NULL, " +
 				        		  "source_file_2_id BIGINT(255) UNSIGNED NOT NULL, " +
-				        		  "merged_file_id BIGINT(255) UNSIGNED NOT NULL, " +
+				        		  "merged_file_id BIGINT(255) UNSIGNED NULL, " +
 				        		  
 				        		  "source_file_1_filepath VARCHAR(255) NOT NULL, " +
 				        		  "source_file_2_filepath VARCHAR(255) NOT NULL, " +
-				        		  "merged_file_filepath VARCHAR(255) NOT NULL, " +
+				        		  "merged_file_filepath VARCHAR(255) NULL, " +
 				        		  
-				        		  "joins_record_filepath VARCHAR(255) NOT NULL, " +
-				        		  "resolutions_record_filepath VARCHAR(255) NOT NULL, " +
-				        		  "settings_record_filepath VARCHAR(255) NOT NULL, " +
+				        		  "joins_record_filepath VARCHAR(255) NULL, " +
+				        		  "resolutions_record_filepath VARCHAR(255) NULL, " +
+				        		  "settings_record_filepath VARCHAR(255) NULL, " +
 				        		  
 				        		  "created_by_user_id BIGINT(255) UNSIGNED NOT NULL, " + 
 				        		  "created_datetime DATETIME NOT NULL, " +

@@ -86,6 +86,16 @@ DateFormat dateFormat = new SimpleDateFormat("dd MMM yyyy HH:mm");
 			<p>There are duplicate keys.
 			</p>
 			<% } %>
+			
+			<% if (!(mergeModel.getJoinsModel().getKeysCount() == null || mergeModel.getJoinsModel().getKeysCount() == 0) && !(null != mergeModel.getTotalDuplicateKeysCount() && mergeModel.getTotalDuplicateKeysCount() > 0)) { %>
+				<% if (mergeModel.getTotalConflictsCount() == 1) { %>
+				<p><%=mergeModel.getTotalConflictsCount() %> conflict
+				</p>
+				<% } else if (mergeModel.getTotalConflictsCount() > 1) { %>
+				<p><%=mergeModel.getTotalConflictsCount() %> conflicts
+				</p>
+				<% } %>
+			<% } %>
 		
 		</div>
 		
@@ -96,8 +106,16 @@ DateFormat dateFormat = new SimpleDateFormat("dd MMM yyyy HH:mm");
 
 			<div class="item"><img class="saving-indicator" src="../../shared/gif/loading.gif" style="display:none" title="Saving..."/><button class="save-join">Save Join</button></div>
 		
-			<% if (mergeModel.getJoinsModel().getKeysCount() > 0 && mergeModel.getTotalDuplicateKeysCount() == 0) { %>
+			<% if (mergeModel.getJoinsModel().getKeysCount() > 0 && mergeModel.getTotalDuplicateKeysCount() == 0 && mergeModel.getTotalConflictsCount() > 0) { %>
 			<div class="item"><button class="edit-resolutions-by-column">Edit Resolutions</button></div>
+			<% } %>
+			
+			<% if (mergeModel.getJoinsModel().getKeysCount() > 0 && mergeModel.getTotalDuplicateKeysCount() == 0 && mergeModel.getTotalConflictsCount() == 0) { %>
+			<div class="item">
+				<img class="exporting-indicator" src="../../shared/gif/loading.gif" style="display:none" title="Exporting..."/>
+				<input type="text" name="mergedFileFilename" value="merged_file_<%=mergeModel.getId() %>.csv"/>
+				<button class="export-button">Export</button>
+			</div>
 			<% } %>
 			
 			<div class="item"><a href="<%= headerBasePathURL %>pages/merges/">Cancel &amp; Return to Merges</a></div>

@@ -540,42 +540,76 @@ public class DataController extends HttpServlet {
 			 
 			  //TODO: Just testing
 			  if (headerAcceptsAsStringList.contains("application/json")) { 
-			 
-				  response.setContentType("application/json");
-				  String responseAsJSON = null;
-				  
-				  	// Get the mergeId for the new export
-				  
-				  	ExportModel exportModel = new ExportModel();
-				  	exportModel.getMergeModel().setId(Integer.parseInt(exportURLPatternMatcher.group(1)));
-				  
 
-					ExportsCRUD exportsModel = new ExportsCRUD();
-					
-					exportsModel.setDatabaseModel(databaseModel);
-					exportsModel.setUserModel(userModel);
-					exportsModel.setFilebaseModel(filebaseModel);
-					
-					exportModel = exportsModel.retrieveExportAsExportModelThroughCreatingExportUsingExportModel(exportModel);
-					
-					if (exportModel.getId() != null) {
-						
-				        responseAsJSON = "{\"id\": \"" + exportModel.getId() + "\"}";
-				        response.getWriter().print(responseAsJSON);
-			        
-					} else {
-						
-						 //FIXME: This will cause a parser error (Invalid JSON).
-						  
-						String logMessage = "Did not get an export ID after attempting to create an export using the merge ID.";
-						
-						//this.log(logMessage);
-						
-						  response.setContentType("text/plain");
-						  response.getWriter().println(logMessage);
-						
-					}
+				  if (request.getContentType().startsWith("application/json")) {
+				  
+					  response.setContentType("application/json");
+					  String responseAsJSON = null;
+					  
+					  	// Get the mergeId for the new export
+					  
+					  	ExportModel exportModel = new ExportModel();
+					  	exportModel.getMergeModel().setId(Integer.parseInt(exportURLPatternMatcher.group(1)));
+					  
+					  	
+					  	// Get the filename for the new export
+					  	BufferedReader reader = request.getReader();
+					    String line = null;
+					    StringBuffer stringBuffer = new StringBuffer();
+					    
+					    while ((line = reader.readLine()) != null) {
+					      stringBuffer.append(line);
+					    }
+					    
+							
+						try {
+							JSONObject jsonObject = new JSONObject(stringBuffer.toString());
+							
+							exportModel.setFilename(jsonObject.optString("mergedFileFilename"));
+							
+							//TODO: comment-out
+							logger.info("got mergedFileFilename: " + exportModel.getFilename());
+							
+							ExportsCRUD exportsCRUD = new ExportsCRUD();
+							
+							exportsCRUD.setDatabaseModel(databaseModel);
+							exportsCRUD.setUserModel(userModel);
+							exportsCRUD.setFilebaseModel(filebaseModel);
+							
+							exportModel = exportsCRUD.retrieveExportAsExportModelThroughCreatingExportUsingExportModel(exportModel);
+							
+							if (exportModel.getId() != null) {
+								
+						        responseAsJSON = "{\"id\": \"" + exportModel.getId() + "\"}";
+						        response.getWriter().print(responseAsJSON);
+					        
+							} else {
+								
+								 //FIXME: This will cause a parser error (Invalid JSON).
+								  
+								String logMessage = "Did not get an export ID after attempting to create an export using the merge ID.";
+								
+								//this.log(logMessage);
+								
+								  response.setContentType("text/plain");
+								  response.getWriter().println(logMessage);
+								
+							}
+							
+						} catch (JSONException e) {
+							
+							e.printStackTrace();
+							
+							response.setContentType("text/plain");
+							response.getWriter().println("An error occurred while trying to parse the filename."); 
+						}
+					  	
 
+				  } else {
+					  response.setContentType("text/plain");
+					  response.getWriter().println("Unhandled Content Type: " + request.getContentType()); 
+				  }
+						
 			  } else {
 				  
 				  //FIXME: This will cause a parser error (Invalid JSON).

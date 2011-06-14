@@ -121,8 +121,7 @@ public class MergesFunctions implements java.io.Serializable {
 					 if (totalConflictsCount != null && totalDuplicateKeysCount == 0) {
 						 
 						 if (totalConflictsCount == 0) {
-							 //TODO: Wire this up to AJAX (or direct JS call)
-							 mergesAsDecoratedXHTMLTable = mergesAsDecoratedXHTMLTable.concat("<td><button class=\"export-button\">Export</button><img class=\"exporting-indicator\" src=\"/dataMerger/pages/shared/gif/loading.gif\" style=\"display:none\" title=\"Exporting...\"/></td>");
+							 mergesAsDecoratedXHTMLTable = mergesAsDecoratedXHTMLTable.concat("<td><input type=\"text\" name=\"mergedFileFilename\" value=\"merged_file_" + this.getMergesAsCachedRowSet().getInt("id") + ".csv\"/><button class=\"export-button\">Export</button><img class=\"exporting-indicator\" src=\"/dataMerger/pages/shared/gif/loading.gif\" style=\"display:none\" title=\"Exporting...\"/></td>");
 						 }
 						 else if (totalConflictsCount == 1) {
 							 mergesAsDecoratedXHTMLTable = mergesAsDecoratedXHTMLTable.concat("<td class=\"problem-message-container\">" + totalConflictsCount + " conflict</td>");

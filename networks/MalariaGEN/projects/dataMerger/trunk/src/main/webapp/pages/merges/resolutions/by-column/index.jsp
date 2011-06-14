@@ -121,9 +121,12 @@ ResolutionsFunctions resolutionsFunctions = new ResolutionsFunctions();
 		
 			<div class="item"><button class="edit-join">Edit Join</button></div>
 			
-			<!-- TODO: If there are no unsolved problems. -->
 			<% if (mergeModel.getTotalConflictsCount() == 0) { %>
-			<div class="item"><img class="exporting-indicator" src="../../../shared/gif/loading.gif" style="display:none" title="Exporting..."/><button class="export-button">Export</button></div>
+			<div class="item">
+				<img class="exporting-indicator" src="../../../shared/gif/loading.gif" style="display:none" title="Exporting..."/>
+				<input type="text" name="mergedFileFilename" value="merged_file_<%=mergeModel.getId() %>.csv"/>
+				<button class="export-button">Export</button>
+			</div>
 			<% } %>
 			
 			
@@ -151,6 +154,8 @@ ResolutionsFunctions resolutionsFunctions = new ResolutionsFunctions();
 			</p>
 			--%>
 		</div>
+
+		
 	</div>
 </body>
 </html>

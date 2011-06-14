@@ -66,10 +66,12 @@ public class ExportsCRUD implements java.io.Serializable  {
 						
 					
 						//Insert the export record
-						PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO export (upload_1_id, upload_2_id, created_by_user_id, created_datetime) VALUES (?, ?, ?, NOW());");
+						PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO export (source_file_1_id, source_file_2_id, source_file_1_filepath, source_file_2_filepath, created_by_user_id, created_datetime) VALUES (?, ?, ?, ?, ?, NOW());");
 						preparedStatement.setInt(1, exportModel.getMergeModel().getFile1Model().getId());
 						preparedStatement.setInt(2, exportModel.getMergeModel().getFile2Model().getId());
-						preparedStatement.setInt(3, this.getUserModel().getId());
+						preparedStatement.setString(3, exportModel.getMergeModel().getFile1Model().getFilepath());
+						preparedStatement.setString(4, exportModel.getMergeModel().getFile2Model().getFilepath());
+						preparedStatement.setInt(5, this.getUserModel().getId());
 						preparedStatement.executeUpdate();
 						preparedStatement.close();  
 			    	  
@@ -158,7 +160,7 @@ public class ExportsCRUD implements java.io.Serializable  {
 		//exportDirectory.setWritable(true); //This would only make it writable for tomcat
 		String pathSeparatorForSQL = "\\\\";
 		String pathSeparatorForRepositoryFilepath = "\\";
-		if(filebaseModel.isUnix()){
+		if(this.getFilebaseModel().isUnix()){
 			pathSeparatorForSQL = "/";
 			pathSeparatorForRepositoryFilepath = "/";
 			try {
@@ -872,9 +874,10 @@ public class ExportsCRUD implements java.io.Serializable  {
 		
 		////this.logger.info("columnDefinitionsForCreateSQL: " + columnDefinitionsForCreateSQL);
 		
-		exportModel.getMergedDatatableModel().setName("merged_datatable_" + exportModel.getId());
+		exportModel.getMergedDatatableModel().setName(exportModel.getFilename());
 		
-		this.updateExportMergedDatatableNameUsingExportModel(exportModel, connection);
+		//FIXME: This is deprecated
+		//this.updateExportMergedDatatableNameUsingExportModel(exportModel, connection);
 		
 		
 		try {
