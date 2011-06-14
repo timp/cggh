@@ -120,3 +120,8 @@
         background-color: #FFFFFF;      
 }
 
+.exporting-indicator {
+	margin-right: 0px;
+	margin-left: 20px;
+	vertical-align: middle;
+}

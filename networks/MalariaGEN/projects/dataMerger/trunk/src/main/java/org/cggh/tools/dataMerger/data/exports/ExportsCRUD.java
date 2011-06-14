@@ -160,7 +160,7 @@ public class ExportsCRUD implements java.io.Serializable  {
 		//exportDirectory.setWritable(true); //This would only make it writable for tomcat
 		String pathSeparatorForSQL = "\\\\";
 		String pathSeparatorForRepositoryFilepath = "\\";
-		if(this.getFilebaseModel().isUnix()){
+		if(this.getFilebaseModel().getOperatingSystem().equals("nix")){
 			pathSeparatorForSQL = "/";
 			pathSeparatorForRepositoryFilepath = "/";
 			try {
@@ -228,7 +228,7 @@ public class ExportsCRUD implements java.io.Serializable  {
 		
 		try {
 			//Update the export table
-			PreparedStatement preparedStatement = connection.prepareStatement("UPDATE `export` SET merged_datatable_export_repository_filepath = ? WHERE id = ?;");
+			PreparedStatement preparedStatement = connection.prepareStatement("UPDATE `export` SET merged_file_filepath = ? WHERE id = ?;");
 			
 			preparedStatement.setString(1, exportModel.getMergedDatatableModel().getExportRepositoryFilepath());
 			preparedStatement.setInt(2, exportModel.getId());
@@ -257,7 +257,7 @@ public class ExportsCRUD implements java.io.Serializable  {
 		//TODO: Make this writable for MySQL
 		//exportDirectory.setWritable(true); //This would only make it writable for tomcat
 		String pathSeparatorForSQL = "\\\\";
-		if(this.getFilebaseModel().isUnix()){
+		if(this.getFilebaseModel().getOperatingSystem().equals("nix")){
 			pathSeparatorForSQL = "/";
 			try {
 				Runtime.getRuntime().exec("chmod g+w " + exportDirectory.getAbsolutePath());
@@ -308,7 +308,7 @@ public class ExportsCRUD implements java.io.Serializable  {
 		
 		try {
 			//Update the export table
-			PreparedStatement preparedStatement = connection.prepareStatement("UPDATE `export` SET joins_export_repository_filepath = ? WHERE id = ?;");
+			PreparedStatement preparedStatement = connection.prepareStatement("UPDATE `export` SET joins_record_filepath = ? WHERE id = ?;");
 			
 			preparedStatement.setString(1, exportModel.getMergeModel().getJoinsModel().getExportRepositoryFilepath());
 			preparedStatement.setInt(2, exportModel.getId());
@@ -341,7 +341,7 @@ public class ExportsCRUD implements java.io.Serializable  {
 		//TODO: Make this writable for MySQL
 		//exportDirectory.setWritable(true); //This would only make it writable for tomcat
 		String pathSeparatorForSQL = "\\\\";
-		if(this.getFilebaseModel().isUnix()){
+		if(this.getFilebaseModel().getOperatingSystem().equals("nix")){
 			pathSeparatorForSQL = "/";
 			try {
 				Runtime.getRuntime().exec("chmod g+w " + exportDirectory.getAbsolutePath());
@@ -874,7 +874,7 @@ public class ExportsCRUD implements java.io.Serializable  {
 		
 		////this.logger.info("columnDefinitionsForCreateSQL: " + columnDefinitionsForCreateSQL);
 		
-		exportModel.getMergedDatatableModel().setName(exportModel.getFilename());
+		exportModel.getMergedDatatableModel().setName("merged_datatable_" + exportModel.getMergeModel().getId());
 		
 		//FIXME: This is deprecated
 		//this.updateExportMergedDatatableNameUsingExportModel(exportModel, connection);

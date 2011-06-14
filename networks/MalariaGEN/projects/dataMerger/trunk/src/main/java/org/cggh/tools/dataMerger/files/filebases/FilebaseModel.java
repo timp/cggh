@@ -11,9 +11,7 @@ public class FilebaseModel {
 	private String versionAsString = null;
 	private ArrayList<String> filesAsStringArrayList = null;
 	private String fileRepositoryInstallationLogPathRelativeToRepositoryBasePath = null;
-	private Boolean unix = null;
-	private Boolean mac = null;
-	private Boolean windows = null;
+	private String operatingSystem;
 	private String filepathSeparator = null;
 
 	public FilebaseModel () {
@@ -78,29 +76,6 @@ public class FilebaseModel {
 		return fileRepositoryInstallationLogPathRelativeToRepositoryBasePath;
 	}
 
-	public void setUnix(Boolean unix) {
-		this.unix = unix;
-	}
-
-	public Boolean isUnix() {
-		return unix;
-	}
-
-	public void setMac(Boolean mac) {
-		this.mac = mac;
-	}
-
-	public Boolean isMac() {
-		return mac;
-	}
-
-	public void setWindows(Boolean windows) {
-		this.windows = windows;
-	}
-
-	public Boolean isWindows() {
-		return windows;
-	}
 
 	public void setFilepathSeparator(String filepathSeparator) {
 		this.filepathSeparator = filepathSeparator;
@@ -108,6 +83,14 @@ public class FilebaseModel {
 
 	public String getFilepathSeparator() {
 		return filepathSeparator;
+	}
+
+	public void setOperatingSystem(String operatingSystem) {
+		this.operatingSystem = operatingSystem;
+	}
+
+	public String getOperatingSystem() {
+		return operatingSystem;
 	}
 
 

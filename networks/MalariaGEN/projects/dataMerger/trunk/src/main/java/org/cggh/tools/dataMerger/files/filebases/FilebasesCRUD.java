@@ -120,17 +120,17 @@ public class FilebasesCRUD {
 		
 		if (os.indexOf( "nix") >=0 || os.indexOf( "nux") >=0) {
 			
-			filebaseModel.setUnix(true);
+			filebaseModel.setOperatingSystem("nix");
 			filebaseModel.setFilepathSeparator("/");
 		}
 		else if (os.indexOf( "mac" ) >= 0) {
 			
-			filebaseModel.setMac(true);
+			filebaseModel.setOperatingSystem("mac");
 			filebaseModel.setFilepathSeparator("/");
 		}
 		else if (os.indexOf( "win" ) >= 0) {
 			
-			filebaseModel.setWindows(true);
+			filebaseModel.setOperatingSystem("win");
 			filebaseModel.setFilepathSeparator("\\");
 		}
 
