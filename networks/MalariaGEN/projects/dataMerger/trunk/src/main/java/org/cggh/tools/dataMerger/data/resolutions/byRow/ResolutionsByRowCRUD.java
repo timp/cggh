@@ -181,12 +181,12 @@ public class ResolutionsByRowCRUD implements java.io.Serializable {
 						}
 						
 					} else {
-						this.logger.severe("Did not get non-key cross-datatable joins data as cached row set.");
+						
+						//NOTE: not an error
+						//this.logger.severe("Did not get non-key cross-datatable joins data as cached row set.");
 					}
 					
 					
-					//FIXME
-					//TODO
 					String datatable1JoinConditionSQL = "";
 					String datatable2JoinConditionSQL = "";		
 		

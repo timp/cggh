@@ -191,8 +191,7 @@ public class ResolutionsByCellCRUD implements java.io.Serializable {
 						}
 						
 					} else {
-						//TODO:
-						//There may only be keys.
+						//NOTE: not an error
 						//this.logger.severe("Did not get non-key cross-datatable joins data as cached row set.");
 					}
 					

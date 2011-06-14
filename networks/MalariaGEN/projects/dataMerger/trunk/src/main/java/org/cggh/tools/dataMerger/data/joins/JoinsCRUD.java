@@ -404,16 +404,11 @@ public class JoinsCRUD implements java.io.Serializable {
 	public void updateJoinsByMergeIdUsingJoinsAsJSONObject(Integer mergeId,
 			JSONObject joinsAsJsonObject) {
 		
-		//FIXME: This is cutting a corner (replacing rather than updating).
+		//NOTE: This is cutting a corner (replacing rather than updating).
 		
 		MergeModel mergeModel = new MergeModel();
 		mergeModel.setId(mergeId);
 
-		//TODO:comment-out
-		 logger.info("got merge id: " + mergeModel.getId());
-		 
-		
-		
 			Connection connection = this.getDatabaseModel().getNewConnection();
 			 
 			if (connection != null) {
@@ -435,8 +430,6 @@ public class JoinsCRUD implements java.io.Serializable {
 
 		          for (int i = 0; i < columnNumbers.length(); i++) {
 		        	  
-		        	  
-		        	  
 		        	  JoinModel joinModel = new JoinModel();
 		        	  
 		        	  joinModel.setMergeModel(mergeModel);
@@ -452,14 +445,13 @@ public class JoinsCRUD implements java.io.Serializable {
 		        		  joinModel.setKey(false);
 		        	  }
 
-		        	  if (joinsAsJsonObject.has("datatable_1_column_name-" + columnNumbers.getInt(i))) { 
-		        		  joinModel.setDatatable1ColumnName(joinsAsJsonObject.getString("datatable_1_column_name-" + columnNumbers.getInt(i))); 
+		        	  if (joinsAsJsonObject.has("datatable_1_column_name-" + columnNumbers.getInt(i))) {
 		        		  
-		        		//TODO:comment-out
-				     		 logger.info("got dt1 col name and number: " + joinsAsJsonObject.getString("datatable_1_column_name-" + columnNumbers.getInt(i)) + ", " + columnNumbers.getInt(i));
+		        		  joinModel.setDatatable1ColumnName(joinsAsJsonObject.getString("datatable_1_column_name-" + columnNumbers.getInt(i))); 
 		        		  
 		        	  } else {
 		        		  joinModel.setDatatable1ColumnName(null);
+		        		  
 		        	  }
 
 		        	  if (joinsAsJsonObject.has("datatable_2_column_name-" + columnNumbers.getInt(i))) { 

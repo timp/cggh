@@ -218,6 +218,7 @@ function initSaveJoinFunction () {
 		// Get data from uploads form.
 		var data = $.toJSON($('.joins-form').serializeObject());
 		
+		//
 		//alert(data);
 
 		
@@ -446,7 +447,7 @@ function initAddJoinFunction () {
 		
 		if (data.datatable_1_column_name != 'NULL' && data.datatable_1_column_name != 'CONSTANT') {
 			newJoinRow += "<td class=\"datatable_1_column_name-container\">";
-			newJoinRow += "<input type=\"text\" name=\"database_1_column_name-" + data.column_number + "\" value=\"" + data.datatable_1_column_name + "\" readonly=\"readonly\"/>";
+			newJoinRow += "<input type=\"text\" name=\"datatable_1_column_name-" + data.column_number + "\" value=\"" + data.datatable_1_column_name + "\" readonly=\"readonly\"/>";
 
 			//TODO
 			//newJoinRow += "<textarea>TODO: Sample of data</textarea>";
@@ -461,7 +462,7 @@ function initAddJoinFunction () {
 		
 		if (data.datatable_2_column_name != 'NULL' && data.datatable_2_column_name != 'CONSTANT') {
 			newJoinRow += "<td class=\"datatable_2_column_name-container\">";
-			newJoinRow += "<input type=\"text\" name=\"database_2_column_name-" + data.column_number + "\" value=\"" + data.datatable_2_column_name + "\" readonly=\"readonly\"/>";
+			newJoinRow += "<input type=\"text\" name=\"datatable_2_column_name-" + data.column_number + "\" value=\"" + data.datatable_2_column_name + "\" readonly=\"readonly\"/>";
 			
 			//TODO
 			//newJoinRow += "<texarea>TODO: Sample of data</textarea>";

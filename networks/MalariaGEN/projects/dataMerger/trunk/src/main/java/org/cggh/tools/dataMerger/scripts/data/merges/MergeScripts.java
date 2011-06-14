@@ -666,10 +666,12 @@ public class MergeScripts implements java.io.Serializable {
 		        }	        
 		        
 
-		        
-		        
-		        
-
+		        if (!columnDefinitionsUsingNonKeyCrossDatatableColumnAndSourceNumbersSQL.equals("")) {
+		        	columnDefinitionsUsingNonKeyCrossDatatableColumnAndSourceNumbersSQL = ", " + columnDefinitionsUsingNonKeyCrossDatatableColumnAndSourceNumbersSQL;
+		        }
+		        if (!nonKeyCrossDatatableColumnAliasesAsCSVForSelectFromJoinSQL.equals("")) {
+		        	nonKeyCrossDatatableColumnAliasesAsCSVForSelectFromJoinSQL = ", " + nonKeyCrossDatatableColumnAliasesAsCSVForSelectFromJoinSQL;
+		        }
 		        
 				try {
 					
@@ -694,16 +696,16 @@ public class MergeScripts implements java.io.Serializable {
 						preparedStatement2.close();				
 					
 					
-						String createAndPopulateTemporaryJoinedDatatableSQL = "CREATE TABLE `" + joinedDatatableName + "` (joined_keytable_id BIGINT(255), " + columnDefinitionsUsingKeyColumnNamesSQL + ", " + columnDefinitionsUsingNonKeyCrossDatatableColumnAndSourceNumbersSQL + ", PRIMARY KEY (joined_keytable_id)) ENGINE=InnoDB " +
-															        			"SELECT `" + mergeModel.getJoinedKeytableModel().getName() + "`.id AS joined_keytable_id, " + joinedKeytableColumnAliasesAsCSVForSelectFromJoinSQL + ", " + nonKeyCrossDatatableColumnAliasesAsCSVForSelectFromJoinSQL + 
+						String createAndPopulateTemporaryJoinedDatatableSQL = "CREATE TABLE `" + joinedDatatableName + "` (joined_keytable_id BIGINT(255), " + columnDefinitionsUsingKeyColumnNamesSQL + columnDefinitionsUsingNonKeyCrossDatatableColumnAndSourceNumbersSQL + ", PRIMARY KEY (joined_keytable_id)) ENGINE=InnoDB " +
+															        			"SELECT `" + mergeModel.getJoinedKeytableModel().getName() + "`.id AS joined_keytable_id, " + joinedKeytableColumnAliasesAsCSVForSelectFromJoinSQL + nonKeyCrossDatatableColumnAliasesAsCSVForSelectFromJoinSQL + 
 															        			"FROM `" + mergeModel.getJoinedKeytableModel().getName() + "` " + 
 															        			"JOIN `" + mergeModel.getDatatable1Model().getName() + "` ON " + datatable1JoinSQL + 
 															        			"JOIN `" + mergeModel.getDatatable2Model().getName() + "` ON " + datatable2JoinSQL + 
 															        			"ORDER BY `" + mergeModel.getJoinedKeytableModel().getName() + "`.id" +
 															        			";";
 
-						//TODO: Comment out
-						this.logger.info(createAndPopulateTemporaryJoinedDatatableSQL);
+						//
+						//this.logger.info(createAndPopulateTemporaryJoinedDatatableSQL);
 						
 						//Re-register joined datatable name (now assuming success)
 						mergeModel.getJoinedDatatableModel().setName(joinedDatatableName);
@@ -714,17 +716,22 @@ public class MergeScripts implements java.io.Serializable {
 				        preparedStatement3.executeUpdate();
 				        preparedStatement3.close();
 
-						String insertConflictsByCellSQL = "" +
-								"INSERT INTO resolution (merge_id, joined_keytable_id, column_number, conflict_id) " +
-									conflictUnionsSQL +
-									" ORDER BY joined_keytable_id, column_number, conflict_id " + 
-								";";
-
-						////this.logger.info(insertConflictsByCellSQL);
-						
-						PreparedStatement preparedStatement4 = connection.prepareStatement(insertConflictsByCellSQL);
-						preparedStatement4.executeUpdate();
-						preparedStatement4.close();				
+				        if (!conflictUnionsSQL.equals("")) {
+				        
+							String insertConflictsByCellSQL = "" +
+									"INSERT INTO resolution (merge_id, joined_keytable_id, column_number, conflict_id) " +
+										conflictUnionsSQL +
+										" ORDER BY joined_keytable_id, column_number, conflict_id " + 
+									";";
+	
+							//
+							//this.logger.info(insertConflictsByCellSQL);
+							
+							PreparedStatement preparedStatement4 = connection.prepareStatement(insertConflictsByCellSQL);
+							preparedStatement4.executeUpdate();
+							preparedStatement4.close();
+							
+				        }
 
 						//Don't drop the joined datatable, it will be used again for the export.					
 						
