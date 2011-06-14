@@ -409,7 +409,11 @@ public class JoinsCRUD implements java.io.Serializable {
 		MergeModel mergeModel = new MergeModel();
 		mergeModel.setId(mergeId);
 
-			
+		//TODO:comment-out
+		 logger.info("got merge id: " + mergeModel.getId());
+		 
+		
+		
 			Connection connection = this.getDatabaseModel().getNewConnection();
 			 
 			if (connection != null) {
@@ -431,6 +435,8 @@ public class JoinsCRUD implements java.io.Serializable {
 
 		          for (int i = 0; i < columnNumbers.length(); i++) {
 		        	  
+		        	  
+		        	  
 		        	  JoinModel joinModel = new JoinModel();
 		        	  
 		        	  joinModel.setMergeModel(mergeModel);
@@ -447,7 +453,11 @@ public class JoinsCRUD implements java.io.Serializable {
 		        	  }
 
 		        	  if (joinsAsJsonObject.has("datatable_1_column_name-" + columnNumbers.getInt(i))) { 
-		        		  joinModel.setDatatable1ColumnName(joinsAsJsonObject.getString("datatable_1_column_name-" + columnNumbers.getInt(i)));  		  
+		        		  joinModel.setDatatable1ColumnName(joinsAsJsonObject.getString("datatable_1_column_name-" + columnNumbers.getInt(i))); 
+		        		  
+		        		//TODO:comment-out
+				     		 logger.info("got dt1 col name and number: " + joinsAsJsonObject.getString("datatable_1_column_name-" + columnNumbers.getInt(i)) + ", " + columnNumbers.getInt(i));
+		        		  
 		        	  } else {
 		        		  joinModel.setDatatable1ColumnName(null);
 		        	  }
@@ -506,7 +516,7 @@ public class JoinsCRUD implements java.io.Serializable {
 				
 			} else {
 				
-				//System.out.println("connection.isClosed");
+				logger.severe("connection is null");
 			}
 
 		

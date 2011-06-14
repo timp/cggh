@@ -469,7 +469,7 @@ public class FilesCRUD implements java.io.Serializable  {
 	          			"WHERE id = ? AND created_by_user_id = ?;");
 	          preparedStatement.setBoolean(1, hidden);
 	          preparedStatement.setInt(2, fileId);
-	          preparedStatement.setInt(2, userId);
+	          preparedStatement.setInt(3, userId);
 	          preparedStatement.executeUpdate();
 	          preparedStatement.close();
 	          

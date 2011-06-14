@@ -25,9 +25,7 @@ public class DatatableModel implements java.io.Serializable {
 	private List<String> columnNamesAsStringList;
 	private Integer duplicateValuesCount;
 	private List<String> keyColumnNamesAsStringList;
-	private SettingsModel settingsModel;
-	
-	
+
 	public DatatableModel() {
 
 		this.setColumnNamesAsStringList(new ArrayList<String>());
@@ -146,21 +144,6 @@ public class DatatableModel implements java.io.Serializable {
 		
 		this.duplicateValuesCount = duplicateValuesCount;
 	}
-
-
-
-
-	public void setSettingsModel(SettingsModel settingsModel) {
-		this.settingsModel = settingsModel;
-	}
-
-
-
-
-	public SettingsModel getSettingsModel() {
-		return settingsModel;
-	}
-
 
 
 

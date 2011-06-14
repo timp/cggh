@@ -7,7 +7,7 @@
 
 	DatabasesCRUD databasesCRUD = new DatabasesCRUD();	
 
-	DatabaseModel databaseModel = databasesCRUD.retrieveDatabaseAsDatabaseModelUsingServletContext(request.getSession().getServletContext());
+	DatabaseModel databaseModel = databasesCRUD.retrieveDatabaseAsDatabaseModelUsingServletContext(session.getServletContext());
 	
 	UserModel userModel = null;
 	

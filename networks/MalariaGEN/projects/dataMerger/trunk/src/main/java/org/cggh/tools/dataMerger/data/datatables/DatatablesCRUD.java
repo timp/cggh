@@ -5,6 +5,7 @@ import java.io.DataInputStream;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import java.sql.Connection;
+import java.sql.DatabaseMetaData;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -16,6 +17,7 @@ import java.util.logging.Logger;
 import javax.sql.rowset.CachedRowSet;
 
 import org.apache.commons.lang.StringEscapeUtils;
+import org.cggh.tools.dataMerger.code.settings.SettingsCRUD;
 import org.cggh.tools.dataMerger.code.settings.SettingsModel;
 import org.cggh.tools.dataMerger.data.databases.DatabaseModel;
 import org.cggh.tools.dataMerger.data.files.FileModel;
@@ -31,7 +33,6 @@ public class DatatablesCRUD implements java.io.Serializable {
 	private final Logger logger = Logger.getLogger("org.cggh.tools.dataMerger.data.datatables");
 
 	private DatabaseModel databaseModel;
-	private SettingsModel settingsModel;
 
 	
 	private String stringsToNullifyAsCSV;
@@ -108,15 +109,20 @@ public class DatatablesCRUD implements java.io.Serializable {
 		        	          
 		        	        	  //FIXME: sanitation
 		        	        	  
-		        	        	  //Note: StringUtils.escapeQuote errors "String index out of range: -1"
-			        	          columnNames[i] = columnNames[i].replace("\"", "\"\"");
-			        	          
-			        	    	  columnNames[i] = columnNames[i].replace("`", "``");
+		        	        	  //TODO: This will be more portable, but will need to use instead of ` everywhere. 
+		        	        	  //DatabaseMetaData databaseMetaData = connection.getMetaData();
+			        	          //String identifierQuoteString = databaseMetaData.getIdentifierQuoteString();
+		        	        	  
+			        	    	  columnNames[i] = columnNames[i].replaceAll("`", "``");
 			        	    	  
 			        	    	  columnNames[i] = StringEscapeUtils.escapeSql(columnNames[i]);
 			        	    	
 			        	    	  //Remove characters outside Basic Multilingual Plane (MySQL column name character restriction).
-			        	    	  columnNames[i] = columnNames[i].replace("[^\u0000-\uFFFF]", "");
+			        	    	  columnNames[i] = columnNames[i].replaceAll("[^\u0000-\uFFFF]", "");
+			        	    	  
+			        	    	  //TODO: The above isn't good enough, so being harsher, but this is not ideal.
+			        	    	  //Replace all non-word characters (same as [\W])
+			        	    	  columnNames[i] = columnNames[i].replaceAll("[^\\w]", "");
 			        	    	  
 			        	    	  //TODO: Escape for CSV when exporting to CSV
 			        	    	  //columnNames[i] = StringEscapeUtils.escapeCsv(columnNames[i]);
@@ -125,15 +131,25 @@ public class DatatablesCRUD implements java.io.Serializable {
 		        	        	  columnNames[i] = Integer.toString(i);
 		        	          }
 		        	    	  
-		        	    	  columnNamesAsStringList.add(columnNames[i]);
-		        	    	  
-		        	    	  columnDefinitionsForCreateTableSQL = columnDefinitionsForCreateTableSQL.concat("`" + columnNames[i] + "` VARCHAR(36) NULL");
-		        	    	  
+		        	          //Note: It don't like blank column names.
+		        	          //Note: Don't compare strings with == or !=, use the equals() method.
+		        	          if (columnNames[i] != null && !columnNames[i].equals("")) {
+		        	        	  
+		        	        	  columnNamesAsStringList.add(columnNames[i]);
+			        	    	  columnDefinitionsForCreateTableSQL = columnDefinitionsForCreateTableSQL.concat("`" + columnNames[i] + "` VARCHAR(36) NULL");
+			        	    	  
+			        	    	  if (i != columnNames.length - 1) {
+			        	    		  columnDefinitionsForCreateTableSQL = columnDefinitionsForCreateTableSQL.concat(", ");
+			        	    	  }
+		        	          } else {
+		        	        	  
+		        	        	  //FIXME: How to remove [i]?
+		        	          }
+		        	          
+		        	          //NOTE: Stop using the columnNames array. Use columnNamesAsStringList instead.
 		        	          
 		        	    	  
-		        	    	  if (i != columnNames.length - 1) {
-		        	    		  columnDefinitionsForCreateTableSQL = columnDefinitionsForCreateTableSQL.concat(", ");
-		        	    	  }
+		        	    	  
 		        	    	  
 		        	      }
 	
@@ -147,6 +163,9 @@ public class DatatablesCRUD implements java.io.Serializable {
 						          String statementSQL = "CREATE TABLE `" + datatableModel.getName() + "` (" + 
 				        		  						columnDefinitionsForCreateTableSQL + 
 				        		  						") ENGINE=InnoDB;";
+						          
+						          //
+						          //logger.info(statementSQL);
 						          
 						          statement.executeUpdate(statementSQL);
 						          statement.close();
@@ -178,15 +197,17 @@ public class DatatablesCRUD implements java.io.Serializable {
 							          
 				    		          
 				    		          //TODO: Get a list of all the strings to nullify.
+							          SettingsCRUD settingsCRUD = new SettingsCRUD();
+							          settingsCRUD.setDatabaseModel(databaseModel);
+				    		          SettingsModel settingsModel = settingsCRUD.retrieveSettingsAsSettingsModel();
 				    		          
-				    		          
-				    		          if (this.getSettingsModel().getSettingsAsHashMap().get("stringsToNullifyAsCSV") != null) {
+				    		          if (settingsModel.getSettingsAsHashMap().get("stringsToNullifyAsCSV") != null) {
 				    		        	  
-				    		        	  String[] stringsToNullifyAsStringArray = this.getSettingsModel().getSettingsAsHashMap().get("stringsToNullifyAsCSV").split(",");
+				    		        	  String[] stringsToNullifyAsStringArray = settingsModel.getSettingsAsHashMap().get("stringsToNullifyAsCSV").split(",");
 					    		        	 
-				    		        	  for (int i = 0; i < columnNames.length; i++) {
+				    		        	  for (int i = 0; i < columnNamesAsStringList.size(); i++) {
 				    		        		
-				    		        		  String columnName = columnNames[i];
+				    		        		  String columnName = columnNamesAsStringList.get(i);
 				    		        		  
 					    		        	  String conditionForUpdateSQL = "";
 					    		        	  
@@ -202,7 +223,12 @@ public class DatatablesCRUD implements java.io.Serializable {
 						    		        	  conditionForUpdateSQL += "`" + columnName + "` = '" + stringToNullify + "'";
 						    		          }
 						    		          
-						    		          PreparedStatement preparedStatement3 = connection.prepareStatement("UPDATE `" + datatableModel.getName() + "` SET `" + columnName + "` = NULL WHERE " + conditionForUpdateSQL + ";");
+						    		          String statementSQL3 = "UPDATE `" + datatableModel.getName() + "` SET `" + columnName + "` = NULL WHERE " + conditionForUpdateSQL + ";";
+						    		          PreparedStatement preparedStatement3 = connection.prepareStatement(statementSQL3);
+						    		          
+						    		          //
+						    		          //logger.info(statementSQL3);
+						    		          
 						    		          preparedStatement3.executeUpdate();
 						    		          preparedStatement3.close();
 						    		          
@@ -455,14 +481,5 @@ public class DatatablesCRUD implements java.io.Serializable {
 		return stringsToNullifyAsCSV;
 	}
 
-
-	public void setSettingsModel(SettingsModel settingsModel) {
-		this.settingsModel = settingsModel;
-	}
-
-
-	public SettingsModel getSettingsModel() {
-		return settingsModel;
-	}
 
 }

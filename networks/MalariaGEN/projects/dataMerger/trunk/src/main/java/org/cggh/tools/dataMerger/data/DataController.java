@@ -628,6 +628,7 @@ public class DataController extends HttpServlet {
 			 mergeModel.setId(Integer.parseInt(joinsURLPatternMatcher.group(1)));
 			 
 			 
+			 
 			  if (headerAcceptsAsStringList.contains("application/json")) { 
 			 
 				  response.setContentType("application/json");

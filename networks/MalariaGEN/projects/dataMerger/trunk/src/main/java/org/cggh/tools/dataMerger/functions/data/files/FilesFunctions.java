@@ -143,7 +143,7 @@ public class FilesFunctions {
 				
 				filesAsDecoratedXHTMLTable += "<button class=\"hide-files-button\">Hide</button><img class=\"hiding-indicator\" src=\"/dataMerger/pages/shared/gif/loading.gif\" style=\"display:none\" title=\"Hiding...\"/>";
 				
-				filesAsDecoratedXHTMLTable += "<button class=\"show-hidden-files-button\">Show Hidden</button><img class=\"showing-indicator\" src=\"/dataMerger/pages/shared/gif/loading.gif\" style=\"display:none\" title=\"Showing...\"/>";
+				filesAsDecoratedXHTMLTable += "<button class=\"show-hidden-files-button\">Show hidden</button><img class=\"showing-indicator\" src=\"/dataMerger/pages/shared/gif/loading.gif\" style=\"display:none\" title=\"Showing...\"/>";
 				
 				filesAsDecoratedXHTMLTable += "<button class=\"remove-files-button\">Remove</button><img class=\"removing-indicator\" src=\"/dataMerger/pages/shared/gif/loading.gif\" style=\"display:none\" title=\"Removing...\"/>";
 				
@@ -155,7 +155,7 @@ public class FilesFunctions {
 				
 				//TODO: If there are any hidden.
 				filesAsDecoratedXHTMLTable += "<p>";
-				filesAsDecoratedXHTMLTable += "<button class=\"show-hidden-files-button\">Show Hidden</button><img class=\"showing-indicator\" src=\"/dataMerger/pages/shared/gif/loading.gif\" style=\"display:none\" title=\"Showing...\"/>";
+				filesAsDecoratedXHTMLTable += "<button class=\"show-hidden-files-button\">Show hidden</button><img class=\"showing-indicator\" src=\"/dataMerger/pages/shared/gif/loading.gif\" style=\"display:none\" title=\"Showing...\"/>";
 				filesAsDecoratedXHTMLTable += "</p>";
 				
 			}
@@ -279,7 +279,7 @@ public class FilesFunctions {
 				
 				hiddenFilesAsDecoratedXHTMLTable += "<button class=\"merge-files-button\">Merge</button><img class=\"merging-indicator\" src=\"/dataMerger/pages/shared/gif/loading.gif\" style=\"display:none\" title=\"Merging...\"/>";
 				
-				hiddenFilesAsDecoratedXHTMLTable += "<button class=\"show-unhidden-files-button\">Show Unhidden</button><img class=\"showing-indicator\" src=\"/dataMerger/pages/shared/gif/loading.gif\" style=\"display:none\" title=\"Showing...\"/>";
+				hiddenFilesAsDecoratedXHTMLTable += "<button class=\"show-unhidden-files-button\">Show unhidden</button><img class=\"showing-indicator\" src=\"/dataMerger/pages/shared/gif/loading.gif\" style=\"display:none\" title=\"Showing...\"/>";
 				
 				hiddenFilesAsDecoratedXHTMLTable += "<button class=\"unhide-files-button\">Unhide</button><img class=\"unhiding-indicator\" src=\"/dataMerger/pages/shared/gif/loading.gif\" style=\"display:none\" title=\"Unhiding...\"/>";
 				
@@ -293,7 +293,7 @@ public class FilesFunctions {
 				
 				//TODO: If there are any hidden.
 				hiddenFilesAsDecoratedXHTMLTable += "<p>";
-				hiddenFilesAsDecoratedXHTMLTable += "<button class=\"show-unhidden-files-button\">Show Unhidden</button><img class=\"showing-indicator\" src=\"/dataMerger/pages/shared/gif/loading.gif\" style=\"display:none\" title=\"Showing...\"/>";
+				hiddenFilesAsDecoratedXHTMLTable += "<button class=\"show-unhidden-files-button\">Show unhidden</button><img class=\"showing-indicator\" src=\"/dataMerger/pages/shared/gif/loading.gif\" style=\"display:none\" title=\"Showing...\"/>";
 				hiddenFilesAsDecoratedXHTMLTable += "</p>";
 				
 			}
