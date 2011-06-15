@@ -274,8 +274,13 @@ public class MergeScripts implements java.io.Serializable {
 		  List<String> datatable1ColumnNamesAsStringList = mergeModel.getDatatable1Model().getColumnNamesAsStringList();
 		  List<String> datatable2ColumnNamesAsStringList = mergeModel.getDatatable2Model().getColumnNamesAsStringList();
 		  
+		  JoinsCRUD joinsCRUD = new JoinsCRUD();
+		  
 		  // Cycle through the column names of one table to see if they match the other table.
 		  if (datatable1ColumnNamesAsStringList != null) {
+			  
+
+			  
 			  
 			  int i = 0;
 			  
@@ -295,9 +300,10 @@ public class MergeScripts implements java.io.Serializable {
 			    			  // We have a match.
 			    			  matchFound = true;
 			    			  
+			    			  
 			    			  JoinModel joinModel = new JoinModel();
 			    			  
-			    			  joinModel.setColumnNumber(mergeModel.getJoinsModel().getNextColumnNumberByMergeId(mergeModel.getId(), connection));
+			    			  joinModel.setColumnNumber(joinsCRUD.getNextColumnNumberByMergeId(mergeModel.getId(), connection));
 			    			  joinModel.setKey(false);
 			    			  joinModel.setDatatable1ColumnName(datatable1ColumnNamesAsStringList.get(i));
 			    			  joinModel.setDatatable2ColumnName(datatable2ColumnNamesAsStringList.get(j));
@@ -305,7 +311,7 @@ public class MergeScripts implements java.io.Serializable {
 			    			  
 			    			  joinModel.setMergeModel(mergeModel);
 			    			  
-			    			  mergeModel.getJoinsModel().createJoinUsingJoinModel(joinModel, connection);
+			    			  joinsCRUD.createJoinUsingJoinModel(joinModel, connection);
 			    			  
 			    			  
 			    			  //Remove items to make this more efficient.
@@ -338,14 +344,14 @@ public class MergeScripts implements java.io.Serializable {
 					  
 					  joinModel.setMergeModel(mergeModel);
 					  
-					  joinModel.setColumnNumber(mergeModel.getJoinsModel().getNextColumnNumberByMergeId(mergeModel.getId(), connection));
+					  joinModel.setColumnNumber(joinsCRUD.getNextColumnNumberByMergeId(mergeModel.getId(), connection));
 					  joinModel.setKey(false);
 					  joinModel.setDatatable1ColumnName(datatable1ColumnNamesAsStringList.get(i));
 					  joinModel.setDatatable2ColumnName(null);
 					  joinModel.setColumnName(datatable1ColumnNamesAsStringList.get(i));
 					  
 					  
-					  mergeModel.getJoinsModel().createJoinUsingJoinModel(joinModel, connection);
+					  joinsCRUD.createJoinUsingJoinModel(joinModel, connection);
 					   
 					  //Remove this item from the list to make this more efficient.
 					  datatable1ColumnNamesAsStringList.remove(i);
@@ -403,13 +409,13 @@ public class MergeScripts implements java.io.Serializable {
 					  
 					  joinModel.setMergeModel(mergeModel);
 					  
-					  joinModel.setColumnNumber(mergeModel.getJoinsModel().getNextColumnNumberByMergeId(mergeModel.getId(), connection));
+					  joinModel.setColumnNumber(joinsCRUD.getNextColumnNumberByMergeId(mergeModel.getId(), connection));
 					  joinModel.setKey(false);
 					  joinModel.setDatatable1ColumnName(null);
 					  joinModel.setDatatable2ColumnName(datatable2ColumnNamesAsStringList.get(i));
 					  joinModel.setColumnName(datatable2ColumnNamesAsStringList.get(i));
 					  
-					  mergeModel.getJoinsModel().createJoinUsingJoinModel(joinModel, connection);
+					  joinsCRUD.createJoinUsingJoinModel(joinModel, connection);
 					   
 					  //Remove this item from the list to make this more efficient.
 					  datatable2ColumnNamesAsStringList.remove(i);
@@ -428,7 +434,7 @@ public class MergeScripts implements java.io.Serializable {
 		  }
 		  
 		  
-		  mergeModel.setJoinsModel(mergeModel.getJoinsModel().retrieveJoinsAsJoinsModelByMergeId(mergeModel.getId(), connection));
+		  mergeModel.setJoinsModel(joinsCRUD.retrieveJoinsAsJoinsModelByMergeId(mergeModel.getId(), connection));
 					  
 		  
 		  return mergeModel;
@@ -437,7 +443,9 @@ public class MergeScripts implements java.io.Serializable {
 
 	public MergeModel retrieveMergeAsMergeModelThroughGuessingKeysUsingMergeModel(
 			MergeModel mergeModel, Connection connection) throws SQLException {
+
 		
+		JoinsCRUD joinsCRUD = new JoinsCRUD();
 		
 		mergeModel.getJoinsModel().getCrossDatatableJoinsAsCachedRowSet().beforeFirst();
 
@@ -499,9 +507,7 @@ public class MergeScripts implements java.io.Serializable {
 									.getString("column_name"));
 
 					// Update the join record in the db.
-					mergeModel.getJoinsModel()
-							.updateJoinByJoinModel(joinModel,
-									connection);
+					joinsCRUD.updateJoinByJoinModel(joinModel, connection);
 
 					
 					

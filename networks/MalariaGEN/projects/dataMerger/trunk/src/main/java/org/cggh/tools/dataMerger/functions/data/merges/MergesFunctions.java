@@ -40,13 +40,13 @@ public class MergesFunctions implements java.io.Serializable {
 				 mergesAsDecoratedXHTMLTable = mergesAsDecoratedXHTMLTable.concat("<thead>");
 				 mergesAsDecoratedXHTMLTable = mergesAsDecoratedXHTMLTable.concat("<tr>");
 				 
-				 mergesAsDecoratedXHTMLTable = mergesAsDecoratedXHTMLTable.concat("<th>ID<!--  <a href=\"javascript:TODOsort();\">sort up/down</a> --></th>");
-				 mergesAsDecoratedXHTMLTable = mergesAsDecoratedXHTMLTable.concat("<th>File 1<!--  <a href=\"javascript:TODOsort();\">sort up/down</a> --></th>");
-				 mergesAsDecoratedXHTMLTable = mergesAsDecoratedXHTMLTable.concat("<th>File 2<!--  <a href=\"javascript:TODOsort();\">sort up/down</a> --></th>");
-				 mergesAsDecoratedXHTMLTable = mergesAsDecoratedXHTMLTable.concat("<th>Created<!--  <a href=\"javascript:TODOsort();\">sort up/down</a> --></th>");
-				 mergesAsDecoratedXHTMLTable = mergesAsDecoratedXHTMLTable.concat("<th>Updated<!--  <a href=\"javascript:TODOsort();\">sort up/down</a> --></th>");
+				 mergesAsDecoratedXHTMLTable = mergesAsDecoratedXHTMLTable.concat("<th>ID</th>");
+				 mergesAsDecoratedXHTMLTable = mergesAsDecoratedXHTMLTable.concat("<th>Files</th>");
+				 mergesAsDecoratedXHTMLTable = mergesAsDecoratedXHTMLTable.concat("<th>Created</th>");
+				 mergesAsDecoratedXHTMLTable = mergesAsDecoratedXHTMLTable.concat("<th>Updated</th>");
 				 mergesAsDecoratedXHTMLTable = mergesAsDecoratedXHTMLTable.concat("<th><!-- Column for edit-join links --></th>");
 				 mergesAsDecoratedXHTMLTable = mergesAsDecoratedXHTMLTable.concat("<th><!-- Column for edit-resolutions links or duplicate keys count--></th>");
+				 mergesAsDecoratedXHTMLTable = mergesAsDecoratedXHTMLTable.concat("<th><!-- Column for remove button --></th>");
 				 mergesAsDecoratedXHTMLTable = mergesAsDecoratedXHTMLTable.concat("<th><!-- Column for export button or conflicts count --></th>");
 				 
 				 mergesAsDecoratedXHTMLTable = mergesAsDecoratedXHTMLTable.concat("</tr>");
@@ -84,14 +84,18 @@ public class MergesFunctions implements java.io.Serializable {
 					 //FIXME: Apparently a bug in CachedRowSet using getX('columnAlias') aka columnLabel, which actually only works with getX('columnName'), so using getX('columnIndex').
 					 
 					 //TODO: This URL shouldn't be hard-coded
-					 mergesAsDecoratedXHTMLTable = mergesAsDecoratedXHTMLTable.concat("<td><a href=\"/dataMerger/files/" + this.getMergesAsCachedRowSet().getInt(2) + "\">" + this.getMergesAsCachedRowSet().getString(3) + "</a></td>");
-					 mergesAsDecoratedXHTMLTable = mergesAsDecoratedXHTMLTable.concat("<td><a href=\"/dataMerger/files/" + this.getMergesAsCachedRowSet().getInt(4) + "\">" + this.getMergesAsCachedRowSet().getString(5) + "</a></td>");
+					 mergesAsDecoratedXHTMLTable = mergesAsDecoratedXHTMLTable.concat("<td>");
+					 mergesAsDecoratedXHTMLTable = mergesAsDecoratedXHTMLTable.concat("<a href=\"/dataMerger/files/" + this.getMergesAsCachedRowSet().getInt(2) + "\">" + this.getMergesAsCachedRowSet().getString(3) + "</a><br/>");
+					 mergesAsDecoratedXHTMLTable = mergesAsDecoratedXHTMLTable.concat("<a href=\"/dataMerger/files/" + this.getMergesAsCachedRowSet().getInt(4) + "\">" + this.getMergesAsCachedRowSet().getString(5) + "</a>");
+					 mergesAsDecoratedXHTMLTable = mergesAsDecoratedXHTMLTable.concat("</td>");
 					 //TODO: format datetime 02 Jan 2011
 					 mergesAsDecoratedXHTMLTable = mergesAsDecoratedXHTMLTable.concat("<td>" + dateFormat.format(this.getMergesAsCachedRowSet().getTimestamp("created_datetime")) + "</td>");
 					 mergesAsDecoratedXHTMLTable = mergesAsDecoratedXHTMLTable.concat("<td>" + dateFormat.format(this.getMergesAsCachedRowSet().getTimestamp("updated_datetime")) + "</td>");
 					 
+					 
+					 mergesAsDecoratedXHTMLTable = mergesAsDecoratedXHTMLTable.concat("<td>");
 					 //TODO: Change this URL to a) not hard-coded b) /dataMerger/pages/merges/3/joins
-					 mergesAsDecoratedXHTMLTable = mergesAsDecoratedXHTMLTable.concat("<td><a href=\"/dataMerger/pages/merges/joins?merge_id=" + this.getMergesAsCachedRowSet().getInt("id") + "\">Edit Join</a></td>");
+					 mergesAsDecoratedXHTMLTable = mergesAsDecoratedXHTMLTable.concat("<a href=\"/dataMerger/pages/merges/joins?merge_id=" + this.getMergesAsCachedRowSet().getInt("id") + "\">Edit Join</a><br/>");
 					 
 					 //FIXME: totalDuplicateKeysCount == 0, even when null in db
 					 
@@ -101,19 +105,25 @@ public class MergesFunctions implements java.io.Serializable {
 						 
 						 if (totalDuplicateKeysCount == 0) {
 							 //TODO: Change this URL to a) not hard-coded b) /dataMerger/pages/merges/3/resolutions-by-column
-							 mergesAsDecoratedXHTMLTable = mergesAsDecoratedXHTMLTable.concat("<td><a href=\"/dataMerger/pages/merges/resolutions/by-column?merge_id=" + this.getMergesAsCachedRowSet().getInt("id") + "\">Edit Resolutions</a></td>");
+							 mergesAsDecoratedXHTMLTable = mergesAsDecoratedXHTMLTable.concat("<a href=\"/dataMerger/pages/merges/resolutions/by-column?merge_id=" + this.getMergesAsCachedRowSet().getInt("id") + "\">Edit Resolutions</a>");
 						 } 
 						 else if (totalDuplicateKeysCount == 1) {
-							 mergesAsDecoratedXHTMLTable = mergesAsDecoratedXHTMLTable.concat("<td class=\"problem-message-container\">" + totalDuplicateKeysCount + " duplicate key</td>");
+							 mergesAsDecoratedXHTMLTable = mergesAsDecoratedXHTMLTable.concat("<span class=\"problem-message-container\">" + totalDuplicateKeysCount + " duplicate key</span>");
 						 }
 						 else {
-							 mergesAsDecoratedXHTMLTable = mergesAsDecoratedXHTMLTable.concat("<td class=\"problem-message-container\">" + totalDuplicateKeysCount + " duplicate keys</td>");
+							 mergesAsDecoratedXHTMLTable = mergesAsDecoratedXHTMLTable.concat("<span class=\"problem-message-container\">" + totalDuplicateKeysCount + " duplicate keys</span>");
 						 }
 						 
 					 } else {
-						 mergesAsDecoratedXHTMLTable = mergesAsDecoratedXHTMLTable.concat("<td><!-- pending a total duplicate keys count --></td>");
+						 mergesAsDecoratedXHTMLTable = mergesAsDecoratedXHTMLTable.concat("<!-- pending a total duplicate keys count -->");
 					 }
 					
+					 mergesAsDecoratedXHTMLTable = mergesAsDecoratedXHTMLTable.concat("</td>");
+					 
+					 
+					 mergesAsDecoratedXHTMLTable = mergesAsDecoratedXHTMLTable.concat("<td><button class=\"deleteMergeButton\">Delete</button><img class=\"deleting-indicator\" src=\"/dataMerger/pages/shared/gif/loading.gif\" style=\"display:none\" title=\"Deleting...\"/></td>");
+					 
+					 
 					 //FIXME: totalConflictsCount == 0, even when null in db
 					 
 					 Integer totalConflictsCount = this.getMergesAsCachedRowSet().getInt("total_conflicts_count");

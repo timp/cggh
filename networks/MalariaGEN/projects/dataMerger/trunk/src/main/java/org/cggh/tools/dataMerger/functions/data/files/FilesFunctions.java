@@ -145,7 +145,7 @@ public class FilesFunctions {
 				
 				filesAsDecoratedXHTMLTable += "<button class=\"show-hidden-files-button\">Show hidden</button><img class=\"showing-indicator\" src=\"/dataMerger/pages/shared/gif/loading.gif\" style=\"display:none\" title=\"Showing...\"/>";
 				
-				filesAsDecoratedXHTMLTable += "<button class=\"remove-files-button\">Remove</button><img class=\"removing-indicator\" src=\"/dataMerger/pages/shared/gif/loading.gif\" style=\"display:none\" title=\"Removing...\"/>";
+				filesAsDecoratedXHTMLTable += "<button class=\"remove-files-button\">Delete</button><img class=\"removing-indicator\" src=\"/dataMerger/pages/shared/gif/loading.gif\" style=\"display:none\" title=\"Removing...\"/>";
 				
 				filesAsDecoratedXHTMLTable += "</p>";
 
@@ -283,7 +283,7 @@ public class FilesFunctions {
 				
 				hiddenFilesAsDecoratedXHTMLTable += "<button class=\"unhide-files-button\">Unhide</button><img class=\"unhiding-indicator\" src=\"/dataMerger/pages/shared/gif/loading.gif\" style=\"display:none\" title=\"Unhiding...\"/>";
 				
-				hiddenFilesAsDecoratedXHTMLTable += "<button class=\"remove-files-button\">Remove</button><img class=\"removing-indicator\" src=\"/dataMerger/pages/shared/gif/loading.gif\" style=\"display:none\" title=\"Removing...\"/>";
+				hiddenFilesAsDecoratedXHTMLTable += "<button class=\"remove-files-button\">Delete</button><img class=\"removing-indicator\" src=\"/dataMerger/pages/shared/gif/loading.gif\" style=\"display:none\" title=\"Removing...\"/>";
 				
 				hiddenFilesAsDecoratedXHTMLTable += "</p>";
 

@@ -5,12 +5,12 @@ import java.util.logging.Logger;
 
 import javax.sql.rowset.CachedRowSet;
 
-import org.cggh.tools.dataMerger.data.DataModel;
 import org.cggh.tools.dataMerger.data.datatables.DatatableModel;
 import org.cggh.tools.dataMerger.data.files.FileModel;
 import org.cggh.tools.dataMerger.data.joinedDatatables.JoinedDatatableModel;
 import org.cggh.tools.dataMerger.data.joinedKeytables.JoinedKeytableModel;
-import org.cggh.tools.dataMerger.data.joins.JoinsCRUD;
+import org.cggh.tools.dataMerger.data.joins.JoinsModel;
+import org.cggh.tools.dataMerger.data.resolutions.ResolutionsModel;
 import org.cggh.tools.dataMerger.data.users.UserModel;
 
 public class MergeModel implements java.io.Serializable {
@@ -22,7 +22,8 @@ public class MergeModel implements java.io.Serializable {
 	private final Logger logger = Logger.getLogger("org.cggh.tools.dataMerger.data.merges");
 	
 	private UserModel createdByUserModel;
-	private JoinsCRUD joinsModel;
+	private JoinsModel joinsModel;
+	private ResolutionsModel resolutionsModel;
 	
 	private Integer id = null;
 
@@ -52,7 +53,7 @@ public class MergeModel implements java.io.Serializable {
 		
 		//TODO: Need all this stuff? Operate on a new when needed policy.
 		this.setCreatedByUserModel(new UserModel());		
-		this.setJoinsModel(new JoinsCRUD());	
+	
 		
 		this.setFile1Model(new FileModel());
 		this.setFile2Model(new FileModel());
@@ -86,10 +87,10 @@ public class MergeModel implements java.io.Serializable {
         return this.createdByUserModel;
     }     
     
-    public void setJoinsModel (final JoinsCRUD joinsModel) {
-        this.joinsModel  = joinsModel;
+    public void setJoinsModel (final JoinsModel joinsModel) {
+        this.joinsModel = joinsModel;
     }
-    public JoinsCRUD getJoinsModel () {
+    public JoinsModel getJoinsModel () {
         return this.joinsModel;
     } 
     
@@ -247,6 +248,26 @@ public class MergeModel implements java.io.Serializable {
 
 	public Logger getLogger() {
 		return logger;
+	}
+
+
+
+
+
+
+
+	public void setResolutionsModel(ResolutionsModel resolutionsModel) {
+		this.resolutionsModel = resolutionsModel;
+	}
+
+
+
+
+
+
+
+	public ResolutionsModel getResolutionsModel() {
+		return resolutionsModel;
 	}
 
 	

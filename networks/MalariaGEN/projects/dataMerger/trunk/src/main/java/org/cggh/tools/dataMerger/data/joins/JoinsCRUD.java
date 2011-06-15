@@ -27,18 +27,8 @@ public class JoinsCRUD implements java.io.Serializable {
 	 */
 	private static final long serialVersionUID = -2278497615197327793L;
 	private final Logger logger = Logger.getLogger("org.cggh.tools.dataMerger.data.joins");
-	
-	private Integer nextColumnNumber;
-	private CachedRowSet joinsAsCachedRowSet;
-	private Integer keysCount;
-	private CachedRowSet crossDatatableJoinsAsCachedRowSet;
 	private DatabaseModel databaseModel;
-
-	private CachedRowSet keyJoinsAsCachedRowset;
-	private CachedRowSet nonKeyCrossDatatableJoinsAsCachedRowset;
-	private CachedRowSet nonCrossDatatableJoinsAsCachedRowset;
-	private String exportRepositoryFilepath;
-	private boolean exportSuccessful;
+	private Integer nextColumnNumber;
 
 	//Must not have a joinModel, because joinModel has a mergeModel, which has a joinsModel, causes StackOverflowError
 	//private JoinModel joinModel;
@@ -48,24 +38,7 @@ public class JoinsCRUD implements java.io.Serializable {
 		
 	}
 
-    
-	public void setJoinsAsCachedRowSet(CachedRowSet joinsAsCachedRowSet) {
-		this.joinsAsCachedRowSet = joinsAsCachedRowSet;	
-	}   
-    public CachedRowSet getJoinsAsCachedRowSet () {
-        return this.joinsAsCachedRowSet;
-    }
-
-    
-
-	public void setKeysCount(Integer keysCount) {
-
-		this.keysCount = keysCount;
-		
-	}    
-    public Integer getKeysCount () {
-        return this.keysCount;
-    }   
+     
     
 	public Integer getNextColumnNumberByMergeId(Integer mergeId,
 			Connection connection) {
@@ -118,14 +91,6 @@ public class JoinsCRUD implements java.io.Serializable {
 	}
 
 
-	public void setNextColumnNumber(Integer nextColumnNumber) {
-		this.nextColumnNumber = nextColumnNumber;
-	}
-
-
-	public Integer getNextColumnNumber() {
-		return this.nextColumnNumber;
-	}
 
 
 	public void createJoinUsingJoinModel(JoinModel joinModel, Connection connection) {
@@ -156,36 +121,6 @@ public class JoinsCRUD implements java.io.Serializable {
 	}
 
 
-	public void setJoinsModelByMergeId(Integer mergeId, Connection connection) {
-
-		// Set-bys must only set the set*By item and all its children.
-		// Note that mergeModel is a child of JoinModel, not JoinsModel.
-
-		
-	}
-
-
-	public void setCrossDatatableJoinsAsCachedRowSet(
-			final CachedRowSet crossDatatableJoinsAsCachedRowSet) {
-		this.crossDatatableJoinsAsCachedRowSet = crossDatatableJoinsAsCachedRowSet;
-	}
-
-
-
-	public void setJoinsModelByMergeModel(MergeModel mergeModel, Connection connection) {
-
-		// Set-bys must only set the set*By item and all its children.
-		// Note that mergeModel is a child of JoinModel, not JoinsModel.
-		
-		this.setJoinsModelByMergeId(mergeModel.getId(), connection);
-		
-	}
-
-
-
-	public CachedRowSet getCrossDatatableJoinsAsCachedRowSet() {
-		return this.crossDatatableJoinsAsCachedRowSet;
-	}
 
 
 
@@ -274,10 +209,10 @@ public class JoinsCRUD implements java.io.Serializable {
 
 
 
-	public JoinsCRUD retrieveJoinsAsJoinsModelByMergeId(Integer mergeId,
+	public JoinsModel retrieveJoinsAsJoinsModelByMergeId(Integer mergeId,
 			Connection connection) {
 
-		JoinsCRUD joinsModel = new JoinsCRUD();
+		JoinsModel joinsModel = new JoinsModel();
 		
 		MergeModel mergeModel = new MergeModel();
 		mergeModel.setId(mergeId);
@@ -640,28 +575,6 @@ public class JoinsCRUD implements java.io.Serializable {
 	}
 
 
-	public void setKeyJoinsAsCachedRowSet(
-			CachedRowSet keyJoinsAsCachedRowset) {
-		this.keyJoinsAsCachedRowset = keyJoinsAsCachedRowset;
-	}
-
-
-	public void setNonKeyCrossDatatableJoinsAsCachedRowSet(
-			CachedRowSet nonKeyCrossDatatableJoinsAsCachedRowset) {
-		this.nonKeyCrossDatatableJoinsAsCachedRowset = nonKeyCrossDatatableJoinsAsCachedRowset;
-	}
-
-
-	public CachedRowSet getKeyJoinsAsCachedRowSet() {
-		
-		return this.keyJoinsAsCachedRowset;
-	}
-
-
-	public CachedRowSet getNonKeyCrossDatatableJoinsAsCachedRowSet() {
-
-		return this.nonKeyCrossDatatableJoinsAsCachedRowset;
-	}
 
 
 	public List<String> retrieveDatatable1KeyColumnNamesAsStringListByMergeId(
@@ -950,41 +863,16 @@ public class JoinsCRUD implements java.io.Serializable {
 	}
 
 
-	public void setNonCrossDatatableJoinsAsCachedRowSet(
-			CachedRowSet nonCrossDatatableJoinsAsCachedRowset) {
-		this.nonCrossDatatableJoinsAsCachedRowset = nonCrossDatatableJoinsAsCachedRowset;
+
+
+	public void setNextColumnNumber(Integer nextColumnNumber) {
+		this.nextColumnNumber = nextColumnNumber;
 	}
 
 
-	public CachedRowSet getNonCrossDatatableJoinsAsCachedRowSet() {
-		return this.nonCrossDatatableJoinsAsCachedRowset;
+	public Integer getNextColumnNumber() {
+		return this.nextColumnNumber;
 	}
-
-
-	public void setExportRepositoryFilepath(String exportRepositoryFilepath) {
-		this.exportRepositoryFilepath = exportRepositoryFilepath;
-	}
-
-
-	public void setExportSuccessful(boolean exportSuccessful) {
-		this.exportSuccessful = exportSuccessful;
-	}
-
-
-	public String getExportRepositoryFilepath() {
-		return this.exportRepositoryFilepath;
-	}
-
-
-	public boolean getExportSuccessful() {
-		return this.exportSuccessful;
-	}
-
-
-
-
-
-
 
 
 

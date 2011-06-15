@@ -262,50 +262,55 @@ function initRemoveFilesFunction () {
 
 	$(".remove-files-button").click(function() {	
 		
-		// Get data from files form.
-		var data = $.toJSON($('.files-form').serializeObject());
 		
-		//Validate exactly two checkboxes selected.
+		if (confirm("Are you sure you want to permanently remove these files?")) {
 		
-		var obj = jQuery.parseJSON(data);
-		
-		if (obj != undefined && obj.file_id != undefined && obj.file_id.length > 0) {
-		
-			$.ajax({
-				type: 'DELETE',
-				data: data,
-				url: '/dataMerger/data/files',
-				dataType: 'json',
-				success: function (data, textStatus, jqXHR) {
-					
-					if (data.success) {
+			// Get data from files form.
+			var data = $.toJSON($('.files-form').serializeObject());
+			
+			//Validate exactly two checkboxes selected.
+			
+			var obj = jQuery.parseJSON(data);
+			
+			if (obj != undefined && obj.file_id != undefined && obj.file_id.length > 0) {
+			
+				$.ajax({
+					type: 'DELETE',
+					data: data,
+					url: '/dataMerger/data/files',
+					dataType: 'json',
+					success: function (data, textStatus, jqXHR) {
 						
-						if (data.success = "true") {
+						if (data.success) {
 							
-							//FIXME: Could be viewing either the hidden or unhidden list.
-							// This loads the unhidden list regardless.
-							retrieveFilesAsDecoratedHTMLTable();
-							
-							initFilesFunctions(); //rebind
-							alert("Files have been removed.");
+							if (data.success = "true") {
+								
+								//FIXME: Could be viewing either the hidden or unhidden list.
+								// This loads the unhidden list regardless.
+								retrieveFilesAsDecoratedHTMLTable();
+								
+								initFilesFunctions(); //rebind
+								alert("Files have been removed.");
+							} else {
+								alert("An error occurred.");
+							}
+			
 						} else {
-							alert("An error occurred.");
+							$('.status').html("textStatus: " + textStatus);
 						}
+					},
+					error: function (jqXHR, textStatus, errorThrown){
+			            $('.error').html("errorThrown: " + errorThrown);
+			            $('.status').html("textStatus: " + textStatus);
+			        },
+					beforeSend: function() { $('.removing-indicator').show(); },
+			        complete: function() { $('.removing-indicator').hide(); }
+				});
+			
+			} else {
+				alert("Please select files to remove.");
+			}
 		
-					} else {
-						$('.status').html("textStatus: " + textStatus);
-					}
-				},
-				error: function (jqXHR, textStatus, errorThrown){
-		            $('.error').html("errorThrown: " + errorThrown);
-		            $('.status').html("textStatus: " + textStatus);
-		        },
-				beforeSend: function() { $('.removing-indicator').show(); },
-		        complete: function() { $('.removing-indicator').hide(); }
-			});
-		
-		} else {
-			alert("Please select files to remove.");
 		}
 		
 	});

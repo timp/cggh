@@ -129,16 +129,16 @@ public class MergesCRUD implements java.io.Serializable {
 	        	  mergeModel.getDatatable2Model().setDuplicateKeysCount(resultSet.getInt("datatable_2_duplicate_keys_count"));
 	        	  
 	        	  ////Retrieve the joins data
-	        	  JoinsCRUD joinsModel = new JoinsCRUD();
-	        	  joinsModel.setDatabaseModel(this.getDatabaseModel());
-	        	  mergeModel.setJoinsModel(joinsModel.retrieveJoinsAsJoinsModelByMergeId(mergeModel.getId(), connection));
+	        	  JoinsCRUD joinsCRUD = new JoinsCRUD();
+	        	  joinsCRUD.setDatabaseModel(this.getDatabaseModel());
+	        	  mergeModel.setJoinsModel(joinsCRUD.retrieveJoinsAsJoinsModelByMergeId(mergeModel.getId(), connection));
 	        	  
 	        	  //FIXME: This seems wrong. Refactor to joinsModel.setDataAsCachedRowSet or review naming.
-	        	  mergeModel.setJoinsAsCachedRowSet(joinsModel.retrieveJoinsAsCachedRowSetByMergeId(mergeModel.getId(), connection));
+	        	  mergeModel.setJoinsAsCachedRowSet(joinsCRUD.retrieveJoinsAsCachedRowSetByMergeId(mergeModel.getId(), connection));
 	        	  
 	        	  //Retrieve the join-specific datatable data from the db and add to the datatable models.
-	        	  mergeModel.getDatatable1Model().setKeyColumnNamesAsStringList(joinsModel.retrieveDatatable1KeyColumnNamesAsStringListByMergeId(mergeModel.getId(), connection));
-	        	  mergeModel.getDatatable2Model().setKeyColumnNamesAsStringList(joinsModel.retrieveDatatable2KeyColumnNamesAsStringListByMergeId(mergeModel.getId(), connection));
+	        	  mergeModel.getDatatable1Model().setKeyColumnNamesAsStringList(joinsCRUD.retrieveDatatable1KeyColumnNamesAsStringListByMergeId(mergeModel.getId(), connection));
+	        	  mergeModel.getDatatable2Model().setKeyColumnNamesAsStringList(joinsCRUD.retrieveDatatable2KeyColumnNamesAsStringListByMergeId(mergeModel.getId(), connection));
 	        	  
 	        	  //Retrieve the joined keytable data
 	        	  JoinedKeytablesCRUD joinedKeytablesModel = new JoinedKeytablesCRUD();

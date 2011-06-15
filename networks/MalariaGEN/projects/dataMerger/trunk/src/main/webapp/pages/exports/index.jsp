@@ -3,7 +3,6 @@
 <%@ page import="java.util.*" %>
 <%@ page import="javax.sql.rowset.CachedRowSet" %>
 <%@ page import="org.cggh.tools.dataMerger.data.exports.ExportsCRUD" %>
-<%@ page import="org.cggh.tools.dataMerger.data.exports.ExportModel" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
@@ -46,15 +45,16 @@
 
 		<form class="exports-form" onsubmit="return false;">
 		
-		<div class="exports">
-			<%
+			<div class="exports">
+				<%
+
+					ExportsCRUD exportsCRUD = new ExportsCRUD();
 			
-				ExportsCRUD exportsCRUD = new ExportsCRUD();
-				exportsCRUD.setDatabaseModel(databaseModel);
-				out.print(exportsCRUD.retrieveExportsAsDecoratedXHTMLTableUsingUserId(userModel.getId()));
+					exportsCRUD.setDatabaseModel(databaseModel);
 				
-			%>	
-		</div>
+					out.print(exportsCRUD.retrieveExportsAsDecoratedXHTMLTableUsingUserId(userModel.getId()));
+				%>	
+			</div>
 
 		</form>
 	

@@ -18,6 +18,7 @@ import org.cggh.tools.dataMerger.data.databases.DatabaseModel;
 import org.cggh.tools.dataMerger.data.databases.DatabasesCRUD;
 import org.cggh.tools.dataMerger.data.exports.ExportModel;
 import org.cggh.tools.dataMerger.data.exports.ExportsCRUD;
+import org.cggh.tools.dataMerger.data.files.FileModel;
 import org.cggh.tools.dataMerger.data.files.FilesCRUD;
 import org.cggh.tools.dataMerger.data.joins.JoinModel;
 import org.cggh.tools.dataMerger.data.joins.JoinsCRUD;
@@ -549,6 +550,7 @@ public class DataController extends HttpServlet {
 					  	// Get the mergeId for the new export
 					  
 					  	ExportModel exportModel = new ExportModel();
+					  	exportModel.setCreatedByUserModel(userModel);
 					  	exportModel.getMergeModel().setId(Integer.parseInt(exportURLPatternMatcher.group(1)));
 					  
 					  	
@@ -565,15 +567,16 @@ public class DataController extends HttpServlet {
 						try {
 							JSONObject jsonObject = new JSONObject(stringBuffer.toString());
 							
-							exportModel.setFilename(jsonObject.optString("mergedFileFilename"));
+							exportModel.setMergedFileAsFileModel(new FileModel());
 							
-							//TODO: comment-out
-							logger.info("got mergedFileFilename: " + exportModel.getFilename());
+							exportModel.getMergedFileAsFileModel().setFilename(jsonObject.optString("mergedFileFilename"));
+							
+							//
+							//logger.info("got mergedFileFilename: " + exportModel.getFilename());
 							
 							ExportsCRUD exportsCRUD = new ExportsCRUD();
 							
 							exportsCRUD.setDatabaseModel(databaseModel);
-							exportsCRUD.setUserModel(userModel);
 							exportsCRUD.setFilebaseModel(filebaseModel);
 							
 							exportModel = exportsCRUD.retrieveExportAsExportModelThroughCreatingExportUsingExportModel(exportModel);

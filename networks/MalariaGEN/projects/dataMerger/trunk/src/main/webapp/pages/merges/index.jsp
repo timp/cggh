@@ -33,8 +33,8 @@
 </head>
 <body>
 	<div class="page">
+	
 		<%@ include file="../shared/jsp/header.jsp" %>
-		
 		
 		<h2 class="page-title">Merges</h2>
 
@@ -45,17 +45,18 @@
 		</div>
 
 		<form class="merges-form" onsubmit="return false;">
-		<div class="merges">
-			<%
-			
-				MergesCRUD mergesCRUD = new MergesCRUD();
-			
-				mergesCRUD.setDatabaseModel(databaseModel);
+		
+			<div class="merges">
+				<%
 				
-				out.print(mergesCRUD.retrieveMergesAsDecoratedXHTMLTableUsingUserId(userModel.getId()));
+					MergesCRUD mergesCRUD = new MergesCRUD();
 				
-			%>		
-		</div>
+					mergesCRUD.setDatabaseModel(databaseModel);
+					
+					out.print(mergesCRUD.retrieveMergesAsDecoratedXHTMLTableUsingUserId(userModel.getId()));
+					
+				%>		
+			</div>
 
 		</form>
 

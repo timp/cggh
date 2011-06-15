@@ -15,10 +15,15 @@ import javax.sql.rowset.CachedRowSet;
 
 import org.cggh.tools.dataMerger.data.databases.DatabaseModel;
 import org.cggh.tools.dataMerger.data.databases.DatabasesCRUD;
+import org.cggh.tools.dataMerger.data.files.FileModel;
+import org.cggh.tools.dataMerger.data.files.FileOriginModel;
+import org.cggh.tools.dataMerger.data.files.FileOriginsCRUD;
+import org.cggh.tools.dataMerger.data.files.FilesCRUD;
 import org.cggh.tools.dataMerger.data.joins.JoinsCRUD;
 import org.cggh.tools.dataMerger.data.mergedDatatables.MergedDatatablesCRUD;
 import org.cggh.tools.dataMerger.data.merges.MergesCRUD;
 import org.cggh.tools.dataMerger.data.resolutions.ResolutionsCRUD;
+import org.cggh.tools.dataMerger.data.resolutions.ResolutionsModel;
 import org.cggh.tools.dataMerger.data.users.UserModel;
 import org.cggh.tools.dataMerger.files.filebases.FilebaseModel;
 import org.cggh.tools.dataMerger.functions.data.exports.ExportsFunctions;
@@ -32,14 +37,12 @@ public class ExportsCRUD implements java.io.Serializable  {
 	private final Logger logger = Logger.getLogger("org.cggh.tools.dataMerger.data.exports");
 	
 	private DatabaseModel databaseModel;
-	private UserModel userModel;
 	private FilebaseModel filebaseModel;
 	private String exportsFilebaseDirectoryPathRelativeToFilebaseServerPath = "exports";
 	
 	public ExportsCRUD() {
 
 		this.setDatabaseModel(new DatabaseModel());
-		this.setUserModel(new UserModel());	
 		this.setFilebaseModel(new FilebaseModel());
 	
 		
@@ -71,7 +74,7 @@ public class ExportsCRUD implements java.io.Serializable  {
 						preparedStatement.setInt(2, exportModel.getMergeModel().getFile2Model().getId());
 						preparedStatement.setString(3, exportModel.getMergeModel().getFile1Model().getFilepath());
 						preparedStatement.setString(4, exportModel.getMergeModel().getFile2Model().getFilepath());
-						preparedStatement.setInt(5, this.getUserModel().getId());
+						preparedStatement.setInt(5, exportModel.getCreatedByUserModel().getId());
 						preparedStatement.executeUpdate();
 						preparedStatement.close();  
 			    	  
@@ -104,12 +107,15 @@ public class ExportsCRUD implements java.io.Serializable  {
 						this.createMergedDatatableAsFileUsingExportModel(exportModel, connection);
 						
 						
-						// Export the join into a file.
-						//TODO: Should this be part of the files or scripts app?
+						// Export the joins into a file.
 						this.createJoinsAsFileUsingExportModel(exportModel, connection);
 						
-						//TODO: Export the resolutions into a file.
+						
+						// Export the Resolutions into a file
 						this.createResolutionsAsFileUsingExportModel(exportModel, connection);
+						
+						// Export the Settings into a file
+						this.createSettingsAsFileUsingExportId(exportModel.getId(), connection);
 					
 					
 				      //End of export algorithm
@@ -146,11 +152,13 @@ public class ExportsCRUD implements java.io.Serializable  {
 	}
 
 
+
+	//TODO: should probably refactor a lot of this file stuff into the files component.
 	public void createMergedDatatableAsFileUsingExportModel(
 			ExportModel exportModel, Connection connection) {
 
 		
-		File exportDirectory = new File(this.getFilebaseModel().getServerPath() + this.getExportsFilebaseDirectoryPathRelativeToFilebaseServerPath() + exportModel.getId().toString());
+		File exportDirectory = new File(this.getFilebaseModel().getServerPath() + this.getExportsFilebaseDirectoryPathRelativeToFilebaseServerPath() + this.getFilebaseModel().getFilepathSeparator() + exportModel.getId().toString());
 		
 		//this.logger.info("exportDirectory created: " + exportDirectory.mkdirs());
 		
@@ -193,13 +201,13 @@ public class ExportsCRUD implements java.io.Serializable  {
 		
 		try {
 			
-			String fileName = "merged_datatable_" + exportModel.getId() + ".csv";
+			String filename = exportModel.getMergedFileAsFileModel().getFilename();
 			
 			String createMergedDatatableAsFileSQL =
 				"(SELECT " + mergedDatatableColumnNamesForSelectSQL + ") " + 
 				"UNION " +
 				"(SELECT * FROM `" + exportModel.getMergedDatatableModel().getName() + "` INTO OUTFILE '" + exportDirectory.getAbsolutePath().replace("\\", "\\\\") +  
-				pathSeparatorForSQL + fileName + "' " +
+				pathSeparatorForSQL + filename + "' " +
 						"FIELDS ESCAPED BY '\\\\' OPTIONALLY ENCLOSED BY '\"' TERMINATED BY ',' " +
 						"LINES TERMINATED BY '\\n' " +
 				")" +
@@ -212,9 +220,37 @@ public class ExportsCRUD implements java.io.Serializable  {
 			preparedStatement.close();		
 
 		
-			exportModel.getMergedDatatableModel().setExportRepositoryFilepath(exportDirectory.toString() + pathSeparatorForRepositoryFilepath + fileName);
+			exportModel.getMergedFileAsFileModel().setFilepath(exportDirectory.toString() + pathSeparatorForRepositoryFilepath + filename);
 			
-			this.updateExportMergedDatatableExportRepositoryFilepathUsingExportModel(exportModel, connection);
+			
+			FilesCRUD filesCRUD = new FilesCRUD();
+			
+			FileOriginsCRUD fileOriginsCRUD = new FileOriginsCRUD();
+			FileOriginModel fileOriginModel = new FileOriginModel();
+			fileOriginModel.setId(fileOriginsCRUD.retrieveFileOriginsAsOriginToIdHashMap(connection).get("export"));
+			fileOriginModel.setOrigin("export");
+			exportModel.getMergedFileAsFileModel().setFileOriginModel(fileOriginModel);
+			exportModel.getMergedFileAsFileModel().setCreatedByUserModel(exportModel.getCreatedByUserModel());
+
+			filesCRUD.createFileUsingFileModel(exportModel.getMergedFileAsFileModel(), connection);
+			
+			DatabasesCRUD databasesCRUD = new DatabasesCRUD();
+			exportModel.getMergedFileAsFileModel().setId(databasesCRUD.retrieveLastInsertIdAsIntegerUsingConnection(connection));
+			exportModel.getMergedFileAsFileModel().setFilepath(exportModel.getMergedFileAsFileModel().getFilepath());
+			
+			File mergedFile = new File(exportModel.getMergedFileAsFileModel().getFilepath());
+            
+            if (mergedFile.exists()) {
+            	
+            	exportModel.getMergedFileAsFileModel().setFileSizeInBytes(mergedFile.length());
+            	filesCRUD.updateFileFilepathAndFileSizeInBytesUsingFileModel(exportModel.getMergedFileAsFileModel(), connection);
+            	this.updateExportMergedFileUsingExportModel(exportModel, connection);
+            		
+            }
+            
+            
+			
+			//mergedFileAsFileModel.getFileSizeInBytes();
 			
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
@@ -223,15 +259,16 @@ public class ExportsCRUD implements java.io.Serializable  {
 		}
 	}
 
-	public void updateExportMergedDatatableExportRepositoryFilepathUsingExportModel(
+	public void updateExportMergedFileUsingExportModel(
 			ExportModel exportModel, Connection connection) {
 		
 		try {
 			//Update the export table
-			PreparedStatement preparedStatement = connection.prepareStatement("UPDATE `export` SET merged_file_filepath = ? WHERE id = ?;");
+			PreparedStatement preparedStatement = connection.prepareStatement("UPDATE `export` SET merged_file_id = ?, merged_file_filepath = ? WHERE id = ?;");
 			
-			preparedStatement.setString(1, exportModel.getMergedDatatableModel().getExportRepositoryFilepath());
-			preparedStatement.setInt(2, exportModel.getId());
+			preparedStatement.setInt(1, exportModel.getMergedFileAsFileModel().getId());
+			preparedStatement.setString(2, exportModel.getMergedFileAsFileModel().getFilepath());
+			preparedStatement.setInt(3, exportModel.getId());
 			
 			preparedStatement.executeUpdate();
 			preparedStatement.close();  
@@ -293,7 +330,7 @@ public class ExportsCRUD implements java.io.Serializable  {
 
 			exportModel.getMergeModel().getJoinsModel().setExportRepositoryFilepath(exportDirectory.toString() + this.getFilebaseModel().getFilepathSeparator() + fileName);
 			
-			this.updateExportJoinsExportRepositoryFilepathUsingExportModel(exportModel, connection);
+			this.updateExportJoinsRecordFilepathUsingExportModel(exportModel, connection);
 
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
@@ -303,7 +340,7 @@ public class ExportsCRUD implements java.io.Serializable  {
 	}
 	
 	
-	public void updateExportJoinsExportRepositoryFilepathUsingExportModel(
+	public void updateExportJoinsRecordFilepathUsingExportModel(
 			ExportModel exportModel, Connection connection) {
 		
 		try {
@@ -358,7 +395,9 @@ public class ExportsCRUD implements java.io.Serializable  {
 			String keyColumnNamesForSelectSQL = "";
 			String joinedKeytableKeyColumnNameAliasesForSelectSQL = "";
 			
-			CachedRowSet keyJoinsAsCachedRowSet = exportModel.getMergeModel().getJoinsModel().retrieveKeyJoinsAsCachedRowSetByMergeId(exportModel.getMergeModel().getId(), connection);
+			JoinsCRUD joinsCRUD = new JoinsCRUD();
+			
+			CachedRowSet keyJoinsAsCachedRowSet = joinsCRUD.retrieveKeyJoinsAsCachedRowSetByMergeId(exportModel.getMergeModel().getId(), connection);
 			
 			if (keyJoinsAsCachedRowSet.next()) {
 				
@@ -396,10 +435,11 @@ public class ExportsCRUD implements java.io.Serializable  {
 			preparedStatement.executeQuery();
 			preparedStatement.close();		
 
-			//FIXME: This is going to be done quite differently.
-			//exportModel.getMergeModel().getResolutionsModel().setExportRepositoryFilepath(exportDirectory.toString() + pathSeparatorForRepositoryFilepath + fileName);
 
-			this.updateExportResolutionsExportRepositoryFilepathUsingExportModel(exportModel, connection);
+			exportModel.getMergeModel().setResolutionsModel(new ResolutionsModel());
+			exportModel.getMergeModel().getResolutionsModel().setExportRecordFilepath(exportDirectory.toString() + this.getFilebaseModel().getFilepathSeparator() + fileName);
+
+			this.updateExportResolutionsRecordFilepathUsingExportModel(exportModel, connection);
 
 			
 		} catch (SQLException e) {
@@ -411,16 +451,14 @@ public class ExportsCRUD implements java.io.Serializable  {
 
 
 
-	public void updateExportResolutionsExportRepositoryFilepathUsingExportModel(
+	public void updateExportResolutionsRecordFilepathUsingExportModel(
 			ExportModel exportModel, Connection connection) {
-		
-		//FIXME: This is going to be done quite differently.
-		/*
+
 		try {
 			//Update the export table
-			PreparedStatement preparedStatement = connection.prepareStatement("UPDATE `export` SET resolutions_export_repository_filepath = ? WHERE id = ?;");
+			PreparedStatement preparedStatement = connection.prepareStatement("UPDATE `export` SET resolutions_record_filepath = ? WHERE id = ?;");
 			
-			preparedStatement.setString(1, exportModel.getMergeModel().getResolutionsModel().getExportRepositoryFilepath());
+			preparedStatement.setString(1, exportModel.getMergeModel().getResolutionsModel().getExportRecordFilepath());
 			preparedStatement.setInt(2, exportModel.getId());
 			
 			preparedStatement.executeUpdate();
@@ -429,8 +467,92 @@ public class ExportsCRUD implements java.io.Serializable  {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		*/	
+
 	}
+	
+	/////////////////////
+	
+	
+	public void createSettingsAsFileUsingExportId(
+			Integer exportId, Connection connection) {
+
+		File exportDirectory = new File(this.getFilebaseModel().getServerPath() + this.getExportsFilebaseDirectoryPathRelativeToFilebaseServerPath() + this.getFilebaseModel().getFilepathSeparator() + exportId.toString());
+		
+		//this.logger.info("exportDirectory created: " + exportDirectory.mkdirs());
+		
+		exportDirectory.mkdirs();
+
+		//TODO: This is not needed (the folder has already been created), although I concede it keeps it modular
+		
+		//TODO: Make this writable for MySQL
+		//exportDirectory.setWritable(true); //This would only make it writable for tomcat
+		String pathSeparatorForSQL = "\\\\";
+		if(this.getFilebaseModel().getOperatingSystem().equals("nix")){
+			pathSeparatorForSQL = "/";
+			try {
+				Runtime.getRuntime().exec("chmod g+w " + exportDirectory.getAbsolutePath());
+			} catch (IOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+		}
+		
+		try {
+			
+			String fileName = "settings_" + exportId + ".csv";
+			
+
+			String createSettingsAsFileSQL =
+				"SELECT name, value FROM setting " + 
+				"INTO OUTFILE '" + exportDirectory.getAbsolutePath().replace("\\", "\\\\") +  
+				pathSeparatorForSQL + fileName + "' " +
+						"FIELDS ESCAPED BY '\\\\' OPTIONALLY ENCLOSED BY '\"' TERMINATED BY ',' " +
+						"LINES TERMINATED BY '\\n' " +
+				";";		
+			
+			//TODO:remove
+			logger.info(createSettingsAsFileSQL);
+			
+			PreparedStatement preparedStatement = connection.prepareStatement(createSettingsAsFileSQL);
+			preparedStatement.executeQuery();
+			preparedStatement.close();		
+
+
+			String settingsRecordFilepath = exportDirectory.toString() + this.getFilebaseModel().getFilepathSeparator() + fileName;
+
+			this.updateExportSettingsRecordFilepathUsingExportIdAndSettingsRecordFilepath(exportId, settingsRecordFilepath, connection);
+
+			
+		} catch (SQLException e) {
+			
+			e.printStackTrace();
+		}
+		
+	}
+
+
+
+	public void updateExportSettingsRecordFilepathUsingExportIdAndSettingsRecordFilepath(
+			Integer exportId, String settingsRecordFilepath, Connection connection) {
+
+		try {
+			//Update the export table
+			PreparedStatement preparedStatement = connection.prepareStatement("UPDATE `export` SET settings_record_filepath = ? WHERE id = ?;");
+			
+			preparedStatement.setString(1, settingsRecordFilepath);
+			preparedStatement.setInt(2, exportId);
+			
+			preparedStatement.executeUpdate();
+			preparedStatement.close();  
+		} catch (SQLException e) {
+			
+			e.printStackTrace();
+		}
+
+	}
+	
+	
+	////////////////////
 
 
 	public ExportModel retrieveExportAsExportModelThroughUpdatingMergedDatatableWithResolvedDataUsingExportModel(
@@ -935,21 +1057,13 @@ public class ExportsCRUD implements java.io.Serializable  {
 		return this.databaseModel;
 	}
 
-
-	public void setUserModel(UserModel userModel) {
-		this.userModel = userModel;
-	}
-
-
-	public UserModel getUserModel() {
-		return this.userModel;
-	}
-
 	
 	public String retrieveExportsAsDecoratedXHTMLTableUsingUserId (Integer userId) {
 		
 		String exportsAsDecoratedXHTMLTable = "";
 		
+		//TODO: remove
+		logger.info("got userId: " + userId);
 		
 		  CachedRowSet exportsAsCachedRowSet = this.retrieveExportsAsCachedRowSetUsingUserId(userId);
 
@@ -974,6 +1088,9 @@ public class ExportsCRUD implements java.io.Serializable  {
 
 	public CachedRowSet retrieveExportsAsCachedRowSetUsingUserId(Integer userId) {
 		
+		//TODO: remove
+		logger.info("got userId: " + userId);
+		
 		CachedRowSet exportsAsCachedRowSet = null;
 		
 		UserModel userModel = new UserModel();
@@ -989,6 +1106,8 @@ public class ExportsCRUD implements java.io.Serializable  {
 					
 					 //FIXME: Apparently a bug in CachedRowSet using getX('columnAlias') aka columnLabel, which actually only works with getX('columnName'), so using getX('columnIndex').
 					 
+					
+					//NOTE: This won't return results that don't have a record for each source file and the merged file.
 					
 				      try{
 				          PreparedStatement preparedStatement = connection.prepareStatement(
