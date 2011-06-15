@@ -55,7 +55,7 @@ public class FilesFunctions {
 				 
 				 filesAsDecoratedXHTMLTable += "<th><!-- Column for checkboxes --></th>";
 				 filesAsDecoratedXHTMLTable += "<th class=\"idHeadingContainer\">ID</th>";
-				 filesAsDecoratedXHTMLTable += "<th>Filename</th>";
+				 filesAsDecoratedXHTMLTable += "<th><a class=\"sortByFilenameLink\">Filename</a></th>";
 				 filesAsDecoratedXHTMLTable += "<th>Origin</th>";
 				 filesAsDecoratedXHTMLTable += "<th>Created</th>";
 				 filesAsDecoratedXHTMLTable += "<th class=\"fileSizeHeadingContainer\">Size</th>";

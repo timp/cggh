@@ -183,6 +183,12 @@ public class ExportsCRUD implements java.io.Serializable  {
 		
 		exportModel.getMergedDatatableModel().setDataAsCachedRowSet(mergedDatatablesModel.retrieveDataAsCachedRowSetByMergedDatatableName(exportModel.getMergedDatatableModel().getName(), connection));
 		
+		//////////
+		
+		//TODO: build a similar string below for the column names using IFNULL(colName, NullSubstitute) as got from settings and use in the query instead of *
+		
+		//////////
+		
 		String mergedDatatableColumnNamesForSelectSQL = "";
 		
 		try {
@@ -510,8 +516,8 @@ public class ExportsCRUD implements java.io.Serializable  {
 						"LINES TERMINATED BY '\\n' " +
 				";";		
 			
-			//TODO:remove
-			logger.info(createSettingsAsFileSQL);
+			//
+			//logger.info(createSettingsAsFileSQL);
 			
 			PreparedStatement preparedStatement = connection.prepareStatement(createSettingsAsFileSQL);
 			preparedStatement.executeQuery();
@@ -1062,8 +1068,8 @@ public class ExportsCRUD implements java.io.Serializable  {
 		
 		String exportsAsDecoratedXHTMLTable = "";
 		
-		//TODO: remove
-		logger.info("got userId: " + userId);
+		//
+		//logger.info("got userId: " + userId);
 		
 		  CachedRowSet exportsAsCachedRowSet = this.retrieveExportsAsCachedRowSetUsingUserId(userId);
 
@@ -1077,7 +1083,7 @@ public class ExportsCRUD implements java.io.Serializable  {
 		  } else {
 			  
 			  //TODO: Error handling
-			  this.logger.severe("exportsAsCachedRowSet is null");
+			  this.logger.warning("exportsAsCachedRowSet is null");
 			  exportsAsDecoratedXHTMLTable = "<p>Error: exportsAsCachedRowSet is null</p>";
 			  
 		  }
@@ -1088,8 +1094,8 @@ public class ExportsCRUD implements java.io.Serializable  {
 
 	public CachedRowSet retrieveExportsAsCachedRowSetUsingUserId(Integer userId) {
 		
-		//TODO: remove
-		logger.info("got userId: " + userId);
+		//
+		//logger.info("got userId: " + userId);
 		
 		CachedRowSet exportsAsCachedRowSet = null;
 		
@@ -1098,7 +1104,7 @@ public class ExportsCRUD implements java.io.Serializable  {
 		
 		   String CACHED_ROW_SET_IMPL_CLASS = "com.sun.rowset.CachedRowSetImpl";
 		   
-				
+		   try {	
 
 				Connection connection = this.getDatabaseModel().getNewConnection();
 				 
@@ -1129,12 +1135,6 @@ public class ExportsCRUD implements java.io.Serializable  {
 				      	catch (SQLException sqlException){
 				        	//System.out.println("<p>" + sqlException + "</p>");
 					    	sqlException.printStackTrace();
-				        } catch (ClassNotFoundException e) {
-							e.printStackTrace();
-						} catch (InstantiationException e) {
-							e.printStackTrace();
-						} catch (IllegalAccessException e) {
-							e.printStackTrace();
 						} finally {
 				        	try {
 								connection.close();
@@ -1150,7 +1150,10 @@ public class ExportsCRUD implements java.io.Serializable  {
 					//System.out.println("connection.isClosed");
 				}
 		
-	
+			} 
+			catch (Exception e) {
+				e.printStackTrace();
+			}
 	
 	
 	     return exportsAsCachedRowSet;

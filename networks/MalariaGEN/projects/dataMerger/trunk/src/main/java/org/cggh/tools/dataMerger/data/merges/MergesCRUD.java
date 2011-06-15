@@ -432,7 +432,7 @@ public class MergesCRUD implements java.io.Serializable {
 
 		public String retrieveMergesAsDecoratedXHTMLTableUsingUserId (Integer userId) {
 			
-			String mergesAsDecoratedXHTMLTableUsingMergesModel = null;
+			String mergesAsDecoratedXHTMLTable = null;
 			
 			  CachedRowSet mergesAsCachedRowSet = this.retrieveMergesAsCachedRowSetUsingUserId(userId);
 
@@ -441,17 +441,17 @@ public class MergesCRUD implements java.io.Serializable {
 				  	MergesFunctions mergesFunctions = new MergesFunctions();
 				  	mergesFunctions.setMergesAsCachedRowSet(mergesAsCachedRowSet);
 				  	mergesFunctions.setMergesAsDecoratedXHTMLTableUsingMergesAsCachedRowSet();
-				  	mergesAsDecoratedXHTMLTableUsingMergesModel = mergesFunctions.getMergesAsDecoratedXHTMLTable();
+				  	mergesAsDecoratedXHTMLTable = mergesFunctions.getMergesAsDecoratedXHTMLTable();
 				    
 			  } else {
 				  
 				  //TODO: Error handling
 				  this.logger.warning("Error: mergesAsCachedRowSet is null");
-				  mergesAsDecoratedXHTMLTableUsingMergesModel = "<p>Error: mergesAsCachedRowSet is null</p>";
+				  mergesAsDecoratedXHTMLTable = "<p>Error: mergesAsCachedRowSet is null</p>";
 				  
 			  }
 			
-			return mergesAsDecoratedXHTMLTableUsingMergesModel;
+			return mergesAsDecoratedXHTMLTable;
 		}
 	
 	public CachedRowSet retrieveMergesAsCachedRowSetUsingUserId(Integer userId) {

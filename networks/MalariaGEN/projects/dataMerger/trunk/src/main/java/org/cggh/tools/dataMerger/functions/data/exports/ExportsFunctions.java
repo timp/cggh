@@ -107,7 +107,7 @@ public class ExportsFunctions implements java.io.Serializable  {
 					//TODO: format datetime 02 Jan 2011
 					 exportsAsDecoratedXHTMLTable = exportsAsDecoratedXHTMLTable.concat("<td>" + dateFormat.format(this.getExportsAsCachedRowSet().getTimestamp("created_datetime")) + "</td>");
 					 
-					 exportsAsDecoratedXHTMLTable = exportsAsDecoratedXHTMLTable.concat("<td><button class=\"deleteExportButton\">Delete</button></td>");
+					 exportsAsDecoratedXHTMLTable = exportsAsDecoratedXHTMLTable.concat("<td><input type=\"hidden\" name=\"export_id\" value=\"" + this.getExportsAsCachedRowSet().getInt("id") + "\"/><button class=\"deleteExportButton\">Delete</button><img class=\"deleting-indicator\" src=\"/dataMerger/pages/shared/gif/loading.gif\" style=\"display:none\" title=\"Deleting...\"/></td>");
 					 
 					 exportsAsDecoratedXHTMLTable = exportsAsDecoratedXHTMLTable.concat("<td><a href=\"/dataMerger/files/" + this.getExportsAsCachedRowSet().getInt("merged_file_id") + "\">Download</a></td>");
 					 

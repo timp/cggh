@@ -3,6 +3,7 @@ function initMergesFunctions () {
 
 	
 	initExportFunction();
+	initDeleteMergeFunction();
 	
 	
 }
@@ -51,5 +52,79 @@ function initExportFunction () {
 		}
 		
 	});
+	
+}
+
+function initDeleteMergeFunction () {
+
+	$(".deleteMergeButton").click(function() {	
+		
+		
+		if ($(this).closest('tr').find('input[name="merge_id"]').val() != null) {
+		
+				
+			if (confirm("Are you sure you want to permanently remove merge " + $(this).closest('tr').find('input[name="merge_id"]').val() + "?")) {
+	
+					
+				var deletingIndicator = $(this).closest('tr').find('.deleting-indicator');
+				
+					$.ajax({
+						type: 'DELETE',
+						data: '',
+						url: '/dataMerger/data/merges/' + $(this).closest('tr').find('input[name="merge_id"]').val(),
+						dataType: 'json',
+						success: function (data, textStatus, jqXHR) {
+							
+							if (data.success) {
+								
+								if (data.success = "true") {
+
+									retrieveMergesAsDecoratedHTMLTable();
+									
+									initFilesFunctions(); //rebind
+									alert("Merge has been removed.");
+								} else {
+									alert("An error occurred.");
+								}
+				
+							} else {
+								$('.status').html("textStatus: " + textStatus);
+							}
+						},
+						error: function (jqXHR, textStatus, errorThrown){
+				            $('.error').html("errorThrown: " + errorThrown);
+				            $('.status').html("textStatus: " + textStatus);
+				        },
+						beforeSend: function() { deletingIndicator.show(); },
+				        complete: function() { deletingIndicator.hide(); }
+					});
+					
+	
+			
+			}
+			
+		} else {
+			
+			alert("The merge has not been specified.");
+		}
+		
+	});
+	
+}
+
+
+function retrieveMergesAsDecoratedHTMLTable () {
+	
+	$.ajax({
+			data: '',
+			dataType: 'html',
+			success: function (data, textStatus, jqXHR) { 
+				$('.merges').html(data); 
+				//Need to re-bind the new HTML
+				initMergesFunctions();
+			},
+			type: 'GET',
+			url: '/dataMerger/data/merges'
+		});
 	
 }

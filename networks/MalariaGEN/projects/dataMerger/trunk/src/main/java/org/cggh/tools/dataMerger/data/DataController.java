@@ -117,7 +117,32 @@ public class DataController extends HttpServlet {
 						  
 					  } 
 			
-				  } else {
+				  } 
+				  else if (request.getParameter("sort") != null) {
+
+					  if (request.getParameter("sort").equals("filename")) {
+						
+						  CachedRowSet filesSortedByFilenameAsCachedRowSet = filesCRUD.retrieveFilesSortedByFilenameAsCachedRowSetUsingUserId(userModel.getId());
+							
+						  if (filesSortedByFilenameAsCachedRowSet != null) {
+					
+							  	FilesFunctions filesFunctions = new FilesFunctions();
+							  	filesAsHTML = filesFunctions.getFilesAsDecoratedXHTMLTableUsingFilesAsCachedRowSet(filesSortedByFilenameAsCachedRowSet);
+							    
+						  } else {
+						  
+							  filesAsHTML = "<p>Failed to retrieve Files Sorted By Filename As CachedRowSet Using User Id</p>";
+							  
+						  }
+						  
+					  } else {
+						  filesAsHTML = "<p>Unsupported sort request.</p>";
+						  
+					  }
+					  
+					  
+				  }
+				  else {
 					  
 					  
 					  

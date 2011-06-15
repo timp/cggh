@@ -633,6 +633,71 @@ public class FilesCRUD implements java.io.Serializable  {
 		return success;
 	}
 
+	public CachedRowSet retrieveFilesSortedByFilenameAsCachedRowSetUsingUserId(
+			Integer userId) {
+		
+		CachedRowSet filesAsCachedRowSet = null;
+		
+		UserModel userModel = new UserModel();
+		userModel.setId(userId);
+		
+		   String CACHED_ROW_SET_IMPL_CLASS = "com.sun.rowset.CachedRowSetImpl";
+		   
+				
+
+				Connection connection = this.getDatabaseModel().getNewConnection();
+				 
+				if (connection != null) {
+					
+					
+				      try{
+				    	  PreparedStatement preparedStatement = connection.prepareStatement(
+				    			  
+				    			  "SELECT file.id, filename, filepath, file_size_in_bytes, created_by_user_id, created_datetime, rows_count, columns_count, file_origin.origin " +
+				    			  "FROM file " +
+				    			  "LEFT JOIN file_origin ON file_origin.id = file.file_origin_id "  +
+				    			  "WHERE created_by_user_id = ? AND (hidden IS NULL OR hidden = 0) " +
+				    			  "ORDER BY filename" +
+				    			  ";"
+				    	  
+				    	  );
+				          preparedStatement.setInt(1, userModel.getId());
+				          preparedStatement.executeQuery();
+				          Class<?> cachedRowSetImplClass = Class.forName(CACHED_ROW_SET_IMPL_CLASS);
+				          filesAsCachedRowSet = (CachedRowSet) cachedRowSetImplClass.newInstance();
+				          filesAsCachedRowSet.populate(preparedStatement.getResultSet());
+				          preparedStatement.close();
+	
+				        } 
+				      	catch (SQLException sqlException){
+					    	sqlException.printStackTrace();
+				        } catch (ClassNotFoundException e) {
+							e.printStackTrace();
+						} catch (InstantiationException e) {
+							e.printStackTrace();
+						} catch (IllegalAccessException e) {
+							e.printStackTrace();
+						} finally {
+				        	try {
+								connection.close();
+							} catch (SQLException e) {
+								e.printStackTrace();
+							}
+				        }
+				
+					
+					
+				} else {
+					
+					logger.severe("connection is null");
+				}
+		
+	
+	
+	
+	     return filesAsCachedRowSet;
+	}
+
 	
 
 }

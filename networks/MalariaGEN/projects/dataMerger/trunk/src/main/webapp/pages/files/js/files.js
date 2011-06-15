@@ -7,6 +7,7 @@ function initFilesFunctions () {
 	initRemoveFilesFunction();
 	initUnhideFilesFunction();
 	initShowUnhiddenFilesFunction();
+	initSortByFilenameFunction();
 }
 
 
@@ -258,6 +259,16 @@ function initShowUnhiddenFilesFunction () {
 	
 }
 
+function initSortByFilenameFunction () {
+
+	$(".sortByFilenameLink").click(function() {	
+		
+		retrieveFilesSortedByFilenameAsDecoratedHTMLTable();
+		
+	});
+	
+}
+
 function initRemoveFilesFunction () {
 
 	$(".remove-files-button").click(function() {	
@@ -314,5 +325,21 @@ function initRemoveFilesFunction () {
 		}
 		
 	});
+	
+}
+
+function retrieveFilesSortedByFilenameAsDecoratedHTMLTable () {
+	
+	$.ajax({
+			data: '',
+			dataType: 'html',
+			success: function (data, textStatus, jqXHR) { 
+				$('.files').html(data); 
+				//Need to re-bind the new HTML
+				initFilesFunctions();
+			},
+			type: 'GET',
+			url: '/dataMerger/data/files?sort=filename'
+		});
 	
 }
