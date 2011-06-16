@@ -162,6 +162,7 @@ a:hover {
         /* Layout */
         margin-bottom: 20px;
         border-collapse: collapse;
+        padding-top: 10px;
 }
 
 .data-table a {
@@ -211,6 +212,7 @@ a:hover {
 .error {
 	color: red;
 	font-weight: bold;	
+	
 }
 
 .problem-message-container {

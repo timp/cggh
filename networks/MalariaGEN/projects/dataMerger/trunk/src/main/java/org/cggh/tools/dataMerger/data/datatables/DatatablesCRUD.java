@@ -5,6 +5,7 @@ import java.io.DataInputStream;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import java.sql.Connection;
+import java.sql.DatabaseMetaData;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -280,99 +281,6 @@ public class DatatablesCRUD implements java.io.Serializable {
 
 
 
-	public DatatableModel retrieveDatatableAsDatatableModelUsingDatatableName(String datatableName,
-			Connection connection) {
-
-		DatatableModel datatableModel = new DatatableModel();
-		
-
-		datatableModel.setName(datatableName);
-
-
-	      try {
-	          PreparedStatement preparedStatement = connection.prepareStatement("SELECT id FROM file WHERE datatable_name = ?;");
-	          preparedStatement.setString(1, datatableModel.getName());				          
-	          preparedStatement.executeQuery();
-
-	          ResultSet resultSet = preparedStatement.getResultSet();
-
-	          // There may be no such datatable.
-	          if (resultSet.next()) {
-	        	  
-	        	  resultSet.first();
-	        	  
-	        	  //TODO: Data
-	        	  
-			      try{
-			          PreparedStatement preparedStatement2 = connection.prepareStatement("SELECT * FROM `" + datatableModel.getName() + "`;");
-			          preparedStatement2.executeQuery();
-			          
-			          String CACHED_ROW_SET_IMPL_CLASS = "com.sun.rowset.CachedRowSetImpl";
-			          Class<?> cachedRowSetImplClass = Class.forName(CACHED_ROW_SET_IMPL_CLASS);
-			          
-			          //TODO: Make this more memory efficient.
-			          
-			          // This uses up too much memoring for large datatables (75K rows x 400 cols)
-			          //CachedRowSet dataAsCachedRowSet = (CachedRowSet) cachedRowSetImplClass.newInstance();
-			          //dataAsCachedRowSet.populate(preparedStatement2.getResultSet());
-			          //datatableModel.setDataAsCachedRowSet(dataAsCachedRowSet);
-			          
-			          
-			          //////////////////
-			          
-			          datatableModel.setDataAsCachedRowSet((CachedRowSet) cachedRowSetImplClass.newInstance());
-			          datatableModel.getDataAsCachedRowSet().populate(preparedStatement2.getResultSet());
-			          
-			          /////////////////
-			          
-			          
-			          List<String> columnNamesAsStringList = new ArrayList<String>();
-			          
-			          for (int i = 0; i < datatableModel.getDataAsCachedRowSet().getMetaData().getColumnCount(); i++) {
-			        	  
-			        	  columnNamesAsStringList.add(datatableModel.getDataAsCachedRowSet().getMetaData().getColumnName(i + 1));
-			        	  
-			          }
-			          
-			          
-			          datatableModel.setColumnNamesAsStringList(columnNamesAsStringList);
-			          
-			          preparedStatement2.close();
-
-			        }
-			        catch(SQLException sqlException){
-				    	sqlException.printStackTrace();
-			        } catch (ClassNotFoundException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					} catch (InstantiationException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					} catch (IllegalAccessException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					} 
-	        	  
-	        	  
-	        	  
-	        	  
-	          } else {
-	        	  //TODO: proper logging and error handling
-	        	  //System.out.println("Did not find datatable with this id. Db query gives !resultSet.next()");
-	          }
-
-	          resultSet.close();
-	          preparedStatement.close();
-	          
-
-	        }
-	        catch(SQLException sqlException){
-		    	sqlException.printStackTrace();
-	        } 
-		
-		
-		return datatableModel;
-	}
 
 
 	public DatatableModel retrieveDatatableAsDatatableModelUsingFileId(
@@ -399,13 +307,17 @@ public class DatatablesCRUD implements java.io.Serializable {
 	        	  if (datatableModel.getName() != null) {
 		        		  
 		        	  //Retrieve the datatable data
-		        	  datatableModel.setDataAsCachedRowSet(this.retrieveDataAsCachedRowSetByDatatableName(datatableModel.getName(), connection));
+		        	  datatableModel.setColumnsAsCachedRowSet(this.retrieveColumnsAsCachedRowSetUsingDatatableName(datatableModel.getName(), connection));
 		        	  
 		        	  //Retrieve columnNamesAsStringList
 		        	  List<String> columnNamesAsStringList = new ArrayList<String>();
-		        	  for (int i = 1; i <= datatableModel.getDataAsCachedRowSet().getMetaData().getColumnCount(); i++) {
-		        		  columnNamesAsStringList.add(datatableModel.getDataAsCachedRowSet().getMetaData().getColumnName(i));
+		        	  
+		        	  datatableModel.getColumnsAsCachedRowSet().beforeFirst();
+		        	  
+		        	  while (datatableModel.getColumnsAsCachedRowSet().next()) {
+		        		  columnNamesAsStringList.add(datatableModel.getColumnsAsCachedRowSet().getString("COLUMN_NAME"));
 		        	  }
+		        	  
 		        	  datatableModel.setColumnNamesAsStringList(columnNamesAsStringList);
 		        	  
 		        	  
@@ -437,7 +349,7 @@ public class DatatablesCRUD implements java.io.Serializable {
 	}
 
 
-	private CachedRowSet retrieveDataAsCachedRowSetByDatatableName(String datatableName,
+	public CachedRowSet retrieveColumnsAsCachedRowSetUsingDatatableName(String datatableName,
 			Connection connection) {
 
 		DatatableModel datatableModel = new DatatableModel();
@@ -447,7 +359,7 @@ public class DatatablesCRUD implements java.io.Serializable {
 		try {
 			cachedRowSetImplClass = Class.forName("com.sun.rowset.CachedRowSetImpl");
 		} catch (ClassNotFoundException e1) {
-			// TODO Auto-generated catch block
+
 			e1.printStackTrace();
 		}
 		
@@ -455,21 +367,18 @@ public class DatatablesCRUD implements java.io.Serializable {
 		try {
 			dataAsCachedRowSet = (CachedRowSet) cachedRowSetImplClass.newInstance();
 		} catch (InstantiationException e1) {
-			// TODO Auto-generated catch block
+
 			e1.printStackTrace();
 		} catch (IllegalAccessException e1) {
-			// TODO Auto-generated catch block
+
 			e1.printStackTrace();
 		}
 		
 	      try{
-	          PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM `" + datatableModel.getName() + "`;");
-	          preparedStatement.executeQuery();
-	         
-	          //FIXME: Memory problem here.
-	          dataAsCachedRowSet.populate(preparedStatement.getResultSet());
-	          
-	          preparedStatement.close();
+	    	  
+	    	  DatabaseMetaData databaseMetaData = connection.getMetaData();
+	    	  dataAsCachedRowSet.populate(databaseMetaData.getColumns(null, null, datatableModel.getName(), null));
+
 
 	        }
 	        catch(SQLException sqlException){

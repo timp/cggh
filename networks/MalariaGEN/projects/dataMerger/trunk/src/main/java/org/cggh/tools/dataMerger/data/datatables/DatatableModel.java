@@ -19,10 +19,12 @@ public class DatatableModel implements java.io.Serializable {
 	private static final long serialVersionUID = 8176100759738568138L;
 	private String name;
 	private Integer duplicateKeysCount; //Only relevant in the context of a merge with joins with key(s)
-	private CachedRowSet dataAsCachedRowSet;
+
 	private List<String> columnNamesAsStringList;
 	private Integer duplicateValuesCount;
 	private List<String> keyColumnNamesAsStringList;
+	private CachedRowSet columnsAsCachedRowSet;
+
 
 	public DatatableModel() {
 
@@ -59,22 +61,6 @@ public class DatatableModel implements java.io.Serializable {
 	public void setKeyColumnNamesAsStringList(List<String> keyColumnNamesAsStringList) {
 		this.keyColumnNamesAsStringList = keyColumnNamesAsStringList;
 	}	
-	
-	
-
-
-
-
-	public void setDataAsCachedRowSet(CachedRowSet cachedRowSet) {
-		
-		this.dataAsCachedRowSet = cachedRowSet;
-		
-	}
-	public CachedRowSet getDataAsCachedRowSet() {
-		
-		return this.dataAsCachedRowSet;
-		
-	}
 	
 
 
@@ -143,6 +129,19 @@ public class DatatableModel implements java.io.Serializable {
 		this.duplicateValuesCount = duplicateValuesCount;
 	}
 
+
+
+
+	public void setColumnsAsCachedRowSet(CachedRowSet columnsAsCachedRowSet) {
+		this.columnsAsCachedRowSet = columnsAsCachedRowSet;
+	}
+
+
+
+
+	public CachedRowSet getColumnsAsCachedRowSet() {
+		return columnsAsCachedRowSet;
+	}
 
 
 

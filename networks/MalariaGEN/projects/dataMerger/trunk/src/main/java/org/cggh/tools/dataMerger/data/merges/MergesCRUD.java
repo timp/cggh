@@ -61,7 +61,7 @@ public class MergesCRUD implements java.io.Serializable {
 			 
 			if (connection != null) {		
 
-				mergeModel = retrieveMergeAsMergeModelByMergeId(mergeModel.getId(), connection);
+				mergeModel = retrieveMergeAsMergeModelUsingMergeId(mergeModel.getId(), connection);
 				
 						
 						try {
@@ -86,7 +86,7 @@ public class MergesCRUD implements java.io.Serializable {
     }
 
 
-	public MergeModel retrieveMergeAsMergeModelByMergeId(Integer mergeId, Connection connection) {
+	public MergeModel retrieveMergeAsMergeModelUsingMergeId(Integer mergeId, Connection connection) {
 
 		MergeModel mergeModel = new MergeModel();
 		mergeModel.setId(mergeId);

@@ -11,7 +11,6 @@ import javax.sql.rowset.CachedRowSet;
 
 import org.cggh.tools.dataMerger.data.databases.DatabaseModel;
 import org.cggh.tools.dataMerger.data.datatables.DatatableModel;
-import org.cggh.tools.dataMerger.data.datatables.DatatablesCRUD;
 import org.cggh.tools.dataMerger.data.files.FileModel;
 import org.cggh.tools.dataMerger.data.users.UserModel;
 import org.cggh.tools.dataMerger.data.users.UsersCRUD;
@@ -19,7 +18,7 @@ import org.cggh.tools.dataMerger.functions.data.files.FilesFunctions;
 import org.json.JSONArray;
 import org.json.JSONException;
 
-import com.mysql.jdbc.exceptions.MySQLIntegrityConstraintViolationException;
+import com.mysql.jdbc.exceptions.jdbc4.MySQLIntegrityConstraintViolationException;
 
 
 
@@ -218,7 +217,7 @@ public class FilesCRUD implements java.io.Serializable  {
 		}
 	}
 	
-	public FileModel retrieveFileCreatedByUserAsFileModelUsingFileIdAndUserModel (Integer fileId, UserModel userModel) {
+	public FileModel retrieveFileCreatedByUserAsFileModelUsingFileIdAndUserId (Integer fileId, Integer userId) {
 		
 		FileModel fileModel = new FileModel();
 		fileModel.setId(fileId);
@@ -238,7 +237,7 @@ public class FilesCRUD implements java.io.Serializable  {
 		        		  
 		          );
 		          preparedStatement.setInt(1, fileModel.getId());
-		          preparedStatement.setInt(2, userModel.getId());
+		          preparedStatement.setInt(2, userId);
 		          preparedStatement.executeQuery();
 		          ResultSet resultSet = preparedStatement.getResultSet();
 		          
@@ -619,12 +618,46 @@ public class FilesCRUD implements java.io.Serializable  {
 		if (connection != null) {
 			
 			try {
-	          PreparedStatement preparedStatement = connection.prepareStatement(
+				
+					String datatableName = null;
+				
+		          PreparedStatement preparedStatement = connection.prepareStatement(
+        		  "SELECT datatable_name FROM file WHERE id = ? AND created_by_user_id = ?;");
+		          preparedStatement.setInt(1, fileId);
+		          preparedStatement.setInt(2, userId);
+		          preparedStatement.executeQuery();
+		          
+		          ResultSet resultSet = preparedStatement.getResultSet();
+		          
+		          if (resultSet.next()) {
+		        	  
+		        	  resultSet.first();
+		        	  
+		        	  datatableName = resultSet.getString("datatable_name");
+		        	  
+		          }
+		          
+		          resultSet.close();
+		          preparedStatement.close();
+		          
+
+				
+	          PreparedStatement preparedStatement3 = connection.prepareStatement(
 	        		  "DELETE FROM file WHERE id = ? AND created_by_user_id = ?;");
-	          preparedStatement.setInt(1, fileId);
-	          preparedStatement.setInt(2, userId);
-	          preparedStatement.executeUpdate();
-	          preparedStatement.close();
+	          preparedStatement3.setInt(1, fileId);
+	          preparedStatement3.setInt(2, userId);
+	          preparedStatement3.executeUpdate();
+	          preparedStatement3.close();
+	          
+	          //NOTE: Do this after trying to delete the file record, because that might fail due to integrity.
+	          if (datatableName != null) {
+	        	  
+		          PreparedStatement preparedStatement4 = connection.prepareStatement(
+        		  "DROP TABLE IF EXISTS `" + datatableName + "`;");
+		          preparedStatement4.executeUpdate();
+		          preparedStatement4.close();
+		          
+	          }
 	          
 	          success = true;
 

@@ -17,6 +17,7 @@ import org.cggh.tools.dataMerger.code.settings.SettingsCRUD;
 import org.cggh.tools.dataMerger.code.settings.SettingsModel;
 import org.cggh.tools.dataMerger.data.databases.DatabaseModel;
 import org.cggh.tools.dataMerger.data.databases.DatabasesCRUD;
+import org.cggh.tools.dataMerger.data.files.FileModel;
 import org.cggh.tools.dataMerger.data.files.FileOriginModel;
 import org.cggh.tools.dataMerger.data.files.FileOriginsCRUD;
 import org.cggh.tools.dataMerger.data.files.FilesCRUD;
@@ -1086,9 +1087,7 @@ public class ExportsCRUD implements java.io.Serializable  {
 		  if (exportsAsCachedRowSet != null) {
 
 			  	ExportsFunctions exportsFunctions = new ExportsFunctions();
-			  	exportsFunctions.setExportsAsCachedRowSet(exportsAsCachedRowSet);
-			  	exportsFunctions.setExportsAsDecoratedXHTMLTableUsingExportsAsCachedRowSet();
-			  	exportsAsDecoratedXHTMLTable = exportsFunctions.getExportsAsDecoratedXHTMLTable();
+			  	exportsAsDecoratedXHTMLTable = exportsFunctions.getExportsAsDecoratedXHTMLTableUsingExportsAsCachedRowSet(exportsAsCachedRowSet);
 			    
 		  } else {
 			  
@@ -1191,6 +1190,127 @@ public class ExportsCRUD implements java.io.Serializable  {
 
 	public FilebaseModel getFilebaseModel() {
 		return filebaseModel;
+	}
+
+
+	public ExportModel retrieveExportAsExportModelUsingExportIdAndUserId(
+			Integer exportId, Integer userId) {
+
+			ExportModel exportModel = null;
+		
+		   try {	
+
+				Connection connection = this.getDatabaseModel().getNewConnection();
+				 
+				if (connection != null) {
+					
+				
+				      try{
+				          PreparedStatement preparedStatement = connection.prepareStatement(
+				        		  "SELECT * " +
+				        		  "FROM export " +
+				        		  "WHERE id = ? AND created_by_user_id = ?" +
+				        		  ";");
+				          preparedStatement.setInt(1, exportId);
+				          preparedStatement.setInt(2, userId);
+				          preparedStatement.executeQuery();
+				          
+				          ResultSet resultSet = preparedStatement.getResultSet();
+
+				          
+				          if (resultSet.next()) {
+
+				        	  resultSet.first();
+				        	  
+				        	exportModel = new ExportModel();
+				        	  
+				      		exportModel.setId(resultSet.getInt("id"));
+				      		exportModel.setCreatedByUserModel(new UserModel());
+				      		exportModel.getCreatedByUserModel().setId(resultSet.getInt("created_by_user_id"));
+				      		exportModel.setMergedFileAsFileModel(new FileModel());
+				      		exportModel.getMergedFileAsFileModel().setId(resultSet.getInt("merged_file_id"));
+				      		exportModel.getMergedFileAsFileModel().setFilepath(resultSet.getString("merged_file_filepath"));
+				      		
+				      		exportModel.setJoinsRecordFilepath(resultSet.getString("joins_record_filepath"));
+				      		exportModel.setResolutionsRecordFilepath(resultSet.getString("resolutions_record_filepath"));
+				      		exportModel.setSettingsRecordFilepath(resultSet.getString("settings_record_filepath"));
+				        	  
+				          }  
+				          
+				          resultSet.close();
+				          preparedStatement.close();
+	
+				        } 
+				      	catch (SQLException sqlException){
+					    	sqlException.printStackTrace();
+						} finally {
+				        	try {
+								connection.close();
+							} catch (SQLException e) {
+								e.printStackTrace();
+							}
+				        }
+				
+					
+					
+				} else {
+					
+					logger.severe("connection is null");
+				}
+		
+			} 
+			catch (Exception e) {
+				e.printStackTrace();
+			}
+	
+	
+	     return exportModel;
+	}
+
+
+	public Boolean deleteExportUsingExportIdAndUserId(Integer exportId, Integer userId) {
+
+		
+		Boolean success = null;
+		
+		Connection connection = this.getDatabaseModel().getNewConnection();
+		 
+		if (connection != null) {
+			
+				try {
+					
+		          PreparedStatement preparedStatement = connection.prepareStatement(
+		        		  "DELETE FROM export WHERE id = ? AND created_by_user_id = ?;");
+		          preparedStatement.setInt(1, exportId);
+		          preparedStatement.setInt(2, userId);
+		          preparedStatement.executeUpdate();
+		          preparedStatement.close();
+		          
+		          
+		          success = true;
+
+		        } catch (SQLException e) {
+					e.printStackTrace();
+					success = false;
+					
+				} finally {
+			
+					try {
+						connection.close();
+					} catch (SQLException e) {
+						e.printStackTrace();
+					}
+					
+				}
+			
+		} else {
+			
+			logger.severe("connection is null");
+			
+			success = false;
+		}
+
+		return success;
 	}
 	
 }

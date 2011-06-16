@@ -33,6 +33,7 @@ import org.cggh.tools.dataMerger.data.users.UserModel;
 import org.cggh.tools.dataMerger.data.users.UsersCRUD;
 import org.cggh.tools.dataMerger.files.filebases.FilebaseModel;
 import org.cggh.tools.dataMerger.files.filebases.FilebasesCRUD;
+import org.cggh.tools.dataMerger.functions.data.exports.ExportsFunctions;
 import org.cggh.tools.dataMerger.functions.data.files.FilesFunctions;
 import org.cggh.tools.dataMerger.functions.data.joins.JoinFunctions;
 import org.cggh.tools.dataMerger.functions.data.merges.MergeFunctions;
@@ -208,6 +209,49 @@ public class DataController extends HttpServlet {
 					  
 				  
 				  response.getWriter().print(mergesAsHTML);
+				  
+			  } else {
+				  
+				  response.setContentType("text/plain");
+				  response.getWriter().println("Unhandled Header Accept: " + request.getHeader("Accept"));
+				  
+			  } 
+			
+		  }
+		  else if (request.getPathInfo().equals("/exports")) {
+
+			  if (headerAcceptsAsStringList.contains("text/html")) { 
+			  
+				  //Otherwise degree symbols turn into question-marks
+				  response.setCharacterEncoding("UTF-8");
+				  
+				  response.setContentType("text/html");
+				  
+				  String exportsAsHTML = null;
+					
+				  ExportsCRUD exportsCRUD = new ExportsCRUD();
+				  exportsCRUD.setDatabaseModel(databaseModel);
+
+				  
+					  
+					  
+					  
+					  CachedRowSet exportsAsCachedRowSet = exportsCRUD.retrieveExportsAsCachedRowSetUsingUserId(userModel.getId());
+				
+					  if (exportsAsCachedRowSet != null) {
+				
+						  	ExportsFunctions exportsFunctions = new ExportsFunctions();
+
+						  	exportsAsHTML = exportsFunctions.getExportsAsDecoratedXHTMLTableUsingExportsAsCachedRowSet(exportsAsCachedRowSet);
+						    
+					  } else {
+					  
+						  exportsAsHTML = "<p>Failed to retrieve Merges As CachedRowSet Using User Id</p>";
+						  
+					  } 
+					  
+				  
+				  response.getWriter().print(exportsAsHTML);
 				  
 			  } else {
 				  
@@ -1098,6 +1142,9 @@ public class DataController extends HttpServlet {
 
 			Pattern mergesURLPattern = Pattern.compile("/merges/(\\d+)");
 			 Matcher mergesURLPatternMatcher = mergesURLPattern.matcher(request.getPathInfo());
+			 
+			 Pattern exportsURLPattern = Pattern.compile("/exports/(\\d+)");
+			 Matcher exportsURLPatternMatcher = exportsURLPattern.matcher(request.getPathInfo());
 			
 		  String[] headerAcceptsAsStringArray = request.getHeader("Accept").split(",");
 		  List<String> headerAcceptsAsStringList = Arrays.asList(headerAcceptsAsStringArray);		 
@@ -1208,6 +1255,44 @@ public class DataController extends HttpServlet {
 						mergesCRUD.setDatabaseModel(databaseModel);
 						
 						if (mergesCRUD.deleteMergeUsingMergeIdAndUserId(mergeModel.getId(), userModel.getId())) {
+							responseAsJSON = "{\"success\": \"true\"}";
+						} else {
+							responseAsJSON = "{\"success\": \"false\"}";
+						}
+							
+				
+					  
+					  response.getWriter().print(responseAsJSON);
+
+					  
+			  } else {
+				  
+				  //FIXME: This will cause a parser error (Invalid JSON).
+				  
+				  response.setContentType("text/plain");
+				  response.getWriter().println("Unhandled Header Accept: " + request.getHeader("Accept"));
+				  
+			  }
+			  
+		    
+		 
+		 }
+		  else if (exportsURLPatternMatcher.find()) {
+				 
+			  	// Get the exportId 
+				 ExportModel exportModel = new ExportModel();
+				 exportModel.setId(Integer.parseInt(exportsURLPatternMatcher.group(1)));  
+			  
+			  
+			  if (headerAcceptsAsStringList.contains("application/json")) { 
+
+					  response.setContentType("application/json");
+					  String responseAsJSON = null;
+					  
+						ExportsCRUD exportsCRUD = new ExportsCRUD();
+						exportsCRUD.setDatabaseModel(databaseModel);
+						
+						if (exportsCRUD.deleteExportUsingExportIdAndUserId(exportModel.getId(), userModel.getId())) {
 							responseAsJSON = "{\"success\": \"true\"}";
 						} else {
 							responseAsJSON = "{\"success\": \"false\"}";

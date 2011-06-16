@@ -416,7 +416,7 @@ public class JoinsCRUD implements java.io.Serializable {
 		          
 		          //Need a complete, up-to-date mergeModel
 		          MergesCRUD mergesModel = new MergesCRUD();
-		          mergeModel = mergesModel.retrieveMergeAsMergeModelByMergeId(mergeModel.getId(), connection);
+		          mergeModel = mergesModel.retrieveMergeAsMergeModelUsingMergeId(mergeModel.getId(), connection);
 		          
 		          //Recount the duplicate keys
 		          mergeModel = mergesModel.retrieveMergeAsMergeModelThroughCountingDuplicateKeysUsingMergeModel(mergeModel, connection);

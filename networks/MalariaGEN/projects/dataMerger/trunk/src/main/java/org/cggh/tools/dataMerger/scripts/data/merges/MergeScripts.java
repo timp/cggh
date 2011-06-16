@@ -535,7 +535,7 @@ public class MergeScripts implements java.io.Serializable {
 		}
 		
 		MergesCRUD mergesModel = new MergesCRUD();
-		mergeModel = mergesModel.retrieveMergeAsMergeModelByMergeId(mergeModel.getId(), connection);
+		mergeModel = mergesModel.retrieveMergeAsMergeModelUsingMergeId(mergeModel.getId(), connection);
 		
 		return mergeModel;
 	}

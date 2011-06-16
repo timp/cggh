@@ -18,6 +18,9 @@ public class ExportModel implements java.io.Serializable {
 	private FileModel mergedFileAsFileModel;
 	private MergeModel mergeModel;
 	private UserModel createdByUserModel;
+	private String joinsRecordFilepath;
+	private String resolutionsRecordFilepath;
+	private String settingsRecordFilepath;
 
 
 	private MergedDatatableModel mergedDatatableModel;
@@ -79,6 +82,36 @@ public class ExportModel implements java.io.Serializable {
 
 	public FileModel getMergedFileAsFileModel() {
 		return mergedFileAsFileModel;
+	}
+
+
+	public void setJoinsRecordFilepath(String joinsRecordFilepath) {
+		this.joinsRecordFilepath = joinsRecordFilepath;
+	}
+
+
+	public String getJoinsRecordFilepath() {
+		return joinsRecordFilepath;
+	}
+
+
+	public void setResolutionsRecordFilepath(String resolutionsRecordFilepath) {
+		this.resolutionsRecordFilepath = resolutionsRecordFilepath;
+	}
+
+
+	public String getResolutionsRecordFilepath() {
+		return resolutionsRecordFilepath;
+	}
+
+
+	public void setSettingsRecordFilepath(String settingsRecordFilepath) {
+		this.settingsRecordFilepath = settingsRecordFilepath;
+	}
+
+
+	public String getSettingsRecordFilepath() {
+		return settingsRecordFilepath;
 	}
 
 }

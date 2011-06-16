@@ -12,28 +12,21 @@ public class ExportsFunctions implements java.io.Serializable  {
 	 * 
 	 */
 	private static final long serialVersionUID = -4359147852252115757L;
-	private String exportsAsDecoratedXHTMLTable;
-	private CachedRowSet exportsAsCachedRowSet;
+
 
 	public ExportsFunctions() {
 		
 		
 	}	
-	
-	public void setExportsAsCachedRowSet(
-			CachedRowSet exportsAsCachedRowSet) {
-		this.exportsAsCachedRowSet = exportsAsCachedRowSet;
-	}
-	public CachedRowSet getExportsAsCachedRowSet() {
-		return this.exportsAsCachedRowSet;
-	}
 
-	public void setExportsAsDecoratedXHTMLTableUsingExportsAsCachedRowSet() {
+
+	public String getExportsAsDecoratedXHTMLTableUsingExportsAsCachedRowSet(
+			CachedRowSet exportsAsCachedRowSet) {
 		
 		StringBuffer exportsAsDecoratedXHTMLTable = null;
 		
 		try {
-			if (this.getExportsAsCachedRowSet().next()) {
+			if (exportsAsCachedRowSet.next()) {
 
 				exportsAsDecoratedXHTMLTable = new StringBuffer();
 				
@@ -59,7 +52,7 @@ public class ExportsFunctions implements java.io.Serializable  {
 				 exportsAsDecoratedXHTMLTable.append("<tbody>");
 				 
 				//because next() skips the first row.
-				 this.getExportsAsCachedRowSet().beforeFirst();
+				 exportsAsCachedRowSet.beforeFirst();
 
 					String rowStripeClassName = "even "; 
 					String rowFirstClassName = "first ";
@@ -67,7 +60,7 @@ public class ExportsFunctions implements java.io.Serializable  {
 					
 					DateFormat dateFormat = new SimpleDateFormat("dd MMM yyyy HH:mm");  
 				 
-				while (this.getExportsAsCachedRowSet().next()) {
+				while (exportsAsCachedRowSet.next()) {
 					 
 					if (rowStripeClassName == "odd ") {
 						rowStripeClassName = "even ";
@@ -76,40 +69,40 @@ public class ExportsFunctions implements java.io.Serializable  {
 					}
 					
 					//TODO: This might need changing when paging.
-					if (this.getExportsAsCachedRowSet().isLast()) {
+					if (exportsAsCachedRowSet.isLast()) {
 						rowLastClassName = "last ";
 					}
 					
 					
 					exportsAsDecoratedXHTMLTable.append("<tr class=\"" + rowStripeClassName + rowFirstClassName + rowLastClassName + "\">");
 
-					 exportsAsDecoratedXHTMLTable.append("<td class=\"idContainer\">" + this.getExportsAsCachedRowSet().getString("id") + "</td>");
+					 exportsAsDecoratedXHTMLTable.append("<td class=\"idContainer\">" + exportsAsCachedRowSet.getString("id") + "</td>");
 
 					 //FIXME: Apparently a bug in CachedRowSet using getX('columnAlias') aka columnLabel, which actually only works with getX('columnName'), so using getX('columnIndex').
 					 
-					 exportsAsDecoratedXHTMLTable.append("<td><a href=\"/dataMerger/files/" + this.getExportsAsCachedRowSet().getInt("merged_file_id") + "\">" + this.getExportsAsCachedRowSet().getString(3) + "</a></td>");
+					 exportsAsDecoratedXHTMLTable.append("<td><a href=\"/dataMerger/files/" + exportsAsCachedRowSet.getInt("merged_file_id") + "\">" + exportsAsCachedRowSet.getString(3) + "</a></td>");
 					 
 					 
 
 					 
 					 //TODO: This URL shouldn't be hard-coded
-					 exportsAsDecoratedXHTMLTable.append("<td><a href=\"/dataMerger/files/" + this.getExportsAsCachedRowSet().getInt("source_file_1_id") + "\">" + this.getExportsAsCachedRowSet().getString(1) + "</a></td>");
-					 exportsAsDecoratedXHTMLTable.append("<td><a href=\"/dataMerger/files/" + this.getExportsAsCachedRowSet().getInt("source_file_2_id") + "\">" + this.getExportsAsCachedRowSet().getString(2) + "</a></td>");
+					 exportsAsDecoratedXHTMLTable.append("<td><a href=\"/dataMerger/files/" + exportsAsCachedRowSet.getInt("source_file_1_id") + "\">" + exportsAsCachedRowSet.getString(1) + "</a></td>");
+					 exportsAsDecoratedXHTMLTable.append("<td><a href=\"/dataMerger/files/" + exportsAsCachedRowSet.getInt("source_file_2_id") + "\">" + exportsAsCachedRowSet.getString(2) + "</a></td>");
 
 					 
 					 exportsAsDecoratedXHTMLTable.append("<td>");
-					 exportsAsDecoratedXHTMLTable.append("<a href=\"/dataMerger/files/exports/" + this.getExportsAsCachedRowSet().getInt("id") + "/settings\">Settings</a>, ");
-					 exportsAsDecoratedXHTMLTable.append("<a href=\"/dataMerger/files/exports/" + this.getExportsAsCachedRowSet().getInt("id") + "/joins\">Joins</a><br/>");
-					 exportsAsDecoratedXHTMLTable.append("<a href=\"/dataMerger/files/exports/" + this.getExportsAsCachedRowSet().getInt("id") + "/resolutions\">Resolutions</a>");
+					 exportsAsDecoratedXHTMLTable.append("<a href=\"/dataMerger/files/exports/" + exportsAsCachedRowSet.getInt("id") + "/settings\">Settings</a>, ");
+					 exportsAsDecoratedXHTMLTable.append("<a href=\"/dataMerger/files/exports/" + exportsAsCachedRowSet.getInt("id") + "/joins\">Joins</a><br/>");
+					 exportsAsDecoratedXHTMLTable.append("<a href=\"/dataMerger/files/exports/" + exportsAsCachedRowSet.getInt("id") + "/resolutions\">Resolutions</a>");
 					 exportsAsDecoratedXHTMLTable.append("</td>");
 					 					 
 					 
 					//TODO: format datetime 02 Jan 2011
-					 exportsAsDecoratedXHTMLTable.append("<td>" + dateFormat.format(this.getExportsAsCachedRowSet().getTimestamp("created_datetime")) + "</td>");
+					 exportsAsDecoratedXHTMLTable.append("<td>" + dateFormat.format(exportsAsCachedRowSet.getTimestamp("created_datetime")) + "</td>");
 					 
-					 exportsAsDecoratedXHTMLTable.append("<td><input type=\"hidden\" name=\"export_id\" value=\"" + this.getExportsAsCachedRowSet().getInt("id") + "\"/><button class=\"deleteExportButton\">Delete</button><img class=\"deleting-indicator\" src=\"/dataMerger/pages/shared/gif/loading.gif\" style=\"display:none\" title=\"Deleting...\"/></td>");
+					 exportsAsDecoratedXHTMLTable.append("<td><input type=\"hidden\" name=\"export_id\" value=\"" + exportsAsCachedRowSet.getInt("id") + "\"/><button class=\"deleteExportButton\">Delete</button><img class=\"deleting-indicator\" src=\"/dataMerger/pages/shared/gif/loading.gif\" style=\"display:none\" title=\"Deleting...\"/></td>");
 					 
-					 exportsAsDecoratedXHTMLTable.append("<td><a href=\"/dataMerger/files/" + this.getExportsAsCachedRowSet().getInt("merged_file_id") + "\">Download</a></td>");
+					 exportsAsDecoratedXHTMLTable.append("<td><a href=\"/dataMerger/files/" + exportsAsCachedRowSet.getInt("merged_file_id") + "\">Download</a></td>");
 					 
 					 
 					 exportsAsDecoratedXHTMLTable.append("</tr>");
@@ -133,17 +126,7 @@ public class ExportsFunctions implements java.io.Serializable  {
 			e.printStackTrace();
 		}
 		
-		this.exportsAsDecoratedXHTMLTable = exportsAsDecoratedXHTMLTable.toString();
-		
-	}
-
-	public String getExportsAsDecoratedXHTMLTable() {
-		return this.exportsAsDecoratedXHTMLTable;
-	}
-
-	public void setExportsAsDecoratedXHTMLTable(
-			String exportsAsDecoratedXHTMLTable) {
-		this.exportsAsDecoratedXHTMLTable = exportsAsDecoratedXHTMLTable;
+		return exportsAsDecoratedXHTMLTable.toString();
 	}
 
 }

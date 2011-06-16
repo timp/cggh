@@ -27,6 +27,8 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.io.IOUtils;
 import org.cggh.tools.dataMerger.data.databases.DatabaseModel;
 import org.cggh.tools.dataMerger.data.databases.DatabasesCRUD;
+import org.cggh.tools.dataMerger.data.exports.ExportModel;
+import org.cggh.tools.dataMerger.data.exports.ExportsCRUD;
 import org.cggh.tools.dataMerger.data.files.FileModel;
 import org.cggh.tools.dataMerger.data.files.FileOriginModel;
 import org.cggh.tools.dataMerger.data.files.FilesCRUD;
@@ -65,6 +67,19 @@ public class FilesController extends HttpServlet {
         //Should be able to access files using a GET request to /dataMerger/files/[id]
 	
 
+		DatabasesCRUD databasesCRUD = new DatabasesCRUD();
+		DatabaseModel databaseModel = databasesCRUD.retrieveDatabaseAsDatabaseModelUsingServletContext(getServletContext());
+	
+		
+		//TODO: Bail out if user_id is null
+		UsersCRUD usersCRUD = new UsersCRUD();
+		usersCRUD.setDatabaseModel(databaseModel);
+		UserModel userModel = usersCRUD.retrieveUserAsUserModelUsingUsername((String)request.getSession().getAttribute("username"));
+				
+		
+		Pattern exportRecordFilesURLPattern = Pattern.compile("^/exports/(\\d+)/(\\w+)$");
+		 Matcher exportRecordFilesURLPatternMatcher = exportRecordFilesURLPattern.matcher(request.getPathInfo());
+		
 		Pattern filesURLPattern = Pattern.compile("^/(\\d+)$");
 		 Matcher filesURLPatternMatcher = filesURLPattern.matcher(request.getPathInfo());
 		
@@ -72,22 +87,69 @@ public class FilesController extends HttpServlet {
 		 //String[] headerAcceptsAsStringArray = request.getHeader("Accept").split(",");
 		 // List<String> headerAcceptsAsStringList = Arrays.asList(headerAcceptsAsStringArray);
 		 
-		 //TODO: export record files
 		
-		if (filesURLPatternMatcher.find()) {
-		
-				DatabasesCRUD databasesCRUD = new DatabasesCRUD();
-				DatabaseModel databaseModel = databasesCRUD.retrieveDatabaseAsDatabaseModelUsingServletContext(getServletContext());
+		if (exportRecordFilesURLPatternMatcher.find()) {
 			
-				UsersCRUD usersCRUD = new UsersCRUD();
-				usersCRUD.setDatabaseModel(databaseModel);
-				UserModel userModel = usersCRUD.retrieveUserAsUserModelUsingUsername((String)request.getSession().getAttribute("username"));
+	    	  ExportsCRUD exportsCRUD = new ExportsCRUD();
+	    	  exportsCRUD.setDatabaseModel(databaseModel);
+	    	  
+	    	  ExportModel exportModel = exportsCRUD.retrieveExportAsExportModelUsingExportIdAndUserId(Integer.parseInt(exportRecordFilesURLPatternMatcher.group(1)), userModel.getId());
+			
+	    	  String reportFileRequest = exportRecordFilesURLPatternMatcher.group(2);
+	    	  
+	    	  String reportFileFilepath = null;
+	    	  
+	    	  if (reportFileRequest.equals("joins")) {
+	    		  reportFileFilepath = exportModel.getJoinsRecordFilepath();
+	    	  }
+	    	  else if (reportFileRequest.equals("resolutions")) {
+	    		  reportFileFilepath = exportModel.getResolutionsRecordFilepath();
+	    	  }
+	    	  else if (reportFileRequest.equals("settings")) {
+	    		  reportFileFilepath = exportModel.getSettingsRecordFilepath();
+	    	  }
+	    	  
+	    	  if (reportFileFilepath != null) {
+	    	  
+	              File                file        = new File(reportFileFilepath);
+	              int                 length   = 0;
+	              ServletOutputStream op       = response.getOutputStream();
+	              ServletContext      context  = getServletConfig().getServletContext();
+	              String              mimetype = context.getMimeType(file.getName());
+	
+	
+	              response.setContentType( (mimetype != null) ? mimetype : "application/octet-stream" );
+	              response.setContentLength( (int)file.length() );
+	              response.setHeader( "Content-Disposition", "attachment; filename=\"" + file.getName() + "\"" );
+	
+	           
+	
+	              byte[] bbuf = new byte[2048]; //8192
+	              DataInputStream in = new DataInputStream(new FileInputStream(file));
+	
+	              while ((in != null) && ((length = in.read(bbuf)) != -1))
+	              {
+	                  op.write(bbuf,0,length);
+	              }
+	
+	              in.close();
+	              op.flush();
+	              op.close();	
+	              
+	    	  } else {
+	    		  response.setContentType("text/plain");
+	          	response.getWriter().print("Unhandled request.");
+	    	  }
+              
+		}
+		else if (filesURLPatternMatcher.find()) {
+		
+
 				
-				//TODO: Bail out if user_id is null
 				
 		    	  FilesCRUD filesCRUD = new FilesCRUD();
 		    	  filesCRUD.setDatabaseModel(databaseModel);
-		    	  FileModel fileModel = filesCRUD.retrieveFileCreatedByUserAsFileModelUsingFileIdAndUserModel(Integer.parseInt(filesURLPatternMatcher.group(1)), userModel);
+		    	  FileModel fileModel = filesCRUD.retrieveFileCreatedByUserAsFileModelUsingFileIdAndUserId(Integer.parseInt(filesURLPatternMatcher.group(1)), userModel.getId());
 	
 		          // There may be no file or the file may not belong to this user (created_by).
 		          if (fileModel.getFilename() != null) {
@@ -129,7 +191,8 @@ public class FilesController extends HttpServlet {
 			
 		} else {
 			
-			//System.out.println("Unhandled pathInfo.");
+			response.setContentType("text/plain");
+        	response.getWriter().print("Unhandled pathInfo.");
 		}
 		
 
