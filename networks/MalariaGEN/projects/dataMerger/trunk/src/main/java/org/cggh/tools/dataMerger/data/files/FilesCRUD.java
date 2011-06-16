@@ -18,6 +18,8 @@ import org.cggh.tools.dataMerger.functions.data.files.FilesFunctions;
 import org.json.JSONArray;
 import org.json.JSONException;
 
+import com.mysql.jdbc.exceptions.MySQLIntegrityConstraintViolationException;
+
 
 
 public class FilesCRUD implements java.io.Serializable  {
@@ -46,7 +48,7 @@ public class FilesCRUD implements java.io.Serializable  {
 		  } else {
 			  
 			  //TODO: Error handling
-			  this.logger.severe("filesAsCachedRowSet is null");
+			  this.logger.warning("filesAsCachedRowSet is null");
 			  filesAsDecoratedXHTMLTable = "<p>Error: filesAsCachedRowSet is null</p>";
 			  
 		  }
@@ -63,7 +65,7 @@ public class FilesCRUD implements java.io.Serializable  {
 		
 		   String CACHED_ROW_SET_IMPL_CLASS = "com.sun.rowset.CachedRowSetImpl";
 		   
-				
+		   try {
 
 				Connection connection = this.getDatabaseModel().getNewConnection();
 				 
@@ -90,12 +92,6 @@ public class FilesCRUD implements java.io.Serializable  {
 				        } 
 				      	catch (SQLException sqlException){
 					    	sqlException.printStackTrace();
-				        } catch (ClassNotFoundException e) {
-							e.printStackTrace();
-						} catch (InstantiationException e) {
-							e.printStackTrace();
-						} catch (IllegalAccessException e) {
-							e.printStackTrace();
 						} finally {
 				        	try {
 								connection.close();
@@ -112,7 +108,10 @@ public class FilesCRUD implements java.io.Serializable  {
 				}
 		
 	
-	
+			} 
+			catch (Exception e) {
+				e.printStackTrace();
+			}
 	
 	     return filesAsCachedRowSet;
 	     
@@ -563,7 +562,7 @@ public class FilesCRUD implements java.io.Serializable  {
 		if (connection != null) {
 		
 			for (int i = 0; i < fileIds.length(); i++) {
-				
+
 				try {
 					
 					
@@ -571,6 +570,9 @@ public class FilesCRUD implements java.io.Serializable  {
 						
 						success = false;
 						break;
+						
+					} else {
+						success = true;
 					}
 					
 					
@@ -582,8 +584,6 @@ public class FilesCRUD implements java.io.Serializable  {
 				}
 				
 			}
-			
-			success = true;
 			
 			try {
 				connection.close();
@@ -597,7 +597,7 @@ public class FilesCRUD implements java.io.Serializable  {
 			
 			success = false;
 		}
-		
+
 		return success;
 	}
 
@@ -618,10 +618,15 @@ public class FilesCRUD implements java.io.Serializable  {
 	          success = true;
 
 	        }
-	        catch(SQLException sqlException){
-		    	sqlException.printStackTrace();
-		    	success = false;
-	        } 
+	        catch(MySQLIntegrityConstraintViolationException integrityContraintViolationException) {
+	        	
+	        	//Note: special exception for integrity.
+	        	success = false;
+	        	
+	        } catch (SQLException e) {
+				e.printStackTrace();
+				success = false;
+			}
 	        
 	        
 		} else {

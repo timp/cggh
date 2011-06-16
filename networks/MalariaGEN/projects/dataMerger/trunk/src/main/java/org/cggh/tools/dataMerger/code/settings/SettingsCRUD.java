@@ -26,6 +26,33 @@ public class SettingsCRUD {
 		if (connection != null) {
 			
 			
+			this.retrieveSettingsAsSettingsModel(connection);
+			
+        	try {
+				connection.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+
+	
+			
+		} else {
+			
+			logger.severe("connection is null");
+		}
+
+		
+		return settingsModel;
+	}
+
+	
+	public SettingsModel retrieveSettingsAsSettingsModel (Connection connection) {
+		
+		SettingsModel settingsModel = new SettingsModel();
+
+		if (connection != null) {
+			
+			
 		      try{
 		    	  PreparedStatement preparedStatement = connection.prepareStatement(
 		    			  
@@ -49,7 +76,6 @@ public class SettingsCRUD {
 		        	  }
 
 		        	  
-		        	  
 		      	  } else {
 		      		  
 		      		  logger.severe("No settings found.");
@@ -63,15 +89,8 @@ public class SettingsCRUD {
 		        } 
 		      	catch (SQLException sqlException){
 			    	sqlException.printStackTrace();
-		        } finally {
-		        	try {
-						connection.close();
-					} catch (SQLException e) {
-						e.printStackTrace();
-					}
 		        }
-		
-			
+
 			
 		} else {
 			
@@ -80,8 +99,7 @@ public class SettingsCRUD {
 
 		
 		return settingsModel;
-	}
-	
+	}	
 	
 	public void setDatabaseModel(DatabaseModel databaseModel) {
 		this.databaseModel = databaseModel;

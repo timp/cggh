@@ -7,7 +7,6 @@ import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.logging.Logger;
 
-import javax.sql.rowset.CachedRowSet;
 
 import org.cggh.tools.dataMerger.data.databases.DatabaseModel;
 

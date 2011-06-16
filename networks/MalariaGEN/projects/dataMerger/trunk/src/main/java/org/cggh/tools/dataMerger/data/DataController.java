@@ -36,6 +36,7 @@ import org.cggh.tools.dataMerger.files.filebases.FilebasesCRUD;
 import org.cggh.tools.dataMerger.functions.data.files.FilesFunctions;
 import org.cggh.tools.dataMerger.functions.data.joins.JoinFunctions;
 import org.cggh.tools.dataMerger.functions.data.merges.MergeFunctions;
+import org.cggh.tools.dataMerger.functions.data.merges.MergesFunctions;
 import org.cggh.tools.dataMerger.functions.data.users.UsersFunctions;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -173,6 +174,49 @@ public class DataController extends HttpServlet {
 			  }
 			
 		  }
+		  else if (request.getPathInfo().equals("/merges")) {
+
+			  if (headerAcceptsAsStringList.contains("text/html")) { 
+			  
+				  //Otherwise degree symbols turn into question-marks
+				  response.setCharacterEncoding("UTF-8");
+				  
+				  response.setContentType("text/html");
+				  
+				  String mergesAsHTML = null;
+					
+				  MergesCRUD mergesCRUD = new MergesCRUD();
+				  mergesCRUD.setDatabaseModel(databaseModel);
+
+				  
+					  
+					  
+					  
+					  CachedRowSet mergesAsCachedRowSet = mergesCRUD.retrieveMergesAsCachedRowSetUsingUserId(userModel.getId());
+				
+					  if (mergesAsCachedRowSet != null) {
+				
+						  	MergesFunctions mergesFunctions = new MergesFunctions();
+
+						  	mergesAsHTML = mergesFunctions.getMergesAsDecoratedXHTMLTableUsingMergesAsCachedRowSet(mergesAsCachedRowSet);
+						    
+					  } else {
+					  
+						  mergesAsHTML = "<p>Failed to retrieve Merges As CachedRowSet Using User Id</p>";
+						  
+					  } 
+					  
+				  
+				  response.getWriter().print(mergesAsHTML);
+				  
+			  } else {
+				  
+				  response.setContentType("text/plain");
+				  response.getWriter().println("Unhandled Header Accept: " + request.getHeader("Accept"));
+				  
+			  } 
+			
+		  }
 		  else if (joinsURLPatternMatcher.find()) {
 			  
 				 // Get the mergeId 
@@ -225,7 +269,8 @@ public class DataController extends HttpServlet {
 					  
 				  } 
 
-		  } else if (resolutionsByColumnURLPatternMatcher.find()) {
+		  } 
+		  else if (resolutionsByColumnURLPatternMatcher.find()) {
 			  
 				 // Get the mergeId 
 				 MergeModel mergeModel = new MergeModel();
@@ -1047,7 +1092,13 @@ public class DataController extends HttpServlet {
 			DatabasesCRUD databasesCRUD = new DatabasesCRUD();
 			DatabaseModel databaseModel = databasesCRUD.retrieveDatabaseAsDatabaseModelUsingServletContext(request.getSession().getServletContext());
 
+			UsersCRUD usersCRUD = new UsersCRUD();
+			usersCRUD.setDatabaseModel(databaseModel);
+			UserModel userModel = usersCRUD.retrieveUserAsUserModelUsingUsername((String)request.getSession().getAttribute("username"));
 
+			Pattern mergesURLPattern = Pattern.compile("/merges/(\\d+)");
+			 Matcher mergesURLPatternMatcher = mergesURLPattern.matcher(request.getPathInfo());
+			
 		  String[] headerAcceptsAsStringArray = request.getHeader("Accept").split(",");
 		  List<String> headerAcceptsAsStringList = Arrays.asList(headerAcceptsAsStringArray);		 
 		 
@@ -1095,8 +1146,6 @@ public class DataController extends HttpServlet {
 					  response.setContentType("application/json");
 					  String responseAsJSON = null;
 					  
-					  try {
-						  
 						    BufferedReader reader = request.getReader();
 						    String line = null;
 						    StringBuffer stringBuffer = new StringBuffer();
@@ -1117,10 +1166,6 @@ public class DataController extends HttpServlet {
 								FilesCRUD filesCRUD = new FilesCRUD();
 								filesCRUD.setDatabaseModel(databaseModel);
 								
-								UsersCRUD usersCRUD = new UsersCRUD();
-								usersCRUD.setDatabaseModel(databaseModel);
-								UserModel userModel = usersCRUD.retrieveUserAsUserModelUsingUsername((String)request.getSession().getAttribute("username"));
-								
 								if (filesCRUD.deleteFilesUsingFileIdsAsJSONArrayAndUserId(fileIds, userModel.getId())) {
 									responseAsJSON = "{\"success\": \"true\"}";
 								} else {
@@ -1132,13 +1177,7 @@ public class DataController extends HttpServlet {
 								// TODO Auto-generated catch block
 								e1.printStackTrace();
 							} 
-					    
-					    
-					  } catch (Exception e) { 
-						  //TODO:
-						  e.printStackTrace(); 
-					  
-					  }
+
 					  
 					  response.getWriter().print(responseAsJSON);
 
@@ -1152,7 +1191,43 @@ public class DataController extends HttpServlet {
 				  
 			  }
 			  
-		  
+		  }
+		  else if (mergesURLPatternMatcher.find()) {
+				 
+			  	// Get the mergeId 
+				 MergeModel mergeModel = new MergeModel();
+				 mergeModel.setId(Integer.parseInt(mergesURLPatternMatcher.group(1)));  
+			  
+			  
+			  if (headerAcceptsAsStringList.contains("application/json")) { 
+
+					  response.setContentType("application/json");
+					  String responseAsJSON = null;
+					  
+						MergesCRUD mergesCRUD = new MergesCRUD();
+						mergesCRUD.setDatabaseModel(databaseModel);
+						
+						if (mergesCRUD.deleteMergeUsingMergeIdAndUserId(mergeModel.getId(), userModel.getId())) {
+							responseAsJSON = "{\"success\": \"true\"}";
+						} else {
+							responseAsJSON = "{\"success\": \"false\"}";
+						}
+							
+				
+					  
+					  response.getWriter().print(responseAsJSON);
+
+					  
+			  } else {
+				  
+				  //FIXME: This will cause a parser error (Invalid JSON).
+				  
+				  response.setContentType("text/plain");
+				  response.getWriter().println("Unhandled Header Accept: " + request.getHeader("Accept"));
+				  
+			  }
+			  
+		    
 		 
 		 } else {
 			  

@@ -197,8 +197,7 @@ public class DatatablesCRUD implements java.io.Serializable {
 				    		          
 				    		          //TODO: Get a list of all the strings to nullify.
 							          SettingsCRUD settingsCRUD = new SettingsCRUD();
-							          settingsCRUD.setDatabaseModel(databaseModel);
-				    		          SettingsModel settingsModel = settingsCRUD.retrieveSettingsAsSettingsModel();
+				    		          SettingsModel settingsModel = settingsCRUD.retrieveSettingsAsSettingsModel(connection);
 				    		          
 				    		          if (settingsModel.getSettingsAsHashMap().get("stringsToNullifyAsCSV") != null) {
 				    		        	  

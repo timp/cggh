@@ -13,9 +13,10 @@ import java.util.regex.Pattern;
 
 import javax.sql.rowset.CachedRowSet;
 
+import org.cggh.tools.dataMerger.code.settings.SettingsCRUD;
+import org.cggh.tools.dataMerger.code.settings.SettingsModel;
 import org.cggh.tools.dataMerger.data.databases.DatabaseModel;
 import org.cggh.tools.dataMerger.data.databases.DatabasesCRUD;
-import org.cggh.tools.dataMerger.data.files.FileModel;
 import org.cggh.tools.dataMerger.data.files.FileOriginModel;
 import org.cggh.tools.dataMerger.data.files.FileOriginsCRUD;
 import org.cggh.tools.dataMerger.data.files.FilesCRUD;
@@ -183,11 +184,7 @@ public class ExportsCRUD implements java.io.Serializable  {
 		
 		exportModel.getMergedDatatableModel().setDataAsCachedRowSet(mergedDatatablesModel.retrieveDataAsCachedRowSetByMergedDatatableName(exportModel.getMergedDatatableModel().getName(), connection));
 		
-		//////////
-		
-		//TODO: build a similar string below for the column names using IFNULL(colName, NullSubstitute) as got from settings and use in the query instead of *
-		
-		//////////
+
 		
 		String mergedDatatableColumnNamesForSelectSQL = "";
 		
@@ -204,6 +201,28 @@ public class ExportsCRUD implements java.io.Serializable  {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+
+		
+		SettingsCRUD settingsCRUD = new SettingsCRUD();
+		
+		SettingsModel settingsModel = settingsCRUD.retrieveSettingsAsSettingsModel(connection);
+		
+		String mergedDatatableColumnNamesWithIfNullConditionsForSelectSQL = "";
+		
+		//TODO: Sanitize stringToExportInsteadOfNull
+		
+		try {
+			for (int i = 1; i <= exportModel.getMergedDatatableModel().getDataAsCachedRowSet().getMetaData().getColumnCount(); i++) {
+				
+				if (i != 1) {
+					
+					mergedDatatableColumnNamesWithIfNullConditionsForSelectSQL += ", ";
+				}
+				mergedDatatableColumnNamesWithIfNullConditionsForSelectSQL += "IFNULL(`" + exportModel.getMergedDatatableModel().getDataAsCachedRowSet().getMetaData().getColumnName(i) + "`, '" + settingsModel.getSettingsAsHashMap().get("stringToExportInsteadOfNull") + "')";
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 		
 		try {
 			
@@ -212,7 +231,7 @@ public class ExportsCRUD implements java.io.Serializable  {
 			String createMergedDatatableAsFileSQL =
 				"(SELECT " + mergedDatatableColumnNamesForSelectSQL + ") " + 
 				"UNION " +
-				"(SELECT * FROM `" + exportModel.getMergedDatatableModel().getName() + "` INTO OUTFILE '" + exportDirectory.getAbsolutePath().replace("\\", "\\\\") +  
+				"(SELECT " + mergedDatatableColumnNamesWithIfNullConditionsForSelectSQL + " FROM `" + exportModel.getMergedDatatableModel().getName() + "` INTO OUTFILE '" + exportDirectory.getAbsolutePath().replace("\\", "\\\\") +  
 				pathSeparatorForSQL + filename + "' " +
 						"FIELDS ESCAPED BY '\\\\' OPTIONALLY ENCLOSED BY '\"' TERMINATED BY ',' " +
 						"LINES TERMINATED BY '\\n' " +
@@ -475,9 +494,7 @@ public class ExportsCRUD implements java.io.Serializable  {
 		}
 
 	}
-	
-	/////////////////////
-	
+
 	
 	public void createSettingsAsFileUsingExportId(
 			Integer exportId, Connection connection) {
@@ -556,10 +573,6 @@ public class ExportsCRUD implements java.io.Serializable  {
 		}
 
 	}
-	
-	
-	////////////////////
-
 
 	public ExportModel retrieveExportAsExportModelThroughUpdatingMergedDatatableWithResolvedDataUsingExportModel(
 			ExportModel exportModel, Connection connection) {

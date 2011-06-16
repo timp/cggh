@@ -23,6 +23,7 @@ import org.cggh.tools.dataMerger.functions.data.merges.MergesFunctions;
 import org.cggh.tools.dataMerger.scripts.data.merges.MergeScripts;
 
 
+
 public class MergesCRUD implements java.io.Serializable {
 
 	/**
@@ -439,13 +440,10 @@ public class MergesCRUD implements java.io.Serializable {
 			  if (mergesAsCachedRowSet != null) {
 
 				  	MergesFunctions mergesFunctions = new MergesFunctions();
-				  	mergesFunctions.setMergesAsCachedRowSet(mergesAsCachedRowSet);
-				  	mergesFunctions.setMergesAsDecoratedXHTMLTableUsingMergesAsCachedRowSet();
-				  	mergesAsDecoratedXHTMLTable = mergesFunctions.getMergesAsDecoratedXHTMLTable();
+				  	mergesAsDecoratedXHTMLTable = mergesFunctions.getMergesAsDecoratedXHTMLTableUsingMergesAsCachedRowSet(mergesAsCachedRowSet);
 				    
 			  } else {
-				  
-				  //TODO: Error handling
+
 				  this.logger.warning("Error: mergesAsCachedRowSet is null");
 				  mergesAsDecoratedXHTMLTable = "<p>Error: mergesAsCachedRowSet is null</p>";
 				  
@@ -604,5 +602,63 @@ public class MergesCRUD implements java.io.Serializable {
 	        catch(SQLException sqlException){
 		    	sqlException.printStackTrace();
 	        } 
+	}
+
+	public boolean deleteMergeUsingMergeIdAndUserId(Integer mergeId, Integer userId) {
+		
+		Boolean success = null;
+		
+		Connection connection = this.getDatabaseModel().getNewConnection();
+		 
+		if (connection != null) {
+			
+				try {
+					
+		          PreparedStatement preparedStatement = connection.prepareStatement(
+		        		  "DELETE FROM merge WHERE id = ? AND created_by_user_id = ?;");
+		          preparedStatement.setInt(1, mergeId);
+		          preparedStatement.setInt(2, userId);
+		          preparedStatement.executeUpdate();
+		          preparedStatement.close();
+		          
+		          PreparedStatement preparedStatement1 = connection.prepareStatement(
+        		  		"DROP TABLE IF EXISTS `joined_keytable_" + mergeId + "`;");
+		          preparedStatement1.executeUpdate();
+		          preparedStatement1.close();
+          
+		          PreparedStatement preparedStatement2 = connection.prepareStatement(
+		        		  "DROP TABLE IF EXISTS `joined_datatable_" + mergeId + "`;");
+		          preparedStatement2.executeUpdate();
+		          preparedStatement2.close();
+		          
+		          PreparedStatement preparedStatement3 = connection.prepareStatement(
+		        		  "DROP TABLE IF EXISTS `merged_datatable_" + mergeId + "`;");
+		          preparedStatement3.executeUpdate();
+		          preparedStatement3.close();
+		          
+		          success = true;
+
+		        } catch (SQLException e) {
+					e.printStackTrace();
+					success = false;
+					
+				} finally {
+			
+					try {
+						connection.close();
+					} catch (SQLException e) {
+						e.printStackTrace();
+					}
+					
+				}
+			
+		} else {
+			
+			logger.severe("connection is null");
+			
+			success = false;
+		}
+
+		return success;
 	}
 }

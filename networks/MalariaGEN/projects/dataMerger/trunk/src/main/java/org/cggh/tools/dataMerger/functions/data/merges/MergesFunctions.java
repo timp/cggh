@@ -14,24 +14,15 @@ public class MergesFunctions implements java.io.Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = 1021181895735718787L;
-	private CachedRowSet mergesAsCachedRowSet;
-	private String mergesAsDecoratedXHTMLTable;
 
-	public MergesFunctions() {
-		
-		
-	}
 
-	public void setMergesAsCachedRowSet(CachedRowSet mergesAsCachedRowSet) {
-		this.mergesAsCachedRowSet = mergesAsCachedRowSet;
-	}
-
-	public void setMergesAsDecoratedXHTMLTableUsingMergesAsCachedRowSet() {
+	public String getMergesAsDecoratedXHTMLTableUsingMergesAsCachedRowSet(
+			CachedRowSet mergesAsCachedRowSet) {
 		
 		String mergesAsDecoratedXHTMLTable = null;
 		
 		try {
-			if (this.getMergesAsCachedRowSet().next()) {
+			if (mergesAsCachedRowSet.next()) {
 
 				mergesAsDecoratedXHTMLTable = "";
 				
@@ -55,7 +46,7 @@ public class MergesFunctions implements java.io.Serializable {
 				 mergesAsDecoratedXHTMLTable = mergesAsDecoratedXHTMLTable.concat("<tbody>");
 				 
 				//because next() skips the first row.
-				 this.getMergesAsCachedRowSet().beforeFirst();
+				 mergesAsCachedRowSet.beforeFirst();
 
 					String rowStripeClassName = "even "; 
 					String rowFirstClassName = "first ";
@@ -63,7 +54,7 @@ public class MergesFunctions implements java.io.Serializable {
 					
 					DateFormat dateFormat = new SimpleDateFormat("dd MMM yyyy HH:mm");  
 				 
-				while (this.getMergesAsCachedRowSet().next()) {
+				while (mergesAsCachedRowSet.next()) {
 					 
 					if (rowStripeClassName == "odd ") {
 						rowStripeClassName = "even ";
@@ -72,40 +63,40 @@ public class MergesFunctions implements java.io.Serializable {
 					}
 					
 					//TODO: This might need changing when paging.
-					if (this.getMergesAsCachedRowSet().isLast()) {
+					if (mergesAsCachedRowSet.isLast()) {
 						rowLastClassName = "last ";
 					}
 					
 					
 					mergesAsDecoratedXHTMLTable = mergesAsDecoratedXHTMLTable.concat("<tr class=\"" + rowStripeClassName + rowFirstClassName + rowLastClassName + "\">");
 
-					 mergesAsDecoratedXHTMLTable = mergesAsDecoratedXHTMLTable.concat("<td><input type=\"hidden\" name=\"merge_id\" value=\"" + this.getMergesAsCachedRowSet().getString("id")  + "\"/>" + this.getMergesAsCachedRowSet().getString("id") + "</td>");
+					 mergesAsDecoratedXHTMLTable = mergesAsDecoratedXHTMLTable.concat("<td><input type=\"hidden\" name=\"merge_id\" value=\"" + mergesAsCachedRowSet.getString("id")  + "\"/>" + mergesAsCachedRowSet.getString("id") + "</td>");
 					 
 					 //FIXME: Apparently a bug in CachedRowSet using getX('columnAlias') aka columnLabel, which actually only works with getX('columnName'), so using getX('columnIndex').
 					 
 					 //TODO: This URL shouldn't be hard-coded
 					 mergesAsDecoratedXHTMLTable = mergesAsDecoratedXHTMLTable.concat("<td>");
-					 mergesAsDecoratedXHTMLTable = mergesAsDecoratedXHTMLTable.concat("<a href=\"/dataMerger/files/" + this.getMergesAsCachedRowSet().getInt(2) + "\">" + this.getMergesAsCachedRowSet().getString(3) + "</a><br/>");
-					 mergesAsDecoratedXHTMLTable = mergesAsDecoratedXHTMLTable.concat("<a href=\"/dataMerger/files/" + this.getMergesAsCachedRowSet().getInt(4) + "\">" + this.getMergesAsCachedRowSet().getString(5) + "</a>");
+					 mergesAsDecoratedXHTMLTable = mergesAsDecoratedXHTMLTable.concat("<a href=\"/dataMerger/files/" + mergesAsCachedRowSet.getInt(2) + "\">" + mergesAsCachedRowSet.getString(3) + "</a><br/>");
+					 mergesAsDecoratedXHTMLTable = mergesAsDecoratedXHTMLTable.concat("<a href=\"/dataMerger/files/" + mergesAsCachedRowSet.getInt(4) + "\">" + mergesAsCachedRowSet.getString(5) + "</a>");
 					 mergesAsDecoratedXHTMLTable = mergesAsDecoratedXHTMLTable.concat("</td>");
 					 //TODO: format datetime 02 Jan 2011
-					 mergesAsDecoratedXHTMLTable = mergesAsDecoratedXHTMLTable.concat("<td>" + dateFormat.format(this.getMergesAsCachedRowSet().getTimestamp("created_datetime")) + "</td>");
-					 mergesAsDecoratedXHTMLTable = mergesAsDecoratedXHTMLTable.concat("<td>" + dateFormat.format(this.getMergesAsCachedRowSet().getTimestamp("updated_datetime")) + "</td>");
+					 mergesAsDecoratedXHTMLTable = mergesAsDecoratedXHTMLTable.concat("<td>" + dateFormat.format(mergesAsCachedRowSet.getTimestamp("created_datetime")) + "</td>");
+					 mergesAsDecoratedXHTMLTable = mergesAsDecoratedXHTMLTable.concat("<td>" + dateFormat.format(mergesAsCachedRowSet.getTimestamp("updated_datetime")) + "</td>");
 					 
 					 
 					 mergesAsDecoratedXHTMLTable = mergesAsDecoratedXHTMLTable.concat("<td>");
 					 //TODO: Change this URL to a) not hard-coded b) /dataMerger/pages/merges/3/joins
-					 mergesAsDecoratedXHTMLTable = mergesAsDecoratedXHTMLTable.concat("<a href=\"/dataMerger/pages/merges/joins?merge_id=" + this.getMergesAsCachedRowSet().getInt("id") + "\">Edit Join</a><br/>");
+					 mergesAsDecoratedXHTMLTable = mergesAsDecoratedXHTMLTable.concat("<a href=\"/dataMerger/pages/merges/joins?merge_id=" + mergesAsCachedRowSet.getInt("id") + "\">Edit Join</a><br/>");
 					 
 					 //FIXME: totalDuplicateKeysCount == 0, even when null in db
 					 
-					 Integer totalDuplicateKeysCount = this.getMergesAsCachedRowSet().getInt("total_duplicate_keys_count");
+					 Integer totalDuplicateKeysCount = mergesAsCachedRowSet.getInt("total_duplicate_keys_count");
 					 
 					 if (totalDuplicateKeysCount != null) {
 						 
 						 if (totalDuplicateKeysCount == 0) {
 							 //TODO: Change this URL to a) not hard-coded b) /dataMerger/pages/merges/3/resolutions-by-column
-							 mergesAsDecoratedXHTMLTable = mergesAsDecoratedXHTMLTable.concat("<a href=\"/dataMerger/pages/merges/resolutions/by-column?merge_id=" + this.getMergesAsCachedRowSet().getInt("id") + "\">Edit Resolutions</a>");
+							 mergesAsDecoratedXHTMLTable = mergesAsDecoratedXHTMLTable.concat("<a href=\"/dataMerger/pages/merges/resolutions/by-column?merge_id=" + mergesAsCachedRowSet.getInt("id") + "\">Edit Resolutions</a>");
 						 } 
 						 else if (totalDuplicateKeysCount == 1) {
 							 mergesAsDecoratedXHTMLTable = mergesAsDecoratedXHTMLTable.concat("<span class=\"problem-message-container\">" + totalDuplicateKeysCount + " duplicate key</span>");
@@ -126,12 +117,12 @@ public class MergesFunctions implements java.io.Serializable {
 					 
 					 //FIXME: totalConflictsCount == 0, even when null in db
 					 
-					 Integer totalConflictsCount = this.getMergesAsCachedRowSet().getInt("total_conflicts_count");
+					 Integer totalConflictsCount = mergesAsCachedRowSet.getInt("total_conflicts_count");
 					 
 					 if (totalConflictsCount != null && totalDuplicateKeysCount == 0) {
 						 
 						 if (totalConflictsCount == 0) {
-							 mergesAsDecoratedXHTMLTable = mergesAsDecoratedXHTMLTable.concat("<td><input type=\"text\" name=\"mergedFileFilename\" value=\"merged_file_" + this.getMergesAsCachedRowSet().getInt("id") + ".csv\"/><button class=\"export-button\">Export</button><img class=\"exporting-indicator\" src=\"/dataMerger/pages/shared/gif/loading.gif\" style=\"display:none\" title=\"Exporting...\"/></td>");
+							 mergesAsDecoratedXHTMLTable = mergesAsDecoratedXHTMLTable.concat("<td><input type=\"text\" name=\"mergedFileFilename\" value=\"merged_file_" + mergesAsCachedRowSet.getInt("id") + ".csv\"/><button class=\"export-button\">Export</button><img class=\"exporting-indicator\" src=\"/dataMerger/pages/shared/gif/loading.gif\" style=\"display:none\" title=\"Exporting...\"/></td>");
 						 }
 						 else if (totalConflictsCount == 1) {
 							 mergesAsDecoratedXHTMLTable = mergesAsDecoratedXHTMLTable.concat("<td class=\"problem-message-container\">" + totalConflictsCount + " conflict</td>");
@@ -160,19 +151,10 @@ public class MergesFunctions implements java.io.Serializable {
 				
 			}
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
-		this.mergesAsDecoratedXHTMLTable = mergesAsDecoratedXHTMLTable;
-	}
-
-	public CachedRowSet getMergesAsCachedRowSet() {
-		return this.mergesAsCachedRowSet;
-	}
-
-	public String getMergesAsDecoratedXHTMLTable() {
-		return this.mergesAsDecoratedXHTMLTable;
+		return mergesAsDecoratedXHTMLTable;
 	}
 
 	

@@ -5,7 +5,6 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-import javax.servlet.ServletContext;
 import javax.sql.rowset.CachedRowSet;
 
 import org.cggh.tools.dataMerger.data.installations.InstallationModel;

@@ -294,16 +294,24 @@ function initRemoveFilesFunction () {
 						
 						if (data.success) {
 							
-							if (data.success = "true") {
+							if (data.success == "true") {
 								
 								//FIXME: Could be viewing either the hidden or unhidden list.
 								// This loads the unhidden list regardless.
 								retrieveFilesAsDecoratedHTMLTable();
 								
 								initFilesFunctions(); //rebind
-								alert("Files have been removed.");
+								alert("Files have been deleted.");
 							} else {
-								alert("An error occurred.");
+								
+								//Reload anyway, because some files may have been deleted successfully.
+								//FIXME: Could be viewing either the hidden or unhidden list.
+								// This loads the unhidden list regardless.
+								retrieveFilesAsDecoratedHTMLTable();
+								
+								initFilesFunctions(); //rebind
+								
+								alert("Cannot delete files that are being referred to by merges or exports.");
 							}
 			
 						} else {

@@ -63,7 +63,7 @@ function initDeleteMergeFunction () {
 		if ($(this).closest('tr').find('input[name="merge_id"]').val() != null) {
 		
 				
-			if (confirm("Are you sure you want to permanently remove merge " + $(this).closest('tr').find('input[name="merge_id"]').val() + "?")) {
+			if (confirm("Are you sure you want to permanently remove merge " + $(this).closest('tr').find('input[name="merge_id"]').val() + "?\nWARNING: This will also delete all the joins and resolutions associated with this merge.")) {
 	
 					
 				var deletingIndicator = $(this).closest('tr').find('.deleting-indicator');
@@ -81,8 +81,10 @@ function initDeleteMergeFunction () {
 
 									retrieveMergesAsDecoratedHTMLTable();
 									
-									initFilesFunctions(); //rebind
-									alert("Merge has been removed.");
+									initMergesFunctions(); //rebind
+									
+									alert("Merge has been deleted.");
+									
 								} else {
 									alert("An error occurred.");
 								}

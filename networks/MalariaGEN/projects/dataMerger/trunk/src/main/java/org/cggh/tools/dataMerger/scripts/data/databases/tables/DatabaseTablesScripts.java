@@ -239,7 +239,7 @@ public class DatabaseTablesScripts {
 		        		  "column_name VARCHAR(255) NULL, " +
 		        		  "PRIMARY KEY (merge_id, column_number), " +
 		        		  "INDEX merge_id_index (merge_id), " + 
-		        		  "FOREIGN KEY (merge_id) REFERENCES merge(id) " +
+		        		  "FOREIGN KEY (merge_id) REFERENCES merge(id) ON DELETE CASCADE" +
 		        		  ") ENGINE=InnoDB;");
 		          
 		        //NOTE: Took out ON DELETE CASCADE ON UPDATE CASCADE for safety
@@ -452,10 +452,8 @@ public class DatabaseTablesScripts {
 			        		  "INDEX merge_id_index (merge_id), " +
 			        		  "INDEX joined_keytable_id_index (joined_keytable_id), " + 
 			        		  "INDEX column_number_index (column_number), " + 
-			        		  "FOREIGN KEY (merge_id) REFERENCES merge(id) " +
+			        		  "FOREIGN KEY (merge_id) REFERENCES merge(id) ON DELETE CASCADE" +
 			        		  ") ENGINE=InnoDB;");
-			          
-			        //NOTE: Took out ON DELETE CASCADE ON UPDATE CASCADE for safety
 			          
 			          statement.close();
 

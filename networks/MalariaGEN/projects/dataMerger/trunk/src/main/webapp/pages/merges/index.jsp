@@ -49,12 +49,18 @@
 			<div class="merges">
 				<%
 				
+				//NOTE: redirects in the prepage file to not stop this code executing.
+				if (userModel != null && userModel.getId() != null) {
+				
 					MergesCRUD mergesCRUD = new MergesCRUD();
 				
 					mergesCRUD.setDatabaseModel(databaseModel);
 					
 					out.print(mergesCRUD.retrieveMergesAsDecoratedXHTMLTableUsingUserId(userModel.getId()));
 					
+					
+				}
+				
 				%>		
 			</div>
 

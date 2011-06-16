@@ -4,17 +4,12 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.logging.Logger;
 
 import javax.sql.rowset.CachedRowSet;
 
 import org.cggh.tools.dataMerger.data.databases.DatabaseModel;
-import org.cggh.tools.dataMerger.data.joins.JoinModel;
-import org.cggh.tools.dataMerger.data.merges.MergeModel;
 import org.cggh.tools.dataMerger.data.userbases.UserbaseModel;
-import org.cggh.tools.dataMerger.functions.data.files.FilesFunctions;
-import org.cggh.tools.dataMerger.functions.data.joins.JoinFunctions;
 import org.cggh.tools.dataMerger.functions.data.users.UserFunctions;
 import org.cggh.tools.dataMerger.functions.data.users.UsersFunctions;
 

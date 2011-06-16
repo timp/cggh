@@ -9,8 +9,6 @@ import java.util.List;
 
 import javax.sql.rowset.CachedRowSet;
 
-import org.cggh.tools.dataMerger.code.settings.SettingsModel;
-
 
 
 public class DatatableModel implements java.io.Serializable {

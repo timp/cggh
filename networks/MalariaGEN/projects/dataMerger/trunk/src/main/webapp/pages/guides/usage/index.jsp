@@ -41,7 +41,7 @@
 					<ol>
 						<li>Login
 							<ul>
-								<li>Currently using HTTP Basic. Waiting for SSO developments. Possible temporary move to custom db.</li>
+								<li>The administration area is protected by aavailable at .</li>
 							</ul>
 						</li>
 						<li>Upload files</li>
