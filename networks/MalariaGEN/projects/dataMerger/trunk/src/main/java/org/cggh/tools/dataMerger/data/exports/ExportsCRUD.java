@@ -186,16 +186,16 @@ public class ExportsCRUD implements java.io.Serializable  {
 		
 
 		
-		String mergedDatatableColumnNamesForSelectSQL = "";
+		StringBuffer mergedDatatableColumnNamesForSelectSQL = new StringBuffer();
 		
 		try {
 			for (int i = 1; i <= exportModel.getMergedDatatableModel().getDataAsCachedRowSet().getMetaData().getColumnCount(); i++) {
 				
 				if (i != 1) {
 					
-					mergedDatatableColumnNamesForSelectSQL += ", ";
+					mergedDatatableColumnNamesForSelectSQL.append(", ");
 				}
-				mergedDatatableColumnNamesForSelectSQL += "'" + exportModel.getMergedDatatableModel().getDataAsCachedRowSet().getMetaData().getColumnName(i) + "'";
+				mergedDatatableColumnNamesForSelectSQL.append("'").append(exportModel.getMergedDatatableModel().getDataAsCachedRowSet().getMetaData().getColumnName(i)).append("'");
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
@@ -207,7 +207,7 @@ public class ExportsCRUD implements java.io.Serializable  {
 		
 		SettingsModel settingsModel = settingsCRUD.retrieveSettingsAsSettingsModel(connection);
 		
-		String mergedDatatableColumnNamesWithIfNullConditionsForSelectSQL = "";
+		StringBuffer mergedDatatableColumnNamesWithIfNullConditionsForSelectSQL = new StringBuffer();
 		
 		//TODO: Sanitize stringToExportInsteadOfNull
 		
@@ -216,9 +216,9 @@ public class ExportsCRUD implements java.io.Serializable  {
 				
 				if (i != 1) {
 					
-					mergedDatatableColumnNamesWithIfNullConditionsForSelectSQL += ", ";
+					mergedDatatableColumnNamesWithIfNullConditionsForSelectSQL.append(", ");
 				}
-				mergedDatatableColumnNamesWithIfNullConditionsForSelectSQL += "IFNULL(`" + exportModel.getMergedDatatableModel().getDataAsCachedRowSet().getMetaData().getColumnName(i) + "`, '" + settingsModel.getSettingsAsHashMap().get("stringToExportInsteadOfNull") + "')";
+				mergedDatatableColumnNamesWithIfNullConditionsForSelectSQL.append("IFNULL(`").append(exportModel.getMergedDatatableModel().getDataAsCachedRowSet().getMetaData().getColumnName(i)).append("`, '").append(settingsModel.getSettingsAsHashMap().get("stringToExportInsteadOfNull")).append("')");
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -229,9 +229,9 @@ public class ExportsCRUD implements java.io.Serializable  {
 			String filename = exportModel.getMergedFileAsFileModel().getFilename();
 			
 			String createMergedDatatableAsFileSQL =
-				"(SELECT " + mergedDatatableColumnNamesForSelectSQL + ") " + 
+				"(SELECT " + mergedDatatableColumnNamesForSelectSQL.toString() + ") " + 
 				"UNION " +
-				"(SELECT " + mergedDatatableColumnNamesWithIfNullConditionsForSelectSQL + " FROM `" + exportModel.getMergedDatatableModel().getName() + "` INTO OUTFILE '" + exportDirectory.getAbsolutePath().replace("\\", "\\\\") +  
+				"(SELECT " + mergedDatatableColumnNamesWithIfNullConditionsForSelectSQL.toString() + " FROM `" + exportModel.getMergedDatatableModel().getName() + "` INTO OUTFILE '" + exportDirectory.getAbsolutePath().replace("\\", "\\\\") +  
 				pathSeparatorForSQL + filename + "' " +
 						"FIELDS ESCAPED BY '\\\\' OPTIONALLY ENCLOSED BY '\"' TERMINATED BY ',' " +
 						"LINES TERMINATED BY '\\n' " +
@@ -417,8 +417,8 @@ public class ExportsCRUD implements java.io.Serializable  {
 			
 			String fileName = "resolutions_" + exportModel.getId() + ".csv";
 			
-			String keyColumnNamesForSelectSQL = "";
-			String joinedKeytableKeyColumnNameAliasesForSelectSQL = "";
+			StringBuffer keyColumnNamesForSelectSQL = new StringBuffer();
+			StringBuffer joinedKeytableKeyColumnNameAliasesForSelectSQL = new StringBuffer();
 			
 			JoinsCRUD joinsCRUD = new JoinsCRUD();
 			
@@ -429,18 +429,18 @@ public class ExportsCRUD implements java.io.Serializable  {
 				keyJoinsAsCachedRowSet.beforeFirst();
 				
 				while (keyJoinsAsCachedRowSet.next()) {
-					keyColumnNamesForSelectSQL += ", '" + keyJoinsAsCachedRowSet.getString("column_name") + "' ";
+					keyColumnNamesForSelectSQL.append(", '").append(keyJoinsAsCachedRowSet.getString("column_name")).append("' ");
 					
 					
-					joinedKeytableKeyColumnNameAliasesForSelectSQL += ", `" + exportModel.getMergeModel().getJoinedKeytableModel().getName() + "`.`key_column_" + keyJoinsAsCachedRowSet.getString("column_number") + "` AS '" + keyJoinsAsCachedRowSet.getString("column_name") + "' ";
+					joinedKeytableKeyColumnNameAliasesForSelectSQL.append(", `").append(exportModel.getMergeModel().getJoinedKeytableModel().getName()).append("`.`key_column_").append(keyJoinsAsCachedRowSet.getString("column_number")).append("` AS '").append(keyJoinsAsCachedRowSet.getString("column_name")).append("' ");
 				}
 				
 			}
 			
 			String createResolutionsAsFileSQL =
-				"(SELECT 'Export ID' " + keyColumnNamesForSelectSQL + ", 'Column Number', 'Solution Description', 'Constant') " + 
+				"(SELECT 'Export ID' " + keyColumnNamesForSelectSQL.toString() + ", 'Column Number', 'Solution Description', 'Constant') " + 
 				"UNION " +
-				"(SELECT " + exportModel.getId() + joinedKeytableKeyColumnNameAliasesForSelectSQL + ", column_number, IF(solution_by_column.description IS NULL, IF(solution_by_row.description IS NULL, IF(solution_by_cell.description IS NULL, NULL, solution_by_cell.description), solution_by_row.description), solution_by_column.description), constant " + 
+				"(SELECT " + exportModel.getId() + joinedKeytableKeyColumnNameAliasesForSelectSQL.toString() + ", column_number, IF(solution_by_column.description IS NULL, IF(solution_by_row.description IS NULL, IF(solution_by_cell.description IS NULL, NULL, solution_by_cell.description), solution_by_row.description), solution_by_column.description), constant " + 
 				"FROM `resolution` " + 
 				"JOIN `" + exportModel.getMergeModel().getJoinedKeytableModel().getName() + "` ON `" + exportModel.getMergeModel().getJoinedKeytableModel().getName() + "`.id = resolution.joined_keytable_id " + 
 				"LEFT JOIN solution_by_column ON solution_by_column.id = resolution.solution_by_column_id " + 
@@ -598,9 +598,9 @@ public class ExportsCRUD implements java.io.Serializable  {
 	        	
 	        	CachedRowSet keyJoinsAsCachedRowSet = joinsModel.retrieveKeyJoinsAsCachedRowSetByMergeId(exportModel.getMergeModel().getId(), connection);
 	        	
-	        	String mergedDatatableToJoinedKeytableMappingsForWhereClauseSQL = "";
-	        	String mergedDatatableToDatatable1MappingsForWhereClauseSQL = "";
-	        	String mergedDatatableToDatatable2MappingsForWhereClauseSQL = "";
+	        	StringBuffer mergedDatatableToJoinedKeytableMappingsForWhereClauseSQL = new StringBuffer();
+	        	StringBuffer mergedDatatableToDatatable1MappingsForWhereClauseSQL = new StringBuffer();
+	        	StringBuffer mergedDatatableToDatatable2MappingsForWhereClauseSQL = new StringBuffer();
 	        	
 	        	if (keyJoinsAsCachedRowSet.next()) {
 	        		
@@ -608,11 +608,11 @@ public class ExportsCRUD implements java.io.Serializable  {
 	        		
 	        		while (keyJoinsAsCachedRowSet.next()) {
 	        			
-	        			mergedDatatableToJoinedKeytableMappingsForWhereClauseSQL += "AND `" + exportModel.getMergedDatatableModel().getName() + "`.`" + keyJoinsAsCachedRowSet.getString("column_name") + "` = `" + exportModel.getMergeModel().getJoinedKeytableModel().getName() + "`.`key_column_" + keyJoinsAsCachedRowSet.getInt("column_number") + "` ";
+	        			mergedDatatableToJoinedKeytableMappingsForWhereClauseSQL.append("AND `").append(exportModel.getMergedDatatableModel().getName()).append("`.`").append(keyJoinsAsCachedRowSet.getString("column_name")).append("` = `").append(exportModel.getMergeModel().getJoinedKeytableModel().getName()).append("`.`key_column_").append(keyJoinsAsCachedRowSet.getInt("column_number")).append("` ");
 	        	
-	        			mergedDatatableToDatatable1MappingsForWhereClauseSQL += "AND `" + exportModel.getMergedDatatableModel().getName() + "`.`" + keyJoinsAsCachedRowSet.getString("column_name") + "` = `" + exportModel.getMergeModel().getDatatable1Model().getName()+ "`.`" + keyJoinsAsCachedRowSet.getString("datatable_1_column_name") + "` ";
+	        			mergedDatatableToDatatable1MappingsForWhereClauseSQL.append("AND `").append(exportModel.getMergedDatatableModel().getName()).append("`.`").append(keyJoinsAsCachedRowSet.getString("column_name")).append("` = `").append(exportModel.getMergeModel().getDatatable1Model().getName()).append("`.`").append(keyJoinsAsCachedRowSet.getString("datatable_1_column_name")).append("` ");
 	        			
-	        			mergedDatatableToDatatable2MappingsForWhereClauseSQL += "AND `" + exportModel.getMergedDatatableModel().getName() + "`.`" + keyJoinsAsCachedRowSet.getString("column_name") + "` = `" + exportModel.getMergeModel().getDatatable2Model().getName()+ "`.`" + keyJoinsAsCachedRowSet.getString("datatable_2_column_name") + "` ";
+	        			mergedDatatableToDatatable2MappingsForWhereClauseSQL.append("AND `").append(exportModel.getMergedDatatableModel().getName()).append("`.`").append(keyJoinsAsCachedRowSet.getString("column_name")).append("` = `").append(exportModel.getMergeModel().getDatatable2Model().getName()).append("`.`").append(keyJoinsAsCachedRowSet.getString("datatable_2_column_name")).append("` ");
 	        			
 	        		}
 	        		
@@ -638,7 +638,7 @@ public class ExportsCRUD implements java.io.Serializable  {
 		        			updateMergedDatatableSQL = 
 		        				"UPDATE `" + exportModel.getMergedDatatableModel().getName() + "`, `" + exportModel.getMergeModel().getDatatable1Model().getName() + "`, `" + exportModel.getMergeModel().getJoinedKeytableModel().getName() + "` " +
 		        					"SET `" + exportModel.getMergedDatatableModel().getName() + "`.`" + joinColumnNamesByColumnNumberAsHashMap.get(resolutionsAsCachedRowSet.getInt("column_number")) +"` = `" + exportModel.getMergeModel().getDatatable1Model().getName() + "`.`" + datatable1ColumnNamesByColumnNumberAsHashMap.get(resolutionsAsCachedRowSet.getInt("column_number")) + "` " +
-		        					"WHERE `" + exportModel.getMergeModel().getJoinedKeytableModel().getName() + "`.id = '" + resolutionsAsCachedRowSet.getInt("joined_keytable_id") + "' " + mergedDatatableToJoinedKeytableMappingsForWhereClauseSQL + mergedDatatableToDatatable1MappingsForWhereClauseSQL + 
+		        					"WHERE `" + exportModel.getMergeModel().getJoinedKeytableModel().getName() + "`.id = '" + resolutionsAsCachedRowSet.getInt("joined_keytable_id") + "' " + mergedDatatableToJoinedKeytableMappingsForWhereClauseSQL.toString() + mergedDatatableToDatatable1MappingsForWhereClauseSQL.toString() + 
 		        				";";
 		        			
 		        			
@@ -649,7 +649,7 @@ public class ExportsCRUD implements java.io.Serializable  {
 		        			updateMergedDatatableSQL = 
 		        				"UPDATE `" + exportModel.getMergedDatatableModel().getName() + "`, `" + exportModel.getMergeModel().getDatatable2Model().getName() + "`, `" + exportModel.getMergeModel().getJoinedKeytableModel().getName() + "` " +
 		        					"SET `" + exportModel.getMergedDatatableModel().getName() + "`.`" + joinColumnNamesByColumnNumberAsHashMap.get(resolutionsAsCachedRowSet.getInt("column_number")) +"` = `" + exportModel.getMergeModel().getDatatable2Model().getName() + "`.`" + datatable2ColumnNamesByColumnNumberAsHashMap.get(resolutionsAsCachedRowSet.getInt("column_number")) + "` " +
-		        					"WHERE `" + exportModel.getMergeModel().getJoinedKeytableModel().getName() + "`.id = '" + resolutionsAsCachedRowSet.getInt("joined_keytable_id") + "' " + mergedDatatableToJoinedKeytableMappingsForWhereClauseSQL + mergedDatatableToDatatable2MappingsForWhereClauseSQL +
+		        					"WHERE `" + exportModel.getMergeModel().getJoinedKeytableModel().getName() + "`.id = '" + resolutionsAsCachedRowSet.getInt("joined_keytable_id") + "' " + mergedDatatableToJoinedKeytableMappingsForWhereClauseSQL.toString() + mergedDatatableToDatatable2MappingsForWhereClauseSQL.toString() +
 		        				";";
 		        			
 		        		}
@@ -659,7 +659,7 @@ public class ExportsCRUD implements java.io.Serializable  {
 		        			updateMergedDatatableSQL = 
 		        				"UPDATE `" + exportModel.getMergedDatatableModel().getName() + "`, `" + exportModel.getMergeModel().getJoinedKeytableModel().getName() + "` " +
 		        					"SET `" + exportModel.getMergedDatatableModel().getName() + "`.`" + joinColumnNamesByColumnNumberAsHashMap.get(resolutionsAsCachedRowSet.getInt("column_number")) +"` = NULL " +
-		        					"WHERE `" + exportModel.getMergeModel().getJoinedKeytableModel().getName() + "`.id = '" + resolutionsAsCachedRowSet.getInt("joined_keytable_id") + "' " + mergedDatatableToJoinedKeytableMappingsForWhereClauseSQL +
+		        					"WHERE `" + exportModel.getMergeModel().getJoinedKeytableModel().getName() + "`.id = '" + resolutionsAsCachedRowSet.getInt("joined_keytable_id") + "' " + mergedDatatableToJoinedKeytableMappingsForWhereClauseSQL.toString() +
 		        				";";
 		        			
 		        		}
@@ -669,7 +669,7 @@ public class ExportsCRUD implements java.io.Serializable  {
 		        			updateMergedDatatableSQL = 
 		        				"UPDATE `" + exportModel.getMergedDatatableModel().getName() + "`, `" + exportModel.getMergeModel().getJoinedKeytableModel().getName() + "` " +
 		        					"SET `" + exportModel.getMergedDatatableModel().getName() + "`.`" + joinColumnNamesByColumnNumberAsHashMap.get(resolutionsAsCachedRowSet.getInt("column_number")) +"` = '" + resolutionsAsCachedRowSet.getString("constant") + "' " +
-		        					"WHERE `" + exportModel.getMergeModel().getJoinedKeytableModel().getName() + "`.id = '" + resolutionsAsCachedRowSet.getInt("joined_keytable_id") + "' " + mergedDatatableToJoinedKeytableMappingsForWhereClauseSQL +
+		        					"WHERE `" + exportModel.getMergeModel().getJoinedKeytableModel().getName() + "`.id = '" + resolutionsAsCachedRowSet.getInt("joined_keytable_id") + "' " + mergedDatatableToJoinedKeytableMappingsForWhereClauseSQL.toString() +
 		        				";";
 		        		}
 		        		//solution 5 (remove row) is dealt with separately, afterwards.
@@ -742,7 +742,7 @@ public class ExportsCRUD implements java.io.Serializable  {
 	        	  while (resultSet.next()) {
 	        		  
 	        		  
-	        		  String deleteRowWhereConditionsSQL = "";
+	        		  StringBuffer deleteRowWhereConditionsSQL = new StringBuffer();
 	        		  
 	        		  for (int i = 1; i <= resultSet.getMetaData().getColumnCount(); i++) {
 	  	      			
@@ -754,10 +754,10 @@ public class ExportsCRUD implements java.io.Serializable  {
 			        		  
 			        		  String exportDatatableColumnName =  joinColumnNamesByColumnNumberAsHashMap.get(columnNumber);
 			        		  
-			        		  if (deleteRowWhereConditionsSQL != "") {
-			        			  deleteRowWhereConditionsSQL += "AND ";
+			        		  if (deleteRowWhereConditionsSQL.length() > 0) {
+			        			  deleteRowWhereConditionsSQL.append("AND ");
 			        		  }
-			        		  deleteRowWhereConditionsSQL += "`" + exportDatatableColumnName + "` = '" + resultSet.getString(resultSet.getMetaData().getColumnName(i)) + "' ";
+			        		  deleteRowWhereConditionsSQL.append("`").append(exportDatatableColumnName).append("` = '").append(resultSet.getString(resultSet.getMetaData().getColumnName(i))).append("' ");
 			        		  
 			        		  
 		        		  }
@@ -766,7 +766,7 @@ public class ExportsCRUD implements java.io.Serializable  {
 	        		  
 	        		  // Remove from export datatable
 	  				String deleteRowFromMergedDatatableSQL = 
-						"DELETE FROM `" + exportModel.getMergedDatatableModel().getName() + "` WHERE " + deleteRowWhereConditionsSQL + 
+						"DELETE FROM `" + exportModel.getMergedDatatableModel().getName() + "` WHERE " + deleteRowWhereConditionsSQL.toString() + 
 						";";
 					
 					//this.logger.info("deleteRowFromMergedDatatableSQL: " + deleteRowFromMergedDatatableSQL);
@@ -805,8 +805,8 @@ public class ExportsCRUD implements java.io.Serializable  {
 		
 			//Populate the export datatable with datatable data from source 1
 			
-			String datatable1NonCrossDatatableExportColumnMappingsForUpdateSetSQL = "";
-			String datatable2NonCrossDatatableExportColumnMappingsForUpdateSetSQL = "";
+			StringBuffer datatable1NonCrossDatatableExportColumnMappingsForUpdateSetSQL = new StringBuffer();
+			StringBuffer datatable2NonCrossDatatableExportColumnMappingsForUpdateSetSQL = new StringBuffer();
 			
 			//FIXME: detach joins CRUD from joins Set
 			//JoinsModel joinsModel = new JoinsModel();
@@ -822,30 +822,30 @@ public class ExportsCRUD implements java.io.Serializable  {
 				if (exportModel.getMergeModel().getJoinsModel().getJoinsAsCachedRowSet().getBoolean("key") != true) {
 				
 					if (exportModel.getMergeModel().getJoinsModel().getJoinsAsCachedRowSet().getString("datatable_1_column_name") != null) {
-						if (datatable1NonCrossDatatableExportColumnMappingsForUpdateSetSQL != "") {
-							datatable1NonCrossDatatableExportColumnMappingsForUpdateSetSQL += ", ";
+						if (datatable1NonCrossDatatableExportColumnMappingsForUpdateSetSQL.length() > 0) {
+							datatable1NonCrossDatatableExportColumnMappingsForUpdateSetSQL.append(", ");
 						}
-						datatable1NonCrossDatatableExportColumnMappingsForUpdateSetSQL += "`" + exportModel.getMergedDatatableModel().getName() + "`.`" + exportModel.getMergeModel().getJoinsModel().getJoinsAsCachedRowSet().getString("column_name") + "` = `" + exportModel.getMergeModel().getDatatable1Model().getName() + "`.`" + exportModel.getMergeModel().getJoinsModel().getJoinsAsCachedRowSet().getString("datatable_1_column_name") + "` ";
+						datatable1NonCrossDatatableExportColumnMappingsForUpdateSetSQL.append("`").append(exportModel.getMergedDatatableModel().getName()).append("`.`").append(exportModel.getMergeModel().getJoinsModel().getJoinsAsCachedRowSet().getString("column_name")).append("` = `").append(exportModel.getMergeModel().getDatatable1Model().getName()).append("`.`").append(exportModel.getMergeModel().getJoinsModel().getJoinsAsCachedRowSet().getString("datatable_1_column_name")).append("` ");
 					}
 					else if (exportModel.getMergeModel().getJoinsModel().getJoinsAsCachedRowSet().getString("datatable_1_column_name") == null && exportModel.getMergeModel().getJoinsModel().getJoinsAsCachedRowSet().getString("constant_1") != null) {
-						if (datatable1NonCrossDatatableExportColumnMappingsForUpdateSetSQL != "") {
-							datatable1NonCrossDatatableExportColumnMappingsForUpdateSetSQL += ", ";
+						if (datatable1NonCrossDatatableExportColumnMappingsForUpdateSetSQL.length() > 0) {
+							datatable1NonCrossDatatableExportColumnMappingsForUpdateSetSQL.append(", ");
 						}
-						datatable1NonCrossDatatableExportColumnMappingsForUpdateSetSQL += "`" + exportModel.getMergedDatatableModel().getName() + "`.`" + exportModel.getMergeModel().getJoinsModel().getJoinsAsCachedRowSet().getString("column_name") + "` = '" + exportModel.getMergeModel().getJoinsModel().getJoinsAsCachedRowSet().getString("constant_1") + "' ";
+						datatable1NonCrossDatatableExportColumnMappingsForUpdateSetSQL.append("`").append(exportModel.getMergedDatatableModel().getName()).append("`.`").append(exportModel.getMergeModel().getJoinsModel().getJoinsAsCachedRowSet().getString("column_name")).append("` = '").append(exportModel.getMergeModel().getJoinsModel().getJoinsAsCachedRowSet().getString("constant_1")).append("' ");
 					}
 					// Value will stay null by default
 					
 					if (exportModel.getMergeModel().getJoinsModel().getJoinsAsCachedRowSet().getString("datatable_2_column_name") != null) {
-						if (datatable2NonCrossDatatableExportColumnMappingsForUpdateSetSQL != "") {
-							datatable2NonCrossDatatableExportColumnMappingsForUpdateSetSQL += ", ";
+						if (datatable2NonCrossDatatableExportColumnMappingsForUpdateSetSQL.length() > 0) {
+							datatable2NonCrossDatatableExportColumnMappingsForUpdateSetSQL.append(", ");
 						}
-						datatable2NonCrossDatatableExportColumnMappingsForUpdateSetSQL += "`" + exportModel.getMergedDatatableModel().getName() + "`.`" + exportModel.getMergeModel().getJoinsModel().getJoinsAsCachedRowSet().getString("column_name") + "` = `" + exportModel.getMergeModel().getDatatable2Model().getName() + "`.`" + exportModel.getMergeModel().getJoinsModel().getJoinsAsCachedRowSet().getString("datatable_2_column_name") + "` ";
+						datatable2NonCrossDatatableExportColumnMappingsForUpdateSetSQL.append("`").append(exportModel.getMergedDatatableModel().getName()).append("`.`").append(exportModel.getMergeModel().getJoinsModel().getJoinsAsCachedRowSet().getString("column_name")).append("` = `").append(exportModel.getMergeModel().getDatatable2Model().getName()).append("`.`").append(exportModel.getMergeModel().getJoinsModel().getJoinsAsCachedRowSet().getString("datatable_2_column_name")).append("` ");
 					}
 					else if (exportModel.getMergeModel().getJoinsModel().getJoinsAsCachedRowSet().getString("datatable_2_column_name") == null && exportModel.getMergeModel().getJoinsModel().getJoinsAsCachedRowSet().getString("constant_2") != null) {
-						if (datatable2NonCrossDatatableExportColumnMappingsForUpdateSetSQL != "") {
-							datatable2NonCrossDatatableExportColumnMappingsForUpdateSetSQL += ", ";
+						if (datatable2NonCrossDatatableExportColumnMappingsForUpdateSetSQL.length() > 0) {
+							datatable2NonCrossDatatableExportColumnMappingsForUpdateSetSQL.append(", ");
 						}
-						datatable2NonCrossDatatableExportColumnMappingsForUpdateSetSQL += "`" + exportModel.getMergedDatatableModel().getName() + "`.`" + exportModel.getMergeModel().getJoinsModel().getJoinsAsCachedRowSet().getString("column_name") + "` = '" + exportModel.getMergeModel().getJoinsModel().getJoinsAsCachedRowSet().getString("constant_2") + "' ";
+						datatable2NonCrossDatatableExportColumnMappingsForUpdateSetSQL.append("`").append(exportModel.getMergedDatatableModel().getName()).append("`.`").append(exportModel.getMergeModel().getJoinsModel().getJoinsAsCachedRowSet().getString("column_name")).append("` = '").append(exportModel.getMergeModel().getJoinsModel().getJoinsAsCachedRowSet().getString("constant_2")).append("' ");
 					}
 				
 				}
@@ -853,28 +853,28 @@ public class ExportsCRUD implements java.io.Serializable  {
 			}
 			
 	
-			String datatable1KeyExportColumnMappingsForUpdateWhereSQL = "";
-			String datatable2KeyExportColumnMappingsForUpdateWhereSQL = "";		
+			StringBuffer datatable1KeyExportColumnMappingsForUpdateWhereSQL = new StringBuffer();
+			StringBuffer datatable2KeyExportColumnMappingsForUpdateWhereSQL = new StringBuffer();		
 			
 			exportModel.getMergeModel().getJoinsModel().getKeyJoinsAsCachedRowSet().first();
 			
-			datatable1KeyExportColumnMappingsForUpdateWhereSQL += "`" + exportModel.getMergedDatatableModel().getName() + "`.`" + exportModel.getMergeModel().getJoinsModel().getKeyJoinsAsCachedRowSet().getString("column_name") + "` = `" + exportModel.getMergeModel().getDatatable1Model().getName() + "`.`" + exportModel.getMergeModel().getJoinsModel().getKeyJoinsAsCachedRowSet().getString("datatable_1_column_name") + "` ";
-			datatable2KeyExportColumnMappingsForUpdateWhereSQL += "`" + exportModel.getMergedDatatableModel().getName() + "`.`" + exportModel.getMergeModel().getJoinsModel().getKeyJoinsAsCachedRowSet().getString("column_name") + "` = `" + exportModel.getMergeModel().getDatatable2Model().getName() + "`.`" + exportModel.getMergeModel().getJoinsModel().getKeyJoinsAsCachedRowSet().getString("datatable_2_column_name") + "` ";
+			datatable1KeyExportColumnMappingsForUpdateWhereSQL.append("`").append(exportModel.getMergedDatatableModel().getName()).append("`.`").append(exportModel.getMergeModel().getJoinsModel().getKeyJoinsAsCachedRowSet().getString("column_name")).append("` = `").append(exportModel.getMergeModel().getDatatable1Model().getName()).append("`.`" + exportModel.getMergeModel().getJoinsModel().getKeyJoinsAsCachedRowSet().getString("datatable_1_column_name")).append("` ");
+			datatable2KeyExportColumnMappingsForUpdateWhereSQL.append("`").append(exportModel.getMergedDatatableModel().getName()).append("`.`").append(exportModel.getMergeModel().getJoinsModel().getKeyJoinsAsCachedRowSet().getString("column_name")).append("` = `").append(exportModel.getMergeModel().getDatatable2Model().getName()).append("`.`" + exportModel.getMergeModel().getJoinsModel().getKeyJoinsAsCachedRowSet().getString("datatable_2_column_name")).append("` ");
 			
 			while (exportModel.getMergeModel().getJoinsModel().getKeyJoinsAsCachedRowSet().next()) {
 
 				
-				datatable1KeyExportColumnMappingsForUpdateWhereSQL += "AND `" + exportModel.getMergedDatatableModel().getName() + "`.`" + exportModel.getMergeModel().getJoinsModel().getKeyJoinsAsCachedRowSet().getString("column_name") + "` = `" + exportModel.getMergeModel().getDatatable1Model().getName() + "`.`" + exportModel.getMergeModel().getJoinsModel().getKeyJoinsAsCachedRowSet().getString("datatable_1_column_name") + "` ";
-				datatable2KeyExportColumnMappingsForUpdateWhereSQL += "AND `" + exportModel.getMergedDatatableModel().getName() + "`.`" + exportModel.getMergeModel().getJoinsModel().getKeyJoinsAsCachedRowSet().getString("column_name") + "` = `" + exportModel.getMergeModel().getDatatable2Model().getName() + "`.`" + exportModel.getMergeModel().getJoinsModel().getKeyJoinsAsCachedRowSet().getString("datatable_2_column_name") + "` ";
+				datatable1KeyExportColumnMappingsForUpdateWhereSQL.append("AND `").append(exportModel.getMergedDatatableModel().getName()).append("`.`").append(exportModel.getMergeModel().getJoinsModel().getKeyJoinsAsCachedRowSet().getString("column_name")).append("` = `").append(exportModel.getMergeModel().getDatatable1Model().getName()).append("`.`").append(exportModel.getMergeModel().getJoinsModel().getKeyJoinsAsCachedRowSet().getString("datatable_1_column_name")).append("` ");
+				datatable2KeyExportColumnMappingsForUpdateWhereSQL.append("AND `").append(exportModel.getMergedDatatableModel().getName()).append("`.`").append(exportModel.getMergeModel().getJoinsModel().getKeyJoinsAsCachedRowSet().getString("column_name")).append("` = `").append(exportModel.getMergeModel().getDatatable2Model().getName()).append("`.`").append(exportModel.getMergeModel().getJoinsModel().getKeyJoinsAsCachedRowSet().getString("datatable_2_column_name")).append("` ");
 								
 				
 			}		
 			
-			if (datatable1NonCrossDatatableExportColumnMappingsForUpdateSetSQL != "") {
+			if (datatable1NonCrossDatatableExportColumnMappingsForUpdateSetSQL.length() > 0) {
 				String updateMergedDatatableWithDatatable1Data = 
 					"UPDATE `" + exportModel.getMergedDatatableModel().getName() + "`, `" + exportModel.getMergeModel().getDatatable1Model().getName() + "` " + 
-					"SET " + datatable1NonCrossDatatableExportColumnMappingsForUpdateSetSQL +
-					"WHERE " + datatable1KeyExportColumnMappingsForUpdateWhereSQL + 
+					"SET " + datatable1NonCrossDatatableExportColumnMappingsForUpdateSetSQL.toString() +
+					"WHERE " + datatable1KeyExportColumnMappingsForUpdateWhereSQL.toString() + 
 					";";
 				
 				//this.logger.info("updateMergedDatatableWithDatatable1Data: " + updateMergedDatatableWithDatatable1Data);
@@ -884,12 +884,12 @@ public class ExportsCRUD implements java.io.Serializable  {
 				preparedStatement.close();
 			}
 			
-			if (datatable2NonCrossDatatableExportColumnMappingsForUpdateSetSQL != "") {
+			if (datatable2NonCrossDatatableExportColumnMappingsForUpdateSetSQL.length() > 0) {
 			
 				String updateMergedDatatableWithDatatable2Data = 
 					"UPDATE `" + exportModel.getMergedDatatableModel().getName() + "`, `" + exportModel.getMergeModel().getDatatable2Model().getName() + "` " + 
-					"SET " + datatable2NonCrossDatatableExportColumnMappingsForUpdateSetSQL +
-					"WHERE " + datatable2KeyExportColumnMappingsForUpdateWhereSQL + 
+					"SET " + datatable2NonCrossDatatableExportColumnMappingsForUpdateSetSQL.toString() +
+					"WHERE " + datatable2KeyExportColumnMappingsForUpdateWhereSQL.toString() + 
 					";";
 				
 				//this.logger.info("updateMergedDatatableWithDatatable2Data: " + updateMergedDatatableWithDatatable2Data);
@@ -926,26 +926,26 @@ public class ExportsCRUD implements java.io.Serializable  {
 				////this.logger.info("Got key joins data as cached row set.");
 				
 				
-				String keyColumnNamesForInsertSQL = "";
-				String datatable1KeyColumnAliasesForSelectSQL = "";
-				String datatable2KeyColumnAliasesForSelectSQL = "";
+				StringBuffer keyColumnNamesForInsertSQL = new StringBuffer();
+				StringBuffer datatable1KeyColumnAliasesForSelectSQL = new StringBuffer();
+				StringBuffer datatable2KeyColumnAliasesForSelectSQL = new StringBuffer();
 
 				
 				exportModel.getMergeModel().getJoinsModel().getKeyJoinsAsCachedRowSet().first();
 				
-				keyColumnNamesForInsertSQL += "`" + exportModel.getMergeModel().getJoinsModel().getKeyJoinsAsCachedRowSet().getString("column_name") + "`";
+				keyColumnNamesForInsertSQL.append("`").append(exportModel.getMergeModel().getJoinsModel().getKeyJoinsAsCachedRowSet().getString("column_name")).append("`");
 				
-				datatable1KeyColumnAliasesForSelectSQL += "`" + exportModel.getMergeModel().getJoinsModel().getKeyJoinsAsCachedRowSet().getString("datatable_1_column_name") + "` AS `" + exportModel.getMergeModel().getJoinsModel().getKeyJoinsAsCachedRowSet().getString("column_name") + "`";
+				datatable1KeyColumnAliasesForSelectSQL.append("`").append(exportModel.getMergeModel().getJoinsModel().getKeyJoinsAsCachedRowSet().getString("datatable_1_column_name")).append("` AS `").append(exportModel.getMergeModel().getJoinsModel().getKeyJoinsAsCachedRowSet().getString("column_name")).append("`");
 				
-				datatable2KeyColumnAliasesForSelectSQL += "`" + exportModel.getMergeModel().getJoinsModel().getKeyJoinsAsCachedRowSet().getString("datatable_2_column_name") + "` AS `" + exportModel.getMergeModel().getJoinsModel().getKeyJoinsAsCachedRowSet().getString("column_name") + "`";
+				datatable2KeyColumnAliasesForSelectSQL.append("`").append(exportModel.getMergeModel().getJoinsModel().getKeyJoinsAsCachedRowSet().getString("datatable_2_column_name")).append("` AS `").append(exportModel.getMergeModel().getJoinsModel().getKeyJoinsAsCachedRowSet().getString("column_name")).append("`");
 				
 				while (exportModel.getMergeModel().getJoinsModel().getKeyJoinsAsCachedRowSet().next()) {
 				
-					keyColumnNamesForInsertSQL += ", `" + exportModel.getMergeModel().getJoinsModel().getKeyJoinsAsCachedRowSet().getString("column_name") + "`";
+					keyColumnNamesForInsertSQL.append(", `").append(exportModel.getMergeModel().getJoinsModel().getKeyJoinsAsCachedRowSet().getString("column_name")).append("`");
 					
-					datatable1KeyColumnAliasesForSelectSQL += ", `" + exportModel.getMergeModel().getJoinsModel().getKeyJoinsAsCachedRowSet().getString("datatable_1_column_name") + "` AS `" + exportModel.getMergeModel().getJoinsModel().getKeyJoinsAsCachedRowSet().getString("column_name") + "`";
+					datatable1KeyColumnAliasesForSelectSQL.append( ", `").append(exportModel.getMergeModel().getJoinsModel().getKeyJoinsAsCachedRowSet().getString("datatable_1_column_name")).append("` AS `").append(exportModel.getMergeModel().getJoinsModel().getKeyJoinsAsCachedRowSet().getString("column_name")).append("`");
 					
-					datatable2KeyColumnAliasesForSelectSQL += ", `" + exportModel.getMergeModel().getJoinsModel().getKeyJoinsAsCachedRowSet().getString("datatable_2_column_name") + "` AS `" + exportModel.getMergeModel().getJoinsModel().getKeyJoinsAsCachedRowSet().getString("column_name") + "`";
+					datatable2KeyColumnAliasesForSelectSQL.append(", `").append(exportModel.getMergeModel().getJoinsModel().getKeyJoinsAsCachedRowSet().getString("datatable_2_column_name")).append("` AS `").append(exportModel.getMergeModel().getJoinsModel().getKeyJoinsAsCachedRowSet().getString("column_name")).append("`");
 					
 				}
 				
@@ -954,10 +954,10 @@ public class ExportsCRUD implements java.io.Serializable  {
 					
 					//Populate the export datatable with all the keys
 					PreparedStatement preparedStatement = connection.prepareStatement(
-							"INSERT INTO `" + exportModel.getMergedDatatableModel().getName() + "` (" + keyColumnNamesForInsertSQL + ") " +
-								"(SELECT " + datatable1KeyColumnAliasesForSelectSQL + " FROM " + exportModel.getMergeModel().getDatatable1Model().getName() + ") " +
-								"UNION (SELECT " + datatable2KeyColumnAliasesForSelectSQL + " FROM " + exportModel.getMergeModel().getDatatable2Model().getName() + ") " +
-								"ORDER BY " + keyColumnNamesForInsertSQL + 
+							"INSERT INTO `" + exportModel.getMergedDatatableModel().getName() + "` (" + keyColumnNamesForInsertSQL.toString() + ") " +
+								"(SELECT " + datatable1KeyColumnAliasesForSelectSQL.toString() + " FROM " + exportModel.getMergeModel().getDatatable1Model().getName() + ") " +
+								"UNION (SELECT " + datatable2KeyColumnAliasesForSelectSQL.toString() + " FROM " + exportModel.getMergeModel().getDatatable2Model().getName() + ") " +
+								"ORDER BY " + keyColumnNamesForInsertSQL.toString() + 
 							";");
 					preparedStatement.executeUpdate();
 					preparedStatement.close();  
@@ -1001,25 +1001,22 @@ public class ExportsCRUD implements java.io.Serializable  {
 		
 		//TODO:
 		
-		String columnDefinitionsForCreateSQL = "";
+		StringBuffer columnDefinitionsForCreateSQL = new StringBuffer();
 		
 		for (Integer i = 1; i <= joinColumnNamesByColumnNumberAsHashMap.size(); i++) {
 			
 			////this.logger.info("Column Number: " + i + ", Column Name: " + joinColumnNamesByColumnNumberAsHashMap.get(i));
 			
 			if (i != 1) {
-				columnDefinitionsForCreateSQL += ", ";
+				columnDefinitionsForCreateSQL.append(", ");
 			}
-			columnDefinitionsForCreateSQL += "`" + joinColumnNamesByColumnNumberAsHashMap.get(i) +  "` VARCHAR(36) NULL";
+			columnDefinitionsForCreateSQL.append("`").append(joinColumnNamesByColumnNumberAsHashMap.get(i)).append("` VARCHAR(36) NULL");
 		}
 		
 		////this.logger.info("columnDefinitionsForCreateSQL: " + columnDefinitionsForCreateSQL);
 		
 		exportModel.getMergedDatatableModel().setName("merged_datatable_" + exportModel.getMergeModel().getId());
-		
-		//FIXME: This is deprecated
-		//this.updateExportMergedDatatableNameUsingExportModel(exportModel, connection);
-		
+
 		
 		try {
 			//Drop the export_datatable
@@ -1033,7 +1030,7 @@ public class ExportsCRUD implements java.io.Serializable  {
 		
 		try {
 			//Create the export_datatable
-			PreparedStatement preparedStatement = connection.prepareStatement("CREATE TABLE `" + exportModel.getMergedDatatableModel().getName() + "` (" + columnDefinitionsForCreateSQL + ") ENGINE=InnoDB;");
+			PreparedStatement preparedStatement = connection.prepareStatement("CREATE TABLE `" + exportModel.getMergedDatatableModel().getName() + "` (" + columnDefinitionsForCreateSQL.toString() + ") ENGINE=InnoDB;");
 			preparedStatement.executeUpdate();
 			preparedStatement.close();  
 		} catch (SQLException e) {

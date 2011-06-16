@@ -240,8 +240,8 @@ function initSaveJoinFunction () {
 
 			},
 			error: function (jqXHR, textStatus, errorThrown){
-	            $('.error').html("errorThrown: " + errorThrown);
-	            $('.status').html("textStatus: " + textStatus);
+	            $('.error').html(errorThrown);
+	            $('.status').html(textStatus);
 	        },
 			beforeSend: function() { $('.saving-indicator').show(); },
 	        complete: function() { $('.saving-indicator').hide(); }
@@ -595,8 +595,8 @@ function retrieveNewJoinAsXHTML () {
 				syncNewJoinColumnNumberOptions();
 		},
 		error: function (jqXHR, textStatus, errorThrown){
-            $('.error').html("errorThrown: " + errorThrown);
-            $('.status').html("textStatus: " + textStatus);
+            $('.error').html(errorThrown);
+            $('.status').html(textStatus);
         }
 	});	
 	
@@ -669,12 +669,12 @@ function initExportFunction () {
 						} else {
 							alert("data: " + data);
 							alert("data.id: " + data.id);
-							$('.status').html("textStatus: " + textStatus);
+							$('.status').html(textStatus);
 						}
 					},
 					error: function (jqXHR, textStatus, errorThrown){
-			            $('.error').html("errorThrown: " + errorThrown);
-			            $('.status').html("textStatus: " + textStatus);
+			            $('.error').html(errorThrown);
+			            $('.status').html(textStatus);
 			        },
 					beforeSend: function() { $('.exporting-indicator').show(); },
 			        complete: function() { $('.exporting-indicator').hide(); }

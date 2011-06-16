@@ -6,45 +6,45 @@ public class UserFunctions {
 
 	public String getUserAsDecoratedXHTMLTableUsingUserModel(UserModel userModel) {
 		
-		String userAsDecoratedXHTMLTable = "";
+		StringBuffer userAsDecoratedXHTMLTable = new StringBuffer();
 		
-		userAsDecoratedXHTMLTable += "<table class=\"user-table\">";
+		userAsDecoratedXHTMLTable.append("<table class=\"user-table\">");
 		
-		userAsDecoratedXHTMLTable += "<thead>";
+		userAsDecoratedXHTMLTable.append("<thead>");
 		
-		userAsDecoratedXHTMLTable += "<tr>";
+		userAsDecoratedXHTMLTable.append("<tr>");
 		
-		userAsDecoratedXHTMLTable += "	<th>Username</th>";
-		userAsDecoratedXHTMLTable += "	<th>Password</th>";
-		userAsDecoratedXHTMLTable += "	<th><!-- Above Add button --></th>";
+		userAsDecoratedXHTMLTable.append("	<th>Username</th>");
+		userAsDecoratedXHTMLTable.append("	<th>Password</th>");
+		userAsDecoratedXHTMLTable.append("	<th><!-- Above Add button --></th>");
 			
-		userAsDecoratedXHTMLTable += "</tr>";
+		userAsDecoratedXHTMLTable.append("</tr>");
 		
-		userAsDecoratedXHTMLTable += "</thead>";
-		userAsDecoratedXHTMLTable += "<tbody>";
+		userAsDecoratedXHTMLTable.append("</thead>");
+		userAsDecoratedXHTMLTable.append("<tbody>");
 		
-		userAsDecoratedXHTMLTable += "<tr>";
+		userAsDecoratedXHTMLTable.append("<tr>");
 
-		userAsDecoratedXHTMLTable += "	<td><input type=\"text\" name=\"username\" value=\"\"/></td>";
+		userAsDecoratedXHTMLTable.append("	<td><input type=\"text\" name=\"username\" value=\"\"/></td>");
 		
-		userAsDecoratedXHTMLTable += "	<td><input type=\"password\" name=\"password\" value=\"\"/></td>";
+		userAsDecoratedXHTMLTable.append("	<td><input type=\"password\" name=\"password\" value=\"\"/></td>");
 		
 		
 		//FIXME: The src reference is hard-coded, convert to soft-code.
-		userAsDecoratedXHTMLTable += "<td>";
-		userAsDecoratedXHTMLTable += "<button class=\"createUserButton\">Add</button><img class=\"creating-indicator\" src=\"/dataMerger/pages/shared/gif/loading.gif\" style=\"display:none\" title=\"Creating...\"/>";
-		userAsDecoratedXHTMLTable += "</td>";
+		userAsDecoratedXHTMLTable.append("<td>");
+		userAsDecoratedXHTMLTable.append("<button class=\"createUserButton\">Add</button><img class=\"creating-indicator\" src=\"/dataMerger/pages/shared/gif/loading.gif\" style=\"display:none\" title=\"Creating...\"/>");
+		userAsDecoratedXHTMLTable.append("</td>");
 		
-		userAsDecoratedXHTMLTable += "</tr>";
+		userAsDecoratedXHTMLTable.append("</tr>");
 		
-		userAsDecoratedXHTMLTable += "</tbody>";
+		userAsDecoratedXHTMLTable.append("</tbody>");
 		
-		userAsDecoratedXHTMLTable += "</table>";
-		
-		
+		userAsDecoratedXHTMLTable.append("</table>");
 		
 		
-		return userAsDecoratedXHTMLTable;
+		
+		
+		return userAsDecoratedXHTMLTable.toString();
 	}
 
 }

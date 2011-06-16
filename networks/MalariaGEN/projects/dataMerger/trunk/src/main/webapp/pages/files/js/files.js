@@ -119,14 +119,12 @@ function initMergeFilesFunction () {
 						window.location.href = '/dataMerger/pages/merges/joins?merge_id=' + data.id;
 		
 					} else {
-						alert("data: " + data);
-						alert("data.id: " + data.id);
-						$('.status').html("textStatus: " + textStatus);
+						alert("An error occurred.");
 					}
 				},
 				error: function (jqXHR, textStatus, errorThrown){
-		            $('.error').html("errorThrown: " + errorThrown);
-		            $('.status').html("textStatus: " + textStatus);
+		            $('.error').html(errorThrown);
+		            $('.status').html(textStatus);
 		        },
 				beforeSend: function() { $('.merging-indicator').show(); },
 		        complete: function() { $('.merging-indicator').hide(); }
@@ -170,12 +168,12 @@ function initHideFilesFunction () {
 						}
 		
 					} else {
-						$('.status').html("textStatus: " + textStatus);
+						$('.status').html(textStatus);
 					}
 				},
 				error: function (jqXHR, textStatus, errorThrown){
-		            $('.error').html("errorThrown: " + errorThrown);
-		            $('.status').html("textStatus: " + textStatus);
+		            $('.error').html(errorThrown);
+		            $('.status').html(textStatus);
 		        },
 				beforeSend: function() { $('.hiding-indicator').show(); },
 		        complete: function() { $('.hiding-indicator').hide(); }
@@ -220,12 +218,12 @@ function initUnhideFilesFunction () {
 						}
 		
 					} else {
-						$('.status').html("textStatus: " + textStatus);
+						$('.status').html(textStatus);
 					}
 				},
 				error: function (jqXHR, textStatus, errorThrown){
-		            $('.error').html("errorThrown: " + errorThrown);
-		            $('.status').html("textStatus: " + textStatus);
+		            $('.error').html(errorThrown);
+		            $('.status').html(textStatus);
 		        },
 				beforeSend: function() { $('.hiding-indicator').show(); },
 		        complete: function() { $('.hiding-indicator').hide(); }
@@ -315,12 +313,12 @@ function initRemoveFilesFunction () {
 							}
 			
 						} else {
-							$('.status').html("textStatus: " + textStatus);
+							$('.status').html(textStatus);
 						}
 					},
 					error: function (jqXHR, textStatus, errorThrown){
-			            $('.error').html("errorThrown: " + errorThrown);
-			            $('.status').html("textStatus: " + textStatus);
+			            $('.error').html(errorThrown);
+			            $('.status').html(textStatus);
 			        },
 					beforeSend: function() { $('.removing-indicator').show(); },
 			        complete: function() { $('.removing-indicator').hide(); }

@@ -17,7 +17,7 @@ public class SettingsCRUD {
 	
 	public SettingsModel retrieveSettingsAsSettingsModel () {
 		
-		SettingsModel settingsModel = new SettingsModel();
+		SettingsModel settingsModel = null;
 		
 		
 
@@ -26,7 +26,7 @@ public class SettingsCRUD {
 		if (connection != null) {
 			
 			
-			this.retrieveSettingsAsSettingsModel(connection);
+			settingsModel = this.retrieveSettingsAsSettingsModel(connection);
 			
         	try {
 				connection.close();

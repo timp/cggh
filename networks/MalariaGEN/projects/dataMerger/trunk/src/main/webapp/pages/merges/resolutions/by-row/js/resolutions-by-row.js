@@ -40,8 +40,8 @@ function initSaveResolutionsByRowFunction () {
 
 			},
 			error: function (jqXHR, textStatus, errorThrown){
-	            $('.error').html("errorThrown: " + errorThrown);
-	            $('.status').html("textStatus: " + textStatus);
+	            $('.error').html(errorThrown);
+	            $('.status').html(textStatus);
 	        },
 			beforeSend: function() { $('.saving-indicator').show(); },
 	        complete: function() { $('.saving-indicator').hide(); }

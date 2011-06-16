@@ -9,7 +9,7 @@
 	CodebaseModel codebaseModel = new CodebaseModel();
 
 	DatabasesCRUD databasesCRUD = new DatabasesCRUD();
-	DatabaseModel databaseModel = databasesCRUD.retrieveDatabaseAsDatabaseModelUsingServletContext(getServletContext());
+	DatabaseModel databaseModel = databasesCRUD.retrieveDatabaseAsDatabaseModelUsingServletContext(session.getServletContext());
 	
 	SettingsCRUD settingsCRUD = new SettingsCRUD();
 	settingsCRUD.setDatabaseModel(databaseModel);

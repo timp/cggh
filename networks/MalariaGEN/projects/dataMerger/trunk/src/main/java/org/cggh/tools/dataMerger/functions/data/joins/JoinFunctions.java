@@ -52,107 +52,107 @@ public class JoinFunctions implements java.io.Serializable {
 	
 	public void setJoinAsDecoratedXHTMLTableByJoinModel () {
 		
-		String joinAsDecoratedXHTMLTable = "";
+		StringBuffer joinAsDecoratedXHTMLTable = new StringBuffer();
 		
-		joinAsDecoratedXHTMLTable += "<table class=\"join-table\">";
+		joinAsDecoratedXHTMLTable.append("<table class=\"join-table\">");
 		
-		joinAsDecoratedXHTMLTable += "<thead>";
+		joinAsDecoratedXHTMLTable.append("<thead>");
 		
-		joinAsDecoratedXHTMLTable += "<tr>";
-		joinAsDecoratedXHTMLTable += "	<th><!-- Above key label --></th>";
-		joinAsDecoratedXHTMLTable += "	<th><!-- Above key checkbox --></th>";
-		joinAsDecoratedXHTMLTable += "	<th class=\"file-link-container\"><a href=\"/dataMerger/files/uploads/" + this.getMergeModel().getFile1Model().getId() + "\">" + this.getMergeModel().getFile1Model().getFilename() + "</a></th>";
-		joinAsDecoratedXHTMLTable += "	<th class=\"file-link-container\"><a href=\"/dataMerger/files/uploads/" + this.getMergeModel().getFile2Model().getId() + "\">" + this.getMergeModel().getFile2Model().getFilename() + "</a></th>";
-		joinAsDecoratedXHTMLTable += "	<th class=\"column_name-heading\">Column name</th>";
-		joinAsDecoratedXHTMLTable += "	<th><!-- Above insert column selector --></th>";
-		joinAsDecoratedXHTMLTable += "	<th><!-- Above add column selector --></th>";
+		joinAsDecoratedXHTMLTable.append("<tr>");
+		joinAsDecoratedXHTMLTable.append("	<th><!-- Above key label --></th>");
+		joinAsDecoratedXHTMLTable.append("	<th><!-- Above key checkbox --></th>");
+		joinAsDecoratedXHTMLTable.append("	<th class=\"file-link-container\"><a href=\"/dataMerger/files/uploads/").append(this.getMergeModel().getFile1Model().getId()).append("\">").append(this.getMergeModel().getFile1Model().getFilename()).append("</a></th>");
+		joinAsDecoratedXHTMLTable.append("	<th class=\"file-link-container\"><a href=\"/dataMerger/files/uploads/").append(this.getMergeModel().getFile2Model().getId()).append("\">").append(this.getMergeModel().getFile2Model().getFilename()).append("</a></th>");
+		joinAsDecoratedXHTMLTable.append("	<th class=\"column_name-heading\">Column name</th>");
+		joinAsDecoratedXHTMLTable.append("	<th><!-- Above insert column selector --></th>");
+		joinAsDecoratedXHTMLTable.append("	<th><!-- Above add column selector --></th>");
 			
-		joinAsDecoratedXHTMLTable += "</tr>";
+		joinAsDecoratedXHTMLTable.append("</tr>");
 		
-		joinAsDecoratedXHTMLTable += "</thead>";
-		joinAsDecoratedXHTMLTable += "<tbody>";
+		joinAsDecoratedXHTMLTable.append("</thead>");
+		joinAsDecoratedXHTMLTable.append("<tbody>");
 		
-		joinAsDecoratedXHTMLTable += "<tr>";
-		joinAsDecoratedXHTMLTable += "	<th class=\"key-heading\">Key?</th>";
-		joinAsDecoratedXHTMLTable += "	<td><input type=\"checkbox\" name=\"key\" value=\"false\" disabled=\"disabled\"/></td>";
+		joinAsDecoratedXHTMLTable.append("<tr>");
+		joinAsDecoratedXHTMLTable.append("	<th class=\"key-heading\">Key?</th>");
+		joinAsDecoratedXHTMLTable.append("	<td><input type=\"checkbox\" name=\"key\" value=\"false\" disabled=\"disabled\"/></td>");
 
-		joinAsDecoratedXHTMLTable += "	<td class=\"datatable_1_column_name-container\">";
+		joinAsDecoratedXHTMLTable.append("	<td class=\"datatable_1_column_name-container\">");
 		
-		joinAsDecoratedXHTMLTable += "	<select name=\"datatable_1_column_name\">";
+		joinAsDecoratedXHTMLTable.append("	<select name=\"datatable_1_column_name\">");
 
-		joinAsDecoratedXHTMLTable += "<option selected=\"selected\" value=\"NULL\">NULL</option>";
-		joinAsDecoratedXHTMLTable += "<option value=\"CONSTANT\">CONSTANT</option>";
+		joinAsDecoratedXHTMLTable.append("<option selected=\"selected\" value=\"NULL\">NULL</option>");
+		joinAsDecoratedXHTMLTable.append("<option value=\"CONSTANT\">CONSTANT</option>");
 
 		//TODO: Increase efficiency here.
 		for (int i = 0; i < this.getMergeModel().getDatatable1Model().getColumnNamesAsStringList().size(); i++) {
-			joinAsDecoratedXHTMLTable += "<option value=\"" + this.getMergeModel().getDatatable1Model().getColumnNamesAsStringList().get(i) + "\">" + this.getMergeModel().getDatatable1Model().getColumnNamesAsStringList().get(i) + "</option>";
+			joinAsDecoratedXHTMLTable.append("<option value=\"").append(this.getMergeModel().getDatatable1Model().getColumnNamesAsStringList().get(i)).append("\">").append(this.getMergeModel().getDatatable1Model().getColumnNamesAsStringList().get(i)).append("</option>");
 		}
-		joinAsDecoratedXHTMLTable += "	</select>";
+		joinAsDecoratedXHTMLTable.append("	</select>");
 		
 		//TODO
-		//joinAsDecoratedXHTMLTable += "	<textarea readonly=\"readonly\">[TODO: data sample]</textarea>";
+		//joinAsDecoratedXHTMLTable.append("	<textarea readonly=\"readonly\">[TODO: data sample]</textarea>");
 		
-		joinAsDecoratedXHTMLTable += "	</td>";
+		joinAsDecoratedXHTMLTable.append("	</td>");
 		
-		joinAsDecoratedXHTMLTable += "	<td class=\"datatable_2_column_name-container\">";
+		joinAsDecoratedXHTMLTable.append("	<td class=\"datatable_2_column_name-container\">");
 		
-		joinAsDecoratedXHTMLTable += "	<select name=\"datatable_2_column_name\">";
+		joinAsDecoratedXHTMLTable.append("	<select name=\"datatable_2_column_name\">");
 		
-		joinAsDecoratedXHTMLTable += "<option selected=\"selected\" value=\"NULL\">NULL</option>";
-		joinAsDecoratedXHTMLTable += "<option value=\"CONSTANT\">CONSTANT</option>";
+		joinAsDecoratedXHTMLTable.append("<option selected=\"selected\" value=\"NULL\">NULL</option>");
+		joinAsDecoratedXHTMLTable.append("<option value=\"CONSTANT\">CONSTANT</option>");
 		
 		//TODO: Increase efficiency here.
 		for (int i = 0; i < this.getMergeModel().getDatatable2Model().getColumnNamesAsStringList().size(); i++) {
-			joinAsDecoratedXHTMLTable += "<option value=\"" + this.getMergeModel().getDatatable2Model().getColumnNamesAsStringList().get(i) + "\">" + this.getMergeModel().getDatatable2Model().getColumnNamesAsStringList().get(i) + "</option>";
+			joinAsDecoratedXHTMLTable.append("<option value=\"").append(this.getMergeModel().getDatatable2Model().getColumnNamesAsStringList().get(i)).append("\">").append(this.getMergeModel().getDatatable2Model().getColumnNamesAsStringList().get(i)).append("</option>");
 		}
-		joinAsDecoratedXHTMLTable += "	</select>";
+		joinAsDecoratedXHTMLTable.append("	</select>");
 		
 		//TODO
-		//joinAsDecoratedXHTMLTable += "	<textarea readonly=\"readonly\">[TODO: data sample]</textarea>";
+		//joinAsDecoratedXHTMLTable.append("	<textarea readonly=\"readonly\">[TODO: data sample]</textarea>");
 		
-		joinAsDecoratedXHTMLTable += "	</td>";
+		joinAsDecoratedXHTMLTable.append("	</td>");
 		
-		joinAsDecoratedXHTMLTable += "	<td class=\"column_name-container\"><input name=\"column_name\" value=\"\"/></td>";
+		joinAsDecoratedXHTMLTable.append("	<td class=\"column_name-container\"><input name=\"column_name\" value=\"\"/></td>");
 		
 		
-		joinAsDecoratedXHTMLTable += "	<td class=\"column_number-container\"><select name=\"column_number\">";
+		joinAsDecoratedXHTMLTable.append("	<td class=\"column_number-container\"><select name=\"column_number\">");
 		//TODO: Increase efficiency here.
 		
 		
 		for (int i = 1; i <= this.getMergeModel().getJoinsAsCachedRowSet().size() + 1; i++) {
 			if (i == 1) {
-				joinAsDecoratedXHTMLTable += "<option value=\"" + i + "\">place first</option>";
+				joinAsDecoratedXHTMLTable.append("<option value=\"").append(i).append("\">place first</option>");
 			}
 			else if (i == this.getMergeModel().getJoinsAsCachedRowSet().size() + 1) {
-				joinAsDecoratedXHTMLTable += "<option selected=\"selected\" value=\"" + i + "\">place last</option>";
+				joinAsDecoratedXHTMLTable.append("<option selected=\"selected\" value=\"").append(i).append("\">place last</option>");
 			} else {
-				joinAsDecoratedXHTMLTable += "<option value=\"" + i + "\">" + (i-1) + " --&gt; &lt;-- " + i + "</option>";
+				joinAsDecoratedXHTMLTable.append("<option value=\"").append(i).append("\">").append((i-1)).append(" --&gt; &lt;-- ").append(i).append("</option>");
 			}
 			
 		}
-		joinAsDecoratedXHTMLTable += "</select></td>";
+		joinAsDecoratedXHTMLTable.append("</select></td>");
 		
 		
-		joinAsDecoratedXHTMLTable += "	<td class=\"add-button-container\"><button class=\"add-join\">Add</button></td>";
+		joinAsDecoratedXHTMLTable.append("	<td class=\"add-button-container\"><button class=\"add-join\">Add</button></td>");
 		
-		joinAsDecoratedXHTMLTable += "</tr>";
+		joinAsDecoratedXHTMLTable.append("</tr>");
 
-		joinAsDecoratedXHTMLTable += "<tr>";
-		joinAsDecoratedXHTMLTable += "	<td><!-- Below key label --></td>";
-		joinAsDecoratedXHTMLTable += "	<td><!-- Below key checkbox --></td>";
-		joinAsDecoratedXHTMLTable += "	<td class=\"constant_1-container\"><label for=\"constant_1\" style=\"display:none;\">Constant:</label><input name=\"constant_1\" value=\"\"/ style=\"display:none;\"></td>";
-		joinAsDecoratedXHTMLTable += "	<td class=\"constant_2-container\"><label for=\"constant_2\" style=\"display:none;\">Constant:</label><input name=\"constant_2\" value=\"\"/ style=\"display:none;\"></td>";
-		joinAsDecoratedXHTMLTable += "	<td class=\"below-column_name\"><!-- Below column name --></td>";
-		joinAsDecoratedXHTMLTable += "	<td><!-- Below insertion selector --></td>";
-		joinAsDecoratedXHTMLTable += "	<td><!-- Below add button --></td>";
-		joinAsDecoratedXHTMLTable += "</tr>";
+		joinAsDecoratedXHTMLTable.append("<tr>");
+		joinAsDecoratedXHTMLTable.append("	<td><!-- Below key label --></td>");
+		joinAsDecoratedXHTMLTable.append("	<td><!-- Below key checkbox --></td>");
+		joinAsDecoratedXHTMLTable.append("	<td class=\"constant_1-container\"><label for=\"constant_1\" style=\"display:none;\">Constant:</label><input name=\"constant_1\" value=\"\"/ style=\"display:none;\"></td>");
+		joinAsDecoratedXHTMLTable.append("	<td class=\"constant_2-container\"><label for=\"constant_2\" style=\"display:none;\">Constant:</label><input name=\"constant_2\" value=\"\"/ style=\"display:none;\"></td>");
+		joinAsDecoratedXHTMLTable.append("	<td class=\"below-column_name\"><!-- Below column name --></td>");
+		joinAsDecoratedXHTMLTable.append("	<td><!-- Below insertion selector --></td>");
+		joinAsDecoratedXHTMLTable.append("	<td><!-- Below add button --></td>");
+		joinAsDecoratedXHTMLTable.append("</tr>");
 		
-		joinAsDecoratedXHTMLTable += "</tbody>";
+		joinAsDecoratedXHTMLTable.append("</tbody>");
 		
-		joinAsDecoratedXHTMLTable += "</table>";
+		joinAsDecoratedXHTMLTable.append("</table>");
 		
 		
-		this.setJoinAsDecoratedXHTMLTable(joinAsDecoratedXHTMLTable);
+		this.setJoinAsDecoratedXHTMLTable(joinAsDecoratedXHTMLTable.toString());
 	}
 
 

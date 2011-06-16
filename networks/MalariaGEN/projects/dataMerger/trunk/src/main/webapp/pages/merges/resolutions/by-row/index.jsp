@@ -132,7 +132,7 @@ ResolutionsFunctions resolutionsFunctions = new ResolutionsFunctions();
 			<% 
 			
 				resolutionsFunctions.setHttpServletRequest(request);
-				resolutionsFunctions.setURLBasePath(headerBasePathURL);
+				resolutionsFunctions.setURLBasePath(resolutionsByRowBasePathURL);
 				resolutionsFunctions.setMergeModel(mergeModel);
 				out.print(resolutionsFunctions.getResolutionsMenuAsDecoratedXHTMLList()); 
 			%>

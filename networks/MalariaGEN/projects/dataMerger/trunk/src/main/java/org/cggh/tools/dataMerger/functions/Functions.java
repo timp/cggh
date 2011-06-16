@@ -2,8 +2,6 @@ package org.cggh.tools.dataMerger.functions;
 
 import javax.sql.rowset.CachedRowSet;
 
-import org.cggh.tools.dataMerger.functions.data.uploads.UploadsFunctions;
-
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 
@@ -18,23 +16,12 @@ public class Functions implements java.io.Serializable {
 	private CachedRowSet cachedRowSet = null;
 	private String xhtmlTable = null;
 	private String decoratedXHTMLTable = null;
-	private UploadsFunctions uploadsFunctions;
 	
 	public Functions() {
 		
-		this.setUploadsFunctions(new UploadsFunctions());
 	}
 
 	
-	public void setUploadsFunctions(final UploadsFunctions uploadsFunctions) {
-		this.uploadsFunctions = uploadsFunctions;
-	}
-	public UploadsFunctions getUploadsFunctions() {
-
-		return this.uploadsFunctions;
-	}	
-
-
 	public void setCachedRowSet (final CachedRowSet cachedRowSet) {
 		
 		this.cachedRowSet = cachedRowSet;
@@ -67,49 +54,49 @@ public class Functions implements java.io.Serializable {
 		
 		CachedRowSet cachedRowSet = this.getCachedRowSet();
 		
-		String xhtmlTable = null;
+		StringBuffer xhtmlTable = null;
 
 			try {
 				if (cachedRowSet.next()) {
 
 					
-					xhtmlTable = "";
+					xhtmlTable = new StringBuffer();
 					
-					xhtmlTable = xhtmlTable.concat("<table>");
+					xhtmlTable.append("<table>");
 					
 					ResultSetMetaData resultSetMetaData = cachedRowSet.getMetaData(); 
 					 int columnCount = resultSetMetaData.getColumnCount();
 					 
-					 xhtmlTable = xhtmlTable.concat("<thead>");
-					 xhtmlTable = xhtmlTable.concat("<tr>");
+					 xhtmlTable.append("<thead>");
+					 xhtmlTable.append("<tr>");
 					 for (int i = 1; i <= columnCount; i++) {
-						 xhtmlTable = xhtmlTable.concat("<th>" + resultSetMetaData.getColumnLabel(i) + "</th>");
+						 xhtmlTable.append("<th>" + resultSetMetaData.getColumnLabel(i) + "</th>");
 					   }
-					 xhtmlTable = xhtmlTable.concat("</tr>");
-					 xhtmlTable = xhtmlTable.concat("</thead>");
+					 xhtmlTable.append("</tr>");
+					 xhtmlTable.append("</thead>");
 					
 					//because the check using next() skips the first row.
 					cachedRowSet.beforeFirst();
 
 					while (cachedRowSet.next()) {
 						 
-						xhtmlTable = xhtmlTable.concat("<tr>");
+						xhtmlTable.append("<tr>");
 
 						 for (int i = 1; i <= columnCount; i++) {
-							 xhtmlTable = xhtmlTable.concat("<td>" + cachedRowSet.getString(i) + "</td>");
+							 xhtmlTable.append("<td>" + cachedRowSet.getString(i) + "</td>");
 						 }
 						 
 						 
-						 xhtmlTable = xhtmlTable.concat("</tr>");
+						 xhtmlTable.append("</tr>");
 					  }
 
-					xhtmlTable = xhtmlTable.concat("</tbody>");
+					xhtmlTable.append("</tbody>");
 					 
-					xhtmlTable = xhtmlTable.concat("</table>");
+					xhtmlTable.append("</table>");
 	
 				} else {
 					
-					xhtmlTable = "There are no records.";
+					xhtmlTable = new StringBuffer("There are no records.");
 					
 				}
 			} catch (SQLException e) {
@@ -118,7 +105,7 @@ public class Functions implements java.io.Serializable {
 			}
 
 		
-		this.setXHTMLTable(xhtmlTable);
+		this.setXHTMLTable(xhtmlTable.toString());
 	
 	}
 

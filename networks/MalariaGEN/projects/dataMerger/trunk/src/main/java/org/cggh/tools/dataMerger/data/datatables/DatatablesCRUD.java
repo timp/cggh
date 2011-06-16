@@ -89,7 +89,7 @@ public class DatatablesCRUD implements java.io.Serializable {
 	        	    	  fileModel.setColumnsCount(columnNames.length);
 	        	    	  filesCRUD.updateFileColumnsCountUsingFileModel(fileModel, connection);
 		        	      
-		        	      String columnDefinitionsForCreateTableSQL = "";
+		        	      StringBuffer columnDefinitionsForCreateTableSQL = new StringBuffer();
 		        	      
 		        	      for (int i = 0; i < columnNames.length; i++) {
 		        	    	  
@@ -132,13 +132,13 @@ public class DatatablesCRUD implements java.io.Serializable {
 		        	    	  
 		        	          //Note: It don't like blank column names.
 		        	          //Note: Don't compare strings with == or !=, use the equals() method.
-		        	          if (columnNames[i] != null && !columnNames[i].equals("")) {
+		        	          if (columnNames[i] != null && columnNames[i].length() > 0) {
 		        	        	  
 		        	        	  columnNamesAsStringList.add(columnNames[i]);
-			        	    	  columnDefinitionsForCreateTableSQL = columnDefinitionsForCreateTableSQL.concat("`" + columnNames[i] + "` VARCHAR(36) NULL");
+			        	    	  columnDefinitionsForCreateTableSQL.append("`" + columnNames[i] + "` VARCHAR(36) NULL");
 			        	    	  
 			        	    	  if (i != columnNames.length - 1) {
-			        	    		  columnDefinitionsForCreateTableSQL = columnDefinitionsForCreateTableSQL.concat(", ");
+			        	    		  columnDefinitionsForCreateTableSQL.append(", ");
 			        	    	  }
 		        	          } else {
 		        	        	  
@@ -154,7 +154,7 @@ public class DatatablesCRUD implements java.io.Serializable {
 	
 		        	      datatableModel.setColumnNamesAsStringList(columnNamesAsStringList);
 		        	      
-		        	      if (columnDefinitionsForCreateTableSQL != "") {
+		        	      if (columnDefinitionsForCreateTableSQL.length() > 0) {
 			        	      
 			        	      // Create the table
 			    		      try {
@@ -207,7 +207,7 @@ public class DatatablesCRUD implements java.io.Serializable {
 				    		        		
 				    		        		  String columnName = columnNamesAsStringList.get(i);
 				    		        		  
-					    		        	  String conditionForUpdateSQL = "";
+					    		        	  StringBuffer conditionForUpdateSQL = new StringBuffer();
 					    		        	  
 						    		          for (int j = 0; j < stringsToNullifyAsStringArray.length; j++) {
 						    		        	  
@@ -215,13 +215,13 @@ public class DatatablesCRUD implements java.io.Serializable {
 						    		        	  
 						    		        	  if (j > 0) {
 						    		        		  
-						    		        		  conditionForUpdateSQL += " OR ";
+						    		        		  conditionForUpdateSQL.append(" OR ");
 						    		        	  }
 						    		        	  
-						    		        	  conditionForUpdateSQL += "`" + columnName + "` = '" + stringToNullify + "'";
+						    		        	  conditionForUpdateSQL.append("`").append(columnName).append("` = '").append(stringToNullify).append("'");
 						    		          }
 						    		          
-						    		          String statementSQL3 = "UPDATE `" + datatableModel.getName() + "` SET `" + columnName + "` = NULL WHERE " + conditionForUpdateSQL + ";";
+						    		          String statementSQL3 = "UPDATE `" + datatableModel.getName() + "` SET `" + columnName + "` = NULL WHERE " + conditionForUpdateSQL.toString() + ";";
 						    		          PreparedStatement preparedStatement3 = connection.prepareStatement(statementSQL3);
 						    		          
 						    		          //
@@ -312,10 +312,19 @@ public class DatatablesCRUD implements java.io.Serializable {
 			          
 			          //TODO: Make this more memory efficient.
 			          
-			          CachedRowSet dataAsCachedRowSet = (CachedRowSet) cachedRowSetImplClass.newInstance();
-			          dataAsCachedRowSet.populate(preparedStatement2.getResultSet());
+			          // This uses up too much memoring for large datatables (75K rows x 400 cols)
+			          //CachedRowSet dataAsCachedRowSet = (CachedRowSet) cachedRowSetImplClass.newInstance();
+			          //dataAsCachedRowSet.populate(preparedStatement2.getResultSet());
+			          //datatableModel.setDataAsCachedRowSet(dataAsCachedRowSet);
 			          
-			          datatableModel.setDataAsCachedRowSet(dataAsCachedRowSet);
+			          
+			          //////////////////
+			          
+			          datatableModel.setDataAsCachedRowSet((CachedRowSet) cachedRowSetImplClass.newInstance());
+			          datatableModel.getDataAsCachedRowSet().populate(preparedStatement2.getResultSet());
+			          
+			          /////////////////
+			          
 			          
 			          List<String> columnNamesAsStringList = new ArrayList<String>();
 			          
@@ -457,6 +466,7 @@ public class DatatablesCRUD implements java.io.Serializable {
 	          PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM `" + datatableModel.getName() + "`;");
 	          preparedStatement.executeQuery();
 	         
+	          //FIXME: Memory problem here.
 	          dataAsCachedRowSet.populate(preparedStatement.getResultSet());
 	          
 	          preparedStatement.close();

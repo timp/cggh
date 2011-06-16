@@ -11,21 +11,21 @@ public class UsersFunctions {
 	public String getUsersAsDecoratedXHTMLTableUsingUsersAsCachedRowSet(
 			CachedRowSet usersAsCachedRowSet) {
 		
-		String usersAsDecoratedXHTMLTable = null;
+		StringBuffer usersAsDecoratedXHTMLTable = null;
 
 		try {
 			if (usersAsCachedRowSet.next()) {
 
-				usersAsDecoratedXHTMLTable = "";
+				usersAsDecoratedXHTMLTable = new StringBuffer();
 				
-				usersAsDecoratedXHTMLTable += "<table class=\"data-table\">";
+				usersAsDecoratedXHTMLTable.append("<table class=\"data-table\">");
 
-				 usersAsDecoratedXHTMLTable += "<thead>";
-				 usersAsDecoratedXHTMLTable += "<tr>";				 
-				 usersAsDecoratedXHTMLTable += "<th>Username</th>";
-				 usersAsDecoratedXHTMLTable += "</thead>";
+				 usersAsDecoratedXHTMLTable.append("<thead>");
+				 usersAsDecoratedXHTMLTable.append("<tr>");				 
+				 usersAsDecoratedXHTMLTable.append("<th>Username</th>");
+				 usersAsDecoratedXHTMLTable.append("</thead>");
 				 
-				 usersAsDecoratedXHTMLTable += "<tbody>";
+				 usersAsDecoratedXHTMLTable.append("<tbody>");
 				 
 				//because next() skips the first row.
 				 usersAsCachedRowSet.beforeFirst();
@@ -48,25 +48,25 @@ public class UsersFunctions {
 						rowLastClassName = "last ";
 					}
 					
-					usersAsDecoratedXHTMLTable += "<tr class=\"" + rowStripeClassName + rowFirstClassName + rowLastClassName + "\">";
+					usersAsDecoratedXHTMLTable.append("<tr class=\"").append(rowStripeClassName).append(rowFirstClassName).append(rowLastClassName).append("\">");
 
 					 
-					 usersAsDecoratedXHTMLTable += "<td>" + usersAsCachedRowSet.getString(1) + "</td>";
+					 usersAsDecoratedXHTMLTable.append("<td>").append(usersAsCachedRowSet.getString(1)).append("</td>");
 					  
-					 usersAsDecoratedXHTMLTable += "</tr>";
+					 usersAsDecoratedXHTMLTable.append("</tr>");
 					 
 					 
 					 rowFirstClassName = "";
 				  }
 
-				usersAsDecoratedXHTMLTable += "</tbody>";
+				usersAsDecoratedXHTMLTable.append("</tbody>");
 				 
-				usersAsDecoratedXHTMLTable += "</table>";
+				usersAsDecoratedXHTMLTable.append("</table>");
 
 
 			} else {
 				
-				usersAsDecoratedXHTMLTable = "<p>There are no users.</p>";
+				usersAsDecoratedXHTMLTable = new StringBuffer("<p>There are no users.</p>");
 				
 			}
 		} catch (SQLException e) {
@@ -74,7 +74,7 @@ public class UsersFunctions {
 		}
 
 		
-		return usersAsDecoratedXHTMLTable;
+		return usersAsDecoratedXHTMLTable.toString();
 	}
 
 	

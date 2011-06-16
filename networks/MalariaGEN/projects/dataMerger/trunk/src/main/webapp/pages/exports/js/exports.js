@@ -40,12 +40,11 @@ function initDeleteExportFunction () {
 								}
 				
 							} else {
-								$('.status').html("textStatus: " + textStatus);
+								alert("An error occurred.");
 							}
 						},
 						error: function (jqXHR, textStatus, errorThrown){
-				            $('.error').html("errorThrown: " + errorThrown);
-				            $('.status').html("textStatus: " + textStatus);
+				            $('.error').html(errorThrown);
 				        },
 						beforeSend: function() { deletingIndicator.show(); },
 				        complete: function() { deletingIndicator.hide(); }

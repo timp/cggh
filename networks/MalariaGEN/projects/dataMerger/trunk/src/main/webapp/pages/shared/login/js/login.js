@@ -39,8 +39,8 @@ function initLoginFunction () {
 					}
 				},
 				error: function (jqXHR, textStatus, errorThrown){
-		            $('.error').html("errorThrown: " + errorThrown);
-		            $('.status').html("textStatus: " + textStatus);
+		            $('.error').html(errorThrown);
+		            $('.status').html(textStatus);
 		        },
 				beforeSend: function() { $('.authenticating-indicator').show(); },
 		        complete: function() { $('.authenticating-indicator').hide(); }

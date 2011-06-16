@@ -34,30 +34,30 @@ public class ResolutionsFunctions implements java.io.Serializable {
 	
 	public String getResolutionsMenuAsDecoratedXHTMLList () {
 		
-		String resolutionsMenuAsDecoratedXHTMLList = "";
+		StringBuffer resolutionsMenuAsDecoratedXHTMLList = new StringBuffer();
 		
-		resolutionsMenuAsDecoratedXHTMLList += "<ul class=\"resolutions-menu\">";
+		resolutionsMenuAsDecoratedXHTMLList.append("<ul class=\"resolutions-menu\">");
 
 		if (this.getHttpServletRequest().getServletPath().startsWith("/pages/merges/resolutions/by-column")) {
-			resolutionsMenuAsDecoratedXHTMLList += "<li class=\"item\"><a class=\"link selected\" href=\"" + this.getURLBasePath() + "pages/merges/resolutions/by-column?merge_id=" + this.getMergeModel().getId() + "\">By Column</a></li>";
+			resolutionsMenuAsDecoratedXHTMLList.append("<li class=\"item\"><a class=\"link selected\" href=\"").append(this.getURLBasePath()).append("pages/merges/resolutions/by-column?merge_id=").append(this.getMergeModel().getId()).append("\">By Column</a></li>");
 		} else {
-			resolutionsMenuAsDecoratedXHTMLList += "<li class=\"item\"><a class=\"link\" href=\"" + this.getURLBasePath() + "pages/merges/resolutions/by-column?merge_id=" + this.getMergeModel().getId() + "\">By Column</a></li>";
+			resolutionsMenuAsDecoratedXHTMLList.append("<li class=\"item\"><a class=\"link\" href=\"").append(this.getURLBasePath()).append("pages/merges/resolutions/by-column?merge_id=").append(this.getMergeModel().getId()).append("\">By Column</a></li>");
 		}
 		
 		if (this.getHttpServletRequest().getServletPath().startsWith("/pages/merges/resolutions/by-row")) {
-			resolutionsMenuAsDecoratedXHTMLList += "<li class=\"item\"><a class=\"link selected\" href=\"" + this.getURLBasePath() + "pages/merges/resolutions/by-row?merge_id=" + this.getMergeModel().getId() + "\">By Row</a></li>";
+			resolutionsMenuAsDecoratedXHTMLList.append("<li class=\"item\"><a class=\"link selected\" href=\"").append(this.getURLBasePath()).append("pages/merges/resolutions/by-row?merge_id=").append(this.getMergeModel().getId()).append("\">By Row</a></li>");
 		} else {
-			resolutionsMenuAsDecoratedXHTMLList += "<li class=\"item\"><a class=\"link\" href=\"" + this.getURLBasePath() + "pages/merges/resolutions/by-row?merge_id=" + this.getMergeModel().getId() + "\">By Row</a></li>";
+			resolutionsMenuAsDecoratedXHTMLList.append("<li class=\"item\"><a class=\"link\" href=\"").append(this.getURLBasePath()).append("pages/merges/resolutions/by-row?merge_id=").append(this.getMergeModel().getId()).append("\">By Row</a></li>");
 		}
 		if (this.getHttpServletRequest().getServletPath().startsWith("/pages/merges/resolutions/by-cell")) {
-			resolutionsMenuAsDecoratedXHTMLList += "<li class=\"item\"><a class=\"link selected\" href=\"" + this.getURLBasePath() + "pages/merges/resolutions/by-cell?merge_id=" + this.getMergeModel().getId() + "\">By Cell</a></li>";
+			resolutionsMenuAsDecoratedXHTMLList.append("<li class=\"item\"><a class=\"link selected\" href=\"").append(this.getURLBasePath()).append("pages/merges/resolutions/by-cell?merge_id=").append(this.getMergeModel().getId()).append("\">By Cell</a></li>");
 		} else {
-			resolutionsMenuAsDecoratedXHTMLList += "<li class=\"item\"><a class=\"link\" href=\"" + this.getURLBasePath() + "pages/merges/resolutions/by-cell?merge_id=" + this.getMergeModel().getId() + "\">By Cell</a></li>";
+			resolutionsMenuAsDecoratedXHTMLList.append("<li class=\"item\"><a class=\"link\" href=\"").append(this.getURLBasePath()).append("pages/merges/resolutions/by-cell?merge_id=").append(this.getMergeModel().getId()).append("\">By Cell</a></li>");
 		}
 		
-		resolutionsMenuAsDecoratedXHTMLList += "</ul>";
+		resolutionsMenuAsDecoratedXHTMLList.append("</ul>");
 		
-		return resolutionsMenuAsDecoratedXHTMLList;
+		return resolutionsMenuAsDecoratedXHTMLList.toString();
 	}
 
 	public MergeModel getMergeModel() {

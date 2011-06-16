@@ -10,6 +10,7 @@ import java.util.logging.Logger;
 import javax.sql.rowset.CachedRowSet;
 
 import org.cggh.tools.dataMerger.data.databases.DatabaseModel;
+import org.cggh.tools.dataMerger.data.datatables.DatatableModel;
 import org.cggh.tools.dataMerger.data.datatables.DatatablesCRUD;
 import org.cggh.tools.dataMerger.data.files.FileModel;
 import org.cggh.tools.dataMerger.data.users.UserModel;
@@ -252,9 +253,14 @@ public class FilesCRUD implements java.io.Serializable  {
 		        	  UsersCRUD usersCRUD = new UsersCRUD();
 		        	  fileModel.setCreatedByUserModel(usersCRUD.retrieveUserAsUserModelUsingId(resultSet.getInt("created_by_user_id"), connection));
 		        	  fileModel.setCreatedDatetime(resultSet.getTimestamp("created_datetime"));  	  
-		        	  //TODO: This could be too expensive.
-		        	  DatatablesCRUD datatablesCRUD = new DatatablesCRUD();
-		        	  fileModel.setDatatableModel(datatablesCRUD.retrieveDatatableAsDatatableModelUsingDatatableName(resultSet.getString("datatable_name"), connection));
+		        	  //NOTE: This is too expensive and unnecessary (get datatable directly instead).
+		        	  //DatatablesCRUD datatablesCRUD = new DatatablesCRUD();
+		        	  //fileModel.setDatatableModel(datatablesCRUD.retrieveDatatableAsDatatableModelUsingDatatableName(resultSet.getString("datatable_name"), connection));
+		        	  
+		        	  //Note: Just need the name
+		        	  fileModel.setDatatableModel(new DatatableModel());
+		        	  fileModel.getDatatableModel().setName(resultSet.getString("datatable_name"));
+		        	  
 		        	  fileModel.setRowsCount(resultSet.getInt("rows_count"));
 		        	  fileModel.setColumnsCount(resultSet.getInt("columns_count"));
 		        	  FileOriginsCRUD fileOriginsCRUD = new FileOriginsCRUD();
@@ -326,9 +332,14 @@ public class FilesCRUD implements java.io.Serializable  {
 	        	  UsersCRUD usersCRUD = new UsersCRUD();
 	        	  fileModel.setCreatedByUserModel(usersCRUD.retrieveUserAsUserModelUsingId(resultSet.getInt("created_by_user_id"), connection));
 	        	  fileModel.setCreatedDatetime(resultSet.getTimestamp("created_datetime"));  	  
-	        	  //TODO: This could be too expensive.
-	        	  DatatablesCRUD datatablesCRUD = new DatatablesCRUD();
-	        	  fileModel.setDatatableModel(datatablesCRUD.retrieveDatatableAsDatatableModelUsingDatatableName(resultSet.getString("datatable_name"), connection));
+	        	  //NOTE: This is too expensive and unnecessary (get datatable directly instead).
+	        	  //DatatablesCRUD datatablesCRUD = new DatatablesCRUD();
+	        	  //fileModel.setDatatableModel(datatablesCRUD.retrieveDatatableAsDatatableModelUsingDatatableName(resultSet.getString("datatable_name"), connection));
+	        	  
+	        	  //Note: Just need the name
+	        	  fileModel.setDatatableModel(new DatatableModel());
+	        	  fileModel.getDatatableModel().setName(resultSet.getString("datatable_name"));
+	        	  
 	        	  fileModel.setRowsCount(resultSet.getInt("rows_count"));
 	        	  fileModel.setColumnsCount(resultSet.getInt("columns_count"));
 	        	  FileOriginsCRUD fileOriginsCRUD = new FileOriginsCRUD();

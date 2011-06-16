@@ -33,8 +33,8 @@ function initCreateUserFunction () {
 	
 				},
 				error: function (jqXHR, textStatus, errorThrown){
-		            $('.error').html("errorThrown: " + errorThrown);
-		            $('.status').html("textStatus: " + textStatus);
+		            $('.error').html(errorThrown);
+		            $('.status').html(textStatus);
 		        },
 				beforeSend: function() { $('.creating-indicator').show(); },
 		        complete: function() { $('.creating-indicator').hide(); }
@@ -61,8 +61,8 @@ function retrieveUsersAsDecoratedXHTMLTable () {
 				initUserbaseFunctions();
 			},
 			error: function (jqXHR, textStatus, errorThrown){
-	            $('.error').html("errorThrown: " + errorThrown);
-	            $('.status').html("textStatus: " + textStatus);
+	            $('.error').html(errorThrown);
+	            $('.status').html(textStatus);
 	        }
 
 		});

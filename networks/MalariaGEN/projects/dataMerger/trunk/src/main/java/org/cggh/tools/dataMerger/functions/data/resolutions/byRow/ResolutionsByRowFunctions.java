@@ -41,7 +41,7 @@ public class ResolutionsByRowFunctions implements java.io.Serializable {
 	//TODO
 	public void setResolutionsByRowAsDecoratedXHTMLTableUsingResolutionsByRowAsCachedRowSet() {
 		
-		String resolutionsByRowAsDecoratedXHTMLTable = null;
+		StringBuffer resolutionsByRowAsDecoratedXHTMLTable = null;
 		
 		
 		try {
@@ -51,12 +51,12 @@ public class ResolutionsByRowFunctions implements java.io.Serializable {
 			
 			if (this.getResolutionsByRowAsCachedRowSet().next()) {
 
-				resolutionsByRowAsDecoratedXHTMLTable = "";
+				resolutionsByRowAsDecoratedXHTMLTable = new StringBuffer();
 				
-				resolutionsByRowAsDecoratedXHTMLTable += "<table class=\"resolutions-by-row-table\">";
+				resolutionsByRowAsDecoratedXHTMLTable.append("<table class=\"resolutions-by-row-table\">");
 
-				 resolutionsByRowAsDecoratedXHTMLTable += "<thead>";
-				 resolutionsByRowAsDecoratedXHTMLTable += "<tr>";
+				 resolutionsByRowAsDecoratedXHTMLTable.append("<thead>");
+				 resolutionsByRowAsDecoratedXHTMLTable.append("<tr>");
 				 
 				 Pattern joinedKeytableKeyColumnNamePattern = Pattern.compile("^key_column_(\\d+)$");
 				 
@@ -69,16 +69,16 @@ public class ResolutionsByRowFunctions implements java.io.Serializable {
 		        			  
 			        		  Integer columnNumber = Integer.parseInt(joinedKeytableKeyColumnNamePatternMatcher.group(1));
 			        		  
-			        		  ////this.logger.info("Got columnNumber: " + columnNumber);
+			        		  ////this.logger.info("Got columnNumber: ").append(columnNumber);
 			        		  
-			        		  resolutionsByRowAsDecoratedXHTMLTable += "<th class=\"key-heading\" rowspan=\"2\">" + this.getJoinColumnNamesByColumnNumberAsHashMap().get(columnNumber) + "</th>";
+			        		  resolutionsByRowAsDecoratedXHTMLTable.append("<th class=\"key-heading\" rowspan=\"2\">").append(this.getJoinColumnNamesByColumnNumberAsHashMap().get(columnNumber)).append("</th>");
 			        		  
 		        		  }
 
 		          }
 				 
 				 
-				 resolutionsByRowAsDecoratedXHTMLTable += "<th class=\"solution-heading\" rowspan=\"2\">Solution</th>";
+				 resolutionsByRowAsDecoratedXHTMLTable.append("<th class=\"solution-heading\" rowspan=\"2\">Solution</th>");
 				 
 				 
 				 Pattern resolutionsByRowAsCachedRowSetSource1ColumnNamePattern = Pattern.compile("^column_(\\d+)_source_1$");
@@ -89,29 +89,29 @@ public class ResolutionsByRowFunctions implements java.io.Serializable {
 
 		        		  Matcher resolutionsByRowAsCachedRowSetColumnNamePatternMatcher = resolutionsByRowAsCachedRowSetSource1ColumnNamePattern.matcher(this.getResolutionsByRowAsCachedRowSet().getMetaData().getColumnLabel(i));
 		        		  
-		        		  ////this.logger.info("Looking at column label: " +  this.getResolutionsByRowAsCachedRowSet().getMetaData().getColumnLabel(i));
+		        		  ////this.logger.info("Looking at column label: ").append( this.getResolutionsByRowAsCachedRowSet().getMetaData().getColumnLabel(i));
 		        		  
 		        		  if (resolutionsByRowAsCachedRowSetColumnNamePatternMatcher.find()) {
 		        		  
 			        		  Integer columnNumber = Integer.parseInt(resolutionsByRowAsCachedRowSetColumnNamePatternMatcher.group(1));
 			        		  
-			        		  ////this.logger.info("Got columnNumber: " + columnNumber);
+			        		  ////this.logger.info("Got columnNumber: ").append(columnNumber);
 			        		  
 			        		  
 
 			        		  if (this.getNullOrConstantSolutionUsingColumnNumberAsHashMap().get(columnNumber) != null) {
-			        			  resolutionsByRowAsDecoratedXHTMLTable += "<th class=\"column-heading\" colspan=\"3\">" + this.getJoinColumnNamesByColumnNumberAsHashMap().get(columnNumber) + "</th>";
+			        			  resolutionsByRowAsDecoratedXHTMLTable.append("<th class=\"column-heading\" colspan=\"3\">").append(this.getJoinColumnNamesByColumnNumberAsHashMap().get(columnNumber)).append("</th>");
 			        		  } else {
-			        			  resolutionsByRowAsDecoratedXHTMLTable += "<th class=\"column-heading\" colspan=\"2\">" + this.getJoinColumnNamesByColumnNumberAsHashMap().get(columnNumber) + "</th>";  
+			        			  resolutionsByRowAsDecoratedXHTMLTable.append("<th class=\"column-heading\" colspan=\"2\">").append(this.getJoinColumnNamesByColumnNumberAsHashMap().get(columnNumber)).append("</th>");  
 			        		  }
 		        		  }
 		        	  
 		          }
 				 
 
-				 resolutionsByRowAsDecoratedXHTMLTable += "</tr>";
+				 resolutionsByRowAsDecoratedXHTMLTable.append("</tr>");
 				 
-				 resolutionsByRowAsDecoratedXHTMLTable += "<tr>";
+				 resolutionsByRowAsDecoratedXHTMLTable.append("<tr>");
 
 
 
@@ -121,23 +121,23 @@ public class ResolutionsByRowFunctions implements java.io.Serializable {
 		        	  
 		        	  if (resolutionsByRowAsCachedRowSetColumnNamePatternMatcher.find()) {
 
-		        		  resolutionsByRowAsDecoratedXHTMLTable += "<th class=\"source_1_value-heading\">1</th><th class=\"source_2_value-heading\">2</th>";
+		        		  resolutionsByRowAsDecoratedXHTMLTable.append("<th class=\"source_1_value-heading\">1</th><th class=\"source_2_value-heading\">2</th>");
 		        	  
 		        		  Integer columnNumber = Integer.parseInt(resolutionsByRowAsCachedRowSetColumnNamePatternMatcher.group(1));
 		        		  
 		        		  if (this.getNullOrConstantSolutionUsingColumnNumberAsHashMap().get(columnNumber) != null) {
-		        			  resolutionsByRowAsDecoratedXHTMLTable += "<th class=\"constant-heading\">Constant</th>";
+		        			  resolutionsByRowAsDecoratedXHTMLTable.append("<th class=\"constant-heading\">Constant</th>");
 		        		  }
 		        		  
 		        	  }
 		          }
 				 
 
-				 resolutionsByRowAsDecoratedXHTMLTable += "</tr>";
+				 resolutionsByRowAsDecoratedXHTMLTable.append("</tr>");
 				 
-				 resolutionsByRowAsDecoratedXHTMLTable += "</thead>";
+				 resolutionsByRowAsDecoratedXHTMLTable.append("</thead>");
 				 
-				 resolutionsByRowAsDecoratedXHTMLTable += "<tbody>";
+				 resolutionsByRowAsDecoratedXHTMLTable.append("<tbody>");
 				 
 				//because next() skips the first row.
 				 this.getResolutionsByRowAsCachedRowSet().beforeFirst();
@@ -159,20 +159,20 @@ public class ResolutionsByRowFunctions implements java.io.Serializable {
 						rowLastClassName = "last ";
 					}					
 					
-					resolutionsByRowAsDecoratedXHTMLTable += "<tr class=\"" + rowStripeClassName + rowFirstClassName + rowLastClassName + "\">";
+					resolutionsByRowAsDecoratedXHTMLTable.append("<tr class=\"").append(rowStripeClassName).append(rowFirstClassName).append(rowLastClassName).append("\">");
 
 			          for (int i = 1; i <= this.getResolutionsByRowAsCachedRowSet().getMetaData().getColumnCount(); i++) {
 			        	  
 			        	  if (this.getResolutionsByRowAsCachedRowSet().getMetaData().getColumnName(i).startsWith("key_column_")) {
 			        		  
-			        		  resolutionsByRowAsDecoratedXHTMLTable += "<td>" + this.getResolutionsByRowAsCachedRowSet().getString(this.getResolutionsByRowAsCachedRowSet().getMetaData().getColumnName(i)) + "</td>";
+			        		  resolutionsByRowAsDecoratedXHTMLTable.append("<td>").append(this.getResolutionsByRowAsCachedRowSet().getString(this.getResolutionsByRowAsCachedRowSet().getMetaData().getColumnName(i))).append("</td>");
 			        	  
 			        	  }
 			          }
 					
-					 resolutionsByRowAsDecoratedXHTMLTable += "<td class=\"solution_by_row_id-container\">";
+					 resolutionsByRowAsDecoratedXHTMLTable.append("<td class=\"solution_by_row_id-container\">");
 					 
-					 resolutionsByRowAsDecoratedXHTMLTable += "<input type=\"hidden\" name=\"joined_keytable_id\" value=\"" + this.getResolutionsByRowAsCachedRowSet().getString("joined_keytable_id") + "\" />";
+					 resolutionsByRowAsDecoratedXHTMLTable.append("<input type=\"hidden\" name=\"joined_keytable_id\" value=\"").append(this.getResolutionsByRowAsCachedRowSet().getString("joined_keytable_id")).append("\" />");
 					 
 						try {
 							
@@ -183,18 +183,18 @@ public class ResolutionsByRowFunctions implements java.io.Serializable {
 								
 								
 								if (this.getResolutionsByRowAsCachedRowSet().getInt("solution_by_row_id") == 0) {
-									resolutionsByRowAsDecoratedXHTMLTable += "<select name=\"solution_by_row_id\" class=\"unresolved\">";
+									resolutionsByRowAsDecoratedXHTMLTable.append("<select name=\"solution_by_row_id\" class=\"unresolved\">");
 								} else {
-									resolutionsByRowAsDecoratedXHTMLTable += "<select name=\"solution_by_row_id\">";
+									resolutionsByRowAsDecoratedXHTMLTable.append("<select name=\"solution_by_row_id\">");
 								}
 
 								//FIXME: Should the null option be in the table?
 								
-								resolutionsByRowAsDecoratedXHTMLTable += "<option class=\"unresolved-option\" value=\"\">";
+								resolutionsByRowAsDecoratedXHTMLTable.append("<option class=\"unresolved-option\" value=\"\">");
 
-								 resolutionsByRowAsDecoratedXHTMLTable += "Unresolved";
+								 resolutionsByRowAsDecoratedXHTMLTable.append("Unresolved");
 								 
-								 resolutionsByRowAsDecoratedXHTMLTable += "</option>";				
+								 resolutionsByRowAsDecoratedXHTMLTable.append("</option>");				
 								 
 								//because next() skips the first row.
 								 this.getSolutionsByRowAsCachedRowSet().beforeFirst();
@@ -207,19 +207,19 @@ public class ResolutionsByRowFunctions implements java.io.Serializable {
 										selectedAttribute = " selected=\"selected\"";
 									}
 									
-									resolutionsByRowAsDecoratedXHTMLTable += "<option value=\"" + this.getSolutionsByRowAsCachedRowSet().getString("id") + "\"" + selectedAttribute + ">";
+									resolutionsByRowAsDecoratedXHTMLTable.append("<option value=\"").append(this.getSolutionsByRowAsCachedRowSet().getString("id")).append("\"").append(selectedAttribute).append(">");
 
-									 resolutionsByRowAsDecoratedXHTMLTable = resolutionsByRowAsDecoratedXHTMLTable.concat(this.getSolutionsByRowAsCachedRowSet().getString("description"));
+									 resolutionsByRowAsDecoratedXHTMLTable.append(this.getSolutionsByRowAsCachedRowSet().getString("description"));
 									 
-									 resolutionsByRowAsDecoratedXHTMLTable += "</option>";
+									 resolutionsByRowAsDecoratedXHTMLTable.append("</option>");
 								}
 									 
-								resolutionsByRowAsDecoratedXHTMLTable += "</select>";
+								resolutionsByRowAsDecoratedXHTMLTable.append("</select>");
 								
 								
 							} else {
 								
-								resolutionsByRowAsDecoratedXHTMLTable = "There are no solutions by row.";
+								resolutionsByRowAsDecoratedXHTMLTable = new StringBuffer("There are no solutions by row.");
 								
 							}
 						} catch (SQLException e) {
@@ -228,14 +228,12 @@ public class ResolutionsByRowFunctions implements java.io.Serializable {
 						}
 					 
 						if (this.getResolutionsByRowAsCachedRowSet().getString("constant") != null) {
-							resolutionsByRowAsDecoratedXHTMLTable += "<label for=\"constant-" + this.getResolutionsByRowAsCachedRowSet().getInt("joined_keytable_id") + "\">Constant:</label><input type=\"text\" name=\"constant-" + this.getResolutionsByRowAsCachedRowSet().getInt("joined_keytable_id") + "\" value=\"" + this.getResolutionsByRowAsCachedRowSet().getString("constant") + "\"/>";
+							resolutionsByRowAsDecoratedXHTMLTable.append("<label for=\"constant-").append(this.getResolutionsByRowAsCachedRowSet().getInt("joined_keytable_id")).append("\">Constant:</label><input type=\"text\" name=\"constant-").append(this.getResolutionsByRowAsCachedRowSet().getInt("joined_keytable_id")).append("\" value=\"").append(this.getResolutionsByRowAsCachedRowSet().getString("constant")).append("\"/>");
 						} else {
-							resolutionsByRowAsDecoratedXHTMLTable += "<label for=\"constant-" + this.getResolutionsByRowAsCachedRowSet().getInt("joined_keytable_id") + "\" style=\"display:none;\">Constant:</label><input type=\"text\" name=\"constant-" + this.getResolutionsByRowAsCachedRowSet().getInt("joined_keytable_id") + "\" value=\"\" style=\"display:none;\"/>";
+							resolutionsByRowAsDecoratedXHTMLTable.append("<label for=\"constant-").append(this.getResolutionsByRowAsCachedRowSet().getInt("joined_keytable_id")).append("\" style=\"display:none;\">Constant:</label><input type=\"text\" name=\"constant-").append(this.getResolutionsByRowAsCachedRowSet().getInt("joined_keytable_id")).append("\" value=\"\" style=\"display:none;\"/>");
 						}
 						
-					 resolutionsByRowAsDecoratedXHTMLTable += "</td>";
-					 
-					 //TODO
+					 resolutionsByRowAsDecoratedXHTMLTable.append("</td>");
 
 					 ////this.logger.info("Searching for non-key cross-datatable columns by label (to be used for getting data)...");
 					 
@@ -243,20 +241,19 @@ public class ResolutionsByRowFunctions implements java.io.Serializable {
 			        	  
 			        		  Matcher resolutionsByRowAsCachedRowSetColumnNamePatternMatcher = resolutionsByRowAsCachedRowSetSource1ColumnNamePattern.matcher(this.getResolutionsByRowAsCachedRowSet().getMetaData().getColumnLabel(i));
 			        		  
-			        		  ////this.logger.info("Looking at column label: " +  this.getResolutionsByRowAsCachedRowSet().getMetaData().getColumnLabel(i));
+			        		  ////this.logger.info("Looking at column label: ").append( this.getResolutionsByRowAsCachedRowSet().getMetaData().getColumnLabel(i));
 			        		  
 			        		  if (resolutionsByRowAsCachedRowSetColumnNamePatternMatcher.find()) {
 			        		  
 				        		  Integer columnNumber = Integer.parseInt(resolutionsByRowAsCachedRowSetColumnNamePatternMatcher.group(1));
 				        		  
-				        		  ////this.logger.info("Got columnNumber: " + columnNumber);
+				        		  ////this.logger.info("Got columnNumber: ").append(columnNumber);
 				        		  
 				        		  String columnLabelForSource2Column = "column_" + columnNumber.toString() + "_source_2";
 				        		  
 				        		  //FIXME: Annoying bug in CachedRowSet means we can't grab the column by its label. :-(
 				        		  //Workaround: look for the column for source 2
 				        		  
-				        		  //TODO:
 				        		  Integer columnIndexForSource2Column = i+1;
 				        		  for (int j = 1; j <= this.getResolutionsByRowAsCachedRowSet().getMetaData().getColumnCount(); j++) {
 				        			  
@@ -279,9 +276,9 @@ public class ResolutionsByRowFunctions implements java.io.Serializable {
 
 				        				  // There is no conflict
 				        				  
-				        					 resolutionsByRowAsDecoratedXHTMLTable += "<td class=\"source_1_value-container\">" + this.getResolutionsByRowAsCachedRowSet().getString(i)  + "</td><td class=\"source_2_value-container\">" + this.getResolutionsByRowAsCachedRowSet().getString(columnIndexForSource2Column) + "</td>";
+				        					 resolutionsByRowAsDecoratedXHTMLTable.append("<td class=\"source_1_value-container\">").append(this.getResolutionsByRowAsCachedRowSet().getString(i) ).append("</td><td class=\"source_2_value-container\">").append(this.getResolutionsByRowAsCachedRowSet().getString(columnIndexForSource2Column)).append("</td>");
 				        					 if (this.getNullOrConstantSolutionUsingColumnNumberAsHashMap().get(columnNumber) != null) {
-			        							  resolutionsByRowAsDecoratedXHTMLTable += "<td class=\"constant-container\"><!-- Above/below constants --></td>";
+			        							  resolutionsByRowAsDecoratedXHTMLTable.append("<td class=\"constant-container\"><!-- Above/below constants --></td>");
 			        						  }
 
 				        			  } else {
@@ -301,27 +298,27 @@ public class ResolutionsByRowFunctions implements java.io.Serializable {
 				        					  
 				        					  if (solutionByColumnID != null && solutionByColumnID == 1) {
 				        						  // Prefer source 1
-				        						  resolutionsByRowAsDecoratedXHTMLTable += "<td class=\"source_1_value-container resolved-conflicting-data preferred-source\">" + this.getResolutionsByRowAsCachedRowSet().getString(i)  + "</td><td class=\"source_2_value-container resolved-conflicting-data\">" + this.getResolutionsByRowAsCachedRowSet().getString(columnIndexForSource2Column) + "</td>";
+				        						  resolutionsByRowAsDecoratedXHTMLTable.append("<td class=\"source_1_value-container resolved-conflicting-data preferred-source\">").append(this.getResolutionsByRowAsCachedRowSet().getString(i) ).append("</td><td class=\"source_2_value-container resolved-conflicting-data\">").append(this.getResolutionsByRowAsCachedRowSet().getString(columnIndexForSource2Column)).append("</td>");
 				        						  if (this.getNullOrConstantSolutionUsingColumnNumberAsHashMap().get(columnNumber) != null) {
-				        							  resolutionsByRowAsDecoratedXHTMLTable += "<td class=\"constant-container\"><!-- Above/below constants --></td>";
+				        							  resolutionsByRowAsDecoratedXHTMLTable.append("<td class=\"constant-container\"><!-- Above/below constants --></td>");
 				        						  }
 				        					  } else if (solutionByColumnID != null && solutionByColumnID == 2) {
 				        						  // Prefer source 2
-				        						  resolutionsByRowAsDecoratedXHTMLTable += "<td class=\"source_1_value-container resolved-conflicting-data\">" + this.getResolutionsByRowAsCachedRowSet().getString(i)  + "</td><td class=\"source_2_value-container resolved-conflicting-data preferred-source\">" + this.getResolutionsByRowAsCachedRowSet().getString(columnIndexForSource2Column) + "</td>";
+				        						  resolutionsByRowAsDecoratedXHTMLTable.append("<td class=\"source_1_value-container resolved-conflicting-data\">").append(this.getResolutionsByRowAsCachedRowSet().getString(i) ).append("</td><td class=\"source_2_value-container resolved-conflicting-data preferred-source\">").append(this.getResolutionsByRowAsCachedRowSet().getString(columnIndexForSource2Column)).append("</td>");
 				        						  if (this.getNullOrConstantSolutionUsingColumnNumberAsHashMap().get(columnNumber) != null) {
-				        							  resolutionsByRowAsDecoratedXHTMLTable += "<td class=\"constant-container\"><!-- Above/below constants --></td>";
+				        							  resolutionsByRowAsDecoratedXHTMLTable.append("<td class=\"constant-container\"><!-- Above/below constants --></td>");
 				        						  }
 				        					  } else if (solutionByColumnID != null && solutionByColumnID == 3) {
 				        						  // Use NULL	
-				        						  resolutionsByRowAsDecoratedXHTMLTable += "<td class=\"source_1_value-container resolved-conflicting-data\">" + this.getResolutionsByRowAsCachedRowSet().getString(i)  + "</td><td class=\"source_2_value-container resolved-conflicting-data\">" + this.getResolutionsByRowAsCachedRowSet().getString(columnIndexForSource2Column) + "</td><td class=\"constant-container\">NULL</td>";
+				        						  resolutionsByRowAsDecoratedXHTMLTable.append("<td class=\"source_1_value-container resolved-conflicting-data\">").append(this.getResolutionsByRowAsCachedRowSet().getString(i) ).append("</td><td class=\"source_2_value-container resolved-conflicting-data\">").append(this.getResolutionsByRowAsCachedRowSet().getString(columnIndexForSource2Column)).append("</td><td class=\"constant-container\">NULL</td>");
 				        					  } else if (solutionByColumnID != null && solutionByColumnID == 4) {
 				        						  // Constant				        						  
-				        						  resolutionsByRowAsDecoratedXHTMLTable += "<td class=\"source_1_value-container resolved-conflicting-data\">" + this.getResolutionsByRowAsCachedRowSet().getString(i)  + "</td><td class=\"source_2_value-container resolved-conflicting-data\">" + this.getResolutionsByRowAsCachedRowSet().getString(columnIndexForSource2Column) + "</td><td class=\"constant-container\">" + constant + "</td>";
+				        						  resolutionsByRowAsDecoratedXHTMLTable.append("<td class=\"source_1_value-container resolved-conflicting-data\">").append(this.getResolutionsByRowAsCachedRowSet().getString(i) ).append("</td><td class=\"source_2_value-container resolved-conflicting-data\">").append(this.getResolutionsByRowAsCachedRowSet().getString(columnIndexForSource2Column)).append("</td><td class=\"constant-container\">").append(constant).append("</td>");
 				        					  } else {
 				        						  //TODO: Error, unexpect ID
-				        						  resolutionsByRowAsDecoratedXHTMLTable += "<td class=\"source_1_value-container resolved-conflicting-data\">" + this.getResolutionsByRowAsCachedRowSet().getString(i)  + "</td><td class=\"source_2_value-container resolved-conflicting-data\">" + this.getResolutionsByRowAsCachedRowSet().getString(columnIndexForSource2Column) + "</td>";
+				        						  resolutionsByRowAsDecoratedXHTMLTable.append("<td class=\"source_1_value-container resolved-conflicting-data\">").append(this.getResolutionsByRowAsCachedRowSet().getString(i) ).append("</td><td class=\"source_2_value-container resolved-conflicting-data\">").append(this.getResolutionsByRowAsCachedRowSet().getString(columnIndexForSource2Column)).append("</td>");
 				        						  if (this.getNullOrConstantSolutionUsingColumnNumberAsHashMap().get(columnNumber) != null) {
-				        							  resolutionsByRowAsDecoratedXHTMLTable += "<td class=\"constant-container\"><!-- Above/below constants --></td>";
+				        							  resolutionsByRowAsDecoratedXHTMLTable.append("<td class=\"constant-container\"><!-- Above/below constants --></td>");
 				        						  }
 				        					  }
 				        					  
@@ -337,27 +334,27 @@ public class ResolutionsByRowFunctions implements java.io.Serializable {
 				        					  
 				        					  if (solutionByCellId != null && solutionByCellId == 1) {
 				        						  // Prefer source 1
-				        						  resolutionsByRowAsDecoratedXHTMLTable += "<td class=\"source_1_value-container resolved-conflicting-data preferred-source\">" + this.getResolutionsByRowAsCachedRowSet().getString(i)  + "</td><td class=\"source_2_value-container resolved-conflicting-data\">" + this.getResolutionsByRowAsCachedRowSet().getString(columnIndexForSource2Column) + "</td>";
+				        						  resolutionsByRowAsDecoratedXHTMLTable.append("<td class=\"source_1_value-container resolved-conflicting-data preferred-source\">").append(this.getResolutionsByRowAsCachedRowSet().getString(i) ).append("</td><td class=\"source_2_value-container resolved-conflicting-data\">").append(this.getResolutionsByRowAsCachedRowSet().getString(columnIndexForSource2Column)).append("</td>");
 				        						  if (this.getNullOrConstantSolutionUsingColumnNumberAsHashMap().get(columnNumber) != null) {
-				        							  resolutionsByRowAsDecoratedXHTMLTable += "<td class=\"constant-container\"><!-- Above/below constants --></td>";
+				        							  resolutionsByRowAsDecoratedXHTMLTable.append("<td class=\"constant-container\"><!-- Above/below constants --></td>");
 				        						  }
 				        					  } else if (solutionByCellId != null && solutionByCellId == 2) {
 				        						  // Prefer source 2
-				        						  resolutionsByRowAsDecoratedXHTMLTable += "<td class=\"source_1_value-container resolved-conflicting-data\">" + this.getResolutionsByRowAsCachedRowSet().getString(i)  + "</td><td class=\"source_2_value-container resolved-conflicting-data preferred-source\">" + this.getResolutionsByRowAsCachedRowSet().getString(columnIndexForSource2Column) + "</td>";
+				        						  resolutionsByRowAsDecoratedXHTMLTable.append("<td class=\"source_1_value-container resolved-conflicting-data\">").append(this.getResolutionsByRowAsCachedRowSet().getString(i) ).append("</td><td class=\"source_2_value-container resolved-conflicting-data preferred-source\">").append(this.getResolutionsByRowAsCachedRowSet().getString(columnIndexForSource2Column)).append("</td>");
 				        						  if (this.getNullOrConstantSolutionUsingColumnNumberAsHashMap().get(columnNumber) != null) {
-				        							  resolutionsByRowAsDecoratedXHTMLTable += "<td class=\"constant-container\"><!-- Above/below constants --></td>";
+				        							  resolutionsByRowAsDecoratedXHTMLTable.append("<td class=\"constant-container\"><!-- Above/below constants --></td>");
 				        						  }
 				        					  } else if (solutionByCellId != null && solutionByCellId == 3) {
 				        						  // Use NULL	
-				        						  resolutionsByRowAsDecoratedXHTMLTable += "<td class=\"source_1_value-container resolved-conflicting-data\">" + this.getResolutionsByRowAsCachedRowSet().getString(i)  + "</td><td class=\"source_2_value-container resolved-conflicting-data\">" + this.getResolutionsByRowAsCachedRowSet().getString(columnIndexForSource2Column) + "</td><td class=\"constant-container\">NULL</td>";
+				        						  resolutionsByRowAsDecoratedXHTMLTable.append("<td class=\"source_1_value-container resolved-conflicting-data\">").append(this.getResolutionsByRowAsCachedRowSet().getString(i) ).append("</td><td class=\"source_2_value-container resolved-conflicting-data\">").append(this.getResolutionsByRowAsCachedRowSet().getString(columnIndexForSource2Column)).append("</td><td class=\"constant-container\">NULL</td>");
 				        					  } else if (solutionByCellId != null && solutionByCellId == 4) {
 				        						  // Constant				        						  
-				        						  resolutionsByRowAsDecoratedXHTMLTable += "<td class=\"source_1_value-container resolved-conflicting-data\">" + this.getResolutionsByRowAsCachedRowSet().getString(i)  + "</td><td class=\"source_2_value-container resolved-conflicting-data\">" + this.getResolutionsByRowAsCachedRowSet().getString(columnIndexForSource2Column) + "</td><td class=\"constant-container\">" + constant + "</td>";
+				        						  resolutionsByRowAsDecoratedXHTMLTable.append("<td class=\"source_1_value-container resolved-conflicting-data\">").append(this.getResolutionsByRowAsCachedRowSet().getString(i) ).append("</td><td class=\"source_2_value-container resolved-conflicting-data\">").append(this.getResolutionsByRowAsCachedRowSet().getString(columnIndexForSource2Column)).append("</td><td class=\"constant-container\">").append(constant).append("</td>");
 				        					  } else {
 				        						  //TODO: Error, unexpected ID
-				        						  resolutionsByRowAsDecoratedXHTMLTable += "<td class=\"source_1_value-container resolved-conflicting-data\">" + this.getResolutionsByRowAsCachedRowSet().getString(i)  + "</td><td class=\"source_2_value-container resolved-conflicting-data\">" + this.getResolutionsByRowAsCachedRowSet().getString(columnIndexForSource2Column) + "</td>";
+				        						  resolutionsByRowAsDecoratedXHTMLTable.append("<td class=\"source_1_value-container resolved-conflicting-data\">").append(this.getResolutionsByRowAsCachedRowSet().getString(i) ).append("</td><td class=\"source_2_value-container resolved-conflicting-data\">").append(this.getResolutionsByRowAsCachedRowSet().getString(columnIndexForSource2Column)).append("</td>");
 				        						  if (this.getNullOrConstantSolutionUsingColumnNumberAsHashMap().get(columnNumber) != null) {
-				        							  resolutionsByRowAsDecoratedXHTMLTable += "<td class=\"constant-container\"><!-- Above/below constants --></td>";
+				        							  resolutionsByRowAsDecoratedXHTMLTable.append("<td class=\"constant-container\"><!-- Above/below constants --></td>");
 				        						  }
 				        					  }
 
@@ -369,38 +366,38 @@ public class ResolutionsByRowFunctions implements java.io.Serializable {
 						        					  
 						        					  if (solutionByRowId != null && solutionByRowId == 1) {
 						        						  // Prefer source 1
-						        						  resolutionsByRowAsDecoratedXHTMLTable += "<td class=\"source_1_value-container resolved-conflicting-data preferred-source\">" + this.getResolutionsByRowAsCachedRowSet().getString(i)  + "</td><td class=\"source_2_value-container resolved-conflicting-data\">" + this.getResolutionsByRowAsCachedRowSet().getString(columnIndexForSource2Column) + "</td>";
+						        						  resolutionsByRowAsDecoratedXHTMLTable.append("<td class=\"source_1_value-container resolved-conflicting-data preferred-source\">").append(this.getResolutionsByRowAsCachedRowSet().getString(i) ).append("</td><td class=\"source_2_value-container resolved-conflicting-data\">").append(this.getResolutionsByRowAsCachedRowSet().getString(columnIndexForSource2Column)).append("</td>");
 						        						  if (this.getNullOrConstantSolutionUsingColumnNumberAsHashMap().get(columnNumber) != null) {
-						        							  resolutionsByRowAsDecoratedXHTMLTable += "<td class=\"constant-container\"><!-- Above/below constants --></td>";
+						        							  resolutionsByRowAsDecoratedXHTMLTable.append("<td class=\"constant-container\"><!-- Above/below constants --></td>");
 						        						  }
 						        					  } else if (solutionByRowId != null && solutionByRowId == 2) {
 						        						  // Prefer source 2
-						        						  resolutionsByRowAsDecoratedXHTMLTable += "<td class=\"source_1_value-container resolved-conflicting-data\">" + this.getResolutionsByRowAsCachedRowSet().getString(i)  + "</td><td class=\"source_2_value-container resolved-conflicting-data preferred-source\">" + this.getResolutionsByRowAsCachedRowSet().getString(columnIndexForSource2Column) + "</td>";
+						        						  resolutionsByRowAsDecoratedXHTMLTable.append("<td class=\"source_1_value-container resolved-conflicting-data\">").append(this.getResolutionsByRowAsCachedRowSet().getString(i) ).append("</td><td class=\"source_2_value-container resolved-conflicting-data preferred-source\">").append(this.getResolutionsByRowAsCachedRowSet().getString(columnIndexForSource2Column)).append("</td>");
 						        						  if (this.getNullOrConstantSolutionUsingColumnNumberAsHashMap().get(columnNumber) != null) {
-						        							  resolutionsByRowAsDecoratedXHTMLTable += "<td class=\"constant-container\"><!-- Above/below constants --></td>";
+						        							  resolutionsByRowAsDecoratedXHTMLTable.append("<td class=\"constant-container\"><!-- Above/below constants --></td>");
 						        						  }
 						        					  } else if (solutionByRowId != null && solutionByRowId == 3) {
 						        						  // Use NULL	
-						        						  resolutionsByRowAsDecoratedXHTMLTable += "<td class=\"source_1_value-container resolved-conflicting-data\">" + this.getResolutionsByRowAsCachedRowSet().getString(i)  + "</td><td class=\"source_2_value-container resolved-conflicting-data\">" + this.getResolutionsByRowAsCachedRowSet().getString(columnIndexForSource2Column) + "</td><td class=\"constant-container\">NULL</td>";
+						        						  resolutionsByRowAsDecoratedXHTMLTable.append("<td class=\"source_1_value-container resolved-conflicting-data\">").append(this.getResolutionsByRowAsCachedRowSet().getString(i) ).append("</td><td class=\"source_2_value-container resolved-conflicting-data\">").append(this.getResolutionsByRowAsCachedRowSet().getString(columnIndexForSource2Column)).append("</td><td class=\"constant-container\">NULL</td>");
 						        					  } else if (solutionByRowId != null && solutionByRowId == 4) {
 						        						  // Constant				        						  
-						        						  resolutionsByRowAsDecoratedXHTMLTable += "<td class=\"source_1_value-container resolved-conflicting-data\">" + this.getResolutionsByRowAsCachedRowSet().getString(i)  + "</td><td class=\"source_2_value-container resolved-conflicting-data\">" + this.getResolutionsByRowAsCachedRowSet().getString(columnIndexForSource2Column) + "</td><td class=\"constant-container\">" + constant + "</td>";
+						        						  resolutionsByRowAsDecoratedXHTMLTable.append("<td class=\"source_1_value-container resolved-conflicting-data\">").append(this.getResolutionsByRowAsCachedRowSet().getString(i) ).append("</td><td class=\"source_2_value-container resolved-conflicting-data\">").append(this.getResolutionsByRowAsCachedRowSet().getString(columnIndexForSource2Column)).append("</td><td class=\"constant-container\">").append(constant).append("</td>");
 						        					  } else if (solutionByRowId != null && solutionByRowId == 5) {
 						        						  // Remove entire row				        						  
-						        						  resolutionsByRowAsDecoratedXHTMLTable += "<td class=\"source_1_value-container resolved-conflicting-data\">" + this.getResolutionsByRowAsCachedRowSet().getString(i)  + "</td><td class=\"source_2_value-container resolved-conflicting-data\">" + this.getResolutionsByRowAsCachedRowSet().getString(columnIndexForSource2Column) + "</td>";
+						        						  resolutionsByRowAsDecoratedXHTMLTable.append("<td class=\"source_1_value-container resolved-conflicting-data\">").append(this.getResolutionsByRowAsCachedRowSet().getString(i) ).append("</td><td class=\"source_2_value-container resolved-conflicting-data\">").append(this.getResolutionsByRowAsCachedRowSet().getString(columnIndexForSource2Column)).append("</td>");
 						        					  } else {
 						        						  //TODO: Error, unexpected ID
-						        						  resolutionsByRowAsDecoratedXHTMLTable += "<td class=\"source_1_value-container resolved-conflicting-data\">" + this.getResolutionsByRowAsCachedRowSet().getString(i)  + "</td><td class=\"source_2_value-container resolved-conflicting-data\">" + this.getResolutionsByRowAsCachedRowSet().getString(columnIndexForSource2Column) + "</td>";
+						        						  resolutionsByRowAsDecoratedXHTMLTable.append("<td class=\"source_1_value-container resolved-conflicting-data\">").append(this.getResolutionsByRowAsCachedRowSet().getString(i) ).append("</td><td class=\"source_2_value-container resolved-conflicting-data\">").append(this.getResolutionsByRowAsCachedRowSet().getString(columnIndexForSource2Column)).append("</td>");
 						        						  if (this.getNullOrConstantSolutionUsingColumnNumberAsHashMap().get(columnNumber) != null) {
-						        							  resolutionsByRowAsDecoratedXHTMLTable += "<td class=\"constant-container\"><!-- Above/below constants --></td>";
+						        							  resolutionsByRowAsDecoratedXHTMLTable.append("<td class=\"constant-container\"><!-- Above/below constants --></td>");
 						        						  }
 						        					  }
 						        					 				        					  
 				        					  
 				        				  } else {
-				        					  resolutionsByRowAsDecoratedXHTMLTable += "<td class=\"source_1_value-container conflicting-data\">" + this.getResolutionsByRowAsCachedRowSet().getString(i)  + "</td><td class=\"source_2_value-container conflicting-data\">" + this.getResolutionsByRowAsCachedRowSet().getString(columnIndexForSource2Column) + "</td>";  
+				        					  resolutionsByRowAsDecoratedXHTMLTable.append("<td class=\"source_1_value-container conflicting-data\">").append(this.getResolutionsByRowAsCachedRowSet().getString(i) ).append("</td><td class=\"source_2_value-container conflicting-data\">").append(this.getResolutionsByRowAsCachedRowSet().getString(columnIndexForSource2Column)).append("</td>");  
 				        					  if (this.getNullOrConstantSolutionUsingColumnNumberAsHashMap().get(columnNumber) != null) {
-			        							  resolutionsByRowAsDecoratedXHTMLTable += "<td class=\"constant-container\"><!-- Above/below constants --></td>";
+			        							  resolutionsByRowAsDecoratedXHTMLTable.append("<td class=\"constant-container\"><!-- Above/below constants --></td>");
 			        						  }
 				        				  }
 				        				  
@@ -411,21 +408,21 @@ public class ResolutionsByRowFunctions implements java.io.Serializable {
 			          }
 					 
 					 
-					 resolutionsByRowAsDecoratedXHTMLTable += "</tr>";
+					 resolutionsByRowAsDecoratedXHTMLTable.append("</tr>");
 					 
 					 rowFirstClassName = "";
 				}
 					 
-				resolutionsByRowAsDecoratedXHTMLTable += "</tbody>";
+				resolutionsByRowAsDecoratedXHTMLTable.append("</tbody>");
 				 
-				resolutionsByRowAsDecoratedXHTMLTable += "</table>";
+				resolutionsByRowAsDecoratedXHTMLTable.append("</table>");
 				
-				resolutionsByRowAsDecoratedXHTMLTable += "<!-- <div>TODO: paging</div> -->";
-				resolutionsByRowAsDecoratedXHTMLTable += "<!-- <div>TODO: Show solved columns <input type=\"checkbox\"/></div> -->";
+				resolutionsByRowAsDecoratedXHTMLTable.append("<!-- <div>TODO: paging</div> -->");
+				resolutionsByRowAsDecoratedXHTMLTable.append("<!-- <div>TODO: Show solved columns <input type=\"checkbox\"/></div> -->");
 				
 			} else {
 				
-				resolutionsByRowAsDecoratedXHTMLTable = "There are no unresolved conflicts.";
+				resolutionsByRowAsDecoratedXHTMLTable = new StringBuffer("There are no unresolved conflicts.");
 				
 			}
 		} catch (SQLException e) {
@@ -433,7 +430,7 @@ public class ResolutionsByRowFunctions implements java.io.Serializable {
 			e.printStackTrace();
 		}
 		
-		this.resolutionsByRowAsDecoratedXHTMLTable = resolutionsByRowAsDecoratedXHTMLTable;
+		this.resolutionsByRowAsDecoratedXHTMLTable = resolutionsByRowAsDecoratedXHTMLTable.toString();
 	}
 
 

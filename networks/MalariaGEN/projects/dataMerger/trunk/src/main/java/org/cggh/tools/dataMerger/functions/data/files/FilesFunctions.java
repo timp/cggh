@@ -41,33 +41,33 @@ public class FilesFunctions {
 	public String getFilesAsDecoratedXHTMLTableUsingFilesAsCachedRowSet(
 			CachedRowSet filesAsCachedRowSet) {
 		
-		String filesAsDecoratedXHTMLTable = null;
+		StringBuffer filesAsDecoratedXHTMLTable = null;
 
 		try {
 			if (filesAsCachedRowSet.next()) {
 
-				filesAsDecoratedXHTMLTable = "";
+				filesAsDecoratedXHTMLTable = new StringBuffer();
 				
-				filesAsDecoratedXHTMLTable += "<table class=\"data-table\">";
+				filesAsDecoratedXHTMLTable.append("<table class=\"data-table\">");
 
-				 filesAsDecoratedXHTMLTable += "<thead>";
-				 filesAsDecoratedXHTMLTable += "<tr>";
+				 filesAsDecoratedXHTMLTable.append("<thead>");
+				 filesAsDecoratedXHTMLTable.append("<tr>");
 				 
-				 filesAsDecoratedXHTMLTable += "<th><!-- Column for checkboxes --></th>";
-				 filesAsDecoratedXHTMLTable += "<th class=\"idHeadingContainer\">ID</th>";
-				 filesAsDecoratedXHTMLTable += "<th><a class=\"sortByFilenameLink\">Filename</a></th>";
-				 filesAsDecoratedXHTMLTable += "<th>Origin</th>";
-				 filesAsDecoratedXHTMLTable += "<th>Created</th>";
-				 filesAsDecoratedXHTMLTable += "<th class=\"fileSizeHeadingContainer\">Size</th>";
+				 filesAsDecoratedXHTMLTable.append("<th><!-- Column for checkboxes --></th>");
+				 filesAsDecoratedXHTMLTable.append("<th class=\"idHeadingContainer\">ID</th>");
+				 filesAsDecoratedXHTMLTable.append("<th><a class=\"sortByFilenameLink\">Filename</a></th>");
+				 filesAsDecoratedXHTMLTable.append("<th>Origin</th>");
+				 filesAsDecoratedXHTMLTable.append("<th>Created</th>");
+				 filesAsDecoratedXHTMLTable.append("<th class=\"fileSizeHeadingContainer\">Size</th>");
 				 
-				 filesAsDecoratedXHTMLTable += "<th>Rows</th>";
-				 filesAsDecoratedXHTMLTable += "<th>Cols</th>";
-				 filesAsDecoratedXHTMLTable += "<th><!-- Column for download links --></th>";
+				 filesAsDecoratedXHTMLTable.append("<th>Rows</th>");
+				 filesAsDecoratedXHTMLTable.append("<th>Cols</th>");
+				 filesAsDecoratedXHTMLTable.append("<th><!-- Column for download links --></th>");
 				 
-				 filesAsDecoratedXHTMLTable += "</tr>";
-				 filesAsDecoratedXHTMLTable += "</thead>";
+				 filesAsDecoratedXHTMLTable.append("</tr>");
+				 filesAsDecoratedXHTMLTable.append("</thead>");
 				 
-				 filesAsDecoratedXHTMLTable += "<tbody>";
+				 filesAsDecoratedXHTMLTable.append("<tbody>");
 				 
 				//because next() skips the first row.
 				 filesAsCachedRowSet.beforeFirst();
@@ -92,71 +92,69 @@ public class FilesFunctions {
 						rowLastClassName = "last ";
 					}
 					
-					filesAsDecoratedXHTMLTable += "<tr class=\"" + rowStripeClassName + rowFirstClassName + rowLastClassName + "\">";
+					filesAsDecoratedXHTMLTable.append("<tr class=\"").append(rowStripeClassName).append(rowFirstClassName).append(rowLastClassName).append("\">");
 
-					filesAsDecoratedXHTMLTable += "<td><input type=\"checkbox\" name=\"file_id\" value=\"" + filesAsCachedRowSet.getString("id") + "\" /></td>";
+					filesAsDecoratedXHTMLTable.append("<td><input type=\"checkbox\" name=\"file_id\" value=\"").append(filesAsCachedRowSet.getString("id")).append("\" /></td>");
 					 
 					 
-					 filesAsDecoratedXHTMLTable += "<td class=\"idContainer\">" + filesAsCachedRowSet.getString("id") + "</td>";
-					 filesAsDecoratedXHTMLTable += "<td><a href=\"/dataMerger/files/" + filesAsCachedRowSet.getString("id") + "\">" + filesAsCachedRowSet.getString("filename") + "</a></td>";
+					 filesAsDecoratedXHTMLTable.append("<td class=\"idContainer\">").append(filesAsCachedRowSet.getString("id")).append("</td>");
+					 filesAsDecoratedXHTMLTable.append("<td><a href=\"/dataMerger/files/").append(filesAsCachedRowSet.getString("id")).append("\">").append(filesAsCachedRowSet.getString("filename")).append("</a></td>");
 					 
 					 if (filesAsCachedRowSet.getString("origin") != null) {
-						 filesAsDecoratedXHTMLTable += "<td>" + filesAsCachedRowSet.getString("origin") + "</td>";
+						 filesAsDecoratedXHTMLTable.append("<td>").append(filesAsCachedRowSet.getString("origin")).append("</td>");
 					 } else {
-						 filesAsDecoratedXHTMLTable += "<td>---</td>";
+						 filesAsDecoratedXHTMLTable.append("<td>---</td>");
 					 }
 					 
 					 
-					 filesAsDecoratedXHTMLTable += "<td>" + dateFormat.format(filesAsCachedRowSet.getTimestamp("created_datetime")) + "</td>";
-					 filesAsDecoratedXHTMLTable += "<td class=\"fileSizeContainer\">" + convertBytesAsLongIntoMegaBytesAsString(filesAsCachedRowSet.getLong("file_size_in_bytes")) + "</td>";
+					 filesAsDecoratedXHTMLTable.append("<td>").append(dateFormat.format(filesAsCachedRowSet.getTimestamp("created_datetime"))).append("</td>");
+					 filesAsDecoratedXHTMLTable.append("<td class=\"fileSizeContainer\">").append(convertBytesAsLongIntoMegaBytesAsString(filesAsCachedRowSet.getLong("file_size_in_bytes"))).append("</td>");
 					 
 					 
 					 if (filesAsCachedRowSet.getString("rows_count") != null) {
-						 filesAsDecoratedXHTMLTable += "<td class=\"rowsCountContainer\">" + filesAsCachedRowSet.getString("rows_count") + "</td>";
+						 filesAsDecoratedXHTMLTable.append("<td class=\"rowsCountContainer\">").append(filesAsCachedRowSet.getString("rows_count")).append("</td>");
 					 } else {
-						 filesAsDecoratedXHTMLTable += "<td class=\"rowsCountContainer\">---</td>";
+						 filesAsDecoratedXHTMLTable.append("<td class=\"rowsCountContainer\">---</td>");
 					 }
 					 
 					 if (filesAsCachedRowSet.getString("columns_count") != null) {
-						 filesAsDecoratedXHTMLTable += "<td class=\"columnsCountContainer\">" + filesAsCachedRowSet.getString("columns_count") + "</td>";
+						 filesAsDecoratedXHTMLTable.append("<td class=\"columnsCountContainer\">").append(filesAsCachedRowSet.getString("columns_count")).append("</td>");
 					 } else {
-						 filesAsDecoratedXHTMLTable += "<td class=\"columnsCountContainer\">---</td>";
+						 filesAsDecoratedXHTMLTable.append("<td class=\"columnsCountContainer\">---</td>");
 					 }
 					 
-					 filesAsDecoratedXHTMLTable += "<td><a href=\"/dataMerger/files/" + filesAsCachedRowSet.getString("id") + "\">Download</a></td>";
+					 filesAsDecoratedXHTMLTable.append("<td><a href=\"/dataMerger/files/").append(filesAsCachedRowSet.getString("id")).append("\">Download</a></td>");
 					 
-					 filesAsDecoratedXHTMLTable += "</tr>";
+					 filesAsDecoratedXHTMLTable.append("</tr>");
 					 
 					 
 					 rowFirstClassName = "";
 				  }
 
-				filesAsDecoratedXHTMLTable += "</tbody>";
+				filesAsDecoratedXHTMLTable.append("</tbody>");
 				 
-				filesAsDecoratedXHTMLTable += "</table>";
+				filesAsDecoratedXHTMLTable.append("</table>");
 				
-				filesAsDecoratedXHTMLTable += "<!-- <div>TODO: paging</div> -->";
+				filesAsDecoratedXHTMLTable.append("<p>");
 				
-				filesAsDecoratedXHTMLTable += "<p>";
+				filesAsDecoratedXHTMLTable.append("<button class=\"merge-files-button\">Merge</button><img class=\"merging-indicator\" src=\"/dataMerger/pages/shared/gif/loading.gif\" style=\"display:none\" title=\"Merging...\"/>");
 				
-				filesAsDecoratedXHTMLTable += "<button class=\"merge-files-button\">Merge</button><img class=\"merging-indicator\" src=\"/dataMerger/pages/shared/gif/loading.gif\" style=\"display:none\" title=\"Merging...\"/>";
+				filesAsDecoratedXHTMLTable.append("<button class=\"hide-files-button\">Hide</button><img class=\"hiding-indicator\" src=\"/dataMerger/pages/shared/gif/loading.gif\" style=\"display:none\" title=\"Hiding...\"/>");
 				
-				filesAsDecoratedXHTMLTable += "<button class=\"hide-files-button\">Hide</button><img class=\"hiding-indicator\" src=\"/dataMerger/pages/shared/gif/loading.gif\" style=\"display:none\" title=\"Hiding...\"/>";
+				filesAsDecoratedXHTMLTable.append("<button class=\"show-hidden-files-button\">Show hidden</button><img class=\"showing-indicator\" src=\"/dataMerger/pages/shared/gif/loading.gif\" style=\"display:none\" title=\"Showing...\"/>");
 				
-				filesAsDecoratedXHTMLTable += "<button class=\"show-hidden-files-button\">Show hidden</button><img class=\"showing-indicator\" src=\"/dataMerger/pages/shared/gif/loading.gif\" style=\"display:none\" title=\"Showing...\"/>";
+				filesAsDecoratedXHTMLTable.append("<button class=\"remove-files-button\">Delete</button><img class=\"removing-indicator\" src=\"/dataMerger/pages/shared/gif/loading.gif\" style=\"display:none\" title=\"Removing...\"/>");
 				
-				filesAsDecoratedXHTMLTable += "<button class=\"remove-files-button\">Delete</button><img class=\"removing-indicator\" src=\"/dataMerger/pages/shared/gif/loading.gif\" style=\"display:none\" title=\"Removing...\"/>";
-				
-				filesAsDecoratedXHTMLTable += "</p>";
+				filesAsDecoratedXHTMLTable.append("</p>");
 
 			} else {
 				
-				filesAsDecoratedXHTMLTable = "<p>You have no files.</p>";
+				filesAsDecoratedXHTMLTable = new StringBuffer("<p>You have no files.</p>");
 				
 				//TODO: If there are any hidden.
-				filesAsDecoratedXHTMLTable += "<p>";
-				filesAsDecoratedXHTMLTable += "<button class=\"show-hidden-files-button\">Show hidden</button><img class=\"showing-indicator\" src=\"/dataMerger/pages/shared/gif/loading.gif\" style=\"display:none\" title=\"Showing...\"/>";
-				filesAsDecoratedXHTMLTable += "</p>";
+				filesAsDecoratedXHTMLTable.append("<p>");
+				filesAsDecoratedXHTMLTable.append("<button class=\"show-hidden-files-button\">Show hidden</button><img class=\"showing-indicator\" src=\"/dataMerger/pages/shared/gif/loading.gif\" style=\"display:none\" title=\"Showing...\"/>");
+				filesAsDecoratedXHTMLTable.append("</p>");
 				
 			}
 		} catch (SQLException e) {
@@ -165,39 +163,40 @@ public class FilesFunctions {
 		}
 
 		
-		return filesAsDecoratedXHTMLTable;
+		return filesAsDecoratedXHTMLTable.toString();
 	}
 
 	public String getHiddenFilesAsDecoratedXHTMLTableUsingHiddenFilesAsCachedRowSet(
 			CachedRowSet hiddenFilesAsCachedRowSet) {
-		String hiddenFilesAsDecoratedXHTMLTable = null;
+		
+		StringBuffer hiddenFilesAsDecoratedXHTMLTable = null;
 
 		try {
 			if (hiddenFilesAsCachedRowSet.next()) {
 
-				hiddenFilesAsDecoratedXHTMLTable = "";
+				hiddenFilesAsDecoratedXHTMLTable = new StringBuffer();
 				
-				hiddenFilesAsDecoratedXHTMLTable += "<table class=\"data-table\">";
+				hiddenFilesAsDecoratedXHTMLTable.append("<table class=\"data-table\">");
 
-				 hiddenFilesAsDecoratedXHTMLTable += "<thead>";
-				 hiddenFilesAsDecoratedXHTMLTable += "<tr>";
+				 hiddenFilesAsDecoratedXHTMLTable.append("<thead>");
+				 hiddenFilesAsDecoratedXHTMLTable.append("<tr>");
 				 
-				 hiddenFilesAsDecoratedXHTMLTable += "<th><!-- Column for checkboxes --></th>";
-				 hiddenFilesAsDecoratedXHTMLTable += "<th class=\"idHeadingContainer\">ID</th>";
-				 hiddenFilesAsDecoratedXHTMLTable += "<th>Filename</th>";
-				 hiddenFilesAsDecoratedXHTMLTable += "<th>Origin</th>";
-				 hiddenFilesAsDecoratedXHTMLTable += "<th>Created</th>";
-				 hiddenFilesAsDecoratedXHTMLTable += "<th class=\"fileSizeHeadingContainer\">Size</th>";
+				 hiddenFilesAsDecoratedXHTMLTable.append("<th><!-- Column for checkboxes --></th>");
+				 hiddenFilesAsDecoratedXHTMLTable.append("<th class=\"idHeadingContainer\">ID</th>");
+				 hiddenFilesAsDecoratedXHTMLTable.append("<th>Filename</th>");
+				 hiddenFilesAsDecoratedXHTMLTable.append("<th>Origin</th>");
+				 hiddenFilesAsDecoratedXHTMLTable.append("<th>Created</th>");
+				 hiddenFilesAsDecoratedXHTMLTable.append("<th class=\"fileSizeHeadingContainer\">Size</th>");
 				 
-				 hiddenFilesAsDecoratedXHTMLTable += "<th>Rows</th>";
-				 hiddenFilesAsDecoratedXHTMLTable += "<th>Cols</th>";
-				 hiddenFilesAsDecoratedXHTMLTable += "<th>Hidden</th>";
-				 hiddenFilesAsDecoratedXHTMLTable += "<th><!-- Column for download links --></th>";
+				 hiddenFilesAsDecoratedXHTMLTable.append("<th>Rows</th>");
+				 hiddenFilesAsDecoratedXHTMLTable.append("<th>Cols</th>");
+				 hiddenFilesAsDecoratedXHTMLTable.append("<th>Hidden</th>");
+				 hiddenFilesAsDecoratedXHTMLTable.append("<th><!-- Column for download links --></th>");
 				 
-				 hiddenFilesAsDecoratedXHTMLTable += "</tr>";
-				 hiddenFilesAsDecoratedXHTMLTable += "</thead>";
+				 hiddenFilesAsDecoratedXHTMLTable.append("</tr>");
+				 hiddenFilesAsDecoratedXHTMLTable.append("</thead>");
 				 
-				 hiddenFilesAsDecoratedXHTMLTable += "<tbody>";
+				 hiddenFilesAsDecoratedXHTMLTable.append("<tbody>");
 				 
 				//because next() skips the first row.
 				 hiddenFilesAsCachedRowSet.beforeFirst();
@@ -222,79 +221,79 @@ public class FilesFunctions {
 						rowLastClassName = "last ";
 					}
 					
-					hiddenFilesAsDecoratedXHTMLTable += "<tr class=\"" + rowStripeClassName + rowFirstClassName + rowLastClassName + "\">";
+					hiddenFilesAsDecoratedXHTMLTable.append("<tr class=\"").append(rowStripeClassName).append(rowFirstClassName).append(rowLastClassName).append("\">");
 
-					hiddenFilesAsDecoratedXHTMLTable += "<td><input type=\"checkbox\" name=\"file_id\" value=\"" + hiddenFilesAsCachedRowSet.getString("id") + "\" /></td>";
+					hiddenFilesAsDecoratedXHTMLTable.append("<td><input type=\"checkbox\" name=\"file_id\" value=\"").append(hiddenFilesAsCachedRowSet.getString("id")).append("\" /></td>");
 					 
 					 
-					 hiddenFilesAsDecoratedXHTMLTable += "<td class=\"idContainer\">" + hiddenFilesAsCachedRowSet.getString("id") + "</td>";
-					 hiddenFilesAsDecoratedXHTMLTable += "<td><a href=\"/dataMerger/files/" + hiddenFilesAsCachedRowSet.getString("id") + "\">" + hiddenFilesAsCachedRowSet.getString("filename") + "</a></td>";
+					 hiddenFilesAsDecoratedXHTMLTable.append("<td class=\"idContainer\">").append(hiddenFilesAsCachedRowSet.getString("id")).append("</td>");
+					 hiddenFilesAsDecoratedXHTMLTable.append("<td><a href=\"/dataMerger/files/").append(hiddenFilesAsCachedRowSet.getString("id")).append("\">").append(hiddenFilesAsCachedRowSet.getString("filename")).append("</a></td>");
 					 
 					 if (hiddenFilesAsCachedRowSet.getString("origin") != null) {
-						 hiddenFilesAsDecoratedXHTMLTable += "<td>" + hiddenFilesAsCachedRowSet.getString("origin") + "</td>";
+						 hiddenFilesAsDecoratedXHTMLTable.append("<td>").append(hiddenFilesAsCachedRowSet.getString("origin")).append("</td>");
 					 } else {
-						 hiddenFilesAsDecoratedXHTMLTable += "<td>---</td>";
+						 hiddenFilesAsDecoratedXHTMLTable.append("<td>---</td>");
 					 }
 					 
 					 
-					 hiddenFilesAsDecoratedXHTMLTable += "<td>" + dateFormat.format(hiddenFilesAsCachedRowSet.getTimestamp("created_datetime")) + "</td>";
-					 hiddenFilesAsDecoratedXHTMLTable += "<td class=\"fileSizeContainer\">" + convertBytesAsLongIntoMegaBytesAsString(hiddenFilesAsCachedRowSet.getLong("file_size_in_bytes")) + "</td>";
+					 hiddenFilesAsDecoratedXHTMLTable.append("<td>").append(dateFormat.format(hiddenFilesAsCachedRowSet.getTimestamp("created_datetime"))).append("</td>");
+					 hiddenFilesAsDecoratedXHTMLTable.append("<td class=\"fileSizeContainer\">").append(convertBytesAsLongIntoMegaBytesAsString(hiddenFilesAsCachedRowSet.getLong("file_size_in_bytes"))).append("</td>");
 					 
 					 
 					 if (hiddenFilesAsCachedRowSet.getString("rows_count") != null) {
-						 hiddenFilesAsDecoratedXHTMLTable += "<td class=\"rowsCountContainer\">" + hiddenFilesAsCachedRowSet.getString("rows_count") + "</td>";
+						 hiddenFilesAsDecoratedXHTMLTable.append("<td class=\"rowsCountContainer\">").append(hiddenFilesAsCachedRowSet.getString("rows_count")).append("</td>");
 					 } else {
-						 hiddenFilesAsDecoratedXHTMLTable += "<td class=\"rowsCountContainer\">---</td>";
+						 hiddenFilesAsDecoratedXHTMLTable.append("<td class=\"rowsCountContainer\">---</td>");
 					 }
 					 
 					 if (hiddenFilesAsCachedRowSet.getString("columns_count") != null) {
-						 hiddenFilesAsDecoratedXHTMLTable += "<td class=\"columnsCountContainer\">" + hiddenFilesAsCachedRowSet.getString("columns_count") + "</td>";
+						 hiddenFilesAsDecoratedXHTMLTable.append("<td class=\"columnsCountContainer\">").append(hiddenFilesAsCachedRowSet.getString("columns_count")).append("</td>");
 					 } else {
-						 hiddenFilesAsDecoratedXHTMLTable += "<td class=\"columnsCountContainer\">---</td>";
+						 hiddenFilesAsDecoratedXHTMLTable.append("<td class=\"columnsCountContainer\">---</td>");
 					 }
 					 
 					 Boolean hidden = hiddenFilesAsCachedRowSet.getBoolean("hidden");
 					 
 					 if (hidden != null && hidden) {
-						 hiddenFilesAsDecoratedXHTMLTable += "<td class=\"columnsCountContainer\">Yes</td>";
+						 hiddenFilesAsDecoratedXHTMLTable.append("<td class=\"columnsCountContainer\">Yes</td>");
 					 } else {
-						 hiddenFilesAsDecoratedXHTMLTable += "<td class=\"columnsCountContainer\">No</td>";
+						 hiddenFilesAsDecoratedXHTMLTable.append("<td class=\"columnsCountContainer\">No</td>");
 					 }
 					 
-					 hiddenFilesAsDecoratedXHTMLTable += "<td><a href=\"/dataMerger/files/" + hiddenFilesAsCachedRowSet.getString("id") + "\">Download</a></td>";
+					 hiddenFilesAsDecoratedXHTMLTable.append("<td><a href=\"/dataMerger/files/").append(hiddenFilesAsCachedRowSet.getString("id")).append("\">Download</a></td>");
 					 
-					 hiddenFilesAsDecoratedXHTMLTable += "</tr>";
+					 hiddenFilesAsDecoratedXHTMLTable.append("</tr>");
 					 
 					 
 					 rowFirstClassName = "";
 				  }
 
-				hiddenFilesAsDecoratedXHTMLTable += "</tbody>";
+				hiddenFilesAsDecoratedXHTMLTable.append("</tbody>");
 				 
-				hiddenFilesAsDecoratedXHTMLTable += "</table>";
+				hiddenFilesAsDecoratedXHTMLTable.append("</table>");
 				
-				hiddenFilesAsDecoratedXHTMLTable += "<!-- <div>TODO: paging</div> -->";
+				hiddenFilesAsDecoratedXHTMLTable.append("<!-- <div>TODO: paging</div> -->");
 				
-				hiddenFilesAsDecoratedXHTMLTable += "<p>";
+				hiddenFilesAsDecoratedXHTMLTable.append("<p>");
 				
-				hiddenFilesAsDecoratedXHTMLTable += "<button class=\"merge-files-button\">Merge</button><img class=\"merging-indicator\" src=\"/dataMerger/pages/shared/gif/loading.gif\" style=\"display:none\" title=\"Merging...\"/>";
+				hiddenFilesAsDecoratedXHTMLTable.append("<button class=\"merge-files-button\">Merge</button><img class=\"merging-indicator\" src=\"/dataMerger/pages/shared/gif/loading.gif\" style=\"display:none\" title=\"Merging...\"/>");
 				
-				hiddenFilesAsDecoratedXHTMLTable += "<button class=\"show-unhidden-files-button\">Show unhidden</button><img class=\"showing-indicator\" src=\"/dataMerger/pages/shared/gif/loading.gif\" style=\"display:none\" title=\"Showing...\"/>";
+				hiddenFilesAsDecoratedXHTMLTable.append("<button class=\"show-unhidden-files-button\">Show unhidden</button><img class=\"showing-indicator\" src=\"/dataMerger/pages/shared/gif/loading.gif\" style=\"display:none\" title=\"Showing...\"/>");
 				
-				hiddenFilesAsDecoratedXHTMLTable += "<button class=\"unhide-files-button\">Unhide</button><img class=\"unhiding-indicator\" src=\"/dataMerger/pages/shared/gif/loading.gif\" style=\"display:none\" title=\"Unhiding...\"/>";
+				hiddenFilesAsDecoratedXHTMLTable.append("<button class=\"unhide-files-button\">Unhide</button><img class=\"unhiding-indicator\" src=\"/dataMerger/pages/shared/gif/loading.gif\" style=\"display:none\" title=\"Unhiding...\"/>");
 				
-				hiddenFilesAsDecoratedXHTMLTable += "<button class=\"remove-files-button\">Delete</button><img class=\"removing-indicator\" src=\"/dataMerger/pages/shared/gif/loading.gif\" style=\"display:none\" title=\"Removing...\"/>";
+				hiddenFilesAsDecoratedXHTMLTable.append("<button class=\"remove-files-button\">Delete</button><img class=\"removing-indicator\" src=\"/dataMerger/pages/shared/gif/loading.gif\" style=\"display:none\" title=\"Removing...\"/>");
 				
-				hiddenFilesAsDecoratedXHTMLTable += "</p>";
+				hiddenFilesAsDecoratedXHTMLTable.append("</p>");
 
 			} else {
 				
-				hiddenFilesAsDecoratedXHTMLTable = "<p>You have no hidden files.</p>";
+				hiddenFilesAsDecoratedXHTMLTable = new StringBuffer("<p>You have no hidden files.</p>");
 				
 				//TODO: If there are any hidden.
-				hiddenFilesAsDecoratedXHTMLTable += "<p>";
-				hiddenFilesAsDecoratedXHTMLTable += "<button class=\"show-unhidden-files-button\">Show unhidden</button><img class=\"showing-indicator\" src=\"/dataMerger/pages/shared/gif/loading.gif\" style=\"display:none\" title=\"Showing...\"/>";
-				hiddenFilesAsDecoratedXHTMLTable += "</p>";
+				hiddenFilesAsDecoratedXHTMLTable.append("<p>");
+				hiddenFilesAsDecoratedXHTMLTable.append("<button class=\"show-unhidden-files-button\">Show unhidden</button><img class=\"showing-indicator\" src=\"/dataMerger/pages/shared/gif/loading.gif\" style=\"display:none\" title=\"Showing...\"/>");
+				hiddenFilesAsDecoratedXHTMLTable.append("</p>");
 				
 			}
 		} catch (SQLException e) {
@@ -303,7 +302,7 @@ public class FilesFunctions {
 		}
 
 		
-		return hiddenFilesAsDecoratedXHTMLTable;
+		return hiddenFilesAsDecoratedXHTMLTable.toString();
 	}	
 	
 }

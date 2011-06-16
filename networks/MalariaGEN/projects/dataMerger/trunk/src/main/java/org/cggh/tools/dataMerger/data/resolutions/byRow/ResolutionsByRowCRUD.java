@@ -58,7 +58,6 @@ public class ResolutionsByRowCRUD implements java.io.Serializable {
 			  	joinsModel.setDatabaseModel(this.getDatabaseModel());
 			  	resolutionsByRowFunctions.setJoinColumnNamesByColumnNumberAsHashMap(joinsModel.retrieveJoinColumnNamesByColumnNumberAsHashMapUsingMergeModel(mergeModel));
 			  	
-			  	/////////TODO:
 			  	ResolutionsCRUD resolutionsCRUD = new ResolutionsCRUD();
 			  	resolutionsCRUD.setDatabaseModel(this.getDatabaseModel());
 			  	resolutionsByRowFunctions.setSolutionByColumnIdUsingCellCoordsAsHashMap(resolutionsCRUD.retrieveSolutionByColumnIdUsingCellCoordsAsHashMapUsingMergeModel(mergeModel));
@@ -144,7 +143,7 @@ public class ResolutionsByRowCRUD implements java.io.Serializable {
 				if (connection != null) {
 
 					
-					String keyColumnReferencesAsCSVForSelectSQL = "";
+					StringBuffer keyColumnReferencesAsCSVForSelectSQL = new StringBuffer();
 
 
 					mergeModel.getJoinedKeytableModel().getDataAsCachedRowSet().beforeFirst();
@@ -156,7 +155,7 @@ public class ResolutionsByRowCRUD implements java.io.Serializable {
 
 					    for (int i = 1; i <= mergeModel.getJoinedKeytableModel().getDataAsCachedRowSet().getMetaData().getColumnCount(); i++) {
 					    	
-					    	keyColumnReferencesAsCSVForSelectSQL += ", " + "`" + mergeModel.getJoinedKeytableModel().getName() + "`.`" + mergeModel.getJoinedKeytableModel().getDataAsCachedRowSet().getMetaData().getColumnName(i) + "`";
+					    	keyColumnReferencesAsCSVForSelectSQL.append(", ").append("`").append(mergeModel.getJoinedKeytableModel().getName()).append("`.`").append(mergeModel.getJoinedKeytableModel().getDataAsCachedRowSet().getMetaData().getColumnName(i)).append("`");
 					    }
 						
 						
@@ -166,7 +165,8 @@ public class ResolutionsByRowCRUD implements java.io.Serializable {
 					}
 					
 					
-					String nonKeyCrossDatatableColumnNameAliasesForSelectSQL = "";
+					StringBuffer nonKeyCrossDatatableColumnNameAliasesForSelectSQL = new StringBuffer();
+					
 					mergeModel.getJoinsModel().getNonKeyCrossDatatableJoinsAsCachedRowSet().beforeFirst();
 					
 					if (mergeModel.getJoinsModel().getNonKeyCrossDatatableJoinsAsCachedRowSet().next()) {
@@ -177,7 +177,7 @@ public class ResolutionsByRowCRUD implements java.io.Serializable {
 						
 						while (mergeModel.getJoinsModel().getNonKeyCrossDatatableJoinsAsCachedRowSet().next()) {
 							
-							nonKeyCrossDatatableColumnNameAliasesForSelectSQL += ", `" + mergeModel.getDatatable1Model().getName() + "`.`" + mergeModel.getJoinsModel().getNonKeyCrossDatatableJoinsAsCachedRowSet().getString("datatable_1_column_name") + "` AS `column_" + mergeModel.getJoinsModel().getNonKeyCrossDatatableJoinsAsCachedRowSet().getString("column_number") + "_source_1`, `" + mergeModel.getDatatable2Model().getName() + "`.`" + mergeModel.getJoinsModel().getNonKeyCrossDatatableJoinsAsCachedRowSet().getString("datatable_2_column_name") + "` AS `column_" + mergeModel.getJoinsModel().getNonKeyCrossDatatableJoinsAsCachedRowSet().getString("column_number") + "_source_2` ";
+							nonKeyCrossDatatableColumnNameAliasesForSelectSQL.append(", `").append(mergeModel.getDatatable1Model().getName()).append("`.`").append(mergeModel.getJoinsModel().getNonKeyCrossDatatableJoinsAsCachedRowSet().getString("datatable_1_column_name")).append("` AS `column_").append(mergeModel.getJoinsModel().getNonKeyCrossDatatableJoinsAsCachedRowSet().getString("column_number")).append("_source_1`, `").append(mergeModel.getDatatable2Model().getName()).append("`.`").append(mergeModel.getJoinsModel().getNonKeyCrossDatatableJoinsAsCachedRowSet().getString("datatable_2_column_name")).append("` AS `column_").append(mergeModel.getJoinsModel().getNonKeyCrossDatatableJoinsAsCachedRowSet().getString("column_number")).append("_source_2` ");
 						}
 						
 					} else {
@@ -187,8 +187,8 @@ public class ResolutionsByRowCRUD implements java.io.Serializable {
 					}
 					
 					
-					String datatable1JoinConditionSQL = "";
-					String datatable2JoinConditionSQL = "";		
+					StringBuffer datatable1JoinConditionSQL = new StringBuffer();
+					StringBuffer datatable2JoinConditionSQL = new StringBuffer();		
 		
 					mergeModel.getJoinsModel().getKeyJoinsAsCachedRowSet().beforeFirst();
 					
@@ -198,13 +198,13 @@ public class ResolutionsByRowCRUD implements java.io.Serializable {
 						
 						mergeModel.getJoinsModel().getKeyJoinsAsCachedRowSet().first();
 						
-						datatable1JoinConditionSQL += "`" + mergeModel.getDatatable1Model().getName() + "`.`" + mergeModel.getJoinsModel().getKeyJoinsAsCachedRowSet().getString("datatable_1_column_name") + "` = `" + mergeModel.getJoinedKeytableModel().getName() + "`.`key_column_" + mergeModel.getJoinsModel().getKeyJoinsAsCachedRowSet().getString("column_number") + "` ";
-						datatable2JoinConditionSQL += "`" + mergeModel.getDatatable2Model().getName() + "`.`" + mergeModel.getJoinsModel().getKeyJoinsAsCachedRowSet().getString("datatable_2_column_name") + "` = `" + mergeModel.getJoinedKeytableModel().getName() + "`.`key_column_" + mergeModel.getJoinsModel().getKeyJoinsAsCachedRowSet().getString("column_number") + "` ";
+						datatable1JoinConditionSQL.append("`").append(mergeModel.getDatatable1Model().getName()).append("`.`").append(mergeModel.getJoinsModel().getKeyJoinsAsCachedRowSet().getString("datatable_1_column_name")).append("` = `").append(mergeModel.getJoinedKeytableModel().getName()).append("`.`key_column_").append(mergeModel.getJoinsModel().getKeyJoinsAsCachedRowSet().getString("column_number")).append("` ");
+						datatable2JoinConditionSQL.append("`").append(mergeModel.getDatatable2Model().getName()).append("`.`").append(mergeModel.getJoinsModel().getKeyJoinsAsCachedRowSet().getString("datatable_2_column_name")).append("` = `").append(mergeModel.getJoinedKeytableModel().getName()).append("`.`key_column_").append(mergeModel.getJoinsModel().getKeyJoinsAsCachedRowSet().getString("column_number")).append("` ");
 						
 						while (mergeModel.getJoinsModel().getKeyJoinsAsCachedRowSet().next()) {
 							
-							datatable1JoinConditionSQL += "AND `" + mergeModel.getDatatable1Model().getName() + "`.`" + mergeModel.getJoinsModel().getKeyJoinsAsCachedRowSet().getString("datatable_1_column_name") + "` = `" + mergeModel.getJoinedKeytableModel().getName() + "`.`key_column_" + mergeModel.getJoinsModel().getKeyJoinsAsCachedRowSet().getString("column_number") + "` ";
-							datatable2JoinConditionSQL += "AND `" + mergeModel.getDatatable2Model().getName() + "`.`" + mergeModel.getJoinsModel().getKeyJoinsAsCachedRowSet().getString("datatable_2_column_name") + "` = `" + mergeModel.getJoinedKeytableModel().getName() + "`.`key_column_" + mergeModel.getJoinsModel().getKeyJoinsAsCachedRowSet().getString("column_number") + "` ";
+							datatable1JoinConditionSQL.append("AND `").append(mergeModel.getDatatable1Model().getName()).append("`.`").append(mergeModel.getJoinsModel().getKeyJoinsAsCachedRowSet().getString("datatable_1_column_name")).append("` = `").append(mergeModel.getJoinedKeytableModel().getName()).append("`.`key_column_").append(mergeModel.getJoinsModel().getKeyJoinsAsCachedRowSet().getString("column_number")).append("` ");
+							datatable2JoinConditionSQL.append("AND `").append(mergeModel.getDatatable2Model().getName()).append("`.`").append(mergeModel.getJoinsModel().getKeyJoinsAsCachedRowSet().getString("datatable_2_column_name")).append("` = `").append(mergeModel.getJoinedKeytableModel().getName()).append("`.`key_column_").append(mergeModel.getJoinsModel().getKeyJoinsAsCachedRowSet().getString("column_number")).append("` ");
 						}
 						
 					} else {
@@ -216,12 +216,12 @@ public class ResolutionsByRowCRUD implements java.io.Serializable {
 				    	  
 				    	  
 				    	  String selectResolutionsByRowSQL = "SELECT resolution.merge_id, resolution.joined_keytable_id, COUNT(*) AS conflicts_count, resolution.solution_by_row_id, resolution.constant " + 
-		        		  keyColumnReferencesAsCSVForSelectSQL + 
-		        		  nonKeyCrossDatatableColumnNameAliasesForSelectSQL +  
+		        		  keyColumnReferencesAsCSVForSelectSQL.toString() + 
+		        		  nonKeyCrossDatatableColumnNameAliasesForSelectSQL.toString() +  
 		        		  "FROM resolution " +
 		        		  "JOIN `" + mergeModel.getJoinedKeytableModel().getName() + "` ON `" + mergeModel.getJoinedKeytableModel().getName() + "`.id = resolution.joined_keytable_id " +
-		        		  "JOIN `" + mergeModel.getDatatable1Model().getName() + "` ON " + datatable1JoinConditionSQL + 
-		        		  "JOIN `" + mergeModel.getDatatable2Model().getName() + "` ON " + datatable2JoinConditionSQL + 
+		        		  "JOIN `" + mergeModel.getDatatable1Model().getName() + "` ON " + datatable1JoinConditionSQL.toString() + 
+		        		  "JOIN `" + mergeModel.getDatatable2Model().getName() + "` ON " + datatable2JoinConditionSQL.toString() + 
 		        		  "WHERE resolution.merge_id = ?  AND resolution.solution_by_column_id IS NULL AND resolution.solution_by_cell_id IS NULL " +
 		        		  "GROUP BY resolution.joined_keytable_id " +
 		        		  "ORDER BY resolution.joined_keytable_id " +

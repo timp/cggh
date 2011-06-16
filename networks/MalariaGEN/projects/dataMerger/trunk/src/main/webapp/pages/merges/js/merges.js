@@ -35,12 +35,12 @@ function initExportFunction () {
 					} else {
 						alert("data: " + data);
 						alert("data.id: " + data.id);
-						$('.status').html("textStatus: " + textStatus);
+						$('.status').html(textStatus);
 					}
 				},
 				error: function (jqXHR, textStatus, errorThrown){
-		            $('.error').html("errorThrown: " + errorThrown);
-		            $('.status').html("textStatus: " + textStatus);
+		            $('.error').html(errorThrown);
+		            $('.status').html(textStatus);
 		        },
 				beforeSend: function() { exportingIndicator.show(); },
 		        complete: function() { exportingIndicator.hide(); }
@@ -90,12 +90,12 @@ function initDeleteMergeFunction () {
 								}
 				
 							} else {
-								$('.status').html("textStatus: " + textStatus);
+								$('.status').html(textStatus);
 							}
 						},
 						error: function (jqXHR, textStatus, errorThrown){
-				            $('.error').html("errorThrown: " + errorThrown);
-				            $('.status').html("textStatus: " + textStatus);
+				            $('.error').html(errorThrown);
+				            $('.status').html(textStatus);
 				        },
 						beforeSend: function() { deletingIndicator.show(); },
 				        complete: function() { deletingIndicator.hide(); }

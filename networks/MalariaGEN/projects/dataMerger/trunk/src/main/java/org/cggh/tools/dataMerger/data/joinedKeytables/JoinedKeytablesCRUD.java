@@ -127,14 +127,14 @@ public class JoinedKeytablesCRUD implements java.io.Serializable {
 
        
        
-		String keyColumnDefinitionsForCreateTableSQL = "id BIGINT(255) UNSIGNED NOT NULL AUTO_INCREMENT, ";
+		StringBuffer keyColumnDefinitionsForCreateTableSQL = new StringBuffer("id BIGINT(255) UNSIGNED NOT NULL AUTO_INCREMENT, ");
 		
-		String joinForSelectIntoTableSQL = "";
-		String orderForSelectIntoTableSQL = "";
+		StringBuffer joinForSelectIntoTableSQL = new StringBuffer();
+		StringBuffer orderForSelectIntoTableSQL = new StringBuffer();
 		
 
-		String keyColumnNamesAsCSVForInsertIntoJoinedKeytableSQL = "";
-		String datatable1KeyColumnNamesAsCSVForSelectFromDatatable1 = "";
+		StringBuffer keyColumnNamesAsCSVForInsertIntoJoinedKeytableSQL = new StringBuffer();
+		StringBuffer datatable1KeyColumnNamesAsCSVForSelectFromDatatable1 = new StringBuffer();
 		
 		try {
 			
@@ -145,22 +145,22 @@ public class JoinedKeytablesCRUD implements java.io.Serializable {
 				keyJoinsAsCachedRowSet.first();
 				
 				
-				keyColumnDefinitionsForCreateTableSQL = keyColumnDefinitionsForCreateTableSQL.concat("`key_column_" + keyJoinsAsCachedRowSet.getString("column_number") + "` VARCHAR(36) NOT NULL ");
-				keyColumnNamesAsCSVForInsertIntoJoinedKeytableSQL = keyColumnNamesAsCSVForInsertIntoJoinedKeytableSQL.concat("`key_column_" + keyJoinsAsCachedRowSet.getString("column_number") + "` ");
+				keyColumnDefinitionsForCreateTableSQL.append("`key_column_" + keyJoinsAsCachedRowSet.getString("column_number") + "` VARCHAR(36) NOT NULL ");
+				keyColumnNamesAsCSVForInsertIntoJoinedKeytableSQL.append("`key_column_" + keyJoinsAsCachedRowSet.getString("column_number") + "` ");
 				
 				
-				joinForSelectIntoTableSQL = joinForSelectIntoTableSQL.concat("`" + mergeModel.getDatatable1Model().getName() + "`.`" + keyJoinsAsCachedRowSet.getString("datatable_1_column_name") + "` = `" + mergeModel.getDatatable2Model().getName() + "`.`" + keyJoinsAsCachedRowSet.getString("datatable_2_column_name") + "` ");
-				orderForSelectIntoTableSQL = orderForSelectIntoTableSQL.concat("`" + mergeModel.getDatatable1Model().getName() + "`.`" + keyJoinsAsCachedRowSet.getString("datatable_1_column_name") + "` ");
-				datatable1KeyColumnNamesAsCSVForSelectFromDatatable1 = datatable1KeyColumnNamesAsCSVForSelectFromDatatable1.concat("`" + mergeModel.getDatatable1Model().getName() + "`.`" + keyJoinsAsCachedRowSet.getString("datatable_1_column_name") + "` ");
+				joinForSelectIntoTableSQL.append("`" + mergeModel.getDatatable1Model().getName() + "`.`" + keyJoinsAsCachedRowSet.getString("datatable_1_column_name") + "` = `" + mergeModel.getDatatable2Model().getName() + "`.`" + keyJoinsAsCachedRowSet.getString("datatable_2_column_name") + "` ");
+				orderForSelectIntoTableSQL.append("`" + mergeModel.getDatatable1Model().getName() + "`.`" + keyJoinsAsCachedRowSet.getString("datatable_1_column_name") + "` ");
+				datatable1KeyColumnNamesAsCSVForSelectFromDatatable1.append("`" + mergeModel.getDatatable1Model().getName() + "`.`" + keyJoinsAsCachedRowSet.getString("datatable_1_column_name") + "` ");
 				
 				while (keyJoinsAsCachedRowSet.next()) {
 					
-					keyColumnDefinitionsForCreateTableSQL = keyColumnDefinitionsForCreateTableSQL.concat(", `key_column_" + keyJoinsAsCachedRowSet.getString("column_number") + "` VARCHAR(36) NOT NULL ");
-					keyColumnNamesAsCSVForInsertIntoJoinedKeytableSQL = keyColumnNamesAsCSVForInsertIntoJoinedKeytableSQL.concat(", `key_column_" + keyJoinsAsCachedRowSet.getString("column_number") + "` ");
+					keyColumnDefinitionsForCreateTableSQL.append(", `key_column_" + keyJoinsAsCachedRowSet.getString("column_number") + "` VARCHAR(36) NOT NULL ");
+					keyColumnNamesAsCSVForInsertIntoJoinedKeytableSQL.append(", `key_column_" + keyJoinsAsCachedRowSet.getString("column_number") + "` ");
 					
-					joinForSelectIntoTableSQL = joinForSelectIntoTableSQL.concat("AND `" + mergeModel.getDatatable1Model().getName() + "`.`" + keyJoinsAsCachedRowSet.getString("datatable_1_column_name") + "` = `" + mergeModel.getDatatable2Model().getName() + "`.`" + keyJoinsAsCachedRowSet.getString("datatable_2_column_name") + "` ");
-					orderForSelectIntoTableSQL = orderForSelectIntoTableSQL.concat(", `" + mergeModel.getDatatable1Model().getName() + "`.`" + keyJoinsAsCachedRowSet.getString("datatable_1_column_name") + "` ");
-					datatable1KeyColumnNamesAsCSVForSelectFromDatatable1 = datatable1KeyColumnNamesAsCSVForSelectFromDatatable1.concat(", `" + mergeModel.getDatatable1Model().getName() + "`.`" + keyJoinsAsCachedRowSet.getString("datatable_1_column_name") + "` ");
+					joinForSelectIntoTableSQL.append("AND `" + mergeModel.getDatatable1Model().getName() + "`.`" + keyJoinsAsCachedRowSet.getString("datatable_1_column_name") + "` = `" + mergeModel.getDatatable2Model().getName() + "`.`" + keyJoinsAsCachedRowSet.getString("datatable_2_column_name") + "` ");
+					orderForSelectIntoTableSQL.append(", `" + mergeModel.getDatatable1Model().getName() + "`.`" + keyJoinsAsCachedRowSet.getString("datatable_1_column_name") + "` ");
+					datatable1KeyColumnNamesAsCSVForSelectFromDatatable1.append(", `" + mergeModel.getDatatable1Model().getName() + "`.`" + keyJoinsAsCachedRowSet.getString("datatable_1_column_name") + "` ");
 				}
 				
 				
@@ -181,7 +181,7 @@ public class JoinedKeytablesCRUD implements java.io.Serializable {
 		  // Create the table
 		  // Note: Cannot reliably make the keys primary keys because there is  a max key length (3072 bytes)
 		  String createJoinedKeytableSQL = "CREATE TABLE `" + joinedKeytableModel.getName() + "` (" + 
-		  									keyColumnDefinitionsForCreateTableSQL + 
+		  									keyColumnDefinitionsForCreateTableSQL.toString() + 
 							        		  ", PRIMARY KEY (id) " + 
 							        		  ") ENGINE=InnoDB;";
 		  
@@ -200,12 +200,12 @@ public class JoinedKeytablesCRUD implements java.io.Serializable {
 		 // Load the data using the datatables and the joins
 		  try {
 			  
-			  String selectIntoTableSQL = "INSERT INTO `" + joinedKeytableModel.getName() + "` (" + keyColumnNamesAsCSVForInsertIntoJoinedKeytableSQL + ") " +
-							      		  		"SELECT " + datatable1KeyColumnNamesAsCSVForSelectFromDatatable1 + " " +
+			  String selectIntoTableSQL = "INSERT INTO `" + joinedKeytableModel.getName() + "` (" + keyColumnNamesAsCSVForInsertIntoJoinedKeytableSQL.toString() + ") " +
+							      		  		"SELECT " + datatable1KeyColumnNamesAsCSVForSelectFromDatatable1.toString() + " " +
 							    		  		"FROM `" + mergeModel.getDatatable1Model().getName() + "` " +
 							    		  		"JOIN `" + mergeModel.getDatatable2Model().getName() + "` " +
-							    		  		"ON " + joinForSelectIntoTableSQL + 
-							    		  		"ORDER BY " + orderForSelectIntoTableSQL + ";";
+							    		  		"ON " + joinForSelectIntoTableSQL.toString() + 
+							    		  		"ORDER BY " + orderForSelectIntoTableSQL.toString() + ";";
 			  
 			  //this.logger.info("selectIntoTableSQL=" + selectIntoTableSQL);
 			  
