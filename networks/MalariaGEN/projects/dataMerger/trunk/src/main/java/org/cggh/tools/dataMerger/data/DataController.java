@@ -3,6 +3,7 @@ package org.cggh.tools.dataMerger.data;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
@@ -122,9 +123,20 @@ public class DataController extends HttpServlet {
 				  } 
 				  else if (request.getParameter("sort") != null) {
 
-					  if (request.getParameter("sort").equals("filename")) {
+					  HashMap<String, String> supportedSortRequestsAsRequestToColumnNameHashMap = new HashMap<String, String>();
+					  
+					  //TODO: maybe move this to a better place
+					  supportedSortRequestsAsRequestToColumnNameHashMap.put("id", "id");
+					  supportedSortRequestsAsRequestToColumnNameHashMap.put("filename", "filename");
+					  supportedSortRequestsAsRequestToColumnNameHashMap.put("fileOrigin", "origin");
+					  supportedSortRequestsAsRequestToColumnNameHashMap.put("createdDate", "created_datetime");
+					  supportedSortRequestsAsRequestToColumnNameHashMap.put("fileSize", "file_size_in_bytes");
+					  supportedSortRequestsAsRequestToColumnNameHashMap.put("rowsCount", "rows_count");
+					  supportedSortRequestsAsRequestToColumnNameHashMap.put("columnsCount", "columns_count");
+					  
+					  if (supportedSortRequestsAsRequestToColumnNameHashMap.containsKey(request.getParameter("sort"))) {
 						
-						  CachedRowSet filesSortedByFilenameAsCachedRowSet = filesCRUD.retrieveFilesSortedByFilenameAsCachedRowSetUsingUserId(userModel.getId());
+						  CachedRowSet filesSortedByFilenameAsCachedRowSet = filesCRUD.retrieveFilesSortedByColumnNameAsCachedRowSetUsingUserIdAndColumnName(userModel.getId(), supportedSortRequestsAsRequestToColumnNameHashMap.get(request.getParameter("sort")));
 							
 						  if (filesSortedByFilenameAsCachedRowSet != null) {
 					
@@ -133,7 +145,7 @@ public class DataController extends HttpServlet {
 							    
 						  } else {
 						  
-							  filesAsHTML = "<p>Failed to retrieve Files Sorted By Filename As CachedRowSet Using User Id</p>";
+							  filesAsHTML = "<p>Failed to retrieve Files Sorted By Column Name As CachedRowSet Using User Id</p>";
 							  
 						  }
 						  
@@ -233,7 +245,39 @@ public class DataController extends HttpServlet {
 				  exportsCRUD.setDatabaseModel(databaseModel);
 
 				  
+				  if (request.getParameter("sort") != null) {
+
+					  HashMap<String, String> supportedSortRequestsAsRequestToColumnNameHashMap = new HashMap<String, String>();
 					  
+					  //TODO: maybe move this to a better place
+					  supportedSortRequestsAsRequestToColumnNameHashMap.put("id", "id");
+					  supportedSortRequestsAsRequestToColumnNameHashMap.put("mergedFilename", "merged_file.filename");
+					  supportedSortRequestsAsRequestToColumnNameHashMap.put("sourceFile1Filename", "source_file_1.filename");
+					  supportedSortRequestsAsRequestToColumnNameHashMap.put("sourceFile2Filename", "source_file_2.filename");
+					  supportedSortRequestsAsRequestToColumnNameHashMap.put("createDate", "created_datetime");
+					  
+					  if (supportedSortRequestsAsRequestToColumnNameHashMap.containsKey(request.getParameter("sort"))) {
+						
+						  CachedRowSet exportsSortedByFilenameAsCachedRowSet = exportsCRUD.retrieveExportsSortedByColumnNameAsCachedRowSetUsingUserIdAndColumnName(userModel.getId(), supportedSortRequestsAsRequestToColumnNameHashMap.get(request.getParameter("sort")));
+							
+						  if (exportsSortedByFilenameAsCachedRowSet != null) {
+					
+							  	ExportsFunctions exportsFunctions = new ExportsFunctions();
+							  	exportsAsHTML = exportsFunctions.getExportsAsDecoratedXHTMLTableUsingExportsAsCachedRowSet(exportsSortedByFilenameAsCachedRowSet);
+							    
+						  } else {
+						  
+							  exportsAsHTML = "<p>Failed to retrieve Exports Sorted By Column Name As CachedRowSet Using User Id</p>";
+							  
+						  }
+						  
+					  } else {
+						  exportsAsHTML = "<p>Unsupported sort request.</p>";
+						  
+					  }
+					  
+					  
+				  } else {
 					  
 					  
 					  CachedRowSet exportsAsCachedRowSet = exportsCRUD.retrieveExportsAsCachedRowSetUsingUserId(userModel.getId());
@@ -250,6 +294,8 @@ public class DataController extends HttpServlet {
 						  
 					  } 
 					  
+					  
+				  }
 				  
 				  response.getWriter().print(exportsAsHTML);
 				  

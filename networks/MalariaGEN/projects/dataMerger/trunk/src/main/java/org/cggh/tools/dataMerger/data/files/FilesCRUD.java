@@ -682,8 +682,8 @@ public class FilesCRUD implements java.io.Serializable  {
 		return success;
 	}
 
-	public CachedRowSet retrieveFilesSortedByFilenameAsCachedRowSetUsingUserId(
-			Integer userId) {
+	public CachedRowSet retrieveFilesSortedByColumnNameAsCachedRowSetUsingUserIdAndColumnName(
+			Integer userId, String columnName) {
 		
 		CachedRowSet filesAsCachedRowSet = null;
 		
@@ -706,7 +706,7 @@ public class FilesCRUD implements java.io.Serializable  {
 				    			  "FROM file " +
 				    			  "LEFT JOIN file_origin ON file_origin.id = file.file_origin_id "  +
 				    			  "WHERE created_by_user_id = ? AND (hidden IS NULL OR hidden = 0) " +
-				    			  "ORDER BY filename" +
+				    			  "ORDER BY `" + columnName + "`" +
 				    			  ";"
 				    	  
 				    	  );

@@ -54,14 +54,14 @@ public class FilesFunctions {
 				 filesAsDecoratedXHTMLTable.append("<tr>");
 				 
 				 filesAsDecoratedXHTMLTable.append("<th><!-- Column for checkboxes --></th>");
-				 filesAsDecoratedXHTMLTable.append("<th class=\"idHeadingContainer\">ID</th>");
+				 filesAsDecoratedXHTMLTable.append("<th class=\"idHeadingContainer\"><a class=\"sortByIdLink\">ID</a></th>");
 				 filesAsDecoratedXHTMLTable.append("<th><a class=\"sortByFilenameLink\">Filename</a></th>");
-				 filesAsDecoratedXHTMLTable.append("<th>Origin</th>");
-				 filesAsDecoratedXHTMLTable.append("<th>Created</th>");
-				 filesAsDecoratedXHTMLTable.append("<th class=\"fileSizeHeadingContainer\">Size</th>");
+				 filesAsDecoratedXHTMLTable.append("<th><a class=\"sortByFileOriginLink\">Origin</a></th>");
+				 filesAsDecoratedXHTMLTable.append("<th><a class=\"sortByCreatedDateLink\">Created</a></th>");
+				 filesAsDecoratedXHTMLTable.append("<th class=\"fileSizeHeadingContainer\"><a class=\"sortByFileSizeLink\">Size</a></th>");
 				 
-				 filesAsDecoratedXHTMLTable.append("<th>Rows</th>");
-				 filesAsDecoratedXHTMLTable.append("<th>Cols</th>");
+				 filesAsDecoratedXHTMLTable.append("<th><a class=\"sortByRowsCountLink\">Rows</a></th>");
+				 filesAsDecoratedXHTMLTable.append("<th><a class=\"sortByColumnsCountLink\">Cols</a></th>");
 				 filesAsDecoratedXHTMLTable.append("<th><!-- Column for download links --></th>");
 				 
 				 filesAsDecoratedXHTMLTable.append("</tr>");

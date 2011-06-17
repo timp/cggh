@@ -1312,5 +1312,72 @@ public class ExportsCRUD implements java.io.Serializable  {
 
 		return success;
 	}
+
+
+	public CachedRowSet retrieveExportsSortedByColumnNameAsCachedRowSetUsingUserIdAndColumnName(
+			Integer userId, String columnName) {
+		
+		
+		CachedRowSet exportsAsCachedRowSet = null;
+		
+		UserModel userModel = new UserModel();
+		userModel.setId(userId);
+		
+		   String CACHED_ROW_SET_IMPL_CLASS = "com.sun.rowset.CachedRowSetImpl";
+		   
+		   try {	
+
+				Connection connection = this.getDatabaseModel().getNewConnection();
+				 
+				if (connection != null) {
+					
+					 //FIXME: Apparently a bug in CachedRowSet using getX('columnAlias') aka columnLabel, which actually only works with getX('columnName'), so using getX('columnIndex').
+					 
+					
+					//NOTE: This won't return results that don't have a record for each source file and the merged file.
+					
+				      try{
+				          PreparedStatement preparedStatement = connection.prepareStatement(
+				        		  "SELECT source_file_1.filename AS `source_file_1.filename`, source_file_2.filename AS `source_file_2.filename`, merged_file.filename AS `merged_file.filename`, export.id, source_file_1_id, source_file_2_id, merged_file_id, export.created_datetime " +
+				        		  "FROM export " +
+				        		  "JOIN file AS source_file_1 ON source_file_1.id = export.source_file_1_id " +
+				        		  "JOIN file AS source_file_2 ON source_file_2.id = export.source_file_2_id " +
+				        		  "JOIN file AS merged_file ON merged_file.id = export.merged_file_id " +
+				        		  "WHERE export.created_by_user_id = ? " +
+				        		  "ORDER BY `" + columnName + "`" +
+				        		  ";");
+				          preparedStatement.setInt(1, userModel.getId());
+				          preparedStatement.executeQuery();
+				          Class<?> cachedRowSetImplClass = Class.forName(CACHED_ROW_SET_IMPL_CLASS);
+				          exportsAsCachedRowSet = (CachedRowSet) cachedRowSetImplClass.newInstance();
+				          exportsAsCachedRowSet.populate(preparedStatement.getResultSet());
+				          preparedStatement.close();
+	
+				        } 
+				      	catch (SQLException sqlException){
+					    	sqlException.printStackTrace();
+						} finally {
+				        	try {
+								connection.close();
+							} catch (SQLException e) {
+								e.printStackTrace();
+							}
+				        }
+				
+					
+					
+				} else {
+					
+					logger.severe("connection is null");
+				}
+		
+			} 
+			catch (Exception e) {
+				e.printStackTrace();
+			}
+	
+	
+	     return exportsAsCachedRowSet;
+	}
 	
 }

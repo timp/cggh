@@ -7,7 +7,7 @@ function initFilesFunctions () {
 	initRemoveFilesFunction();
 	initUnhideFilesFunction();
 	initShowUnhiddenFilesFunction();
-	initSortByFilenameFunction();
+	initSortByColumnHeadingFunctions();
 }
 
 
@@ -257,15 +257,7 @@ function initShowUnhiddenFilesFunction () {
 	
 }
 
-function initSortByFilenameFunction () {
 
-	$(".sortByFilenameLink").click(function() {	
-		
-		retrieveFilesSortedByFilenameAsDecoratedHTMLTable();
-		
-	});
-	
-}
 
 function initRemoveFilesFunction () {
 
@@ -334,7 +326,49 @@ function initRemoveFilesFunction () {
 	
 }
 
-function retrieveFilesSortedByFilenameAsDecoratedHTMLTable () {
+
+function initSortByColumnHeadingFunctions () {
+
+	
+	$(".sortByIdLink").click(function() {	
+		
+		retrieveFilesSortedByColumnHeadingAsDecoratedHTMLTable("id");
+		
+	});	
+	$(".sortByFilenameLink").click(function() {	
+		
+		retrieveFilesSortedByColumnHeadingAsDecoratedHTMLTable("filename");
+		
+	});
+	$(".sortByFileOriginLink").click(function() {	
+		
+		retrieveFilesSortedByColumnHeadingAsDecoratedHTMLTable("fileOrigin");
+		
+	});
+	$(".sortByCreatedDateLink").click(function() {	
+	
+	retrieveFilesSortedByColumnHeadingAsDecoratedHTMLTable("createdDate");
+	
+	});
+	$(".sortByFileSizeLink").click(function() {	
+	
+	retrieveFilesSortedByColumnHeadingAsDecoratedHTMLTable("fileSize");
+	
+	});
+	$(".sortByRowsCountLink").click(function() {	
+	
+	retrieveFilesSortedByColumnHeadingAsDecoratedHTMLTable("rowsCount");
+	
+	});
+	$(".sortByColumnsCountLink").click(function() {	
+	
+	retrieveFilesSortedByColumnHeadingAsDecoratedHTMLTable("columnsCount");
+	
+	});
+	
+}
+
+function retrieveFilesSortedByColumnHeadingAsDecoratedHTMLTable (columnHeading) {
 	
 	$.ajax({
 			data: '',
@@ -345,7 +379,7 @@ function retrieveFilesSortedByFilenameAsDecoratedHTMLTable () {
 				initFilesFunctions();
 			},
 			type: 'GET',
-			url: '/dataMerger/data/files?sort=filename'
+			url: '/dataMerger/data/files?sort=' + columnHeading
 		});
 	
 }

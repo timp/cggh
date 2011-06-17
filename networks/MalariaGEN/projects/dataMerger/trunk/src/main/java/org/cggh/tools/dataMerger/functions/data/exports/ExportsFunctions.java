@@ -35,14 +35,14 @@ public class ExportsFunctions implements java.io.Serializable  {
 				 exportsAsDecoratedXHTMLTable.append("<thead>");
 				 exportsAsDecoratedXHTMLTable.append("<tr>");
 				 
-				 exportsAsDecoratedXHTMLTable.append("<th class=\"idHeadingContainer\">ID</th>");
-				 exportsAsDecoratedXHTMLTable.append("<th>Merged File</th>");
-				 exportsAsDecoratedXHTMLTable.append("<th>Source 1</th>");
-				 exportsAsDecoratedXHTMLTable.append("<th>Source 2</th>");
+				 exportsAsDecoratedXHTMLTable.append("<th class=\"idHeadingContainer\"><a class=\"sortByIdLink\">ID</a></th>");
+				 exportsAsDecoratedXHTMLTable.append("<th><a class=\"sortByMergedFilenameLink\">Merged File</a></th>");
+				 exportsAsDecoratedXHTMLTable.append("<th><a class=\"sortBySourceFile1FilenameLink\">Source 1</a></th>");
+				 exportsAsDecoratedXHTMLTable.append("<th><a class=\"sortBySourceFile2FilenameLink\">Source 2</a></th>");
 				 
 				 exportsAsDecoratedXHTMLTable.append("<th>Provenance</th>");
 				 
-				 exportsAsDecoratedXHTMLTable.append("<th>Created</th>");
+				 exportsAsDecoratedXHTMLTable.append("<th><a class=\"sortByCreatedDateLink\">Created</a></th>");
 				 exportsAsDecoratedXHTMLTable.append("<th><!-- Above Delete button --></th>");
 				 exportsAsDecoratedXHTMLTable.append("<th><!-- Above Download link --></th>");
 				 

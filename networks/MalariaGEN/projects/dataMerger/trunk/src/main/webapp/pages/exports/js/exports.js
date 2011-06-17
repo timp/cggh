@@ -1,6 +1,7 @@
 function initExportsFunctions () {
 
 	initDeleteExportFunction();
+	initSortByColumnHeadingFunctions();
 }
 
 function initDeleteExportFunction () {
@@ -77,6 +78,54 @@ function retrieveExportsAsDecoratedHTMLTable () {
 			},
 			type: 'GET',
 			url: '/dataMerger/data/exports'
+		});
+	
+}
+
+function initSortByColumnHeadingFunctions () {
+
+	
+	$(".sortByIdLink").click(function() {	
+		
+		retrieveExportsSortedByColumnHeadingAsDecoratedHTMLTable("id");
+		
+	});	
+	$(".sortByMergedFilenameLink").click(function() {	
+		
+		retrieveExportsSortedByColumnHeadingAsDecoratedHTMLTable("mergedFilename");
+		
+	});
+	$(".sortBySourceFile1FilenameLink").click(function() {	
+		
+		retrieveExportsSortedByColumnHeadingAsDecoratedHTMLTable("sourceFile1Filename");
+		
+	});
+	$(".sortBySourceFile2FilenameLink").click(function() {	
+	
+		retrieveExportsSortedByColumnHeadingAsDecoratedHTMLTable("sourceFile2Filename");
+	
+	});
+	$(".sortByCreatedDateLink").click(function() {	
+	
+		retrieveExportsSortedByColumnHeadingAsDecoratedHTMLTable("createDate");
+	
+	});
+	
+	
+}
+
+function retrieveExportsSortedByColumnHeadingAsDecoratedHTMLTable (columnHeading) {
+	
+	$.ajax({
+			data: '',
+			dataType: 'html',
+			success: function (data, textStatus, jqXHR) { 
+				$('.exports').html(data); 
+				//Need to re-bind the new HTML
+				initExportsFunctions();
+			},
+			type: 'GET',
+			url: '/dataMerger/data/exports?sort=' + columnHeading
 		});
 	
 }
