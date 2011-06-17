@@ -272,7 +272,11 @@ public class ResolutionsByRowFunctions implements java.io.Serializable {
 				        		  
 				        		  //Integer solutionByRowId = this.getResolutionsByRowAsCachedRowSet().getInt("solution_by_row_id");
 				        		  
-				        			  if (this.getResolutionsByRowAsCachedRowSet().getString(i).equals(this.getResolutionsByRowAsCachedRowSet().getString(columnIndexForSource2Column))) {
+				        		  //
+				        		  //logger.info("this string: " + this.getResolutionsByRowAsCachedRowSet().getString(i));
+				        		  //logger.info("that string: " + this.getResolutionsByRowAsCachedRowSet().getString(columnIndexForSource2Column));
+				        		  
+				        			  if ((this.getResolutionsByRowAsCachedRowSet().getString(i) == null && this.getResolutionsByRowAsCachedRowSet().getString(columnIndexForSource2Column) == null) || this.getResolutionsByRowAsCachedRowSet().getString(i).equals(this.getResolutionsByRowAsCachedRowSet().getString(columnIndexForSource2Column))) {
 
 				        				  // There is no conflict
 				        				  

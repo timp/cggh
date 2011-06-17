@@ -90,8 +90,8 @@ ResolutionsFunctions resolutionsFunctions = new ResolutionsFunctions();
 					<th>Sources:</th>
 					<td>
 						<ol class="sources-list">
-							<li><a href="<%=resolutionsByColumnBasePathURL %>files/uploads/<%=mergeModel.getFile1Model().getId()%>"><%=mergeModel.getFile1Model().getFilename()%></a></li>
-							<li><a href="<%=resolutionsByColumnBasePathURL %>files/uploads/<%=mergeModel.getFile2Model().getId()%>"><%=mergeModel.getFile2Model().getFilename()%></a></li>
+							<li><a href="<%=resolutionsByColumnBasePathURL %>files/<%=mergeModel.getFile1Model().getId()%>"><%=mergeModel.getFile1Model().getFilename()%></a></li>
+							<li><a href="<%=resolutionsByColumnBasePathURL %>files/<%=mergeModel.getFile2Model().getId()%>"><%=mergeModel.getFile2Model().getFilename()%></a></li>
 						</ol>
 					</td>
 				</tr>

@@ -61,8 +61,8 @@ public class JoinFunctions implements java.io.Serializable {
 		joinAsDecoratedXHTMLTable.append("<tr>");
 		joinAsDecoratedXHTMLTable.append("	<th><!-- Above key label --></th>");
 		joinAsDecoratedXHTMLTable.append("	<th><!-- Above key checkbox --></th>");
-		joinAsDecoratedXHTMLTable.append("	<th class=\"file-link-container\"><a href=\"/dataMerger/files/uploads/").append(this.getMergeModel().getFile1Model().getId()).append("\">").append(this.getMergeModel().getFile1Model().getFilename()).append("</a></th>");
-		joinAsDecoratedXHTMLTable.append("	<th class=\"file-link-container\"><a href=\"/dataMerger/files/uploads/").append(this.getMergeModel().getFile2Model().getId()).append("\">").append(this.getMergeModel().getFile2Model().getFilename()).append("</a></th>");
+		joinAsDecoratedXHTMLTable.append("	<th class=\"file-link-container\"><a href=\"/dataMerger/files/").append(this.getMergeModel().getFile1Model().getId()).append("\">").append(this.getMergeModel().getFile1Model().getFilename()).append("</a></th>");
+		joinAsDecoratedXHTMLTable.append("	<th class=\"file-link-container\"><a href=\"/dataMerger/files/").append(this.getMergeModel().getFile2Model().getId()).append("\">").append(this.getMergeModel().getFile2Model().getFilename()).append("</a></th>");
 		joinAsDecoratedXHTMLTable.append("	<th class=\"column_name-heading\">Column name</th>");
 		joinAsDecoratedXHTMLTable.append("	<th><!-- Above insert column selector --></th>");
 		joinAsDecoratedXHTMLTable.append("	<th><!-- Above add column selector --></th>");

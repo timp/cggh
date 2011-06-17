@@ -78,8 +78,8 @@ public class MergeFunctions implements java.io.Serializable {
 					 decoratedXHTMLTable.append("<th><!-- Above heading for Key --></th>");
 					 
 					 //TODO: This path needs to be dynamic.
-					 decoratedXHTMLTable.append("<th class=\"file-link-container\"><a href=\"/dataMerger/files/uploads/").append(this.getMergeModel().getFile1Model().getId()).append("\">").append(this.getMergeModel().getFile1Model().getFilename()).append("</a></th>");
-					 decoratedXHTMLTable.append("<th class=\"file-link-container\"><a href=\"/dataMerger/files/uploads/").append(this.getMergeModel().getFile2Model().getId()).append("\">").append(this.getMergeModel().getFile2Model().getFilename()).append("</a></th>");
+					 decoratedXHTMLTable.append("<th class=\"file-link-container\"><a href=\"/dataMerger/files/").append(this.getMergeModel().getFile1Model().getId()).append("\">").append(this.getMergeModel().getFile1Model().getFilename()).append("</a></th>");
+					 decoratedXHTMLTable.append("<th class=\"file-link-container\"><a href=\"/dataMerger/files/").append(this.getMergeModel().getFile2Model().getId()).append("\">").append(this.getMergeModel().getFile2Model().getFilename()).append("</a></th>");
 					 decoratedXHTMLTable.append("<th><!-- Above heading for Column name --></th>");
 					 decoratedXHTMLTable.append("<th><!-- Above column for Col.# update buttons --></th>");
 					 decoratedXHTMLTable.append("<th><!-- Above column for Remove column button --></th>");
