@@ -216,36 +216,68 @@ function initSaveJoinFunction () {
 	
 	$(".save-join").click(function() {
 		
+		
 		// Get data from uploads form.
 		var data = $.toJSON($('.joins-form').serializeObject());
 		
-		//
-		//alert(data);
-
+		//Check that the column names are unique
+		var obj = jQuery.parseJSON(data);
 		
-		$.ajax({
-			type: 'PUT',
-			data: data,
-			url: '/dataMerger/data/merges/' + urlParams["merge_id"] + '/joins',
-			dataType: 'json',
-			success: function (data, textStatus, jqXHR) {
+		var duplicates = null;
+		
+		if (obj.column_name != undefined && obj.column_name.length > 0) {
 
-				//v1. Just reload the page.
-				document.location.reload();
+			var uniqueArray = new Array();
+			
+			for (var i = 0; i < obj.column_name.length; i++) {
 				
-				//retrieveJoinsAsXHTMLUsingMergeId(urlParams["merge_id"]);
+				if (uniqueArray[obj.column_name[i]] == undefined) {
+					uniqueArray[obj.column_name[i]] = true;
+				} else {
+					alert("Column names must be unique. There is a duplicate of " + obj.column_name[i] + ".");
+					duplicates = true;
+					break;
+				}
 				
-				//TODO: 
-				//retrieveMergeSummaryAsXHTMLUsingMergeId(urlParams["merge_id"]);
-
-			},
-			error: function (jqXHR, textStatus, errorThrown){
-	            $('.error').html(errorThrown);
-	            $('.status').html(textStatus);
-	        },
-			beforeSend: function() { $('.saving-indicator').show(); },
-	        complete: function() { $('.saving-indicator').hide(); }
-		});
+			}
+			
+			if (duplicates == null) {
+				//false because it isn't true.
+				duplicates = false;
+			}
+			
+		} else {
+			//false because it cannot be true.
+			duplicates = false;
+		}
+		
+		if (duplicates == false) {
+			
+			$.ajax({
+				type: 'PUT',
+				data: data,
+				url: '/dataMerger/data/merges/' + urlParams["merge_id"] + '/joins',
+				dataType: 'json',
+				success: function (data, textStatus, jqXHR) {
+	
+					//v1. Just reload the page.
+					document.location.reload();
+					
+					//retrieveJoinsAsXHTMLUsingMergeId(urlParams["merge_id"]);
+					
+					//TODO: 
+					//retrieveMergeSummaryAsXHTMLUsingMergeId(urlParams["merge_id"]);
+	
+				},
+				error: function (jqXHR, textStatus, errorThrown){
+		            $('.error').html(errorThrown);
+		            $('.status').html(textStatus);
+		        },
+				beforeSend: function() { $('.saving-indicator').show(); },
+		        complete: function() { $('.saving-indicator').hide(); }
+			});
+			
+		}
 		
 	});
 	

@@ -15,7 +15,7 @@ MergesCRUD mergesCRUD = new MergesCRUD();
 mergesCRUD.setDatabaseModel(databaseModel);
 
 MergeModel mergeModel = new MergeModel();
-mergeModel = mergesCRUD.retrieveMergeAsMergeModelByMergeId(Integer.parseInt(request.getParameter("merge_id")));
+mergeModel = mergesCRUD.retrieveMergeAsMergeModelUsingMergeIdAndUserId(Integer.parseInt(request.getParameter("merge_id")), userModel.getId());
 
 DateFormat dateFormat = new SimpleDateFormat("dd MMM yyyy HH:mm");
 
@@ -138,19 +138,6 @@ DateFormat dateFormat = new SimpleDateFormat("dd MMM yyyy HH:mm");
 				</div>
 			</form>
 	
-			<%--
-	
-			<p>FIXME: Changing the join, just the column order or column name, shouldn't have to trigger a recalculation. (Possibly re-introduce join_id and amend code to simply update if the join_id already exists? Note: This would alter the schema of resolution_by_column, which should then use join_id instead of column_number. Although this approach would require a more complex solution to determine whether or not to recalculate.)
-			</p>	
-	
-			<p>FIXME: Added join to beginning or end breaks up/down buttons disabled-ness.
-			</p>		
-			
-			<p>FIXME: Saving join does not update updatedDate and Key counts. (build and trigger an AJAX GET service.)
-			</p>
-			
-			 --%>
-			
 		</div>
 		
 	</div>

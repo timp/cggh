@@ -92,11 +92,22 @@ public class MergesFunctions implements java.io.Serializable {
 					 
 					 Integer totalDuplicateKeysCount = mergesAsCachedRowSet.getInt("total_duplicate_keys_count");
 					 
+					//FIXME: The joined_datatable_name is being used instead of a hasAtLeastOneKey (is a valid join)
+					 
+					 String joinedKeytableName = mergesAsCachedRowSet.getString("joined_keytable_name");
+					 
 					 if (totalDuplicateKeysCount != null) {
 						 
 						 if (totalDuplicateKeysCount == 0) {
-							 //TODO: Change this URL to a) not hard-coded b) /dataMerger/pages/merges/3/resolutions-by-column
-							 mergesAsDecoratedXHTMLTable.append("<a href=\"/dataMerger/pages/merges/resolutions/by-column?merge_id=" + mergesAsCachedRowSet.getInt("id") + "\">Edit Resolutions</a>");
+							 
+							 if (joinedKeytableName != null) {
+							 
+								 //TODO: Change this URL to a) not hard-coded b) /dataMerger/pages/merges/3/resolutions-by-column
+								 mergesAsDecoratedXHTMLTable.append("<a href=\"/dataMerger/pages/merges/resolutions/by-column?merge_id=" + mergesAsCachedRowSet.getInt("id") + "\">Edit Resolutions</a>");
+							 
+							 } else {
+								 mergesAsDecoratedXHTMLTable.append("<span class=\"problem-message-container\">A key is required</span>");
+							 }
 						 } 
 						 else if (totalDuplicateKeysCount == 1) {
 							 mergesAsDecoratedXHTMLTable.append("<span class=\"problem-message-container\">" + totalDuplicateKeysCount + " duplicate key</span>");
@@ -122,7 +133,17 @@ public class MergesFunctions implements java.io.Serializable {
 					 if (totalConflictsCount != null && totalDuplicateKeysCount == 0) {
 						 
 						 if (totalConflictsCount == 0) {
-							 mergesAsDecoratedXHTMLTable.append("<td><input type=\"text\" name=\"mergedFileFilename\" value=\"merged_file_" + mergesAsCachedRowSet.getInt("id") + ".csv\"/><button class=\"export-button\">Export</button><img class=\"exporting-indicator\" src=\"/dataMerger/pages/shared/gif/loading.gif\" style=\"display:none\" title=\"Exporting...\"/></td>");
+							 
+								//FIXME: The joined_datatable_name is being used instead of a hasAtLeastOneKey (is a valid join)
+							 
+							 
+							 
+							if (joinedKeytableName != null) {
+								 mergesAsDecoratedXHTMLTable.append("<td><input type=\"text\" name=\"mergedFileFilename\" value=\"merged_file_" + mergesAsCachedRowSet.getInt("id") + ".csv\"/><button class=\"export-button\">Export</button><img class=\"exporting-indicator\" src=\"/dataMerger/pages/shared/gif/loading.gif\" style=\"display:none\" title=\"Exporting...\"/></td>");
+							} else {
+								 mergesAsDecoratedXHTMLTable.append("<td class=\"problem-message-container\"><!-- pending a valid join --></td>");
+							}
+							 
 						 }
 						 else if (totalConflictsCount == 1) {
 							 mergesAsDecoratedXHTMLTable.append("<td class=\"problem-message-container\">" + totalConflictsCount + " conflict</td>");
@@ -143,7 +164,6 @@ public class MergesFunctions implements java.io.Serializable {
 				 
 				mergesAsDecoratedXHTMLTable.append("</table>");
 				
-				mergesAsDecoratedXHTMLTable.append("<!-- <div>TODO: paging</div> -->");
 				
 			} else {
 				

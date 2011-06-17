@@ -238,6 +238,7 @@ public class DatabaseTablesScripts {
 		        		  "constant_2 VARCHAR(255) NULL, " +
 		        		  "column_name VARCHAR(255) NULL, " +
 		        		  "PRIMARY KEY (merge_id, column_number), " +
+		        		  "CONSTRAINT unique_column_name_per_merge_constraint UNIQUE (merge_id, column_name), " +
 		        		  "INDEX merge_id_index (merge_id), " + 
 		        		  "FOREIGN KEY (merge_id) REFERENCES merge(id) ON DELETE CASCADE" +
 		        		  ") ENGINE=InnoDB;");

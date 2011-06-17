@@ -73,284 +73,156 @@ public class DataController extends HttpServlet {
 		UsersCRUD usersCRUD = new UsersCRUD();
 		usersCRUD.setDatabaseModel(databaseModel);
 		UserModel userModel = usersCRUD.retrieveUserAsUserModelUsingUsername((String)request.getSession().getAttribute("username"));
-
-		//TODO: centralize these
+	
+		if (userModel != null && userModel.getId() != null) {
 		
-		 Pattern joinsURLPattern = Pattern.compile("^/merges/(\\d+)/joins$");
-		 Matcher joinsURLPatternMatcher = joinsURLPattern.matcher(request.getPathInfo());
-		 
-		 Pattern resolutionsByColumnURLPattern = Pattern.compile("^/merges/(\\d+)/resolutions-by-column$");
-		 Matcher resolutionsByColumnURLPatternMatcher = resolutionsByColumnURLPattern.matcher(request.getPathInfo());
-		 
-		 Pattern resolutionsByRowURLPattern = Pattern.compile("^/merges/(\\d+)/resolutions-by-row$");
-		 Matcher resolutionsByRowURLPatternMatcher = resolutionsByRowURLPattern.matcher(request.getPathInfo());
-
-		 Pattern newJoinURLPattern = Pattern.compile("^/merges/(\\d+)/joins/join$");
-		 Matcher newJoinURLPatternMatcher = newJoinURLPattern.matcher(request.getPathInfo());
-		 
-		  String[] headerAcceptsAsStringArray = request.getHeader("Accept").split(",");
-		  List<String> headerAcceptsAsStringList = Arrays.asList(headerAcceptsAsStringArray);		 
-		  if (request.getPathInfo().equals("/files")) {
-
-			  if (headerAcceptsAsStringList.contains("text/html")) { 
-			  
-				  //Otherwise degree symbols turn into question-marks
-				  response.setCharacterEncoding("UTF-8");
-				  
-				  response.setContentType("text/html");
-				  
-				  String filesAsHTML = null;
-					
-				  FilesCRUD filesCRUD = new FilesCRUD();
-				  filesCRUD.setDatabaseModel(databaseModel);
-
-				  
-				  if (request.getParameter("hidden") != null) {
-				  
-					  CachedRowSet hiddenFilesAsCachedRowSet = filesCRUD.retrieveHiddenFilesAsCachedRowSetUsingUserId(userModel.getId());
-				
-					  if (hiddenFilesAsCachedRowSet != null) {
-				
-						  	FilesFunctions filesFunctions = new FilesFunctions();
-						  	filesAsHTML = filesFunctions.getHiddenFilesAsDecoratedXHTMLTableUsingHiddenFilesAsCachedRowSet(hiddenFilesAsCachedRowSet);
-						    
-					  } else {
-					  
-						  filesAsHTML = "<p>Failed to retrieve Files As CachedRowSet Using User Id</p>";
-						  
-					  } 
+			//TODO: centralize these
 			
-				  } 
-				  else if (request.getParameter("sort") != null) {
-
-					  HashMap<String, String> supportedSortRequestsAsRequestToColumnNameHashMap = new HashMap<String, String>();
+			 Pattern joinsURLPattern = Pattern.compile("^/merges/(\\d+)/joins$");
+			 Matcher joinsURLPatternMatcher = joinsURLPattern.matcher(request.getPathInfo());
+			 
+			 Pattern resolutionsByColumnURLPattern = Pattern.compile("^/merges/(\\d+)/resolutions-by-column$");
+			 Matcher resolutionsByColumnURLPatternMatcher = resolutionsByColumnURLPattern.matcher(request.getPathInfo());
+			 
+			 Pattern resolutionsByRowURLPattern = Pattern.compile("^/merges/(\\d+)/resolutions-by-row$");
+			 Matcher resolutionsByRowURLPatternMatcher = resolutionsByRowURLPattern.matcher(request.getPathInfo());
+	
+			 Pattern newJoinURLPattern = Pattern.compile("^/merges/(\\d+)/joins/join$");
+			 Matcher newJoinURLPatternMatcher = newJoinURLPattern.matcher(request.getPathInfo());
+			 
+			  String[] headerAcceptsAsStringArray = request.getHeader("Accept").split(",");
+			  List<String> headerAcceptsAsStringList = Arrays.asList(headerAcceptsAsStringArray);		 
+			  if (request.getPathInfo().equals("/files")) {
+	
+				  if (headerAcceptsAsStringList.contains("text/html")) { 
+				  
+					  //Otherwise degree symbols turn into question-marks
+					  response.setCharacterEncoding("UTF-8");
 					  
-					  //TODO: maybe move this to a better place
-					  supportedSortRequestsAsRequestToColumnNameHashMap.put("id", "id");
-					  supportedSortRequestsAsRequestToColumnNameHashMap.put("filename", "filename");
-					  supportedSortRequestsAsRequestToColumnNameHashMap.put("fileOrigin", "origin");
-					  supportedSortRequestsAsRequestToColumnNameHashMap.put("createdDate", "created_datetime");
-					  supportedSortRequestsAsRequestToColumnNameHashMap.put("fileSize", "file_size_in_bytes");
-					  supportedSortRequestsAsRequestToColumnNameHashMap.put("rowsCount", "rows_count");
-					  supportedSortRequestsAsRequestToColumnNameHashMap.put("columnsCount", "columns_count");
+					  response.setContentType("text/html");
 					  
-					  if (supportedSortRequestsAsRequestToColumnNameHashMap.containsKey(request.getParameter("sort"))) {
+					  String filesAsHTML = null;
 						
-						  CachedRowSet filesSortedByFilenameAsCachedRowSet = filesCRUD.retrieveFilesSortedByColumnNameAsCachedRowSetUsingUserIdAndColumnName(userModel.getId(), supportedSortRequestsAsRequestToColumnNameHashMap.get(request.getParameter("sort")));
-							
-						  if (filesSortedByFilenameAsCachedRowSet != null) {
+					  FilesCRUD filesCRUD = new FilesCRUD();
+					  filesCRUD.setDatabaseModel(databaseModel);
+	
+					  
+					  if (request.getParameter("hidden") != null) {
+					  
+						  CachedRowSet hiddenFilesAsCachedRowSet = filesCRUD.retrieveHiddenFilesAsCachedRowSetUsingUserId(userModel.getId());
+					
+						  if (hiddenFilesAsCachedRowSet != null) {
 					
 							  	FilesFunctions filesFunctions = new FilesFunctions();
-							  	filesAsHTML = filesFunctions.getFilesAsDecoratedXHTMLTableUsingFilesAsCachedRowSet(filesSortedByFilenameAsCachedRowSet);
+							  	filesAsHTML = filesFunctions.getHiddenFilesAsDecoratedXHTMLTableUsingHiddenFilesAsCachedRowSet(hiddenFilesAsCachedRowSet);
 							    
 						  } else {
 						  
-							  filesAsHTML = "<p>Failed to retrieve Files Sorted By Column Name As CachedRowSet Using User Id</p>";
+							  filesAsHTML = "<p>Failed to retrieve Files As CachedRowSet Using User Id</p>";
 							  
-						  }
-						  
-					  } else {
-						  filesAsHTML = "<p>Unsupported sort request.</p>";
-						  
-					  }
-					  
-					  
-				  }
-				  else {
-					  
-					  
-					  
-					  CachedRowSet filesAsCachedRowSet = filesCRUD.retrieveFilesAsCachedRowSetUsingUserId(userModel.getId());
+						  } 
 				
-					  if (filesAsCachedRowSet != null) {
-				
-						  	FilesFunctions filesFunctions = new FilesFunctions();
-
-						  	filesAsHTML = filesFunctions.getFilesAsDecoratedXHTMLTableUsingFilesAsCachedRowSet(filesAsCachedRowSet);
-						    
-					  } else {
-					  
-						  filesAsHTML = "<p>Failed to retrieve Files As CachedRowSet Using User Id</p>";
-						  
 					  } 
-					  
-				  }
-				  
-				  
-				  response.getWriter().print(filesAsHTML);
-				  
-			  } else {
-				  
-				  response.setContentType("text/plain");
-				  response.getWriter().println("Unhandled Header Accept: " + request.getHeader("Accept"));
-				  
-			  }
-			
-		  }
-		  else if (request.getPathInfo().equals("/merges")) {
-
-			  if (headerAcceptsAsStringList.contains("text/html")) { 
-			  
-				  //Otherwise degree symbols turn into question-marks
-				  response.setCharacterEncoding("UTF-8");
-				  
-				  response.setContentType("text/html");
-				  
-				  String mergesAsHTML = null;
-					
-				  MergesCRUD mergesCRUD = new MergesCRUD();
-				  mergesCRUD.setDatabaseModel(databaseModel);
-
-				  
-					  
-					  
-					  
-					  CachedRowSet mergesAsCachedRowSet = mergesCRUD.retrieveMergesAsCachedRowSetUsingUserId(userModel.getId());
-				
-					  if (mergesAsCachedRowSet != null) {
-				
-						  	MergesFunctions mergesFunctions = new MergesFunctions();
-
-						  	mergesAsHTML = mergesFunctions.getMergesAsDecoratedXHTMLTableUsingMergesAsCachedRowSet(mergesAsCachedRowSet);
-						    
-					  } else {
-					  
-						  mergesAsHTML = "<p>Failed to retrieve Merges As CachedRowSet Using User Id</p>";
+					  else if (request.getParameter("sort") != null) {
+	
+						  HashMap<String, String> supportedSortRequestsAsRequestToColumnNameHashMap = new HashMap<String, String>();
 						  
-					  } 
-					  
-				  
-				  response.getWriter().print(mergesAsHTML);
-				  
-			  } else {
-				  
-				  response.setContentType("text/plain");
-				  response.getWriter().println("Unhandled Header Accept: " + request.getHeader("Accept"));
-				  
-			  } 
-			
-		  }
-		  else if (request.getPathInfo().equals("/exports")) {
-
-			  if (headerAcceptsAsStringList.contains("text/html")) { 
-			  
-				  //Otherwise degree symbols turn into question-marks
-				  response.setCharacterEncoding("UTF-8");
-				  
-				  response.setContentType("text/html");
-				  
-				  String exportsAsHTML = null;
-					
-				  ExportsCRUD exportsCRUD = new ExportsCRUD();
-				  exportsCRUD.setDatabaseModel(databaseModel);
-
-				  
-				  if (request.getParameter("sort") != null) {
-
-					  HashMap<String, String> supportedSortRequestsAsRequestToColumnNameHashMap = new HashMap<String, String>();
-					  
-					  //TODO: maybe move this to a better place
-					  supportedSortRequestsAsRequestToColumnNameHashMap.put("id", "id");
-					  supportedSortRequestsAsRequestToColumnNameHashMap.put("mergedFilename", "merged_file.filename");
-					  supportedSortRequestsAsRequestToColumnNameHashMap.put("sourceFile1Filename", "source_file_1.filename");
-					  supportedSortRequestsAsRequestToColumnNameHashMap.put("sourceFile2Filename", "source_file_2.filename");
-					  supportedSortRequestsAsRequestToColumnNameHashMap.put("createDate", "created_datetime");
-					  
-					  if (supportedSortRequestsAsRequestToColumnNameHashMap.containsKey(request.getParameter("sort"))) {
-						
-						  CachedRowSet exportsSortedByFilenameAsCachedRowSet = exportsCRUD.retrieveExportsSortedByColumnNameAsCachedRowSetUsingUserIdAndColumnName(userModel.getId(), supportedSortRequestsAsRequestToColumnNameHashMap.get(request.getParameter("sort")));
+						  //TODO: maybe move this to a better place
+						  supportedSortRequestsAsRequestToColumnNameHashMap.put("id", "id");
+						  supportedSortRequestsAsRequestToColumnNameHashMap.put("filename", "filename");
+						  supportedSortRequestsAsRequestToColumnNameHashMap.put("fileOrigin", "origin");
+						  supportedSortRequestsAsRequestToColumnNameHashMap.put("createdDate", "created_datetime");
+						  supportedSortRequestsAsRequestToColumnNameHashMap.put("fileSize", "file_size_in_bytes");
+						  supportedSortRequestsAsRequestToColumnNameHashMap.put("rowsCount", "rows_count");
+						  supportedSortRequestsAsRequestToColumnNameHashMap.put("columnsCount", "columns_count");
+						  
+						  if (supportedSortRequestsAsRequestToColumnNameHashMap.containsKey(request.getParameter("sort"))) {
 							
-						  if (exportsSortedByFilenameAsCachedRowSet != null) {
-					
-							  	ExportsFunctions exportsFunctions = new ExportsFunctions();
-							  	exportsAsHTML = exportsFunctions.getExportsAsDecoratedXHTMLTableUsingExportsAsCachedRowSet(exportsSortedByFilenameAsCachedRowSet);
-							    
+							  CachedRowSet filesSortedByFilenameAsCachedRowSet = filesCRUD.retrieveFilesSortedByColumnNameAsCachedRowSetUsingUserIdAndColumnName(userModel.getId(), supportedSortRequestsAsRequestToColumnNameHashMap.get(request.getParameter("sort")));
+								
+							  if (filesSortedByFilenameAsCachedRowSet != null) {
+						
+								  	FilesFunctions filesFunctions = new FilesFunctions();
+								  	filesAsHTML = filesFunctions.getFilesAsDecoratedXHTMLTableUsingFilesAsCachedRowSet(filesSortedByFilenameAsCachedRowSet);
+								    
+							  } else {
+							  
+								  filesAsHTML = "<p>Failed to retrieve Files Sorted By Column Name As CachedRowSet Using User Id</p>";
+								  
+							  }
+							  
 						  } else {
-						  
-							  exportsAsHTML = "<p>Failed to retrieve Exports Sorted By Column Name As CachedRowSet Using User Id</p>";
+							  filesAsHTML = "<p>Unsupported sort request.</p>";
 							  
 						  }
 						  
-					  } else {
-						  exportsAsHTML = "<p>Unsupported sort request.</p>";
+						  
+					  }
+					  else {
+						  
+						  
+						  
+						  CachedRowSet filesAsCachedRowSet = filesCRUD.retrieveFilesAsCachedRowSetUsingUserId(userModel.getId());
+					
+						  if (filesAsCachedRowSet != null) {
+					
+							  	FilesFunctions filesFunctions = new FilesFunctions();
+	
+							  	filesAsHTML = filesFunctions.getFilesAsDecoratedXHTMLTableUsingFilesAsCachedRowSet(filesAsCachedRowSet);
+							    
+						  } else {
+						  
+							  filesAsHTML = "<p>Failed to retrieve Files As CachedRowSet Using User Id</p>";
+							  
+						  } 
 						  
 					  }
 					  
+					  
+					  response.getWriter().print(filesAsHTML);
 					  
 				  } else {
 					  
-					  
-					  CachedRowSet exportsAsCachedRowSet = exportsCRUD.retrieveExportsAsCachedRowSetUsingUserId(userModel.getId());
-				
-					  if (exportsAsCachedRowSet != null) {
-				
-						  	ExportsFunctions exportsFunctions = new ExportsFunctions();
-
-						  	exportsAsHTML = exportsFunctions.getExportsAsDecoratedXHTMLTableUsingExportsAsCachedRowSet(exportsAsCachedRowSet);
-						    
-					  } else {
-					  
-						  exportsAsHTML = "<p>Failed to retrieve Merges As CachedRowSet Using User Id</p>";
-						  
-					  } 
-					  
+					  response.setContentType("text/plain");
+					  response.getWriter().println("Unhandled Header Accept: " + request.getHeader("Accept"));
 					  
 				  }
-				  
-				  response.getWriter().print(exportsAsHTML);
-				  
-			  } else {
-				  
-				  response.setContentType("text/plain");
-				  response.getWriter().println("Unhandled Header Accept: " + request.getHeader("Accept"));
-				  
-			  } 
-			
-		  }
-		  else if (joinsURLPatternMatcher.find()) {
-			  
-				 // Get the mergeId 
-				 MergeModel mergeModel = new MergeModel();
-				 mergeModel.setId(Integer.parseInt(joinsURLPatternMatcher.group(1)));  
-				 
-				 MergesCRUD mergesCRUD = new MergesCRUD();
-				 mergesCRUD.setDatabaseModel(databaseModel);
-				 mergeModel = mergesCRUD.retrieveMergeAsMergeModelByMergeId(mergeModel.getId());
-			  
+				
+			  }
+			  else if (request.getPathInfo().equals("/merges")) {
+	
 				  if (headerAcceptsAsStringList.contains("text/html")) { 
-					  
+				  
 					  //Otherwise degree symbols turn into question-marks
 					  response.setCharacterEncoding("UTF-8");
 					  
 					  response.setContentType("text/html");
 					  
-					  String joinsAsHTML = null;
+					  String mergesAsHTML = null;
 						
-					  JoinsCRUD joinsCRUD = new JoinsCRUD();
-					  joinsCRUD.setDatabaseModel(databaseModel);
+					  MergesCRUD mergesCRUD = new MergesCRUD();
+					  mergesCRUD.setDatabaseModel(databaseModel);
+	
 					  
-					  //FIXME
-					  //joinsCRUD.setUserModel(userModel);
-
-					  CachedRowSet joinsAsCachedRowSet = joinsCRUD.retrieveJoinsAsCachedRowSetByMergeId(mergeModel.getId());
-				
-					  if (joinsAsCachedRowSet != null) {
-				
-						  MergeFunctions mergeFunctions = new MergeFunctions();
 						  
-						    mergeFunctions.setMergeModel(mergeModel);	    
-						    mergeFunctions.setJoinsAsCachedRowSet(joinsAsCachedRowSet);
-						    mergeFunctions.setJoinsAsDecoratedXHTMLTableUsingJoinsAsCachedRowSet();
-						    joinsAsHTML = mergeFunctions.getJoinsAsDecoratedXHTMLTable();
-						    
-					  } else {
-					  
-						  joinsAsHTML = "<p>Failed to retrieve Joins As CachedRowSet Using Merge Id</p>";
 						  
-					  } 
+						  
+						  CachedRowSet mergesAsCachedRowSet = mergesCRUD.retrieveMergesAsCachedRowSetUsingUserId(userModel.getId());
+					
+						  if (mergesAsCachedRowSet != null) {
+					
+							  	MergesFunctions mergesFunctions = new MergesFunctions();
+	
+							  	mergesAsHTML = mergesFunctions.getMergesAsDecoratedXHTMLTableUsingMergesAsCachedRowSet(mergesAsCachedRowSet);
+							    
+						  } else {
+						  
+							  mergesAsHTML = "<p>Failed to retrieve Merges As CachedRowSet Using User Id</p>";
+							  
+						  } 
+						  
 					  
-					  
-					  response.getWriter().print(joinsAsHTML);
+					  response.getWriter().print(mergesAsHTML);
 					  
 				  } else {
 					  
@@ -358,149 +230,284 @@ public class DataController extends HttpServlet {
 					  response.getWriter().println("Unhandled Header Accept: " + request.getHeader("Accept"));
 					  
 				  } 
-
-		  } 
-		  else if (resolutionsByColumnURLPatternMatcher.find()) {
-			  
-				 // Get the mergeId 
-				 MergeModel mergeModel = new MergeModel();
-				 mergeModel.setId(Integer.parseInt(resolutionsByColumnURLPatternMatcher.group(1)));  
-				 
-				 MergesCRUD mergesModel = new MergesCRUD();
-				 mergesModel.setDatabaseModel(databaseModel);
-				 mergeModel = mergesModel.retrieveMergeAsMergeModelByMergeId(mergeModel.getId());
-			  
-				  if (headerAcceptsAsStringList.contains("text/html")) { 
-					  
-					  //Otherwise degree symbols turn into question-marks
-					  response.setCharacterEncoding("UTF-8");
-					  
-					  response.setContentType("text/html");
-					  
-					  String resolutionsByColumnAsHTML = null;
-						
-
-						ResolutionsByColumnCRUD resolutionsByColumnCRUD = new ResolutionsByColumnCRUD();
-						resolutionsByColumnCRUD.setDatabaseModel(databaseModel);
-						
-						//FIXME
-						//resolutionsByColumnModel.setUserModel(userModel);
-
-						resolutionsByColumnAsHTML = resolutionsByColumnCRUD.retrieveResolutionsByColumnAsDecoratedXHTMLTableUsingMergeModel(mergeModel);
-					  
-					  
-					  response.getWriter().print(resolutionsByColumnAsHTML);
-					  
-				  } else {
-					  
-					  response.setContentType("text/plain");
-					  response.getWriter().println("Unhandled Header Accept: " + request.getHeader("Accept"));
-					  
-				  }   
-
-				  
-		  } else if (resolutionsByRowURLPatternMatcher.find()) {
-			  
-				 // Get the mergeId 
-				 MergeModel mergeModel = new MergeModel();
-				 mergeModel.setId(Integer.parseInt(resolutionsByRowURLPatternMatcher.group(1)));  
-				 
-				 MergesCRUD mergesModel = new MergesCRUD();
-				 mergesModel.setDatabaseModel(databaseModel);
-				 mergeModel = mergesModel.retrieveMergeAsMergeModelByMergeId(mergeModel.getId());
-			  
-				  if (headerAcceptsAsStringList.contains("text/html")) { 
-					  
-					  //Otherwise degree symbols turn into question-marks
-					  response.setCharacterEncoding("UTF-8");
-					  
-					  response.setContentType("text/html");
-					  
-					  String resolutionsByRowAsHTML = null;
-						
-
-						ResolutionsByRowCRUD resolutionsByRowCRUD = new ResolutionsByRowCRUD();
-						resolutionsByRowCRUD.setDatabaseModel(databaseModel);
-						
-						//FIXME
-						//resolutionsByColumnModel.setUserModel(userModel);
-
-						resolutionsByRowAsHTML = resolutionsByRowCRUD.retrieveResolutionsByRowAsDecoratedXHTMLTableUsingMergeModel(mergeModel);
-					  
-					  
-					  response.getWriter().print(resolutionsByRowAsHTML);
-					  
-				  } else {
-					  
-					  response.setContentType("text/plain");
-					  response.getWriter().println("Unhandled Header Accept: " + request.getHeader("Accept"));
-					  
-				  }   				  
-				  
-				  
-				  
-		  }
-		  
-		  else if (newJoinURLPatternMatcher.find()) {
-				  
-			  //FIXME: This content-type isn't necessary, just a test
-			  if (request.getContentType() != null && request.getContentType().equals("application/json")) {
-				  
-				  
-				  if (headerAcceptsAsStringList.contains("text/html")) { 
-				  
-					  //Otherwise degree symbols turn into question-marks
-					  response.setCharacterEncoding("UTF-8");
-					  
-					  response.setContentType("text/html");
-					  
-					  	// Get the mergeId 
-						 MergeModel mergeModel = new MergeModel();
-						 mergeModel.setId(Integer.parseInt(newJoinURLPatternMatcher.group(1)));  
-						 
-						 MergesCRUD mergesModel = new MergesCRUD();
-						 mergesModel.setDatabaseModel(databaseModel);
-						 mergeModel = mergesModel.retrieveMergeAsMergeModelByMergeId(mergeModel.getId());
-					  
-					  String joinAsDecoratedXHTMLTable = null;
-					  
-					  	JoinFunctions joinFunctions = new JoinFunctions();
-						joinFunctions.setJoinModel(new JoinModel()); // Unnecessary but explicit
-						joinFunctions.setMergeModel(mergeModel);
-						joinFunctions.setJoinAsDecoratedXHTMLTableByJoinModel();
-						
-					
-						joinAsDecoratedXHTMLTable = joinFunctions.getJoinAsDecoratedXHTMLTable();
-					  
-					  
-					  if (joinAsDecoratedXHTMLTable == null) {
+				
+			  }
+			  else if (request.getPathInfo().equals("/exports")) {
 	
-						  joinAsDecoratedXHTMLTable = "<p>Failed to retrieve a join as a decorated XHTML table</p>";
+				  if (headerAcceptsAsStringList.contains("text/html")) { 
+				  
+					  //Otherwise degree symbols turn into question-marks
+					  response.setCharacterEncoding("UTF-8");
+					  
+					  response.setContentType("text/html");
+					  
+					  String exportsAsHTML = null;
+						
+					  ExportsCRUD exportsCRUD = new ExportsCRUD();
+					  exportsCRUD.setDatabaseModel(databaseModel);
+	
+					  
+					  if (request.getParameter("sort") != null) {
+	
+						  HashMap<String, String> supportedSortRequestsAsRequestToColumnNameHashMap = new HashMap<String, String>();
+						  
+						  //TODO: maybe move this to a better place
+						  supportedSortRequestsAsRequestToColumnNameHashMap.put("id", "id");
+						  supportedSortRequestsAsRequestToColumnNameHashMap.put("mergedFilename", "merged_file.filename");
+						  supportedSortRequestsAsRequestToColumnNameHashMap.put("sourceFile1Filename", "source_file_1.filename");
+						  supportedSortRequestsAsRequestToColumnNameHashMap.put("sourceFile2Filename", "source_file_2.filename");
+						  supportedSortRequestsAsRequestToColumnNameHashMap.put("createDate", "created_datetime");
+						  
+						  if (supportedSortRequestsAsRequestToColumnNameHashMap.containsKey(request.getParameter("sort"))) {
+							
+							  CachedRowSet exportsSortedByFilenameAsCachedRowSet = exportsCRUD.retrieveExportsSortedByColumnNameAsCachedRowSetUsingUserIdAndColumnName(userModel.getId(), supportedSortRequestsAsRequestToColumnNameHashMap.get(request.getParameter("sort")));
+								
+							  if (exportsSortedByFilenameAsCachedRowSet != null) {
+						
+								  	ExportsFunctions exportsFunctions = new ExportsFunctions();
+								  	exportsAsHTML = exportsFunctions.getExportsAsDecoratedXHTMLTableUsingExportsAsCachedRowSet(exportsSortedByFilenameAsCachedRowSet);
+								    
+							  } else {
+							  
+								  exportsAsHTML = "<p>Failed to retrieve Exports Sorted By Column Name As CachedRowSet Using User Id</p>";
+								  
+							  }
+							  
+						  } else {
+							  exportsAsHTML = "<p>Unsupported sort request.</p>";
+							  
+						  }
+						  
+						  
+					  } else {
+						  
+						  
+						  CachedRowSet exportsAsCachedRowSet = exportsCRUD.retrieveExportsAsCachedRowSetUsingUserId(userModel.getId());
+					
+						  if (exportsAsCachedRowSet != null) {
+					
+							  	ExportsFunctions exportsFunctions = new ExportsFunctions();
+	
+							  	exportsAsHTML = exportsFunctions.getExportsAsDecoratedXHTMLTableUsingExportsAsCachedRowSet(exportsAsCachedRowSet);
+							    
+						  } else {
+						  
+							  exportsAsHTML = "<p>Failed to retrieve Merges As CachedRowSet Using User Id</p>";
+							  
+						  } 
+						  
+						  
+					  }
+					  
+					  response.getWriter().print(exportsAsHTML);
+					  
+				  } else {
+					  
+					  response.setContentType("text/plain");
+					  response.getWriter().println("Unhandled Header Accept: " + request.getHeader("Accept"));
+					  
+				  } 
+				
+			  }
+			  else if (joinsURLPatternMatcher.find()) {
+				  
+					 // Get the mergeId 
+					 MergeModel mergeModel = new MergeModel();
+					 mergeModel.setId(Integer.parseInt(joinsURLPatternMatcher.group(1)));  
+					 
+					 MergesCRUD mergesCRUD = new MergesCRUD();
+					 mergesCRUD.setDatabaseModel(databaseModel);
+					 mergeModel = mergesCRUD.retrieveMergeAsMergeModelUsingMergeIdAndUserId(mergeModel.getId(), userModel.getId());
+				  
+					  if (headerAcceptsAsStringList.contains("text/html")) { 
+						  
+						  //Otherwise degree symbols turn into question-marks
+						  response.setCharacterEncoding("UTF-8");
+						  
+						  response.setContentType("text/html");
+						  
+						  String joinsAsHTML = null;
+							
+						  JoinsCRUD joinsCRUD = new JoinsCRUD();
+						  joinsCRUD.setDatabaseModel(databaseModel);
+	
+						  //FIXME: convert to use userId
+						  
+						  CachedRowSet joinsAsCachedRowSet = joinsCRUD.retrieveJoinsAsCachedRowSetUsingMergeIdAndUserId(mergeModel.getId(), userModel.getId());
+					
+						  if (joinsAsCachedRowSet != null) {
+					
+							  MergeFunctions mergeFunctions = new MergeFunctions();
+							  
+							    mergeFunctions.setMergeModel(mergeModel);	    
+							    mergeFunctions.setJoinsAsCachedRowSet(joinsAsCachedRowSet);
+							    mergeFunctions.setJoinsAsDecoratedXHTMLTableUsingJoinsAsCachedRowSet();
+							    joinsAsHTML = mergeFunctions.getJoinsAsDecoratedXHTMLTable();
+							    
+						  } else {
+						  
+							  joinsAsHTML = "<p>Failed to retrieve Joins As CachedRowSet Using Merge Id</p>";
+							  
+						  } 
+						  
+						  
+						  response.getWriter().print(joinsAsHTML);
+						  
+					  } else {
+						  
+						  response.setContentType("text/plain");
+						  response.getWriter().println("Unhandled Header Accept: " + request.getHeader("Accept"));
 						  
 					  } 
+	
+			  } 
+			  else if (resolutionsByColumnURLPatternMatcher.find()) {
+				  
+					 // Get the mergeId 
+					 MergeModel mergeModel = new MergeModel();
+					 mergeModel.setId(Integer.parseInt(resolutionsByColumnURLPatternMatcher.group(1)));  
+					 
+					 MergesCRUD mergesModel = new MergesCRUD();
+					 mergesModel.setDatabaseModel(databaseModel);
+					 mergeModel = mergesModel.retrieveMergeAsMergeModelUsingMergeIdAndUserId(mergeModel.getId(), userModel.getId());
+				  
+					  if (headerAcceptsAsStringList.contains("text/html")) { 
+						  
+						  //Otherwise degree symbols turn into question-marks
+						  response.setCharacterEncoding("UTF-8");
+						  
+						  response.setContentType("text/html");
+						  
+						  String resolutionsByColumnAsHTML = null;
+							
+	
+							ResolutionsByColumnCRUD resolutionsByColumnCRUD = new ResolutionsByColumnCRUD();
+							resolutionsByColumnCRUD.setDatabaseModel(databaseModel);
+							
+							//FIXME: Convert to use userId
+	
+							resolutionsByColumnAsHTML = resolutionsByColumnCRUD.retrieveResolutionsByColumnAsDecoratedXHTMLTableUsingMergeModel(mergeModel);
+						  
+						  
+						  response.getWriter().print(resolutionsByColumnAsHTML);
+						  
+					  } else {
+						  
+						  response.setContentType("text/plain");
+						  response.getWriter().println("Unhandled Header Accept: " + request.getHeader("Accept"));
+						  
+					  }   
+	
+					  
+			  } else if (resolutionsByRowURLPatternMatcher.find()) {
+				  
+					 // Get the mergeId 
+					 MergeModel mergeModel = new MergeModel();
+					 mergeModel.setId(Integer.parseInt(resolutionsByRowURLPatternMatcher.group(1)));  
+					 
+					 MergesCRUD mergesModel = new MergesCRUD();
+					 mergesModel.setDatabaseModel(databaseModel);
+					 mergeModel = mergesModel.retrieveMergeAsMergeModelUsingMergeIdAndUserId(mergeModel.getId(), userModel.getId());
+				  
+					  if (headerAcceptsAsStringList.contains("text/html")) { 
+						  
+						  //Otherwise degree symbols turn into question-marks
+						  response.setCharacterEncoding("UTF-8");
+						  
+						  response.setContentType("text/html");
+						  
+						  String resolutionsByRowAsHTML = null;
+							
+	
+							ResolutionsByRowCRUD resolutionsByRowCRUD = new ResolutionsByRowCRUD();
+							resolutionsByRowCRUD.setDatabaseModel(databaseModel);
+							
+							//FIXME: Convert to use userId
+	
+							resolutionsByRowAsHTML = resolutionsByRowCRUD.retrieveResolutionsByRowAsDecoratedXHTMLTableUsingMergeModel(mergeModel);
+						  
+						  
+						  response.getWriter().print(resolutionsByRowAsHTML);
+						  
+					  } else {
+						  
+						  response.setContentType("text/plain");
+						  response.getWriter().println("Unhandled Header Accept: " + request.getHeader("Accept"));
+						  
+					  }   				  
 					  
 					  
-					  response.getWriter().print(joinAsDecoratedXHTMLTable);
+					  
+			  }
+			  
+			  else if (newJoinURLPatternMatcher.find()) {
+					  
+				  //FIXME: This content-type isn't necessary, just a test
+				  if (request.getContentType() != null && request.getContentType().equals("application/json")) {
+					  
+					  
+					  if (headerAcceptsAsStringList.contains("text/html")) { 
+					  
+						  //Otherwise degree symbols turn into question-marks
+						  response.setCharacterEncoding("UTF-8");
+						  
+						  response.setContentType("text/html");
+						  
+						  	// Get the mergeId 
+							 MergeModel mergeModel = new MergeModel();
+							 mergeModel.setId(Integer.parseInt(newJoinURLPatternMatcher.group(1)));  
+							 
+							 MergesCRUD mergesModel = new MergesCRUD();
+							 mergesModel.setDatabaseModel(databaseModel);
+							 mergeModel = mergesModel.retrieveMergeAsMergeModelUsingMergeIdAndUserId(mergeModel.getId(), userModel.getId());
+						  
+						  String joinAsDecoratedXHTMLTable = null;
+						  
+						  	JoinFunctions joinFunctions = new JoinFunctions();
+							joinFunctions.setJoinModel(new JoinModel()); // Unnecessary but explicit
+							joinFunctions.setMergeModel(mergeModel);
+							joinFunctions.setJoinAsDecoratedXHTMLTableByJoinModel();
+							
+						
+							joinAsDecoratedXHTMLTable = joinFunctions.getJoinAsDecoratedXHTMLTable();
+						  
+						  
+						  if (joinAsDecoratedXHTMLTable == null) {
+		
+							  joinAsDecoratedXHTMLTable = "<p>Failed to retrieve a join as a decorated XHTML table</p>";
+							  
+						  } 
+						  
+						  
+						  response.getWriter().print(joinAsDecoratedXHTMLTable);
+						  
+					  } else {
+						  
+						  response.setContentType("text/plain");
+						  response.getWriter().println("Unhandled Header Accept: " + request.getHeader("Accept"));
+						  
+					  }
 					  
 				  } else {
 					  
 					  response.setContentType("text/plain");
-					  response.getWriter().println("Unhandled Header Accept: " + request.getHeader("Accept"));
+					  response.getWriter().println("Unhandled Content Type: " + request.getContentType());
 					  
-				  }
-				  
+				  }	  
+					  
+					  
 			  } else {
-				  
 				  response.setContentType("text/plain");
-				  response.getWriter().println("Unhandled Content Type: " + request.getContentType());
-				  
-			  }	  
-				  
-				  
-		  } else {
+				  response.getWriter().println("Unhandled Path Info: " + request.getPathInfo());
+			  }
 			  
-			  response.getWriter().println("Unhandled Path Info: " + request.getPathInfo());
-		  }
+			  
+		} else {
+		
+			response.setContentType("text/plain");
+			response.getWriter().println("All requests to this service require prior authentication.");
+			
+		}
 	}
 
 
@@ -659,7 +666,7 @@ public class DataController extends HttpServlet {
 								
 								MergesCRUD mergesCRUD = new MergesCRUD();
 								mergesCRUD.setDatabaseModel(databaseModel);
-								mergeModel = mergesCRUD.retrieveMergeAsMergeModelThroughCreatingMergeUsingMergeModel(mergeModel);
+								mergeModel = mergesCRUD.retrieveMergeAsMergeModelThroughCreatingMergeUsingMergeModelAndUserId(mergeModel, userModel.getId());
 								
 						        responseAsJSON = "{\"id\": \"" + mergeModel.getId().toString() + "\"}";		
 								
@@ -739,7 +746,7 @@ public class DataController extends HttpServlet {
 							exportsCRUD.setDatabaseModel(databaseModel);
 							exportsCRUD.setFilebaseModel(filebaseModel);
 							
-							exportModel = exportsCRUD.retrieveExportAsExportModelThroughCreatingExportUsingExportModel(exportModel);
+							exportModel = exportsCRUD.retrieveExportAsExportModelThroughCreatingExportUsingExportModelAndUserId(exportModel, userModel.getId());
 							
 							if (exportModel.getId() != null) {
 								
@@ -799,6 +806,9 @@ public class DataController extends HttpServlet {
 		DatabasesCRUD databasesCRUD = new DatabasesCRUD();
 		DatabaseModel databaseModel = databasesCRUD.retrieveDatabaseAsDatabaseModelUsingServletContext(request.getSession().getServletContext());
 
+		UsersCRUD usersCRUD = new UsersCRUD();
+		usersCRUD.setDatabaseModel(databaseModel);
+		UserModel userModel = usersCRUD.retrieveUserAsUserModelUsingUsername((String)request.getSession().getAttribute("username"));
 		
 		//TODO: centralize these
 		
@@ -854,7 +864,7 @@ public class DataController extends HttpServlet {
 							// Maybe a list of JoinModel objects, joinsAsJoinModelList
 							
 							// This update should also recalculate conflicts and destroy old resolutions
-							joinsCRUD.updateJoinsByMergeIdUsingJoinsAsJSONObject(mergeModel.getId(), jsonObject);
+							joinsCRUD.updateJoinsUsingMergeIdAndUserIdAndJoinsAsJSONObject(mergeModel.getId(), userModel.getId(), jsonObject);
 							
 							
 							
@@ -1123,10 +1133,6 @@ public class DataController extends HttpServlet {
 								FilesCRUD filesCRUD = new FilesCRUD();
 								filesCRUD.setDatabaseModel(databaseModel);
 								
-								UsersCRUD usersCRUD = new UsersCRUD();
-								usersCRUD.setDatabaseModel(databaseModel);
-								UserModel userModel = usersCRUD.retrieveUserAsUserModelUsingUsername((String)request.getSession().getAttribute("username"));
-								
 								if (filesCRUD.updateFileHiddensUsingFileIdsAsJSONArrayAndHiddenAsBooleanAndUserId(fileIds, hidden, userModel.getId())) {
 									responseAsJSON = "{\"success\": \"true\"}";
 								} else {
@@ -1267,7 +1273,6 @@ public class DataController extends HttpServlet {
 									
 				
 							} catch (JSONException e1) {
-								// TODO Auto-generated catch block
 								e1.printStackTrace();
 							} 
 

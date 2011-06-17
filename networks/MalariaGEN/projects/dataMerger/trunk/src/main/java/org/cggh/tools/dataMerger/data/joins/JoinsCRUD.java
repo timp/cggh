@@ -19,6 +19,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.mysql.jdbc.exceptions.jdbc4.MySQLIntegrityConstraintViolationException;
+
 
 public class JoinsCRUD implements java.io.Serializable {
 
@@ -114,7 +116,10 @@ public class JoinsCRUD implements java.io.Serializable {
 	          preparedStatement.close();
 	          
 	
-	        }
+	        } catch (MySQLIntegrityConstraintViolationException mySQLIntegrityConstraintViolationException) {
+	        	logger.warning("Attempt on creating duplicate column name in join");
+	        	mySQLIntegrityConstraintViolationException.printStackTrace();
+			}
 	        catch(SQLException sqlException){
 		    	sqlException.printStackTrace();
 	        } 	
@@ -153,11 +158,8 @@ public class JoinsCRUD implements java.io.Serializable {
 	}
 
 
-	public CachedRowSet retrieveJoinsAsCachedRowSetByMergeId(Integer mergeId,
-			Connection connection) {
+	public CachedRowSet retrieveJoinsAsCachedRowSetUsingMergeIdAndUserId(Integer mergeId, Integer userId, Connection connection) {
 
-		MergeModel mergeModel = new MergeModel();
-		mergeModel.setId(mergeId);
 		
         Class<?> cachedRowSetImplClass = null;
 		try {
@@ -179,8 +181,15 @@ public class JoinsCRUD implements java.io.Serializable {
 		}
 		
 	      try{
-	          PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM `join` WHERE merge_id = ? ORDER BY column_number;");
-	          preparedStatement.setInt(1, mergeModel.getId());
+	          PreparedStatement preparedStatement = connection.prepareStatement(
+	        		  "SELECT `join`.* " +
+	        		  "FROM `join` " +
+	        		  "JOIN `merge` ON `merge`.id = `join`.merge_id " +
+	        		  "WHERE merge_id = ? " +
+	        		  "AND `merge`.created_by_user_id = ? " +
+	        		  "ORDER BY column_number;");
+	          preparedStatement.setInt(1, mergeId);
+	          preparedStatement.setInt(2, userId);
 	          preparedStatement.executeQuery();
 	         
 	          joinsAsCachedRowSet.populate(preparedStatement.getResultSet());
@@ -336,7 +345,7 @@ public class JoinsCRUD implements java.io.Serializable {
 	}
 
 
-	public void updateJoinsByMergeIdUsingJoinsAsJSONObject(Integer mergeId,
+	public void updateJoinsUsingMergeIdAndUserIdAndJoinsAsJSONObject(Integer mergeId, Integer userId, 
 			JSONObject joinsAsJsonObject) {
 		
 		//NOTE: This is cutting a corner (replacing rather than updating).
@@ -416,7 +425,7 @@ public class JoinsCRUD implements java.io.Serializable {
 		          
 		          //Need a complete, up-to-date mergeModel
 		          MergesCRUD mergesModel = new MergesCRUD();
-		          mergeModel = mergesModel.retrieveMergeAsMergeModelUsingMergeId(mergeModel.getId(), connection);
+		          mergeModel = mergesModel.retrieveMergeAsMergeModelUsingMergeIdAndUserId(mergeModel.getId(), userId, connection);
 		          
 		          //Recount the duplicate keys
 		          mergeModel = mergesModel.retrieveMergeAsMergeModelThroughCountingDuplicateKeysUsingMergeModel(mergeModel, connection);
@@ -450,7 +459,7 @@ public class JoinsCRUD implements java.io.Serializable {
 	}
 
 
-	public CachedRowSet retrieveJoinsAsCachedRowSetByMergeId(Integer mergeId) {
+	public CachedRowSet retrieveJoinsAsCachedRowSetUsingMergeIdAndUserId(Integer mergeId, Integer userId) {
 
 		
 		MergeModel mergeModel = new MergeModel();
@@ -464,7 +473,7 @@ public class JoinsCRUD implements java.io.Serializable {
 			 
 			if (connection != null) {
 		
-				joinsAsCachedRowSet = this.retrieveJoinsAsCachedRowSetByMergeId(mergeId, connection);
+				joinsAsCachedRowSet = this.retrieveJoinsAsCachedRowSetUsingMergeIdAndUserId(mergeId, userId, connection);
 				
 						try {
 							connection.close();

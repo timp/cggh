@@ -121,6 +121,7 @@ public class DatatablesCRUD implements java.io.Serializable {
 			        	    	  columnNames[i] = columnNames[i].replaceAll("[^\u0000-\uFFFF]", "");
 			        	    	  
 			        	    	  //TODO: The above isn't good enough, so being harsher, but this is not ideal.
+			        	    	  //FIXME: This is too harsh, doesn't even allow spaces.
 			        	    	  //Replace all non-word characters (same as [\W])
 			        	    	  columnNames[i] = columnNames[i].replaceAll("[^\\w]", "");
 			        	    	  

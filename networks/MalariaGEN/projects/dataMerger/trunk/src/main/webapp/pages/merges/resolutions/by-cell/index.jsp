@@ -17,7 +17,7 @@ MergesCRUD mergesCRUD = new MergesCRUD();
 mergesCRUD.setDatabaseModel(databaseModel);
 
 MergeModel mergeModel = new MergeModel();
-mergeModel = mergesCRUD.retrieveMergeAsMergeModelByMergeId(Integer.parseInt(request.getParameter("merge_id")));
+mergeModel = mergesCRUD.retrieveMergeAsMergeModelUsingMergeIdAndUserId(Integer.parseInt(request.getParameter("merge_id")), userModel.getId());
 
 DateFormat dateFormat = new SimpleDateFormat("dd MMM yyyy HH:mm");
 

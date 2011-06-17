@@ -50,7 +50,7 @@ public class MergesCRUD implements java.io.Serializable {
 
     
 
-    public MergeModel retrieveMergeAsMergeModelByMergeId(Integer mergeId) {
+    public MergeModel retrieveMergeAsMergeModelUsingMergeIdAndUserId(Integer mergeId, Integer userId) {
     	
     	MergeModel mergeModel = new MergeModel();
 		mergeModel.setId(mergeId);
@@ -61,7 +61,7 @@ public class MergesCRUD implements java.io.Serializable {
 			 
 			if (connection != null) {		
 
-				mergeModel = retrieveMergeAsMergeModelUsingMergeId(mergeModel.getId(), connection);
+				mergeModel = retrieveMergeAsMergeModelUsingMergeIdAndUserId(mergeModel.getId(), userId, connection);
 				
 						
 						try {
@@ -86,7 +86,7 @@ public class MergesCRUD implements java.io.Serializable {
     }
 
 
-	public MergeModel retrieveMergeAsMergeModelUsingMergeId(Integer mergeId, Connection connection) {
+	public MergeModel retrieveMergeAsMergeModelUsingMergeIdAndUserId(Integer mergeId, Integer userId, Connection connection) {
 
 		MergeModel mergeModel = new MergeModel();
 		mergeModel.setId(mergeId);
@@ -135,7 +135,7 @@ public class MergesCRUD implements java.io.Serializable {
 	        	  mergeModel.setJoinsModel(joinsCRUD.retrieveJoinsAsJoinsModelByMergeId(mergeModel.getId(), connection));
 	        	  
 	        	  //FIXME: This seems wrong. Refactor to joinsModel.setDataAsCachedRowSet or review naming.
-	        	  mergeModel.setJoinsAsCachedRowSet(joinsCRUD.retrieveJoinsAsCachedRowSetByMergeId(mergeModel.getId(), connection));
+	        	  mergeModel.setJoinsAsCachedRowSet(joinsCRUD.retrieveJoinsAsCachedRowSetUsingMergeIdAndUserId(mergeModel.getId(), userId, connection));
 	        	  
 	        	  //Retrieve the join-specific datatable data from the db and add to the datatable models.
 	        	  mergeModel.getDatatable1Model().setKeyColumnNamesAsStringList(joinsCRUD.retrieveDatatable1KeyColumnNamesAsStringListByMergeId(mergeModel.getId(), connection));
@@ -171,8 +171,8 @@ public class MergesCRUD implements java.io.Serializable {
 	}
 
 
-	public MergeModel retrieveMergeAsMergeModelThroughCreatingMergeUsingMergeModel(
-			MergeModel mergeModel) {
+	public MergeModel retrieveMergeAsMergeModelThroughCreatingMergeUsingMergeModelAndUserId(
+			MergeModel mergeModel, Integer userId) {
 
 		try {
 			
@@ -218,7 +218,7 @@ public class MergesCRUD implements java.io.Serializable {
 	
 							
 							// Guess keys automatically.
-							mergeModel = mergeScripts.retrieveMergeAsMergeModelThroughGuessingKeysUsingMergeModel(mergeModel, connection);
+							mergeModel = mergeScripts.retrieveMergeAsMergeModelThroughGuessingKeysUsingMergeModelAndUserId(mergeModel, userId, connection);
 							
 							
 							// Count the duplicate keys in each datatable (according to the join) and the total.
@@ -470,9 +470,11 @@ public class MergesCRUD implements java.io.Serializable {
 					 //FIXME: Apparently a bug in CachedRowSet using getX('columnAlias') aka columnLabel, which actually only works with getX('columnName'), so using getX('columnIndex').
 					 
 					
+					//FIXME: The joined_datatable_name is being used instead of a hasAtLeastOneKey (is a valid join)
+					
 				      try{
 				          PreparedStatement preparedStatement = connection.prepareStatement(
-				        		"SELECT merge.id, file_1.id AS file_1_id, file_1.filename AS file_1_filename, file_2.id AS 'file_2_id', file_2.filename AS 'file_2_filename', merge.created_datetime, merge.updated_datetime, merge.total_duplicate_keys_count, merge.total_conflicts_count " +
+				        		"SELECT merge.id, file_1.id AS file_1_id, file_1.filename AS file_1_filename, file_2.id AS 'file_2_id', file_2.filename AS 'file_2_filename', merge.created_datetime, merge.updated_datetime, merge.total_duplicate_keys_count, merge.total_conflicts_count, merge.joined_keytable_name " +
 				          		"FROM merge " +
 				          		"INNER JOIN file AS file_1 ON file_1.id = merge.file_1_id " +
 				          		"INNER JOIN file AS file_2 ON file_2.id = merge.file_2_id " +

@@ -95,7 +95,11 @@ a:hover {
         list-style-type: none;
 }
 .apps-menu .item {
+		/* Layout */
         float: left;
+        line-height: 21px;
+        font-size: 11px;
+        
 }
 .apps-menu .item .selected {
         /* Appearance */

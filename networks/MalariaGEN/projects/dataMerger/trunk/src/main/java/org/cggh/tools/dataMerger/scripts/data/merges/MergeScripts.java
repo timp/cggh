@@ -441,8 +441,8 @@ public class MergeScripts implements java.io.Serializable {
 	}	
 
 
-	public MergeModel retrieveMergeAsMergeModelThroughGuessingKeysUsingMergeModel(
-			MergeModel mergeModel, Connection connection) throws SQLException {
+	public MergeModel retrieveMergeAsMergeModelThroughGuessingKeysUsingMergeModelAndUserId(
+			MergeModel mergeModel, Integer userId, Connection connection) throws SQLException {
 
 		
 		JoinsCRUD joinsCRUD = new JoinsCRUD();
@@ -535,7 +535,7 @@ public class MergeScripts implements java.io.Serializable {
 		}
 		
 		MergesCRUD mergesModel = new MergesCRUD();
-		mergeModel = mergesModel.retrieveMergeAsMergeModelUsingMergeId(mergeModel.getId(), connection);
+		mergeModel = mergesModel.retrieveMergeAsMergeModelUsingMergeIdAndUserId(mergeModel.getId(), userId, connection);
 		
 		return mergeModel;
 	}

@@ -51,8 +51,8 @@ public class ExportsCRUD implements java.io.Serializable  {
 	}
 
 
-	public ExportModel retrieveExportAsExportModelThroughCreatingExportUsingExportModel(
-			ExportModel exportModel) {
+	public ExportModel retrieveExportAsExportModelThroughCreatingExportUsingExportModelAndUserId(
+			ExportModel exportModel, Integer userId) {
 
 		try {
 			
@@ -65,9 +65,9 @@ public class ExportsCRUD implements java.io.Serializable  {
 					
 			    	  
 						// Get the merge model for the export.
-						MergesCRUD mergesModel = new MergesCRUD();
-						mergesModel.setDatabaseModel(this.getDatabaseModel());
-						exportModel.setMergeModel(mergesModel.retrieveMergeAsMergeModelByMergeId(exportModel.getMergeModel().getId()));
+						MergesCRUD mergesCRUD = new MergesCRUD();
+						mergesCRUD.setDatabaseModel(this.getDatabaseModel());
+						exportModel.setMergeModel(mergesCRUD.retrieveMergeAsMergeModelUsingMergeIdAndUserId(exportModel.getMergeModel().getId(), userId));
 						
 					
 						//Insert the export record
