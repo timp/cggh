@@ -32,23 +32,23 @@ String databaseConnectionErrorBasePathURL = request.getScheme() + "://" + reques
 					
 					<h5>Database connection</h5>
 					
-					<p>The application cannot connect to the specified database using the specified parameters.</p>
+					<p>The application cannot connect to the database using the specified parameters.</p>
 					
 					<h6>Possible causes:</h6>
 					<ul>
-						<li>The values specified in the web.xml are incorrect (/webapps/dataMerger/WEB-INF/web.xml).</li>
-						<li>The database has not been installed.</li>
+						<li>The values specified in the web.xml are incorrect. (See the <a href="<%=databaseConnectionErrorBasePathURL %>pages/guides/configuration">Configuration Guide</a>.)</li>
+						<li>The database has not been installed. (See the <a href="<%=databaseConnectionErrorBasePathURL %>pages/guides/installation">Installation Guide</a>.)</li>
 					</ul>	
 					
-					<p>The required configuration parameters are databaseDriverFullyQualifiedClassName, databaseServerPath, databaseName, databaseUsername, databasePassword.
-					</p>
+					<h6>The required configuration parameters in the web.xml are:</h6>
+					<ul>
+					 	<li>databaseDriverFullyQualifiedClassName</li>
+						<li>databaseServerPath</li>
+						<li>databaseName</li>
+						<li>databaseUsername</li>
+						<li>databasePassword</li>
+					</ul>
 					
-					<p>The required values can be seen on the <a href="../../">configuration page</a>.
-					</p>
-					
-					<p>For application administrators, the current values can be seen on the <a href="../../">configuration page</a> and the database can be installed using the <a href="<%=databaseConnectionErrorBasePathURL %>pages/settings/">settings section</a>.
-					</p>
-		
 				</div>
 				
 			</div>

@@ -11,7 +11,7 @@ function initLoginFunction () {
 		// Get data from files form.
 		var data = $.toJSON($('.loginForm').serializeObject());
 		
-		//Validate exactly two checkboxes selected.
+		//Validation: The username or password cannot be blank.
 		
 		var obj = jQuery.parseJSON(data);
 		
@@ -31,16 +31,20 @@ function initLoginFunction () {
 						if (data.success == "true") {
 							window.location.href = '/dataMerger/pages/files/';
 						} else {
-							$('.badLoginMessage').show();
+							$('.error').html("Access denied.");
 						}
 		
 					} else {
-						alert("An authentication error occurred.");
+						
+						if (data.error) {
+							$('.error').html(data.error);
+						} else {
+							alert("An error occurred while trying to log in.");
+						}
 					}
 				},
 				error: function (jqXHR, textStatus, errorThrown){
 		            $('.error').html(errorThrown);
-		            $('.status').html(textStatus);
 		        },
 				beforeSend: function() { $('.authenticating-indicator').show(); },
 		        complete: function() { $('.authenticating-indicator').hide(); }

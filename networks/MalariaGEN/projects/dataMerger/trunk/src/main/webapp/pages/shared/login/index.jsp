@@ -1,4 +1,46 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1" pageEncoding="ISO-8859-1"%>
+<%@ page import="org.cggh.tools.dataMerger.data.databases.DatabasesCRUD" %>
+<%@ page import="org.cggh.tools.dataMerger.data.databases.DatabaseModel" %>
+<%@ page import="org.cggh.tools.dataMerger.data.users.UsersCRUD" %>
+<%@ page import="org.cggh.tools.dataMerger.data.users.UserModel" %>
+<%
+	String webappBaseURLAsString = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath() + "/";
+
+	DatabasesCRUD databasesCRUD = new DatabasesCRUD();	
+
+	DatabaseModel databaseModel = databasesCRUD.retrieveDatabaseAsDatabaseModelUsingServletContext(session.getServletContext());
+	
+	UserModel userModel = null;
+	
+	if (databaseModel != null) {
+	
+		if (databaseModel.isConnectable()) {
+			
+			if (databaseModel.isInitialized()) {
+				
+					UsersCRUD usersCRUD = new UsersCRUD();
+					usersCRUD.setDatabaseModel(databaseModel);
+					userModel = usersCRUD.retrieveUserAsUserModelUsingUsername((String)session.getAttribute("username"));
+				
+			} else {
+
+					response.sendRedirect(webappBaseURLAsString + "pages/guides/configuration/errors/database-initialization");
+
+			}
+			
+		} else {
+
+				response.sendRedirect(webappBaseURLAsString + "pages/guides/configuration/errors/database-connection");
+
+		}
+		
+	} else {
+
+			response.sendRedirect(webappBaseURLAsString + "pages/guides/configuration/errors/database-connection");
+
+	}
+
+%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 	<head>
@@ -37,12 +79,6 @@
 			<div class="status">
 			</div>	
 			<div class="error">
-			</div>
-			
-			<div class="badLoginMessage" style="display:none">
-				<p class="error">Access denied.
-				</p>
-			
 			</div>
 
 			<p>To enter, please complete the form below.

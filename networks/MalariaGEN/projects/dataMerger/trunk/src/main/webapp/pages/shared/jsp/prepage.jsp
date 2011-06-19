@@ -23,7 +23,7 @@
 						
 					if (userModel.getId() == null) {
 					
-						response.sendRedirect(webappBaseURLAsString + "pages/guides/usage/errors/session-persistence");
+						response.sendRedirect(webappBaseURLAsString + "pages/guides/usage/errors/valid-session-required");
 					}
 				
 				

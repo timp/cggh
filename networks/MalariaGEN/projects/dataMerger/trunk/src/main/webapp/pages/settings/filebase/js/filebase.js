@@ -43,22 +43,33 @@ function initDeleteFilebaseFunction () {
 	$('.deleteFilebaseButton').click(
 			
 			function () {
+
 				
-				$.ajax({
-					  type: "DELETE",
-					  data: '',
-					  url: "/dataMerger/files/filebases",
-					  dataType: "text",
-					  success: function(data, textStatus, jqXHR) {
-							$('.ajaxResponse').html("Response: " + data);
-							$('.refreshButtonContainer').show();
-					  },
-					  error:function (jqXHR, textStatus, errorThrown){
-							$('.ajaxError').html("Error: " + errorThrown);
-			          },
-						beforeSend: function() { $('.deleting-filebase-indicator').show(); },
-				        complete: function() { $('.deleting-filebase-indicator').hide(); }
-					});
+				if (confirm("Are you sure you want to delete all the files?")) {
+					
+					if (confirm("Are you SURE you're sure? You want to delete all the files?")) {
+					
+				
+						$.ajax({
+							  type: "DELETE",
+							  data: '',
+							  url: "/dataMerger/files/filebases",
+							  dataType: "text",
+							  success: function(data, textStatus, jqXHR) {
+									$('.ajaxResponse').html("Response: " + data);
+									$('.refreshButtonContainer').show();
+							  },
+							  error:function (jqXHR, textStatus, errorThrown){
+									$('.ajaxError').html("Error: " + errorThrown);
+					          },
+								beforeSend: function() { $('.deleting-filebase-indicator').show(); },
+						        complete: function() { $('.deleting-filebase-indicator').hide(); }
+							});
+					}
+					
+				}
+				
+				
 			}
 			
 		);
@@ -99,21 +110,29 @@ function initDeleteFilebaseDirectoriesFunction () {
 			
 			function () {
 				
-				$.ajax({
-					  type: "DELETE",
-					  data: '',
-					  url: "/dataMerger/scripts/files/filebases/directories/delete-all",
-					  dataType: "text",
-					  success: function(data, textStatus, jqXHR) {
-							$('.ajaxResponse').html("Response: " + data);
-							$('.refreshButtonContainer').show();
-					  },
-					  error:function (jqXHR, textStatus, errorThrown){
-							$('.ajaxError').html("Error: " + errorThrown);
-			          },
-						beforeSend: function() { $('.deleting-filebase-directories-indicator').show(); },
-				        complete: function() { $('.deleting-filebase-directories-indicator').hide(); }
-					});
+				if (confirm("Are you sure you want to delete all the files?")) {
+					
+					if (confirm("Are you SURE you're sure? You want to delete all the files?")) {
+				
+						$.ajax({
+						  type: "DELETE",
+						  data: '',
+						  url: "/dataMerger/scripts/files/filebases/directories/delete-all",
+						  dataType: "text",
+						  success: function(data, textStatus, jqXHR) {
+								$('.ajaxResponse').html("Response: " + data);
+								$('.refreshButtonContainer').show();
+						  },
+						  error:function (jqXHR, textStatus, errorThrown){
+								$('.ajaxError').html("Error: " + errorThrown);
+				          },
+							beforeSend: function() { $('.deleting-filebase-directories-indicator').show(); },
+					        complete: function() { $('.deleting-filebase-directories-indicator').hide(); }
+						});
+					
+					}
+					
+				}
 			}
 			
 		);

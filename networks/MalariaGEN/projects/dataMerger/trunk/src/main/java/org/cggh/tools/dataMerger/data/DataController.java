@@ -519,284 +519,310 @@ public class DataController extends HttpServlet {
 		FilebasesCRUD filebasesCRUD = new FilebasesCRUD();
 		FilebaseModel filebaseModel = filebasesCRUD.retrieveFilebaseAsFilebaseModelUsingServletContext(request.getSession().getServletContext());
 		
-		UserModel userModel = new UserModel();
+		 String[] headerAcceptsAsStringArray = request.getHeader("Accept").split(",");
+		 List<String> headerAcceptsAsStringList = Arrays.asList(headerAcceptsAsStringArray);	
 		
 		// Get the user, if possible
 		if (databaseModel.isInitialized()) {
 		
 			UsersCRUD usersCRUD = new UsersCRUD();
 			usersCRUD.setDatabaseModel(databaseModel);
-			userModel = usersCRUD.retrieveUserAsUserModelUsingUsername((String)request.getSession().getAttribute("username"));
+			UserModel userModel = usersCRUD.retrieveUserAsUserModelUsingUsername((String)request.getSession().getAttribute("username"));
+
+		
+			 Pattern exportURLPattern = Pattern.compile("^/merges/(\\d+)/exports$");
+			 Matcher exportURLPatternMatcher = exportURLPattern.matcher(request.getPathInfo());
 			
-		}
-		
-		 Pattern exportURLPattern = Pattern.compile("^/merges/(\\d+)/exports$");
-		 Matcher exportURLPatternMatcher = exportURLPattern.matcher(request.getPathInfo());
-		
-		 String[] headerAcceptsAsStringArray = request.getHeader("Accept").split(",");
-		 List<String> headerAcceptsAsStringList = Arrays.asList(headerAcceptsAsStringArray);
 
-		//TODO: Not sure how login/logout should map onto HTTP methods, in a RESTful sense. 
-		 if (request.getPathInfo().equals("/users/authentication")) {
-
-			  if (request.getContentType() != null && request.getContentType().startsWith("application/json")) {
-			  
-			  	if (headerAcceptsAsStringList.contains("application/json")) { 
-			  
-					  response.setCharacterEncoding("UTF-8");
-					  
-					  response.setContentType("application/json");
-					  
-					  String responseAsJSON = null;
-					  
-					  try {
+	
+			 if (userModel != null && userModel.getId() != null) {
+				 
+				if (request.getPathInfo().equals("/merges")) {
+					 
+					  if (headerAcceptsAsStringList.contains("application/json")) { 
+					 
+						  response.setContentType("application/json");
+						  String responseAsJSON = null;
 						  
-						    //NOTE: This is applicable to POST, not GET
-						    BufferedReader reader = request.getReader();
-						    String line = null;
-						    StringBuffer stringBuffer = new StringBuffer();
-						    
-						    while ((line = reader.readLine()) != null) {
-						      stringBuffer.append(line);
-						    }
-						    
-						    
-							try {
-								JSONObject jsonObject = new JSONObject(stringBuffer.toString());
-								
-								
+						  try {
+							  
+							    BufferedReader reader = request.getReader();
+							    String line = null;
+							    StringBuffer stringBuffer = new StringBuffer();
+							    
+							    while ((line = reader.readLine()) != null) {
+							      stringBuffer.append(line);
+							    }
+							    
 								try {
-
-
-							        		
+									JSONObject jsonObject = new JSONObject(stringBuffer.toString());
+									JSONArray fileIds = jsonObject.getJSONArray("file_id");
 									
-							        
-							        
-							        UserbasesCRUD userbasesCRUD = new UserbasesCRUD();
-							        UserbaseModel userbaseModel = userbasesCRUD.retrieveUserbaseAsUserbaseModelUsingServletContext(getServletContext()); 
-							        
 									
-							        UsersCRUD usersCRUD = new UsersCRUD();
-							        usersCRUD.setUserbaseModel(userbaseModel);
-							        
-							        UsersFunctions usersFunctions = new UsersFunctions();
-							        
-							        if (usersCRUD.retrieveAuthenticatedAsBooleanUsingUsernameAndPasswordHashAsStrings(jsonObject.getString("username"), usersFunctions.convertStringIntoHashAsHexStringUsingStringAndHashFunctionName(jsonObject.getString("password"), getServletContext().getInitParameter("userbasePasswordHashFunctionName")))) {
-							        
-							        	request.getSession().setAttribute("userAuthenticated", true);
-							        	request.getSession().setAttribute("username", jsonObject.getString("username"));
-							        	
-							        	responseAsJSON = "{\"success\": \"true\"}";
-							        	
-							        } else {
-							        	
-							        	request.getSession().invalidate();
-							        	
-							        	responseAsJSON = "{\"success\": \"false\"}";
-							        }
-							        
+									try {
+		
+		
+										MergeModel mergeModel = new MergeModel();
+										
+										mergeModel.getFile1Model().setId(fileIds.getInt(0));
+										mergeModel.getFile2Model().setId(fileIds.getInt(1));
+										mergeModel.setCreatedByUserModel(userModel);
+										
+										MergesCRUD mergesCRUD = new MergesCRUD();
+										mergesCRUD.setDatabaseModel(databaseModel);
+										mergeModel = mergesCRUD.retrieveMergeAsMergeModelThroughCreatingMergeUsingMergeModelAndUserId(mergeModel, userModel.getId());
+										
+								        responseAsJSON = "{\"id\": \"" + mergeModel.getId().toString() + "\"}";		
+										
+										
+										
+									} catch (JSONException e) {
+										// TODO Auto-generated catch block
+										e.printStackTrace();
+									}
 									
-								} catch (JSONException e) {
-
-									e.printStackTrace();
-								}
-								
-				
-							} catch (JSONException e1) {
-
-								e1.printStackTrace();
-							} 
-					    
-					    
-					  } catch (Exception e) { 
-
-						  e.printStackTrace(); 
-					  
+					
+								} catch (JSONException e1) {
+									// TODO Auto-generated catch block
+									e1.printStackTrace();
+								} 
+						    
+						    
+						  } catch (Exception e) { 
+							  //TODO:
+							  e.printStackTrace(); 
+						  
+						  }
+						  
+						  response.getWriter().print(responseAsJSON);
+		
+					  } else {
+						  
+						  //FIXME: This will cause a parser error (Invalid JSON).
+						  
+						  response.setContentType("text/plain");
+						  response.getWriter().println("Unhandled Header Accept: " + request.getHeader("Accept"));
+						  
 					  }
 					  
-					  response.getWriter().print(responseAsJSON);
 				  
-				  } else {
+				 
+				 }
+				 else if (exportURLPatternMatcher.find()) {
+					 
+					  //TODO: Just testing
+					  if (headerAcceptsAsStringList.contains("application/json")) { 
+		
+						  if (request.getContentType().startsWith("application/json")) {
+						  
+							  response.setContentType("application/json");
+							  String responseAsJSON = null;
+							  
+							  	// Get the mergeId for the new export
+							  
+							  	ExportModel exportModel = new ExportModel();
+							  	exportModel.setCreatedByUserModel(userModel);
+							  	exportModel.getMergeModel().setId(Integer.parseInt(exportURLPatternMatcher.group(1)));
+							  
+							  	
+							  	// Get the filename for the new export
+							  	BufferedReader reader = request.getReader();
+							    String line = null;
+							    StringBuffer stringBuffer = new StringBuffer();
+							    
+							    while ((line = reader.readLine()) != null) {
+							      stringBuffer.append(line);
+							    }
+							    
+									
+								try {
+									JSONObject jsonObject = new JSONObject(stringBuffer.toString());
+									
+									exportModel.setMergedFileAsFileModel(new FileModel());
+									
+									exportModel.getMergedFileAsFileModel().setFilename(jsonObject.optString("mergedFileFilename"));
+									
+									//
+									//logger.info("got mergedFileFilename: " + exportModel.getFilename());
+									
+									ExportsCRUD exportsCRUD = new ExportsCRUD();
+									
+									exportsCRUD.setDatabaseModel(databaseModel);
+									exportsCRUD.setFilebaseModel(filebaseModel);
+									
+									exportModel = exportsCRUD.retrieveExportAsExportModelThroughCreatingExportUsingExportModelAndUserId(exportModel, userModel.getId());
+									
+									if (exportModel.getId() != null) {
+										
+								        responseAsJSON = "{\"id\": \"" + exportModel.getId() + "\"}";
+								        response.getWriter().print(responseAsJSON);
+							        
+									} else {
+										
+										 //FIXME: This will cause a parser error (Invalid JSON).
+										  
+										String logMessage = "Did not get an export ID after attempting to create an export using the merge ID.";
+										
+										//this.log(logMessage);
+										
+										  response.setContentType("text/plain");
+										  response.getWriter().println(logMessage);
+										
+									}
+									
+								} catch (JSONException e) {
+									
+									e.printStackTrace();
+									
+									response.setContentType("text/plain");
+									response.getWriter().println("An error occurred while trying to parse the filename."); 
+								}
+							  	
+		
+						  } else {
+							  response.setContentType("text/plain");
+							  response.getWriter().println("Unhandled Content Type: " + request.getContentType()); 
+						  }
+								
+					  } else {
+						  
+						  //FIXME: This will cause a parser error (Invalid JSON).
+						  
+						  response.setContentType("text/plain");
+						  response.getWriter().println("Unhandled Header Accept: " + request.getHeader("Accept"));
+						  
+					  }	 
+					 
+				 
+				 } else {
 					  
-					  response.setContentType("text/plain");
-					  response.getWriter().println("Unhandled Header Accept: " + request.getHeader("Accept"));
+					  //FIXME: This will cause a parser error (Invalid JSON).
 					  
+					  response.getWriter().println("Unhandled Path Info: " + request.getPathInfo());
 				  }
-
-				  
-			  } else {
-				  
-				  response.setContentType("text/plain");
-				  response.getWriter().println("Unhandled Content Type: " + request.getContentType());
-				  
-			  }	  
-				  
-				  
-		  } 
-		 else if (request.getPathInfo().equals("/merges")) {
-			 
-			  if (headerAcceptsAsStringList.contains("application/json")) { 
-			 
-				  response.setContentType("application/json");
-				  String responseAsJSON = null;
-				  
-				  try {
-					  
-					    BufferedReader reader = request.getReader();
-					    String line = null;
-					    StringBuffer stringBuffer = new StringBuffer();
-					    
-					    while ((line = reader.readLine()) != null) {
-					      stringBuffer.append(line);
-					    }
-					    
-						try {
-							JSONObject jsonObject = new JSONObject(stringBuffer.toString());
-							JSONArray fileIds = jsonObject.getJSONArray("file_id");
-							
-							
-							try {
-
-
-								MergeModel mergeModel = new MergeModel();
-								
-								mergeModel.getFile1Model().setId(fileIds.getInt(0));
-								mergeModel.getFile2Model().setId(fileIds.getInt(1));
-								mergeModel.setCreatedByUserModel(userModel);
-								
-								MergesCRUD mergesCRUD = new MergesCRUD();
-								mergesCRUD.setDatabaseModel(databaseModel);
-								mergeModel = mergesCRUD.retrieveMergeAsMergeModelThroughCreatingMergeUsingMergeModelAndUserId(mergeModel, userModel.getId());
-								
-						        responseAsJSON = "{\"id\": \"" + mergeModel.getId().toString() + "\"}";		
-								
-								
-								
-							} catch (JSONException e) {
-								// TODO Auto-generated catch block
-								e.printStackTrace();
-							}
-							
-			
-						} catch (JSONException e1) {
-							// TODO Auto-generated catch block
-							e1.printStackTrace();
-						} 
-				    
-				    
-				  } catch (Exception e) { 
-					  //TODO:
-					  e.printStackTrace(); 
-				  
-				  }
-				  
-				  response.getWriter().print(responseAsJSON);
-
-			  } else {
-				  
-				  //FIXME: This will cause a parser error (Invalid JSON).
-				  
-				  response.setContentType("text/plain");
-				  response.getWriter().println("Unhandled Header Accept: " + request.getHeader("Accept"));
-				  
-			  }
-			  
 		  
-		 
-		 }
-		 else if (exportURLPatternMatcher.find()) {
-			 
-			  //TODO: Just testing
-			  if (headerAcceptsAsStringList.contains("application/json")) { 
-
-				  if (request.getContentType().startsWith("application/json")) {
-				  
-					  response.setContentType("application/json");
-					  String responseAsJSON = null;
+			 } else {
+				 
+				//TODO: Not sure how login/logout should map onto HTTP methods, in a RESTful sense. 
+				 if (request.getPathInfo().equals("/users/authentication")) {
+		
+					  if (request.getContentType() != null && request.getContentType().startsWith("application/json")) {
 					  
-					  	// Get the mergeId for the new export
+					  	if (headerAcceptsAsStringList.contains("application/json")) { 
 					  
-					  	ExportModel exportModel = new ExportModel();
-					  	exportModel.setCreatedByUserModel(userModel);
-					  	exportModel.getMergeModel().setId(Integer.parseInt(exportURLPatternMatcher.group(1)));
-					  
-					  	
-					  	// Get the filename for the new export
-					  	BufferedReader reader = request.getReader();
-					    String line = null;
-					    StringBuffer stringBuffer = new StringBuffer();
-					    
-					    while ((line = reader.readLine()) != null) {
-					      stringBuffer.append(line);
-					    }
-					    
-							
-						try {
-							JSONObject jsonObject = new JSONObject(stringBuffer.toString());
-							
-							exportModel.setMergedFileAsFileModel(new FileModel());
-							
-							exportModel.getMergedFileAsFileModel().setFilename(jsonObject.optString("mergedFileFilename"));
-							
-							//
-							//logger.info("got mergedFileFilename: " + exportModel.getFilename());
-							
-							ExportsCRUD exportsCRUD = new ExportsCRUD();
-							
-							exportsCRUD.setDatabaseModel(databaseModel);
-							exportsCRUD.setFilebaseModel(filebaseModel);
-							
-							exportModel = exportsCRUD.retrieveExportAsExportModelThroughCreatingExportUsingExportModelAndUserId(exportModel, userModel.getId());
-							
-							if (exportModel.getId() != null) {
-								
-						        responseAsJSON = "{\"id\": \"" + exportModel.getId() + "\"}";
-						        response.getWriter().print(responseAsJSON);
-					        
-							} else {
-								
-								 //FIXME: This will cause a parser error (Invalid JSON).
+							  response.setCharacterEncoding("UTF-8");
+							  
+							  response.setContentType("application/json");
+							  
+							  String responseAsJSON = null;
+							  
+							  try {
 								  
-								String logMessage = "Did not get an export ID after attempting to create an export using the merge ID.";
-								
-								//this.log(logMessage);
-								
-								  response.setContentType("text/plain");
-								  response.getWriter().println(logMessage);
-								
-							}
-							
-						} catch (JSONException e) {
-							
-							e.printStackTrace();
-							
-							response.setContentType("text/plain");
-							response.getWriter().println("An error occurred while trying to parse the filename."); 
-						}
-					  	
-
-				  } else {
-					  response.setContentType("text/plain");
-					  response.getWriter().println("Unhandled Content Type: " + request.getContentType()); 
-				  }
+								    //NOTE: This is applicable to POST, not GET
+								    BufferedReader reader = request.getReader();
+								    String line = null;
+								    StringBuffer stringBuffer = new StringBuffer();
+								    
+								    while ((line = reader.readLine()) != null) {
+								      stringBuffer.append(line);
+								    }
+								    
+								    
+									try {
+										JSONObject jsonObject = new JSONObject(stringBuffer.toString());
+										
+										
+										try {
+		
+		
+									        		
+											
+									        
+									        
+									        UserbasesCRUD userbasesCRUD = new UserbasesCRUD();
+									        UserbaseModel userbaseModel = userbasesCRUD.retrieveUserbaseAsUserbaseModelUsingServletContext(getServletContext()); 
+									        
+											
+									        usersCRUD.setUserbaseModel(userbaseModel);
+									        
+									        UsersFunctions usersFunctions = new UsersFunctions();
+									        
+									        if (usersCRUD.retrieveAuthenticatedAsBooleanUsingUsernameAndPasswordHashAsStrings(jsonObject.getString("username"), usersFunctions.convertStringIntoHashAsHexStringUsingStringAndHashFunctionName(jsonObject.getString("password"), getServletContext().getInitParameter("userbasePasswordHashFunctionName")))) {
+									        
+									        	request.getSession().setAttribute("userAuthenticated", true);
+									        	request.getSession().setAttribute("username", jsonObject.getString("username"));
+									        	
+									        	responseAsJSON = "{\"success\": \"true\"}";
+									        	
+									        } else {
+									        	
+									        	request.getSession().invalidate();
+									        	
+									        	responseAsJSON = "{\"success\": \"false\"}";
+									        }
+									        
+											
+										} catch (JSONException e) {
+		
+											e.printStackTrace();
+										}
+										
 						
-			  } else {
-				  
-				  //FIXME: This will cause a parser error (Invalid JSON).
-				  
-				  response.setContentType("text/plain");
-				  response.getWriter().println("Unhandled Header Accept: " + request.getHeader("Accept"));
-				  
-			  }	 
-			 
-		 
-		 } else {
+									} catch (JSONException e1) {
+		
+										e1.printStackTrace();
+									} 
+							    
+							    
+							  } catch (Exception e) { 
+		
+								  e.printStackTrace(); 
+							  
+							  }
+							  
+							  response.getWriter().print(responseAsJSON);
+						  
+						  } else {
+							  
+							  response.setContentType("text/plain");
+							  response.getWriter().println("Unhandled Header Accept: " + request.getHeader("Accept"));
+							  
+						  }
+		
+						  
+					  } else {
+						  
+						  response.setContentType("text/plain");
+						  response.getWriter().println("Unhandled Content Type: " + request.getContentType());
+						  
+					  }	  
+						  
+						  
+				 } else {
+					  
+					  //FIXME: This will cause a parser error (Invalid JSON).
+					  
+					  response.getWriter().println("Unhandled Path Info: " + request.getPathInfo());
+				  }
+			 }
+				
+		} else {
+			
+			if (headerAcceptsAsStringList.contains("application/json")) { 
+			
+				response.setContentType("application/json");
+				String responseAsJSON = "{\"error\": \"The database has not been initialized.\"}";
+				response.getWriter().println(responseAsJSON);
+			
+			} else {
+				
+				response.setContentType("text/plain");
+				response.getWriter().println("The database has not been initialized.");
+					
+			}
 			  
-			  //FIXME: This will cause a parser error (Invalid JSON).
-			  
-			  response.getWriter().println("Unhandled Path Info: " + request.getPathInfo());
-		  }
-		  
+			
+		}
 		
 	}
 	
@@ -1192,183 +1218,195 @@ public class DataController extends HttpServlet {
 			usersCRUD.setDatabaseModel(databaseModel);
 			UserModel userModel = usersCRUD.retrieveUserAsUserModelUsingUsername((String)request.getSession().getAttribute("username"));
 
-			Pattern mergesURLPattern = Pattern.compile("/merges/(\\d+)");
-			 Matcher mergesURLPatternMatcher = mergesURLPattern.matcher(request.getPathInfo());
-			 
-			 Pattern exportsURLPattern = Pattern.compile("/exports/(\\d+)");
-			 Matcher exportsURLPatternMatcher = exportsURLPattern.matcher(request.getPathInfo());
+			if (userModel != null && userModel.getId() != null) {
 			
-		  String[] headerAcceptsAsStringArray = request.getHeader("Accept").split(",");
-		  List<String> headerAcceptsAsStringList = Arrays.asList(headerAcceptsAsStringArray);		 
-		 
-		  if (request.getPathInfo().equals("/users/authentication")) {
-
-			  if (request.getContentType() != null && request.getContentType().startsWith("application/json")) {
-			  
-			  	if (headerAcceptsAsStringList.contains("application/json")) { 
-			  
-					  response.setCharacterEncoding("UTF-8");
+					Pattern mergesURLPattern = Pattern.compile("/merges/(\\d+)");
+					 Matcher mergesURLPatternMatcher = mergesURLPattern.matcher(request.getPathInfo());
+					 
+					 Pattern exportsURLPattern = Pattern.compile("/exports/(\\d+)");
+					 Matcher exportsURLPatternMatcher = exportsURLPattern.matcher(request.getPathInfo());
+					
+				  String[] headerAcceptsAsStringArray = request.getHeader("Accept").split(",");
+				  List<String> headerAcceptsAsStringList = Arrays.asList(headerAcceptsAsStringArray);		 
+				 
+				  if (request.getPathInfo().equals("/users/authentication")) {
+		
+					  if (request.getContentType() != null && request.getContentType().startsWith("application/json")) {
 					  
-					  response.setContentType("application/json");
+					  	if (headerAcceptsAsStringList.contains("application/json")) { 
 					  
-					  String responseAsJSON = null;
-					  
+							  response.setCharacterEncoding("UTF-8");
 							  
-				        	request.getSession().invalidate();
-				        	
-				        	responseAsJSON = "{\"success\": \"true\"}";
-				     
-				        	
-					  response.getWriter().print(responseAsJSON);
-				  
-				  } else {
-					  
-					  response.setContentType("text/plain");
-					  response.getWriter().println("Unhandled Header Accept: " + request.getHeader("Accept"));
+							  response.setContentType("application/json");
+							  
+							  String responseAsJSON = null;
+							  
+									  
+						        	request.getSession().invalidate();
+						        	
+						        	responseAsJSON = "{\"success\": \"true\"}";
+						     
+						        	
+							  response.getWriter().print(responseAsJSON);
+						  
+						  } else {
+							  
+							  response.setContentType("text/plain");
+							  response.getWriter().println("Unhandled Header Accept: " + request.getHeader("Accept"));
+							  
+						  }
+		
+						  
+					  } else {
+						  
+						  response.setContentType("text/plain");
+						  response.getWriter().println("Unhandled Content Type: " + request.getContentType());
+						  
+					  }	  
+						  
+						  
+				  }
+				  else if (request.getPathInfo().equals("/files")) {
+						 
+					  if (headerAcceptsAsStringList.contains("application/json")) { 
+		
+							  response.setContentType("application/json");
+							  String responseAsJSON = null;
+							  
+								    BufferedReader reader = request.getReader();
+								    String line = null;
+								    StringBuffer stringBuffer = new StringBuffer();
+								    
+								    while ((line = reader.readLine()) != null) {
+								      stringBuffer.append(line);
+								    }
+								    
+									try {
+										JSONObject jsonObject = new JSONObject(stringBuffer.toString());
+										
+										JSONArray fileIds = jsonObject.optJSONArray("file_id");
+										if (fileIds == null) {
+											fileIds = new JSONArray();
+											fileIds.put(jsonObject.getInt("file_id"));
+										}
+										
+										FilesCRUD filesCRUD = new FilesCRUD();
+										filesCRUD.setDatabaseModel(databaseModel);
+										
+										if (filesCRUD.deleteFilesUsingFileIdsAsJSONArrayAndUserId(fileIds, userModel.getId())) {
+											responseAsJSON = "{\"success\": \"true\"}";
+										} else {
+											responseAsJSON = "{\"success\": \"false\"}";
+										}
+											
+						
+									} catch (JSONException e1) {
+										e1.printStackTrace();
+									} 
+		
+							  
+							  response.getWriter().print(responseAsJSON);
+		
+							  
+					  } else {
+						  
+						  //FIXME: This will cause a parser error (Invalid JSON).
+						  
+						  response.setContentType("text/plain");
+						  response.getWriter().println("Unhandled Header Accept: " + request.getHeader("Accept"));
+						  
+					  }
 					  
 				  }
-
-				  
-			  } else {
-				  
-				  response.setContentType("text/plain");
-				  response.getWriter().println("Unhandled Content Type: " + request.getContentType());
-				  
-			  }	  
-				  
-				  
-		  }
-		  else if (request.getPathInfo().equals("/files")) {
-				 
-			  if (headerAcceptsAsStringList.contains("application/json")) { 
-
-					  response.setContentType("application/json");
-					  String responseAsJSON = null;
+				  else if (mergesURLPatternMatcher.find()) {
+						 
+					  	// Get the mergeId 
+						 MergeModel mergeModel = new MergeModel();
+						 mergeModel.setId(Integer.parseInt(mergesURLPatternMatcher.group(1)));  
 					  
-						    BufferedReader reader = request.getReader();
-						    String line = null;
-						    StringBuffer stringBuffer = new StringBuffer();
-						    
-						    while ((line = reader.readLine()) != null) {
-						      stringBuffer.append(line);
-						    }
-						    
-							try {
-								JSONObject jsonObject = new JSONObject(stringBuffer.toString());
+					  
+					  if (headerAcceptsAsStringList.contains("application/json")) { 
+		
+							  response.setContentType("application/json");
+							  String responseAsJSON = null;
+							  
+								MergesCRUD mergesCRUD = new MergesCRUD();
+								mergesCRUD.setDatabaseModel(databaseModel);
 								
-								JSONArray fileIds = jsonObject.optJSONArray("file_id");
-								if (fileIds == null) {
-									fileIds = new JSONArray();
-									fileIds.put(jsonObject.getInt("file_id"));
-								}
-								
-								FilesCRUD filesCRUD = new FilesCRUD();
-								filesCRUD.setDatabaseModel(databaseModel);
-								
-								if (filesCRUD.deleteFilesUsingFileIdsAsJSONArrayAndUserId(fileIds, userModel.getId())) {
+								if (mergesCRUD.deleteMergeUsingMergeIdAndUserId(mergeModel.getId(), userModel.getId())) {
 									responseAsJSON = "{\"success\": \"true\"}";
 								} else {
 									responseAsJSON = "{\"success\": \"false\"}";
 								}
 									
-				
-							} catch (JSONException e1) {
-								e1.printStackTrace();
-							} 
-
-					  
-					  response.getWriter().print(responseAsJSON);
-
-					  
-			  } else {
-				  
-				  //FIXME: This will cause a parser error (Invalid JSON).
-				  
-				  response.setContentType("text/plain");
-				  response.getWriter().println("Unhandled Header Accept: " + request.getHeader("Accept"));
-				  
-			  }
-			  
-		  }
-		  else if (mergesURLPatternMatcher.find()) {
-				 
-			  	// Get the mergeId 
-				 MergeModel mergeModel = new MergeModel();
-				 mergeModel.setId(Integer.parseInt(mergesURLPatternMatcher.group(1)));  
-			  
-			  
-			  if (headerAcceptsAsStringList.contains("application/json")) { 
-
-					  response.setContentType("application/json");
-					  String responseAsJSON = null;
-					  
-						MergesCRUD mergesCRUD = new MergesCRUD();
-						mergesCRUD.setDatabaseModel(databaseModel);
 						
-						if (mergesCRUD.deleteMergeUsingMergeIdAndUserId(mergeModel.getId(), userModel.getId())) {
-							responseAsJSON = "{\"success\": \"true\"}";
-						} else {
-							responseAsJSON = "{\"success\": \"false\"}";
-						}
-							
-				
+							  
+							  response.getWriter().print(responseAsJSON);
+		
+							  
+					  } else {
+						  
+						  //FIXME: This will cause a parser error (Invalid JSON).
+						  
+						  response.setContentType("text/plain");
+						  response.getWriter().println("Unhandled Header Accept: " + request.getHeader("Accept"));
+						  
+					  }
 					  
-					  response.getWriter().print(responseAsJSON);
-
-					  
-			  } else {
-				  
-				  //FIXME: This will cause a parser error (Invalid JSON).
-				  
-				  response.setContentType("text/plain");
-				  response.getWriter().println("Unhandled Header Accept: " + request.getHeader("Accept"));
-				  
-			  }
-			  
-		    
-		 
-		 }
-		  else if (exportsURLPatternMatcher.find()) {
+				    
 				 
-			  	// Get the exportId 
-				 ExportModel exportModel = new ExportModel();
-				 exportModel.setId(Integer.parseInt(exportsURLPatternMatcher.group(1)));  
-			  
-			  
-			  if (headerAcceptsAsStringList.contains("application/json")) { 
-
-					  response.setContentType("application/json");
-					  String responseAsJSON = null;
+				 }
+				  else if (exportsURLPatternMatcher.find()) {
+						 
+					  	// Get the exportId 
+						 ExportModel exportModel = new ExportModel();
+						 exportModel.setId(Integer.parseInt(exportsURLPatternMatcher.group(1)));  
 					  
-						ExportsCRUD exportsCRUD = new ExportsCRUD();
-						exportsCRUD.setDatabaseModel(databaseModel);
+					  
+					  if (headerAcceptsAsStringList.contains("application/json")) { 
+		
+							  response.setContentType("application/json");
+							  String responseAsJSON = null;
+							  
+								ExportsCRUD exportsCRUD = new ExportsCRUD();
+								exportsCRUD.setDatabaseModel(databaseModel);
+								
+								if (exportsCRUD.deleteExportUsingExportIdAndUserId(exportModel.getId(), userModel.getId())) {
+									responseAsJSON = "{\"success\": \"true\"}";
+								} else {
+									responseAsJSON = "{\"success\": \"false\"}";
+								}
+									
 						
-						if (exportsCRUD.deleteExportUsingExportIdAndUserId(exportModel.getId(), userModel.getId())) {
-							responseAsJSON = "{\"success\": \"true\"}";
-						} else {
-							responseAsJSON = "{\"success\": \"false\"}";
-						}
-							
+							  
+							  response.getWriter().print(responseAsJSON);
+		
+							  
+					  } else {
+						  
+						  //FIXME: This will cause a parser error (Invalid JSON).
+						  
+						  response.setContentType("text/plain");
+						  response.getWriter().println("Unhandled Header Accept: " + request.getHeader("Accept"));
+						  
+					  }
+					  
+				    
+				 
+				 } else {
+					  
+					  response.getWriter().println("Unhandled Path Info: " + request.getPathInfo());
+				 }
 				
-					  
-					  response.getWriter().print(responseAsJSON);
-
-					  
-			  } else {
 				  
-				  //FIXME: This will cause a parser error (Invalid JSON).
 				  
-				  response.setContentType("text/plain");
-				  response.getWriter().println("Unhandled Header Accept: " + request.getHeader("Accept"));
-				  
-			  }
-			  
-		    
-		 
-		 } else {
-			  
-			  response.getWriter().println("Unhandled Path Info: " + request.getPathInfo());
-		 }
+			} else {
+				
+				response.setContentType("text/plain");
+				response.getWriter().println("All requests to this service require prior authentication.");
+				
+			}
+		  
 	}
 
 	public Logger getLogger() {

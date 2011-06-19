@@ -36,11 +36,8 @@ String databaseInitializationErrorBasePathURL = request.getScheme() + "://" + re
 					
 					<h6>Possible causes:</h6>
 					<ul>
-						<li>The database has not been properly installed.</li>
+						<li>The database has not been properly installed. (See the <a href="<%=databaseInitializationErrorBasePathURL %>pages/guides/installation">Installation Guide</a>.)</li>
 					</ul>	
-					
-					<p>For application administrators, the database can be initialized using the <a href="<%=databaseInitializationErrorBasePathURL %>/pages/settings/">settings section</a>.
-					</p>
 		
 				</div>
 				

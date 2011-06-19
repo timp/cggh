@@ -8,10 +8,6 @@ function initSharedFunctions () {
 	initLogoutLink();
 }
 
-function logout () {
-	
-	alert("You will need to close all of your browser windows to log out.");
-}
 function initLogoutLink () {
 
 	$(".logoutLink").click(function() {	
@@ -29,11 +25,11 @@ function initLogoutLink () {
 						if (data.success = "true") {
 							window.location.href = '/dataMerger/pages/shared/login/';
 						} else {
-							alert("An error occurred.");
+							alert("An error occurred while trying to log out.");
 						}
 		
 					} else {
-						alert("An error occurred.");
+						alert("An error occurred while trying to log out.");
 					}
 				},
 				error: function (jqXHR, textStatus, errorThrown){
@@ -48,7 +44,7 @@ function initLogoutLink () {
 
 function initSerializeObjectFunction () {
 	
-	//FIXME: if select 1 and 2 both have value "", does not construct a JSON array, but name="" instead.
+	//Note: If name A and B both have value = "", this constructs a JSON array, instead of just name="".
 	
 	$.fn.serializeObject = function()
 	{

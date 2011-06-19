@@ -123,7 +123,7 @@
 
    </web-resource-collection>
 
- 	<!-- Comment this out to allow over "unsecure" HTTP. -->   
+ 	<!-- Comment this out to allow over "unsecure" HTTP. Not recommended. -->   
    	<user-data-constraint>
 		<transport-guarantee>CONFIDENTIAL</transport-guarantee>
 	</user-data-constraint>
@@ -152,6 +152,12 @@
    <auth-constraint>
      <role-name>administrator</role-name>
    </auth-constraint>
+
+
+ 	<!-- Comment this out to allow over "unsecure" HTTP. Not recommended. -->   
+   	<user-data-constraint>
+		<transport-guarantee>CONFIDENTIAL</transport-guarantee>
+	</user-data-constraint>
    
  </security-constraint>
 

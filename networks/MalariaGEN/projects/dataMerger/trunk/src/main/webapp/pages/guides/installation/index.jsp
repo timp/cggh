@@ -42,8 +42,8 @@ String installationGuideBasePathURL = request.getScheme() + "://" + request.getS
 					<h4>Steps</h4>
 					<ol>
 						<li>Deploy the WAR file to Tomcat.</li>
-						<li>Configure the web.xml and tomcat-users.xml files. (See the <a href="<%=installationGuideBasePathURL %>pages/guides/configuration">Configuration</a> guide for details.)</li>
-						<li>Use the <a href="<%=installationGuideBasePathURL %>pages/settings">Settings</a> page to create the database, database tables, filebase and filebase directories.</li>
+						<li>Configure the web.xml, tomcat-users.xml and server.xml files. (See the <a href="<%=installationGuideBasePathURL %>pages/guides/configuration">Configuration Guide</a> for details.)</li>
+						<li>Use the <a href="<%=installationGuideBasePathURL %>pages/settings">Settings page</a> to create the database, file repository and application users.</li>
 					</ol>
 		
 					<h4>System requirements</h4>
@@ -58,7 +58,7 @@ String installationGuideBasePathURL = request.getScheme() + "://" + request.getS
 				
 				
 				
-					<h4>External references</h4>
+					<h4>External links</h4>
 					<ul>
 						<li><a target="_blank" href="http://code.google.com/p/cggh/">Google Code project for this application</a>
 						</li>

@@ -181,9 +181,7 @@ public class DatatablesCRUD implements java.io.Serializable {
 						          
 			 	     	         // Load the data in
 				    		      try {
-				    		    	  //TODO: OPTIONALLY ENCLOSED BY '"' ESCAPED BY '\'
-				    		    	  //ENCLOSED BY '\"' ESCAPED BY '\\\\'
-				    		          PreparedStatement preparedStatement2 = connection.prepareStatement("LOAD DATA INFILE ? INTO TABLE `" + datatableModel.getName() + "` FIELDS TERMINATED BY ',' OPTIONALLY ENCLOSED BY '\"' LINES TERMINATED BY '\n' IGNORE 1 LINES ;");
+				    		          PreparedStatement preparedStatement2 = connection.prepareStatement("LOAD DATA INFILE ? INTO TABLE `" + datatableModel.getName() + "` FIELDS ESCAPED BY '\\\\' OPTIONALLY ENCLOSED BY '\"' TERMINATED BY ',' LINES TERMINATED BY '\n' IGNORE 1 LINES ;");
 				    		          preparedStatement2.setString(1, fileModel.getFilepath());
 				    		          preparedStatement2.executeUpdate();
 				    		          preparedStatement2.close();

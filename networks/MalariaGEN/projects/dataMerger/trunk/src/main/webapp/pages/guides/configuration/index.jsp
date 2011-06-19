@@ -33,7 +33,21 @@
 					
 					<h3>Configuration</h3>
 					
-		<p><a href="http://techtracer.com/2007/09/12/setting-up-ssl-on-tomcat-in-3-easy-steps/" target="_blank">Setting up SSL on Tomcat</a></p>
+					<h4>Catchable configuration errors with known remedies:</h4>
+					<ul>
+						<li><a href="errors/database-connection">Database connection</a></li>
+						<li><a href="errors/database-initialization">Database initialization</a></li>
+					</ul>	
+					
+					
+					<h4>External guides:</h4>
+					
+					<ul>
+						<li><a href="http://techtracer.com/2007/09/12/setting-up-ssl-on-tomcat-in-3-easy-steps/" target="_blank">Setting up SSL on Tomcat</a>
+						</li>
+					</ul>
+		
+		<h4>Example [tomcat-server]/server.xml:</h4>
 		
 <pre style="margin-left: 25px;">		
 &lt;Connector port="8443" protocol="HTTP/1.1" SSLEnabled="true"
@@ -45,19 +59,79 @@
 		
 		
 								<h4>Example: [tomcat-server]/webapps/[application-name]/WEB-INF/web.xml:</h4>
-								<ul> 
-										<li>    databaseDriverFullyQualifiedClassName: com.mysql.jdbc.Driver</li>
-										<li>    databaseServerPath: jdbc:mysql://localhost:3306/</li>
-										<li>    databaseName: datamerger</li>
-										<li>    databaseUsername: root</li>
-										<li>    fileRepositoryBasePath: C:\Lee\Work\dataMerger\files\</li>
-										<li>    fileRepositoryInstallationLogPathRelativeToRepositoryBasePath: installation\log.csv</li>
-										<li>    stringsToNullifyAsCSV: ,,NULL</li>
-										<li>    stringToExportInsteadOfNull: NULL</li>
-								</ul>
+<pre style="margin-left: 25px;">	
+	&lt;!-- Database connections --&gt;
+	&lt;context-param&gt;
+		&lt;param-name&gt;databaseDriverFullyQualifiedClassName&lt;/param-name&gt;
+		&lt;param-value&gt;com.mysql.jdbc.Driver&lt;/param-value&gt;
+	&lt;/context-param&gt;	
+	&lt;context-param&gt;
+		&lt;param-name&gt;databaseServerPath&lt;/param-name&gt;
+		&lt;param-value&gt;jdbc:mysql://localhost:3306/&lt;/param-value&gt;
+	&lt;/context-param&gt;	
+	&lt;context-param&gt;
+		&lt;param-name&gt;databaseName&lt;/param-name&gt;
+		&lt;param-value&gt;datamerger&lt;/param-value&gt;
+	&lt;/context-param&gt;
+	&lt;context-param&gt;
+		&lt;param-name&gt;databaseUsername&lt;/param-name&gt;
+		&lt;param-value&gt;root&lt;/param-value&gt;
+	&lt;/context-param&gt;
+	&lt;context-param&gt;
+		&lt;param-name&gt;databasePassword&lt;/param-name&gt;
+		&lt;param-value&gt;root&lt;/param-value&gt;
+	&lt;/context-param&gt;
+
+	&lt;!-- File Repository settings --&gt;
+	&lt;context-param&gt;
+		&lt;param-name&gt;fileRepositoryBasePath&lt;/param-name&gt;
+		&lt;param-value&gt;C:\Lee\Work\dataMerger\files\&lt;/param-value&gt;
+	&lt;/context-param&gt;
+	&lt;context-param&gt;
+		&lt;param-name&gt;fileRepositoryInstallationLogPathRelativeToRepositoryBasePath&lt;/param-name&gt;
+		&lt;param-value&gt;file-repository-installation\log.csv&lt;/param-value&gt;
+	&lt;/context-param&gt;
+
+	&lt;!-- User Database connections --&gt;
+	&lt;context-param&gt;
+		&lt;param-name&gt;userDatabaseDriverFullyQualifiedClassName&lt;/param-name&gt;
+		&lt;param-value&gt;com.mysql.jdbc.Driver&lt;/param-value&gt;
+	&lt;/context-param&gt;
+	&lt;context-param&gt;
+		&lt;param-name&gt;userDatabaseServerPath&lt;/param-name&gt;
+		&lt;param-value&gt;jdbc:mysql://localhost:3306/&lt;/param-value&gt;
+	&lt;/context-param&gt;
+	&lt;context-param&gt;
+		&lt;param-name&gt;userDatabaseName&lt;/param-name&gt;
+		&lt;param-value&gt;datamerger&lt;/param-value&gt;
+	&lt;/context-param&gt;
+	&lt;context-param&gt;
+		&lt;param-name&gt;userDatabaseUsername&lt;/param-name&gt;
+		&lt;param-value&gt;root&lt;/param-value&gt;
+	&lt;/context-param&gt;
+	&lt;context-param&gt;
+		&lt;param-name&gt;userDatabasePassword&lt;/param-name&gt;
+		&lt;param-value&gt;root&lt;/param-value&gt;
+	&lt;/context-param&gt;
+	&lt;context-param&gt;
+		&lt;param-name&gt;userDatabaseTableName&lt;/param-name&gt;
+		&lt;param-value&gt;user&lt;/param-value&gt;
+	&lt;/context-param&gt;
+	&lt;context-param&gt;
+		&lt;param-name&gt;userUsernameColumnName&lt;/param-name&gt;
+		&lt;param-value&gt;username&lt;/param-value&gt;
+	&lt;/context-param&gt;
+	&lt;context-param&gt;
+		&lt;param-name&gt;userbasePasswordHashColumnName&lt;/param-name&gt;
+		&lt;param-value&gt;password_hash&lt;/param-value&gt;
+	&lt;/context-param&gt;
+	&lt;context-param&gt;
+		&lt;param-name&gt;userbasePasswordHashFunctionName&lt;/param-name&gt;
+		&lt;param-value&gt;SHA-256&lt;/param-value&gt;
+	&lt;/context-param&gt;
+</pre>
 								
-								<%-- TODO: switch to if-can-get rather than if-has-role --%>
-								<% if (request.isUserInRole("non-specific")) { %>
+								<% if (request.isUserInRole("administrator")) { %>
 								<h5>Current web.xml configuration:</h5>
 								<ul> 
 									<li>databaseDriverFullyQualifiedClassName: <%=application.getInitParameter("databaseDriverFullyQualifiedClassName") %></li>
@@ -75,24 +149,13 @@
 								<h4>Example [tomcat-server]/tomcat-users.xml:</h4>
 								<pre style="margin-left: 25px;">
 &lt;-- Required roles, referred to in web.xml --&gt;
-&lt;role rolename="non-specific"/&gt;
-&lt;role rolename="user"/&gt;
-&lt;role rolename="uploader"/&gt;
-&lt;role rolename="merger"/&gt;
-&lt;role rolename="exporter"/&gt;
+&lt;role rolename="administrator"/&gt;
 
-&lt;-- Optional users --&gt;
-&lt;user username="setter" password="setter" roles="user,uploader,merger,exporter,non-specific" /&gt;
-&lt;user username="uploader" password="uploader" roles="user,uploader" /&gt;
-&lt;user username="merger" password="merger" roles="user,merger" /&gt;
-&lt;user username="exporter" password="exporter" roles="user,exporter" /&gt;
+&lt;-- Users --&gt;
+&lt;user username="admin" password="test" roles="administrator" /&gt;
 								</pre>
 
-					<h4>Catchable configuration errors with known remedies:</h4>
-					<ul>
-						<li><a href="errors/database-connection">Database connection</a></li>
-						<li><a href="errors/database-initialization">Database initialization</a></li>
-					</ul>	
+
 
 				
 				</div>
