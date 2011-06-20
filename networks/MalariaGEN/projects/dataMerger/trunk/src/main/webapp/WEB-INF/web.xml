@@ -245,5 +245,10 @@
 		<param-value>SHA-256</param-value>
 	</context-param>
 
+	<session-config>
+		<!-- In minutes. 60 x 24 = 1440 -->
+      <session-timeout>1440</session-timeout> 
+    </session-config>
+
 </web-app>
 
