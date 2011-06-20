@@ -424,173 +424,179 @@ function initAddJoinFunction () {
 		
 		data = $.parseJSON(data);
 		
-		//Rather than posting, add to client-side joins (to be added using Save)
-		
-		var min_column_number = 1;
-		var max_column_number = $('.joins-form tbody tr').length;
-		
-		//alert("1 max_column_number: " + max_column_number);
-		
-		var newJoinRow = "";
-
-		var rowStripeClassName = ""; 
-		var rowFirstClassName = "";
-		var rowLastClassName = ""; 		
-
-		if (data.column_number % 2 == 0) {
-			rowStripeClassName = "even ";
-		} else {
-			rowStripeClassName = "odd ";
-		}		
-		
-		if (data.column_number == min_column_number) {
-			rowFirstClassName = "first ";
-		} else {
-			rowFirstClassName = "";
-		}		
-		
-		if (data.column_number > max_column_number) {
-			rowLastClassName = "last ";
-		} else {
-			rowLastClassName = "";
-		}
-		
-
-		
-		newJoinRow += "<tr class=\"" + rowStripeClassName + rowFirstClassName + rowLastClassName + "\">";
-		
-		newJoinRow += "<td class=\"column_number-container\"><input type=\"text\" name=\"column_number\" value=\"" + data.column_number + "\" readonly=\"readonly\"/></td>";
-		
-		if (
-				data.datatable_1_column_name == 'NULL' || data.datatable_1_column_name == 'CONSTANT'
-				||
-				data.datatable_2_column_name == 'NULL' || data.datatable_2_column_name == 'CONSTANT'
-			) {
-			
-			newJoinRow += "<td class=\"key-container\"><input type=\"checkbox\" name=\"key-" + data.column_number + "\" value=\"" + data.key + "\" disabled=\"disabled\"/></td>";
-			
-		} else {
-			
-			if (data.key) {
-				newJoinRow += "<td class=\"key-container\"><input type=\"checkbox\" name=\"key-" + data.column_number + "\" value=\"" + data.key + "\" checked=\"checked\"/></td>";
-			} else {
-				newJoinRow += "<td class=\"key-container\"><input type=\"checkbox\" name=\"key-" + data.column_number + "\" value=\"" + data.key + "\"/></td>";
-			}
-		}
-		
-		if (data.datatable_1_column_name != 'NULL' && data.datatable_1_column_name != 'CONSTANT') {
-			newJoinRow += "<td class=\"datatable_1_column_name-container\">";
-			newJoinRow += "<input type=\"text\" name=\"datatable_1_column_name-" + data.column_number + "\" value=\"" + data.datatable_1_column_name + "\" readonly=\"readonly\"/>";
-
-			//TODO
-			//newJoinRow += "<textarea>TODO: Sample of data</textarea>";
-			
-			newJoinRow += "</td>";
-		} 
-		else if (data.datatable_1_column_name == 'CONSTANT') {
-			newJoinRow += "<td class=\"constant_1-container\"><label for=\"constant_1-" + data.column_number + "\">Constant:</label><input type=\"text\" name=\"constant_1-" + data.column_number + "\" value=\"" + data.constant_1 + "\" readonly=\"readonly\"/></td>";
-		} else {
-			newJoinRow += "<td class=\"null-container\">NULL</td>";
-		}
-		
-		if (data.datatable_2_column_name != 'NULL' && data.datatable_2_column_name != 'CONSTANT') {
-			newJoinRow += "<td class=\"datatable_2_column_name-container\">";
-			newJoinRow += "<input type=\"text\" name=\"datatable_2_column_name-" + data.column_number + "\" value=\"" + data.datatable_2_column_name + "\" readonly=\"readonly\"/>";
-			
-			//TODO
-			//newJoinRow += "<texarea>TODO: Sample of data</textarea>";
-			
-			newJoinRow += "</td>";
-		} 
-		else if (data.datatable_2_column_name == 'CONSTANT') {
-			newJoinRow += "<td class=\"constant_2-container\"><label for=\"constant_2-" + data.column_number + "\">Constant:</label><input type=\"text\" name=\"constant_2-" + data.column_number + "\" value=\"" + data.constant_2 + "\" readonly=\"readonly\"/></td>";
-		} else {
-			newJoinRow += "<td class=\"null-container\">NULL</td>";
-		}
-		
-		newJoinRow += "<td class=\"column_name-container\"><input type=\"text\" name=\"column_name\" value=\"" + data.column_name + "\"/></td>";
-		
-		newJoinRow += "<td class=\"move-row-buttons-container\"><button class=\"move up\"><img src=\"/dataMerger/pages/shared/png/up.png\" title=\"Up\" /></button><button class=\"move down\"><img src=\"/dataMerger/pages/shared/png/down.png\" title=\"Down\" /></button></td>";
-		newJoinRow += "<td class=\"remove-button-container\"><button class=\"remove\">Remove</button></td>";
-		
-		newJoinRow += "</tr>";		
-		
-		
-		
-		
-		
-		//alert("max_column_number="+max_column_number);
-		
-		//alert("data.column_number="+data.column_number);
-		
-		if (data.column_number > max_column_number) {
-			
-			//alert("appending to end");
-
-			//TODO: Remove the last class from the row this is replacing
-			$('.joins-form tr:last').removeClass("last");
-
-			
-			$(".joins-form tbody").append(newJoinRow);
+		if (data.column_name != null && data.column_name != "") {
 			
 			
-
+			//Rather than posting, add to client-side joins (to be added using Save)
 			
-		} else {
+			var min_column_number = 1;
+			var max_column_number = $('.joins-form tbody tr').length;
 			
-			// Move row at data.column_number down 1 (and all the rest), then insert this row at position data.column_number
-
-			//alert("data.column_number " + data.column_number);
+			//alert("1 max_column_number: " + max_column_number);
 			
-			//FIXME FIXME FIXME
-			// The selector momentarily applies to two elements, both with the same column_number
+			var newJoinRow = "";
 	
-	    	
-	    	var nextRow = $('.joins-form tbody tr:nth-child(' + data.column_number + ')');
-	    	
-	    	var nextRow_new_column_number = parseInt(data.column_number) + 1;
-	    	
-	    	while (nextRow_new_column_number <= max_column_number + 1) {
-	    		
-	    		//alert("max_column_number="+max_column_number);
-	    		
-	    		nextRow.find('td input[name="column_number"]').val(nextRow_new_column_number.toString());
-	    		nextRow.find('td input[name|="key"]').attr('name', "key-" + nextRow_new_column_number.toString());
-	    		nextRow.find('td input[name|="datatable_1_column_name"]').attr('name', "datatable_1_column_name-" + nextRow_new_column_number.toString());
-	    		nextRow.find('td input[name|="datatable_2_column_name"]').attr('name', "datatable_2_column_name-" + nextRow_new_column_number.toString());
-	    		nextRow.find('td input[name|="constant_1"]').attr('name', "constant_1-" + nextRow_new_column_number.toString());
-	    		nextRow.find('td input[name|="constant_2"]').attr('name', "constant_2-" + nextRow_new_column_number.toString());
-	    		
-	    		if (nextRow_new_column_number % 2 == 0) {
-	    			nextRow.removeClass('odd').addClass('even');
-	    		} else {
-	    			nextRow.removeClass('even').addClass('odd');
-	    		}
-	    		
-	    		nextRow = nextRow.next();
-	    		
-	    		nextRow_new_column_number++;
-	    	}
-
-	    	//Note: FF3 + Chrome (oddly enough not IE8) had bug with setting/selecting column_name value
-	    	
-	    	var rowToInsertBefore = $('.joins-form tbody tr:nth-child(' + data.column_number + ')');
-	    	
-	    	rowToInsertBefore.removeClass("first");
-	    	
-	    	rowToInsertBefore.before(newJoinRow);
-	    	
-		}
+			var rowStripeClassName = ""; 
+			var rowFirstClassName = "";
+			var rowLastClassName = ""; 		
+	
+			if (data.column_number % 2 == 0) {
+				rowStripeClassName = "even ";
+			} else {
+				rowStripeClassName = "odd ";
+			}		
+			
+			if (data.column_number == min_column_number) {
+				rowFirstClassName = "first ";
+			} else {
+				rowFirstClassName = "";
+			}		
+			
+			if (data.column_number > max_column_number) {
+				rowLastClassName = "last ";
+			} else {
+				rowLastClassName = "";
+			}
+			
+	
+			
+			newJoinRow += "<tr class=\"" + rowStripeClassName + rowFirstClassName + rowLastClassName + "\">";
+			
+			newJoinRow += "<td class=\"column_number-container\"><input type=\"text\" name=\"column_number\" value=\"" + data.column_number + "\" readonly=\"readonly\"/></td>";
+			
+			if (
+					data.datatable_1_column_name == 'NULL' || data.datatable_1_column_name == 'CONSTANT'
+					||
+					data.datatable_2_column_name == 'NULL' || data.datatable_2_column_name == 'CONSTANT'
+				) {
+				
+				newJoinRow += "<td class=\"key-container\"><input type=\"checkbox\" name=\"key-" + data.column_number + "\" value=\"" + data.key + "\" disabled=\"disabled\"/></td>";
+				
+			} else {
+				
+				if (data.key) {
+					newJoinRow += "<td class=\"key-container\"><input type=\"checkbox\" name=\"key-" + data.column_number + "\" value=\"" + data.key + "\" checked=\"checked\"/></td>";
+				} else {
+					newJoinRow += "<td class=\"key-container\"><input type=\"checkbox\" name=\"key-" + data.column_number + "\" value=\"" + data.key + "\"/></td>";
+				}
+			}
+			
+			if (data.datatable_1_column_name != 'NULL' && data.datatable_1_column_name != 'CONSTANT') {
+				newJoinRow += "<td class=\"datatable_1_column_name-container\">";
+				newJoinRow += "<input type=\"text\" name=\"datatable_1_column_name-" + data.column_number + "\" value=\"" + data.datatable_1_column_name + "\" readonly=\"readonly\"/>";
+	
+				//TODO
+				//newJoinRow += "<textarea>TODO: Sample of data</textarea>";
+				
+				newJoinRow += "</td>";
+			} 
+			else if (data.datatable_1_column_name == 'CONSTANT') {
+				newJoinRow += "<td class=\"constant_1-container\"><label for=\"constant_1-" + data.column_number + "\">Constant:</label><input type=\"text\" name=\"constant_1-" + data.column_number + "\" value=\"" + data.constant_1 + "\" readonly=\"readonly\"/></td>";
+			} else {
+				newJoinRow += "<td class=\"null-container\">NULL</td>";
+			}
+			
+			if (data.datatable_2_column_name != 'NULL' && data.datatable_2_column_name != 'CONSTANT') {
+				newJoinRow += "<td class=\"datatable_2_column_name-container\">";
+				newJoinRow += "<input type=\"text\" name=\"datatable_2_column_name-" + data.column_number + "\" value=\"" + data.datatable_2_column_name + "\" readonly=\"readonly\"/>";
+				
+				//TODO
+				//newJoinRow += "<texarea>TODO: Sample of data</textarea>";
+				
+				newJoinRow += "</td>";
+			} 
+			else if (data.datatable_2_column_name == 'CONSTANT') {
+				newJoinRow += "<td class=\"constant_2-container\"><label for=\"constant_2-" + data.column_number + "\">Constant:</label><input type=\"text\" name=\"constant_2-" + data.column_number + "\" value=\"" + data.constant_2 + "\" readonly=\"readonly\"/></td>";
+			} else {
+				newJoinRow += "<td class=\"null-container\">NULL</td>";
+			}
+			
+			newJoinRow += "<td class=\"column_name-container\"><input type=\"text\" name=\"column_name\" value=\"" + data.column_name + "\"/></td>";
+			
+			newJoinRow += "<td class=\"move-row-buttons-container\"><button class=\"move up\"><img src=\"/dataMerger/pages/shared/png/up.png\" title=\"Up\" /></button><button class=\"move down\"><img src=\"/dataMerger/pages/shared/png/down.png\" title=\"Down\" /></button></td>";
+			newJoinRow += "<td class=\"remove-button-container\"><button class=\"remove\">Remove</button></td>";
+			
+			newJoinRow += "</tr>";		
+			
+			
+			
+			
+			
+			//alert("max_column_number="+max_column_number);
+			
+			//alert("data.column_number="+data.column_number);
+			
+			if (data.column_number > max_column_number) {
+				
+				//alert("appending to end");
+	
+				//TODO: Remove the last class from the row this is replacing
+				$('.joins-form tr:last').removeClass("last");
+	
+				
+				$(".joins-form tbody").append(newJoinRow);
+				
+				
+	
+				
+			} else {
+				
+				// Move row at data.column_number down 1 (and all the rest), then insert this row at position data.column_number
+	
+				//alert("data.column_number " + data.column_number);
+				
+				//FIXME FIXME FIXME
+				// The selector momentarily applies to two elements, both with the same column_number
 		
-
-		//The new HTML needs to be re-bound.
-		initMoveJoinFunction();
-		initRemoveJoinFunction();
-		
-		// Get a new join (and re-bind it)
-		retrieveNewJoinAsXHTML();
-
-		
+		    	
+		    	var nextRow = $('.joins-form tbody tr:nth-child(' + data.column_number + ')');
+		    	
+		    	var nextRow_new_column_number = parseInt(data.column_number) + 1;
+		    	
+		    	while (nextRow_new_column_number <= max_column_number + 1) {
+		    		
+		    		//alert("max_column_number="+max_column_number);
+		    		
+		    		nextRow.find('td input[name="column_number"]').val(nextRow_new_column_number.toString());
+		    		nextRow.find('td input[name|="key"]').attr('name', "key-" + nextRow_new_column_number.toString());
+		    		nextRow.find('td input[name|="datatable_1_column_name"]').attr('name', "datatable_1_column_name-" + nextRow_new_column_number.toString());
+		    		nextRow.find('td input[name|="datatable_2_column_name"]').attr('name', "datatable_2_column_name-" + nextRow_new_column_number.toString());
+		    		nextRow.find('td input[name|="constant_1"]').attr('name', "constant_1-" + nextRow_new_column_number.toString());
+		    		nextRow.find('td input[name|="constant_2"]').attr('name', "constant_2-" + nextRow_new_column_number.toString());
+		    		
+		    		if (nextRow_new_column_number % 2 == 0) {
+		    			nextRow.removeClass('odd').addClass('even');
+		    		} else {
+		    			nextRow.removeClass('even').addClass('odd');
+		    		}
+		    		
+		    		nextRow = nextRow.next();
+		    		
+		    		nextRow_new_column_number++;
+		    	}
+	
+		    	//Note: FF3 + Chrome (oddly enough not IE8) had bug with setting/selecting column_name value
+		    	
+		    	var rowToInsertBefore = $('.joins-form tbody tr:nth-child(' + data.column_number + ')');
+		    	
+		    	rowToInsertBefore.removeClass("first");
+		    	
+		    	rowToInsertBefore.before(newJoinRow);
+		    	
+			}
+			
+	
+			//The new HTML needs to be re-bound.
+			initMoveJoinFunction();
+			initRemoveJoinFunction();
+			
+			// Get a new join (and re-bind it)
+			retrieveNewJoinAsXHTML();
+	
+		} else {
+			alert("Please specify a name for the column.");
+		}	
+			
 	});	
 	
 }

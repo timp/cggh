@@ -38,14 +38,7 @@
 						<li><a href="errors/database-connection">Database connection</a></li>
 						<li><a href="errors/database-initialization">Database initialization</a></li>
 					</ul>	
-					
-					
-					<h4>External guides:</h4>
-					
-					<ul>
-						<li><a href="http://techtracer.com/2007/09/12/setting-up-ssl-on-tomcat-in-3-easy-steps/" target="_blank">Setting up SSL on Tomcat</a>
-						</li>
-					</ul>
+
 		
 		<h4>Example [tomcat-server]/server.xml:</h4>
 		

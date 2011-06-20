@@ -36,7 +36,7 @@ String sessionLossErrorBasePathURL = request.getScheme() + "://" + request.getSe
 					
 					<p>You need to be logged in before you can access the requested page.</p>
 					
-					<p>If you already logged in before, then your session has now timed-out or become otherwise invalidated.</p>
+					<p>If you already logged in before, then your session has timed-out or become invalidated.</p>
 					
 					<p>To access the page you requested, you will need to <a href="<%=sessionLossErrorBasePathURL %>pages/shared/login/">log in</a> and try again.</p>
 		

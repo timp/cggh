@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1" pageEncoding="ISO-8859-1" %>
 <%@ include file="../shared/jsp/prepage.jsp" %>
+<% if (userModel != null && userModel.getId() != null) { %>
 <%@ page import="org.cggh.tools.dataMerger.data.files.FilesCRUD" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
@@ -92,3 +93,4 @@
 
 </body>
 </html>
+<% } %>

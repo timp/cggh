@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1" pageEncoding="ISO-8859-1" %>
 <%@ include file="../shared/jsp/prepage.jsp" %>
+<% if (userModel != null && userModel.getId() != null) { %>
 <%@ page import="java.util.*" %>
 <%@ page import="javax.sql.rowset.CachedRowSet" %>
 <%@ page import="org.cggh.tools.dataMerger.data.merges.MergesCRUD" %>
@@ -70,3 +71,4 @@
 
 </body>
 </html>
+<% } %>

@@ -1286,6 +1286,8 @@ public class ExportsCRUD implements java.io.Serializable  {
 		          preparedStatement.executeUpdate();
 		          preparedStatement.close();
 		          
+		          //TODO: Is it a good or bad idea to also delete the provenance record files?
+		          //NOTE: Should not delete the merged or source files (they may be used by other merges).
 		          
 		          success = true;
 

@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
 <%@ include file="../../shared/jsp/prepage.jsp" %>
+<% if (userModel != null && userModel.getId() != null) { %>
 <%@ page import="javax.sql.rowset.CachedRowSet" %>
 <%@ page import="java.text.DateFormat" %>
 <%@ page import="java.text.SimpleDateFormat" %>
@@ -143,3 +144,4 @@ DateFormat dateFormat = new SimpleDateFormat("dd MMM yyyy HH:mm");
 	</div>
 </body>
 </html>
+<% } %>
