@@ -120,10 +120,11 @@ public class DatatablesCRUD implements java.io.Serializable {
 			        	    	  //Remove characters outside Basic Multilingual Plane (MySQL column name character restriction).
 			        	    	  columnNames[i] = columnNames[i].replaceAll("[^\u0000-\uFFFF]", "");
 			        	    	  
-			        	    	  //TODO: The above isn't good enough, so being harsher, but this is not ideal.
-			        	    	  //FIXME: This is too harsh, doesn't even allow spaces.
+			        	    	  //TODO: The above isn't good enough, so need to be harsher, but haven't found the ideal regexp.
+			        	    	  
+			        	    	  //Note: This is too harsh, doesn't even allow spaces.
 			        	    	  //Replace all non-word characters (same as [\W])
-			        	    	  columnNames[i] = columnNames[i].replaceAll("[^\\w]", "");
+			        	    	  //columnNames[i] = columnNames[i].replaceAll("[^\\w]", "");
 			        	    	  
 			        	    	  //TODO: Escape for CSV when exporting to CSV
 			        	    	  //columnNames[i] = StringEscapeUtils.escapeCsv(columnNames[i]);
