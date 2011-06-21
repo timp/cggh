@@ -3,5 +3,17 @@
   <groupId>dataMover</groupId>
   <artifactId>dataMover</artifactId>
   <version>0.0.1-SNAPSHOT</version>
-  <packaging>maven-plugin</packaging>
+  <packaging>war</packaging>
+  
+  <build>
+  <plugins>
+	  <plugin>            
+		  <groupId>org.apache.maven.plugins</groupId>
+		  <artifactId>maven-war-plugin</artifactId>
+		  <configuration>
+		    <webXml>WebContent\WEB-INF\web.xml</webXml>        
+		  </configuration>
+		</plugin>
+  </plugins>
+  </build>
 </project>
