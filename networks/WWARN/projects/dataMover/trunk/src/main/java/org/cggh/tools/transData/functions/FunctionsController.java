@@ -1,4 +1,4 @@
-package org.cggh.tools.dataMover.data;
+package org.cggh.tools.transData.functions;
 
 import java.io.IOException;
 import javax.servlet.ServletException;
@@ -7,15 +7,15 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * Servlet implementation class DataController
+ * Servlet implementation class FunctionsController
  */
-public class DataController extends HttpServlet {
+public class FunctionsController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public DataController() {
+    public FunctionsController() {
         super();
         // TODO Auto-generated constructor stub
     }
@@ -24,9 +24,7 @@ public class DataController extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
-		response.setContentType("text/plain");
-		response.getWriter().println("Unhandled Header Accept: " + request.getHeader("Accept"));
+		// TODO Auto-generated method stub
 	}
 
 	/**
