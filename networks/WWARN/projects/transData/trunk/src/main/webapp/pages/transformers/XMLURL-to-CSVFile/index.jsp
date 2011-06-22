@@ -6,7 +6,22 @@
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
 	<title>transData - Transformers - XML URL to CSV File</title>
+	
+	<script type="text/javascript" src="../../shared/js/jquery.min.js"></script>
+	<script type="text/javascript" src="../../shared/js/jquery.json.min.js"></script>
+	<script type="text/javascript" src="../../shared/js/shared.js"></script>
+	
 	<script type="text/javascript" src="js/XMLURL-to-CSVFile.js"></script>
+	<script type="text/javascript">
+
+		$(document).ready(function(){
+			
+			initSharedFunctions();
+			initXMLURL_to_CSVFileFunctions();
+
+		});
+	
+	</script>
 </head>
 <body>
 
@@ -16,13 +31,14 @@
 	
 	<h3>XML URL to CSV File</h3>
 
+	<div class="error"></div>
 
 	<form class="new-transformation-form" onsubmit="return false;" autocomplete="off">
 		<h3>New conversion:</h3>
 		<div>
 		<label>URL:</label>
 			<input type="text" name="url" />
-			<img class="transforming-indicator" src="../shared/gif/loading.gif" style="display:none" title="Tranforming..."/>
+			<img class="transforming-indicator" src="../../shared/gif/loading.gif" style="display:none" title="Tranforming..."/>
 			<button class="transformXMLURL-to-CSVFileButton">Transform</button>
 		</div>
 	</form>

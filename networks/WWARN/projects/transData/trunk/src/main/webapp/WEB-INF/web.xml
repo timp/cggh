@@ -12,7 +12,7 @@
   </servlet>
   <servlet-mapping>
     <servlet-name>DataController</servlet-name>
-    <url-pattern>/DataController</url-pattern>
+    <url-pattern>/data/*</url-pattern>
   </servlet-mapping>
   <servlet>
     <description></description>
@@ -22,6 +22,6 @@
   </servlet>
   <servlet-mapping>
     <servlet-name>FunctionsController</servlet-name>
-    <url-pattern>/FunctionsController</url-pattern>
+    <url-pattern>/functions/*</url-pattern>
   </servlet-mapping>
 </web-app>
