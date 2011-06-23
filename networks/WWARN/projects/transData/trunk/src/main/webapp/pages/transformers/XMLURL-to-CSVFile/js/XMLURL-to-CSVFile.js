@@ -13,28 +13,28 @@ function initTransformXMLURL_to_CSVFileFunction () {
 		// Get data from form.
 		var data = $.toJSON($('.new-transformation-form').serializeObject());
 		
-		//Validate exactly two checkboxes selected.
-		
 		var obj = $.parseJSON(data);
 		
 		if (obj != undefined && obj.url != undefined && obj.url != "") {
-		
+
+			window.location.href = '/transData/functions/data/transformers/xmlurl-to-csvfile?url=' + obj.url;
+			
+			/*
 			$.ajax({
 				type: 'GET',
-				data: data,
-				url: '/transData/functions/data/transformers/xmlurl-to-csvfile',
-				dataType: 'json',
+				data: '',
+				url: '/transData/functions/data/transformers/xmlurl-to-csvfile?url=' + obj.url,
 				success: function (data, textStatus, jqXHR) {
-					alert(data);
-						alert(textStatus);
+					
+					alert(textStatus);
 				},
 				error: function (jqXHR, textStatus, errorThrown){
 		            $('.error').html(errorThrown);
-		            alert(textStatus);
 		        },
 				beforeSend: function() { $('.transforming-indicator').show(); },
 		        complete: function() { $('.transforming-indicator').hide(); }
 			});
+			*/
 		
 		} else {
 			alert("Please provide a URL.");
