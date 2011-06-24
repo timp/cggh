@@ -37,9 +37,10 @@
 		<h3>New conversion:</h3>
 		<div>
 		<label>URL:</label>
-			<input type="text" name="url" />
+			<input type="text" name="URL" />
+			<button class="transformXMLURL-to-CSVRowsFileButton">Rows</button>
+			<button class="transformXMLURL-to-CSVColumnsFileButton">Columns</button>
 			<img class="transforming-indicator" src="../../shared/gif/loading.gif" style="display:none" title="Tranforming..."/>
-			<button class="transformXMLURL-to-CSVFileButton">Transform</button>
 		</div>
 	</form>
 

@@ -1,40 +1,44 @@
 function initXMLURL_to_CSVFileFunctions () {
 
-	initTransformXMLURL_to_CSVFileFunction();
+	initTransformXMLURL_to_CSVRowsFileFunction();
+	initTransformXMLURL_to_CSVColumnsFileFunction();
 
 }
 
 
 
-function initTransformXMLURL_to_CSVFileFunction () {
+function initTransformXMLURL_to_CSVRowsFileFunction () {
 
-	$(".transformXMLURL-to-CSVFileButton").click(function() {	
+	$(".transformXMLURL-to-CSVRowsFileButton").click(function() {	
 		
 		// Get data from form.
 		var data = $.toJSON($('.new-transformation-form').serializeObject());
 		
 		var obj = $.parseJSON(data);
 		
-		if (obj != undefined && obj.url != undefined && obj.url != "") {
+		if (obj != undefined && obj.URL != undefined && obj.URL != "") {
 
-			window.location.href = '/transData/functions/data/transformers/xmlurl-to-csvfile?url=' + obj.url;
-			
-			/*
-			$.ajax({
-				type: 'GET',
-				data: '',
-				url: '/transData/functions/data/transformers/xmlurl-to-csvfile?url=' + obj.url,
-				success: function (data, textStatus, jqXHR) {
-					
-					alert(textStatus);
-				},
-				error: function (jqXHR, textStatus, errorThrown){
-		            $('.error').html(errorThrown);
-		        },
-				beforeSend: function() { $('.transforming-indicator').show(); },
-		        complete: function() { $('.transforming-indicator').hide(); }
-			});
-			*/
+			 window.open('/transData/functions/data/transformers/XMLURL-to-CSVRowsFile?URL=' + obj.URL);
+		
+		} else {
+			alert("Please provide a URL.");
+		}
+		
+	});
+}
+
+function initTransformXMLURL_to_CSVColumnsFileFunction () {
+
+	$(".transformXMLURL-to-CSVColumnsFileButton").click(function() {	
+		
+		// Get data from form.
+		var data = $.toJSON($('.new-transformation-form').serializeObject());
+		
+		var obj = $.parseJSON(data);
+		
+		if (obj != undefined && obj.URL != undefined && obj.URL != "") {
+
+			 window.open('/transData/functions/data/transformers/XMLURL-to-CSVColumnsFile?URL=' + obj.URL);
 		
 		} else {
 			alert("Please provide a URL.");
