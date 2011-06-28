@@ -39,8 +39,10 @@
 		<label>URL:</label>
 			<input type="text" name="URL" />
 			<button class="transformXMLURL-to-CSVRowsFileButton">Rows</button>
-			<button class="transformXMLURL-to-CSVColumnsFileButton">Columns</button>
+			<button class="seeResponseButton">Check</button>
 			<img class="transforming-indicator" src="../../shared/gif/loading.gif" style="display:none" title="Tranforming..."/>
+			<textarea class="response">
+			</textarea>
 		</div>
 	</form>
 

@@ -1,6 +1,6 @@
 package org.cggh.tools.transData.functions.data;
 
-import java.io.File;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
@@ -12,10 +12,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Logger;
 
-import javax.net.ssl.HttpsURLConnection;
-import javax.net.ssl.SSLContext;
+
 import javax.net.ssl.SSLHandshakeException;
-import javax.net.ssl.TrustManager;
+
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -26,13 +25,17 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
+import org.xml.sax.XMLReader;
+import org.xml.sax.helpers.XMLReaderFactory;
 
 public class DataFunctions {
 	
 	private final Logger logger = Logger.getLogger(this.getClass().getPackage().getName());
 	
-	public Document convertDataAsInputStreamIntoDocument (InputStream inputStream) {
+	//DOM method
+	public Document convertDataAsInputStreamIntoDocument (InputStream inputStream) throws SAXException, IOException, ParserConfigurationException {
 		
 		Document dataAsDocument = null;
 		
@@ -42,63 +45,33 @@ public class DataFunctions {
         documentBuilderFactory.setValidating(false);
         documentBuilderFactory.setNamespaceAware(false);
 
-            
-            try {
-            	
-            	DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
-				dataAsDocument = documentBuilder.parse(inputStream);
-            
-			} catch (ParserConfigurationException e) {
-				e.printStackTrace();
-			} catch (SAXException e) {
-				e.printStackTrace();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+    	DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
+		dataAsDocument = documentBuilder.parse(inputStream);
+
 
         return dataAsDocument;
 	}
+	
+	//SAX method
+	public XMLReader convertDataAsInputStreamIntoXMLReader (InputStream inputStream) throws SAXException, IOException {
+		
+		XMLReader dataAsXMLReader = null;
+		
+		dataAsXMLReader = XMLReaderFactory.createXMLReader();
+		//dataAsXMLReader.setContentHandler(handler);
+		dataAsXMLReader.parse(new InputSource(inputStream));
+
+
+        return dataAsXMLReader;
+	}
+	
 
 	public Logger getLogger() {
 		return logger;
 	}
 		
 	
-	public HashMap<String, Integer> convertDataAsDocumentIntoHashMap (Document dataAsDocument) {
-		
-		HashMap<String, Integer> dataAsHashMap = new HashMap<String, Integer>();
-		
-		     NodeList nodes = dataAsDocument.getElementsByTagName("topic");
-		     
-		     for (int i = 0; i < nodes.getLength(); i++) {
-		    	 
-		       Element element = (Element) nodes.item(i);
 
-		       NodeList title = element.getElementsByTagName("title");
-		       
-		       Element line = (Element) title.item(0);
-
-		       System.out.println("Title: " + getCharacterDataFromElement(line));
-
-		       NodeList url = element.getElementsByTagName("url");
-		       line = (Element) url.item(0);
-		       System.out.println("Url: " + getCharacterDataFromElement(line));
-
-		     }
-		   
-		
-		return dataAsHashMap;
-	}
-	
-	 public static String getCharacterDataFromElement(Element e) {
-		 
-		   Node child = e.getFirstChild();
-		   if (child instanceof CharacterData) {
-		     CharacterData cd = (CharacterData) child;
-		       return cd.getData();
-		     }
-		   return "?";
-		 }
 
 	public List<String> convertAcceptHeaderAsStringIntoHeaderAcceptsAsStringList(String acceptHeaderAsString) {
 		
@@ -146,47 +119,72 @@ public class DataFunctions {
 				URL urlAsUrl = new URL(urlAsString);
 				
 				InputStream urlAsInputStream = urlAsUrl.openStream();
-				Document xmlAsDocument = this.convertDataAsInputStreamIntoDocument(urlAsInputStream);
 				
-				//Don't need this any more
+				//TODO: improve
+				String parseMethod = "DOM";
+				
+				if (parseMethod.equals("DOM")) {
+					
+					try {
+						Document xmlAsDocument = this.convertDataAsInputStreamIntoDocument(urlAsInputStream);
+						
+						
+						if (xmlAsDocument != null) {
+	
+							//TODO: Remove unwanted nodes (and ones with no value) afterwards (separate concern)
+							
+							//String parentNodeBaseXPathAsString = "atom:entry[1]";
+			
+							//FIXME: get off on the right foot
+							String parentNodeBaseXPathAsString = null;//xmlAsDocument.getParentNode().getNodeName();
+							
+							ArrayList<FieldModel> dataAsFieldModelArrayListWithXpathFieldLabels = this.convertNodeListIntoFieldModelArrayListWithXPathFieldLabels(xmlAsDocument.getChildNodes(), parentNodeBaseXPathAsString);
+							
+							//var studyAsObjectArrayWithStudyCustomFieldLabels = addCustomFieldLabelPropertiesToObjectArrayWithXPathFieldLabelsUsingRegExpMapAsAssociativeArray(studyAsObjectArrayWithXPathFieldLabels, retrieveStudyCustomFieldLabelsRegExMapAsAssociativeArray());
+							
+							//TODO: code
+							//DataCRUD dataCRUD = new DataCRUD();
+							//HashMap<String, String> regExpMapAsXpathFieldLabelPatternKeyedHashMap = new HashMap<String, String>();
+							//ArrayList<FieldModel> dataAsFieldModelArrayListWithMappedFieldLabels = addMappedFieldLabelsToFieldModelArrayListUsingRegExpMapAsXpathFieldLabelPatternKeyedHashMap(dataAsFieldModelArrayListWithXpathFieldLabels, regExpMapAsXpathFieldLabelPatternKeyedHashMap);
+			
+							dataAsCSVRowsString = this.convertDataAsFieldModelArrayListIntoCSVRowsWithXpathFieldLabelsAsString(dataAsFieldModelArrayListWithXpathFieldLabels); 
+							
+							
+						} else {
+							
+							this.getLogger().severe("xmlAsDocument is null");
+						}
+						
+					} catch (SAXException e) {
+						
+						this.getLogger().severe("SAX Exception");
+						
+					} catch (IOException e) {
+						
+						this.getLogger().severe("IO Exception");
+						
+					} catch (ParserConfigurationException e) {
+	
+						this.getLogger().severe("Parser Configuration Exception");
+					}
+
+				} 
+				else if (parseMethod.equals("SAX")) {
+					
+					
+					XMLReader xmlAsXMLReader = this.convertDataAsInputStreamIntoXMLReader(urlAsInputStream);
+					
+					//TODO: code
+					
+				} else {
+					
+					this.getLogger().severe("Unhandled parse method.");
+				}
+				
 				urlAsInputStream.close();
 				
-//				var parentNodeBaseXPath = "atom:entry[1]";
-//				
-//				var nodeNamesToIgnoreAsAssociativeArray = {
-//						"#text" : true,
-//					    "atom:link" : true, 
-//					    "wizard-pane-to-show" : true, 
-//					    "ar:comment" : true,
-//					    "app:control" : true
-//				};
-//				
-//				studyAsObjectArrayWithXPathFieldLabels = convertXmlNodesIntoObjectArrayWithXPathFieldLabels(studyAsAtomEntryXml.documentElement.childNodes, parentNodeBaseXPath, nodeNamesToIgnoreAsAssociativeArray);
-//
-//				
-				////////////////////////////////
 				
-				//TODO: Remove unwanted nodes (and ones with no value) afterwards (separate concern)
-				
-				//String parentNodeBaseXPathAsString = "atom:entry[1]";
-				String parentNodeBaseXPathAsString = xmlAsDocument.getNodeName();
-				
-				ArrayList<FieldModel> dataAsFieldModelArrayListWithXpathFieldLabels = this.convertNodeListIntoFieldModelArrayListWithXPathFieldLabels(xmlAsDocument.getChildNodes(), parentNodeBaseXPathAsString);
-				
-				//var studyAsObjectArrayWithStudyCustomFieldLabels = addCustomFieldLabelPropertiesToObjectArrayWithXPathFieldLabelsUsingRegExpMapAsAssociativeArray(studyAsObjectArrayWithXPathFieldLabels, retrieveStudyCustomFieldLabelsRegExMapAsAssociativeArray());
-				
-				//TODO: code
-				//DataCRUD dataCRUD = new DataCRUD();
-				//HashMap<String, String> regExpMapAsXpathFieldLabelPatternKeyedHashMap = new HashMap<String, String>();
-				//ArrayList<FieldModel> dataAsFieldModelArrayListWithMappedFieldLabels = addMappedFieldLabelsToFieldModelArrayListUsingRegExpMapAsXpathFieldLabelPatternKeyedHashMap(dataAsFieldModelArrayListWithXpathFieldLabels, regExpMapAsXpathFieldLabelPatternKeyedHashMap);
-
-				//TEMP: Check that the basic conversion is working. 
-				
-				dataAsCSVRowsString = this.convertDataAsFieldModelArrayListIntoCSVRowsString(dataAsFieldModelArrayListWithXpathFieldLabels); 
-				
-				///////////////////////////////
-				
-				
+					
 		    } catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -194,7 +192,7 @@ public class DataFunctions {
 		return dataAsCSVRowsString;
 	}
 
-	public String convertDataAsFieldModelArrayListIntoCSVRowsString(
+	public String convertDataAsFieldModelArrayListIntoCSVRowsWithXpathFieldLabelsAsString(
 			ArrayList<FieldModel> dataAsFieldModelArrayListWithXpathFieldLabels) {
 
 		String dataAsCSVRowsString = null;
@@ -204,9 +202,7 @@ public class DataFunctions {
 		
 		for (int i = 0; i < dataAsFieldModelArrayListWithXpathFieldLabels.size(); i ++) {
 			
-			//TODO: change to use mapped field name
-			
-			dataAsCSVStringBuilder.append(dataAsFieldModelArrayListWithXpathFieldLabels.get(i).getParentNodeName()).append(",").append(dataAsFieldModelArrayListWithXpathFieldLabels.get(i).getNodeValue());
+			dataAsCSVStringBuilder.append(dataAsFieldModelArrayListWithXpathFieldLabels.get(i).getXPathFieldLabel()).append(",").append(dataAsFieldModelArrayListWithXpathFieldLabels.get(i).getNodeValue());
 			
 			dataAsCSVStringBuilder.append("\n");
 		}
@@ -227,7 +223,9 @@ public class DataFunctions {
 			parentNodeBaseXPathAsString = "";
 		}
 
-		if (nodeList.getLength() == 1 && nodeList.item(0).getNodeType() == 3) {
+		if (nodeList.getLength() == 1 && nodeList.item(0).getNodeName().equals("#text")) {
+			
+			//Old condition, didn't work: nodeList.getLength() == 1 && nodeList.item(0).getNodeType() == 3
 			
 			//TODO: consider this instead of the mysterious node type 3 
 			//!nodeList.item(0).hasChildNodes()
@@ -239,12 +237,13 @@ public class DataFunctions {
 			
 			FieldModel fieldModel = new FieldModel();
 			
-			//TODO:remove
-			this.getLogger().info(nodeList.item(0).getNodeName());
-			this.getLogger().info(nodeList.item(0).getParentNode().getNodeName());
+			//TODO:com-out
+			this.getLogger().info("leaf: " + nodeList.item(0).getNodeName());
+			this.getLogger().info("leaf parent: " + nodeList.item(0).getParentNode().getNodeName());
 			
 			
 			fieldModel.setParentNodeName(nodeList.item(0).getParentNode().getNodeName());
+			fieldModel.setNodeName(nodeList.item(0).getNodeName());
 			fieldModel.setNodeValue(nodeList.item(0).getNodeValue());
 			fieldModel.setXPathFieldLabel(parentNodeBaseXPathAsString);
 			
@@ -258,17 +257,23 @@ public class DataFunctions {
 			
 			for (int i = 0; i < nodeList.getLength(); i++) {
 				
-				if (nodeSiblingCountAsNodeNameKeyedHashMap.containsKey(nodeList.item(i).getParentNode().getNodeName())) {
+				
+				//TODO:com-out
+				this.getLogger().info("branch: " + nodeList.item(i).getNodeName());
+				this.getLogger().info("branch parent: " + nodeList.item(i).getParentNode().getNodeName());
+				
+				
+				if (nodeSiblingCountAsNodeNameKeyedHashMap.containsKey(nodeList.item(i).getNodeName())) {
 					
-					nodeSiblingCountAsNodeNameKeyedHashMap.put(nodeList.item(i).getParentNode().getNodeName(), nodeSiblingCountAsNodeNameKeyedHashMap.get(nodeList.item(i).getParentNode().getNodeName()).intValue() + 1);
+					nodeSiblingCountAsNodeNameKeyedHashMap.put(nodeList.item(i).getNodeName(), nodeSiblingCountAsNodeNameKeyedHashMap.get(nodeList.item(i).getNodeName()).intValue() + 1);
 					
 				} else {
 
-					nodeSiblingCountAsNodeNameKeyedHashMap.put(nodeList.item(i).getParentNode().getNodeName(), 1);
+					nodeSiblingCountAsNodeNameKeyedHashMap.put(nodeList.item(i).getNodeName(), 1);
 					
 				}
 				
-				String nodeBaseXPathAsString = parentNodeBaseXPathAsString + "/" + nodeList.item(i).getParentNode().getNodeName() + "[" + nodeSiblingCountAsNodeNameKeyedHashMap.get(nodeList.item(i).getParentNode().getNodeName()).intValue() + "]";
+				String nodeBaseXPathAsString = parentNodeBaseXPathAsString + "/" + nodeList.item(i).getNodeName() + "[" + nodeSiblingCountAsNodeNameKeyedHashMap.get(nodeList.item(i).getNodeName()).intValue() + "]";
 				
 				// More verbosely...
 				//ArrayList<FieldModel> childNodesAsFieldModelArrayListWithXPathFieldLabels = convertNodeListIntoFieldModelArrayListWithXPathFieldLabels(nodeList.item(i).getChildNodes(), nodeBaseXPathAsString);

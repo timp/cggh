@@ -3,6 +3,7 @@ package org.cggh.tools.transData.data.fields;
 public class FieldModel {
 
 	private String parentNodeName;
+	private String nodeName;
 	private String nodeValue;
 	private String xPathFieldLabel;
 	
@@ -25,6 +26,12 @@ public class FieldModel {
 	}
 	public String getParentNodeName() {
 		return parentNodeName;
+	}
+	public void setNodeName(String nodeName) {
+		this.nodeName = nodeName;
+	}
+	public String getNodeName() {
+		return nodeName;
 	}
 
 	

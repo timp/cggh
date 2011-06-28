@@ -1,7 +1,7 @@
 function initXMLURL_to_CSVFileFunctions () {
 
 	initTransformXMLURL_to_CSVRowsFileFunction();
-	initTransformXMLURL_to_CSVColumnsFileFunction();
+	initSeeResponseFunction();
 
 }
 
@@ -27,9 +27,10 @@ function initTransformXMLURL_to_CSVRowsFileFunction () {
 	});
 }
 
-function initTransformXMLURL_to_CSVColumnsFileFunction () {
 
-	$(".transformXMLURL-to-CSVColumnsFileButton").click(function() {	
+function initSeeResponseFunction () {
+
+	$(".seeResponseButton").click(function() {	
 		
 		// Get data from form.
 		var data = $.toJSON($('.new-transformation-form').serializeObject());
@@ -38,11 +39,22 @@ function initTransformXMLURL_to_CSVColumnsFileFunction () {
 		
 		if (obj != undefined && obj.URL != undefined && obj.URL != "") {
 
-			 window.open('/transData/functions/data/transformers/XMLURL-to-CSVColumnsFile?URL=' + obj.URL);
-		
+			$.ajax({
+				  url: '/transData/functions/data/transformers/XMLURL-to-CSVRowsFile?URL=' + obj.URL,
+				  type: "GET",
+				  dataType: "text",
+				  success: function(data, textStatus, jqXHR){
+					  $('.response').html(data);
+				  },
+				  error: function(jqXHR, textStatus, errorThrown){
+				    alert("Error getting data: " + errorThrown);
+				  } 
+				});
+			
 		} else {
 			alert("Please provide a URL.");
 		}
 		
 	});
 }
+

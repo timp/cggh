@@ -51,9 +51,11 @@ public class FunctionsController extends HttpServlet {
 
 				  if (!dataFunctions.isInvalidURL(request.getParameter("URL"))) {
 					  
-					  String dataAsCSVString = dataFunctions.convertXMLFromURLIntoCSVRowsWithXPathFieldLabelsAsStringUsingUrlAsString(request.getParameter("URL"));
+					  String dataAsCSVRowsString = dataFunctions.convertXMLFromURLIntoCSVRowsWithXPathFieldLabelsAsStringUsingUrlAsString(request.getParameter("URL"));
 					  
-					  if (dataAsCSVString != null) {
+					  //TODO: Factor out into something like respondWithStringAsFileUsingResponse
+					  
+					  if (dataAsCSVRowsString != null) {
 					  
 						   //Serve the string as a file
 						  
@@ -65,13 +67,13 @@ public class FunctionsController extends HttpServlet {
 						    
 				            response.setHeader("Content-Disposition", "attachment; fileName=" + fileName);
 			
-				            response.setContentLength(dataAsCSVString.toString().getBytes().length);
+				            response.setContentLength(dataAsCSVRowsString.toString().getBytes().length);
 				            
 				            int length = 0;
 				            
 				            byte[] byteBuffer = new byte[2048];
 				            
-				              DataInputStream dataInputStream = new DataInputStream(new ByteArrayInputStream(dataAsCSVString.toString().getBytes()));
+				              DataInputStream dataInputStream = new DataInputStream(new ByteArrayInputStream(dataAsCSVRowsString.toString().getBytes()));
 				
 				              while ((dataInputStream != null) && ((length = dataInputStream.read(byteBuffer)) != -1)) {
 				            	  response.getOutputStream().write(byteBuffer, 0, length);
