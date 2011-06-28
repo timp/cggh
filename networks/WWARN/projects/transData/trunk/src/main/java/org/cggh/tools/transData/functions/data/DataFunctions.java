@@ -312,8 +312,9 @@ public class DataFunctions {
 			//
 			//e.printStackTrace();
 			
-			//FIXME: This could be dangerous.
-			isInvalidURL = false;
+			//Note: This happens when the certificate is invalid.
+			
+			isInvalidURL = true;
 			
 		} catch (IOException e) {
 
