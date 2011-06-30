@@ -1,16 +1,22 @@
 package org.cggh.tools.transData.functions.data;
 
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.StringReader;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLConnection;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Logger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 
 import javax.net.ssl.SSLHandshakeException;
@@ -20,51 +26,15 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.cggh.tools.transData.data.fields.FieldModel;
-import org.w3c.dom.CharacterData;
 import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
-import org.xml.sax.XMLReader;
-import org.xml.sax.helpers.XMLReaderFactory;
 
 public class DataFunctions {
 	
 	private final Logger logger = Logger.getLogger(this.getClass().getPackage().getName());
-	
-	//DOM method
-	public Document convertDataAsInputStreamIntoDocument (InputStream inputStream) throws SAXException, IOException, ParserConfigurationException {
-		
-		Document dataAsDocument = null;
-		
-        DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
-        
-        //These really speed-up the parsing
-        documentBuilderFactory.setValidating(false);
-        documentBuilderFactory.setNamespaceAware(false);
 
-    	DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
-		dataAsDocument = documentBuilder.parse(inputStream);
-
-
-        return dataAsDocument;
-	}
-	
-	//SAX method
-	public XMLReader convertDataAsInputStreamIntoXMLReader (InputStream inputStream) throws SAXException, IOException {
-		
-		XMLReader dataAsXMLReader = null;
-		
-		dataAsXMLReader = XMLReaderFactory.createXMLReader();
-		//dataAsXMLReader.setContentHandler(handler);
-		dataAsXMLReader.parse(new InputSource(inputStream));
-
-
-        return dataAsXMLReader;
-	}
-	
 
 	public Logger getLogger() {
 		return logger;
@@ -110,99 +80,80 @@ public class DataFunctions {
 		return headerAcceptsAsStringList;
 	}
 
-	public String convertXMLFromURLIntoCSVRowsWithXPathFieldLabelsAsStringUsingUrlAsString(String urlAsString) {
-		
-		String dataAsCSVRowsString = null;
 
-		
-		 try {
-				URL urlAsUrl = new URL(urlAsString);
-				
-				InputStream urlAsInputStream = urlAsUrl.openStream();
-				
-				//TODO: improve
-				String parseMethod = "DOM";
-				
-				if (parseMethod.equals("DOM")) {
-					
-					try {
-						Document xmlAsDocument = this.convertDataAsInputStreamIntoDocument(urlAsInputStream);
-						
-						
-						if (xmlAsDocument != null) {
-	
-							//TODO: Remove unwanted nodes (and ones with no value) afterwards (separate concern)
-							
-							//String parentNodeBaseXPathAsString = "atom:entry[1]";
-			
-							//FIXME: get off on the right foot
-							String parentNodeBaseXPathAsString = null;//xmlAsDocument.getParentNode().getNodeName();
-							
-							ArrayList<FieldModel> dataAsFieldModelArrayListWithXpathFieldLabels = this.convertNodeListIntoFieldModelArrayListWithXPathFieldLabels(xmlAsDocument.getChildNodes(), parentNodeBaseXPathAsString);
-							
-							//var studyAsObjectArrayWithStudyCustomFieldLabels = addCustomFieldLabelPropertiesToObjectArrayWithXPathFieldLabelsUsingRegExpMapAsAssociativeArray(studyAsObjectArrayWithXPathFieldLabels, retrieveStudyCustomFieldLabelsRegExMapAsAssociativeArray());
-							
-							//TODO: code
-							//DataCRUD dataCRUD = new DataCRUD();
-							//HashMap<String, String> regExpMapAsXpathFieldLabelPatternKeyedHashMap = new HashMap<String, String>();
-							//ArrayList<FieldModel> dataAsFieldModelArrayListWithMappedFieldLabels = addMappedFieldLabelsToFieldModelArrayListUsingRegExpMapAsXpathFieldLabelPatternKeyedHashMap(dataAsFieldModelArrayListWithXpathFieldLabels, regExpMapAsXpathFieldLabelPatternKeyedHashMap);
-			
-							dataAsCSVRowsString = this.convertDataAsFieldModelArrayListIntoCSVRowsWithXpathFieldLabelsAsString(dataAsFieldModelArrayListWithXpathFieldLabels); 
-							
-							
-						} else {
-							
-							this.getLogger().severe("xmlAsDocument is null");
-						}
-						
-					} catch (SAXException e) {
-						
-						this.getLogger().severe("SAX Exception");
-						
-					} catch (IOException e) {
-						
-						this.getLogger().severe("IO Exception");
-						
-					} catch (ParserConfigurationException e) {
-	
-						this.getLogger().severe("Parser Configuration Exception");
-					}
-
-				} 
-				else if (parseMethod.equals("SAX")) {
-					
-					
-					XMLReader xmlAsXMLReader = this.convertDataAsInputStreamIntoXMLReader(urlAsInputStream);
-					
-					//TODO: code
-					
-				} else {
-					
-					this.getLogger().severe("Unhandled parse method.");
-				}
-				
-				urlAsInputStream.close();
-				
-				
-					
-		    } catch (Exception e) {
-				e.printStackTrace();
-			}
-		
-		return dataAsCSVRowsString;
-	}
-
-	public String convertDataAsFieldModelArrayListIntoCSVRowsWithXpathFieldLabelsAsString(
+	public String convertDataAsFieldModelArrayListIntoCSVRowsWithMappedCustomFieldLabelsAsString(
 			ArrayList<FieldModel> dataAsFieldModelArrayListWithXpathFieldLabels) {
 
 		String dataAsCSVRowsString = null;
 
+		//NOTE: Enclose value in quotes.
+		//NOTE: Replace EOL characters with spaces. 
+		//NOTE: Use Unix EOL character.
+		
+		
+		//TODO: Get the mapped values as a HashMap from the config collection using URL (hard-coded?)
+		//https://wwarn-app3.nsms.ox.ac.uk/repository/service/content/config/explorer-display-types
+		//https://wwarn-app3.nsms.ox.ac.uk/repository/service/content/config/study-field-mappings
+		
+		///////////
+		HashMap<String, String> fieldLabelRegExpMappingsAsPatternKeyedHashMap = new HashMap<String, String>();
+		
+		//TODO: replace with sourced values
+		fieldLabelRegExpMappingsAsPatternKeyedHashMap.put("/breakfast_menu\\[(\\d+)\\]/food\\[(\\d+)\\]/name\\[(\\d+)\\]", "Food$2Name");
+		
+		
+		//////////
 		
 		StringBuilder dataAsCSVStringBuilder = new StringBuilder();
 		
 		for (int i = 0; i < dataAsFieldModelArrayListWithXpathFieldLabels.size(); i ++) {
 			
-			dataAsCSVStringBuilder.append(dataAsFieldModelArrayListWithXpathFieldLabels.get(i).getXPathFieldLabel()).append(",").append(dataAsFieldModelArrayListWithXpathFieldLabels.get(i).getNodeValue());
+			StringBuffer labelAsStringBuffer = new StringBuffer("\"");
+			StringBuffer valueAsStringBuffer = new StringBuffer("\"");
+			
+			
+			//TODO: translate into mapped values
+			
+			/////////
+			
+			Boolean matchFound = null;
+		
+			
+			for (String regExpKey : fieldLabelRegExpMappingsAsPatternKeyedHashMap.keySet()) {
+
+				
+				Pattern pattern = Pattern.compile(regExpKey);
+				Matcher matcher = pattern.matcher(dataAsFieldModelArrayListWithXpathFieldLabels.get(i).getXPathFieldLabel());
+
+				if (matcher.matches()) {
+					
+					matchFound = true;
+					
+					labelAsStringBuffer.append(matcher.replaceAll(fieldLabelRegExpMappingsAsPatternKeyedHashMap.get(regExpKey))).append("\"");
+					
+					
+				}
+				
+			}
+			
+			
+			if (matchFound == null || matchFound != true) {
+				matchFound = false;
+			}
+			
+			//NOTE: Keep unmatched xPathFieldLabels
+			if (matchFound == false) {
+				
+				labelAsStringBuffer.append(dataAsFieldModelArrayListWithXpathFieldLabels.get(i).getXPathFieldLabel()).append("\"");
+			}
+			
+			/////////
+			
+			
+			
+			valueAsStringBuffer.append(dataAsFieldModelArrayListWithXpathFieldLabels.get(i).getNodeValue().replaceAll("\\n|\\r", " ").replaceAll("\"", "\"\"")).append("\"");
+			
+			dataAsCSVStringBuilder.append(labelAsStringBuffer.toString()).append(",").append(valueAsStringBuffer);
 			
 			dataAsCSVStringBuilder.append("\n");
 		}
@@ -225,22 +176,13 @@ public class DataFunctions {
 
 		if (nodeList.getLength() == 1 && nodeList.item(0).getNodeName().equals("#text")) {
 			
-			//Old condition, didn't work: nodeList.getLength() == 1 && nodeList.item(0).getNodeType() == 3
-			
-			//TODO: consider this instead of the mysterious node type 3 
-			//!nodeList.item(0).hasChildNodes()
-			// or NodeName = #text ?
-			
+			//Note: Old javascript condition didn't work for java: nodeList.getLength() == 1 && nodeList.item(0).getNodeType() == 3
+		
 			// node is a leaf
 			
 			//Note: don't ignore empty nodes, remove later (separate concern)
 			
 			FieldModel fieldModel = new FieldModel();
-			
-			//TODO:com-out
-			this.getLogger().info("leaf: " + nodeList.item(0).getNodeName());
-			this.getLogger().info("leaf parent: " + nodeList.item(0).getParentNode().getNodeName());
-			
 			
 			fieldModel.setParentNodeName(nodeList.item(0).getParentNode().getNodeName());
 			fieldModel.setNodeName(nodeList.item(0).getNodeName());
@@ -256,12 +198,6 @@ public class DataFunctions {
 			HashMap<String, Integer> nodeSiblingCountAsNodeNameKeyedHashMap = new HashMap<String, Integer>();
 			
 			for (int i = 0; i < nodeList.getLength(); i++) {
-				
-				
-				//TODO:com-out
-				this.getLogger().info("branch: " + nodeList.item(i).getNodeName());
-				this.getLogger().info("branch parent: " + nodeList.item(i).getParentNode().getNodeName());
-				
 				
 				if (nodeSiblingCountAsNodeNameKeyedHashMap.containsKey(nodeList.item(i).getNodeName())) {
 					
@@ -309,8 +245,8 @@ public class DataFunctions {
 			
 		} catch (SSLHandshakeException e) {
 			
-			//
-			//e.printStackTrace();
+			//TODO: comment-out
+			e.printStackTrace();
 			
 			//Note: This happens when the certificate is invalid.
 			
@@ -336,6 +272,39 @@ public class DataFunctions {
 		fileName = originalFileNameWithoutExtension + ".csv";
 
 		return fileName;
+	}
+
+	public String convertUrlAsStringIntoUrlResponseAsString(String urlAsString) throws IOException {
+
+		StringBuffer urlResponseAsStringBuffer = new StringBuffer();
+		
+			
+			URL urlAsURL = new URL(urlAsString);
+			
+			URLConnection urlConnection = urlAsURL.openConnection();
+			BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
+			String line;
+
+	        while ((line = bufferedReader.readLine()) != null) 
+	        	urlResponseAsStringBuffer.append(line);
+	        bufferedReader.close();
+			
+		
+		return urlResponseAsStringBuffer.toString();
+	}
+
+	public Document convertXmlAsStringIntoXmlAsDocument(String urlResponseAsString) throws ParserConfigurationException, SAXException, IOException {
+
+		Document xmlAsDocument = null;
+		
+		DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
+        DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
+        InputSource inputSource = new InputSource(new StringReader(urlResponseAsString));
+        xmlAsDocument = documentBuilder.parse(inputSource);
+        
+        return xmlAsDocument;
+        
+		
 	}
 	
 	

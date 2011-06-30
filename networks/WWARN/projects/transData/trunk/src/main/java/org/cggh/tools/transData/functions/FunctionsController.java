@@ -4,6 +4,7 @@ import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.IOException;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -11,8 +12,12 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.xml.parsers.ParserConfigurationException;
 
+import org.cggh.tools.transData.data.fields.FieldModel;
 import org.cggh.tools.transData.functions.data.DataFunctions;
+import org.w3c.dom.Document;
+import org.xml.sax.SAXException;
 
 
 
@@ -51,45 +56,40 @@ public class FunctionsController extends HttpServlet {
 
 				  if (!dataFunctions.isInvalidURL(request.getParameter("URL"))) {
 					  
-					  String dataAsCSVRowsString = dataFunctions.convertXMLFromURLIntoCSVRowsWithXPathFieldLabelsAsStringUsingUrlAsString(request.getParameter("URL"));
-					  
-					  //TODO: Factor out into something like respondWithStringAsFileUsingResponse
-					  
-					  if (dataAsCSVRowsString != null) {
-					  
-						   //Serve the string as a file
+					  try {
 						  
-						  //TODO: How to get the file name?
-						  
-						    String fileName = dataFunctions.convertURLAsStringIntoFileName(request.getParameter("URL"));
-							
-						    //FIXME: sanitize
-						    
-				            response.setHeader("Content-Disposition", "attachment; fileName=" + fileName);
-			
-				            response.setContentLength(dataAsCSVRowsString.toString().getBytes().length);
-				            
-				            int length = 0;
-				            
-				            byte[] byteBuffer = new byte[2048];
-				            
-				              DataInputStream dataInputStream = new DataInputStream(new ByteArrayInputStream(dataAsCSVRowsString.toString().getBytes()));
-				
-				              while ((dataInputStream != null) && ((length = dataInputStream.read(byteBuffer)) != -1)) {
-				            	  response.getOutputStream().write(byteBuffer, 0, length);
-				              }
-				
-				              dataInputStream.close();
-				              response.getOutputStream().flush();
-				              response.getOutputStream().close();	
-					
-					  } else {
+					  
+						String urlResponseAsString = dataFunctions.convertUrlAsStringIntoUrlResponseAsString(request.getParameter("URL"));
+					  
+						//
+						//this.getLogger().info(urlResponseAsString);
+					  
+					  	// Checking that the URL response is actually XML is achieved through attempting to parse it.
+					    
+						Document xmlAsDocument = dataFunctions.convertXmlAsStringIntoXmlAsDocument(urlResponseAsString);
 						
-						  //TODO: Is this an error, or is there just no data?
-						logger.severe("dataAsCSVString is null");
-						response.setContentType("text/plain");
-						response.getWriter().println("Error: dataAsCSVString is null.");
-					  }
+						//Note: Could introduce prefix here.
+						String parentNodeBaseXPathAsString = null;
+						ArrayList<FieldModel> dataAsFieldModelArrayListWithXpathFieldLabels = dataFunctions.convertNodeListIntoFieldModelArrayListWithXPathFieldLabels(xmlAsDocument.getChildNodes(), parentNodeBaseXPathAsString);
+						
+						String dataAsCSVRowsString = dataFunctions.convertDataAsFieldModelArrayListIntoCSVRowsWithMappedCustomFieldLabelsAsString(dataAsFieldModelArrayListWithXpathFieldLabels); 
+						
+						//FIXME: sanitize
+						String filename = dataFunctions.convertURLAsStringIntoFileName(request.getParameter("URL"));
+						
+						this.respondWithStringAsFileUsingResponseAndStringAndFilename(response, dataAsCSVRowsString, filename);
+						
+						  
+					  } catch (IOException e) {
+						  e.printStackTrace();
+					  } catch (ParserConfigurationException e) {
+						e.printStackTrace();
+					} catch (SAXException e) {
+						e.printStackTrace();
+					}
+					  
+					  
+					  
 					  
 				  } else {
 					 
@@ -116,6 +116,40 @@ public class FunctionsController extends HttpServlet {
 		
 	}
 
+
+	private void respondWithStringAsFileUsingResponseAndStringAndFilename(
+			HttpServletResponse response, String string,
+			String filename) throws IOException {
+		
+		if (string != null) {
+			  
+	            response.setHeader("Content-Disposition", "attachment; fileName=" + filename);
+
+	            response.setContentLength(string.getBytes().length);
+	            
+	            int length = 0;
+	            
+	            byte[] byteBuffer = new byte[2048];
+	            
+	              DataInputStream dataInputStream = new DataInputStream(new ByteArrayInputStream(string.getBytes()));
+	
+	              while ((dataInputStream != null) && ((length = dataInputStream.read(byteBuffer)) != -1)) {
+	            	  response.getOutputStream().write(byteBuffer, 0, length);
+	              }
+	
+	              dataInputStream.close();
+	              response.getOutputStream().flush();
+	              response.getOutputStream().close();	
+		
+	              
+		  } else {
+			
+			//TODO: Is this an error, or is there just no data?
+			response.setContentType("text/plain");
+			response.getWriter().println("Error: string is null.");
+		  }
+		
+	}
 
 	public Logger getLogger() {
 		return logger;

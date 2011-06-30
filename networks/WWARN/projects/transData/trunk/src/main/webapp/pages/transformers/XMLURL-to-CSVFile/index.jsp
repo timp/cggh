@@ -34,15 +34,12 @@
 	<div class="error"></div>
 
 	<form class="new-transformation-form" onsubmit="return false;" autocomplete="off">
-		<h3>New conversion:</h3>
+		<h3>New transformation:</h3>
 		<div>
 		<label>URL:</label>
 			<input type="text" name="URL" />
 			<button class="transformXMLURL-to-CSVRowsFileButton">Rows</button>
-			<button class="seeResponseButton">Check</button>
 			<img class="transforming-indicator" src="../../shared/gif/loading.gif" style="display:none" title="Tranforming..."/>
-			<textarea class="response">
-			</textarea>
 		</div>
 	</form>
 
